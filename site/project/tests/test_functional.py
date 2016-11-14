@@ -8,7 +8,8 @@ from project.base import BaseSeleniumTestCase
 from project.generators import (CompanyShareholderGenerator,
                                 ComplexOptionTransactionsWithSegmentsGenerator,
                                 OperatorGenerator, ShareholderGenerator,
-                                TwoInitialSecuritiesGenerator, UserGenerator)
+                                TwoInitialSecuritiesGenerator, UserGenerator,
+                                DEFAULT_TEST_DATA)
 from shareholder.models import Security, Shareholder
 
 
@@ -152,6 +153,7 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
             self.assertFalse(p.is_add_company_form_displayed())
             self.assertTrue(user.operator_set.exists())
             company = user.operator_set.first().company
+            self.assertEqual(DEFAULT_TEST_DATA['company_name'], company.name)
             cs = company.get_company_shareholder()
             self.assertTrue(cs.buyer.first().value, value)
 

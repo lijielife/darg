@@ -16,7 +16,8 @@ from project.generators import (CompanyGenerator, CompanyShareholderGenerator,
                                 OperatorGenerator, OptionTransactionGenerator,
                                 PositionGenerator, SecurityGenerator,
                                 ShareholderGenerator,
-                                TwoInitialSecuritiesGenerator, UserGenerator)
+                                TwoInitialSecuritiesGenerator, UserGenerator,
+                                DEFAULT_TEST_DATA)
 from services.rest.serializers import SecuritySerializer
 from shareholder.models import (Operator, OptionTransaction, Position,
                                 Security, Shareholder)
@@ -155,7 +156,8 @@ class OperatorTestCase(TestCase):
         company = operator.company
         user2 = UserGenerator().generate()
 
-        logged_in = self.client.login(username=user.username, password='test')
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
 
         data = {
@@ -181,7 +183,8 @@ class OperatorTestCase(TestCase):
         company = operator.company
         user2 = UserGenerator().generate()
 
-        logged_in = self.client.login(username=user.username, password='test')
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
 
         data = {
@@ -207,7 +210,8 @@ class OperatorTestCase(TestCase):
         company = CompanyGenerator().generate()
         user2 = UserGenerator().generate()
 
-        logged_in = self.client.login(username=user.username, password='test')
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
 
         data = {
@@ -232,7 +236,8 @@ class OperatorTestCase(TestCase):
         operator2 = OperatorGenerator().generate(company=operator.company)
         user = operator.user
 
-        logged_in = self.client.login(username=user.username, password='test')
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
 
         data = {
@@ -264,7 +269,8 @@ class PositionTestCase(TestCase):
         securities = TwoInitialSecuritiesGenerator().generate(
             company=operator.company)
 
-        logged_in = self.client.login(username=user.username, password='test')
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
 
         data = {
@@ -371,7 +377,8 @@ class PositionTestCase(TestCase):
             s.track_numbers = True
             s.save()
 
-        logged_in = self.client.login(username=user.username, password='test')
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
 
         data = {
@@ -479,7 +486,8 @@ class PositionTestCase(TestCase):
         buyer = ShareholderGenerator().generate(company=operator.company)
 
         logger.info('data preparation done.')
-        logged_in = self.client.login(username=user.username, password='test')
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
 
         data = {
@@ -567,7 +575,8 @@ class PositionTestCase(TestCase):
         self.assertEqual(response.data['number_segments'], [u'1-1000000'])
         if delta > 4:
             logger.error(
-                'BUILD performance error: test_add_position_with_number_segment_performance',
+                'BUILD performance error: '
+                'test_add_position_with_number_segment_performance',
                 extra={'delta': delta})
         self.assertLess(delta, 6)
 
@@ -588,7 +597,8 @@ class PositionTestCase(TestCase):
         user = operator.user
         position = PositionGenerator().generate(company=operator.company)
 
-        logged_in = self.client.login(username=user.username, password='test')
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
 
         res = self.client.delete(
@@ -606,7 +616,8 @@ class PositionTestCase(TestCase):
         user = operator.user
         position = PositionGenerator().generate(company=operator.company)
 
-        logged_in = self.client.login(username=user.username, password='test')
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
 
         res = self.client.delete(
@@ -624,7 +635,8 @@ class PositionTestCase(TestCase):
         position.is_draft = False
         position.save()
 
-        logged_in = self.client.login(username=user.username, password='test')
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
 
         res = self.client.delete(
@@ -639,11 +651,13 @@ class PositionTestCase(TestCase):
         seller = ShareholderGenerator().generate(company=operator.company)
         position = PositionGenerator().generate(seller=seller)
 
-        logged_in = self.client.login(username=user.username, password='test')
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
 
         # get and prep data
-        res = self.client.login(username=user.username, password='test')
+        res = self.client.login(username=user.username,
+                                password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(res)
 
         res = self.client.get(
@@ -668,7 +682,8 @@ class PositionTestCase(TestCase):
         ShareholderGenerator().generate(company=operator.company)
         TwoInitialSecuritiesGenerator().generate(company=operator.company)
 
-        logged_in = self.client.login(username=user.username, password='test')
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
         response = self.client.get(
             '/services/rest/split/', {},
@@ -687,7 +702,8 @@ class PositionTestCase(TestCase):
         PositionGenerator().generate(company=operator.company, security=s1)
         PositionGenerator().generate(company=operator.company, security=s1)
 
-        logged_in = self.client.login(username=user.username, password='test')
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
 
         security = Security.objects.filter(company=company, title="P")[0]
@@ -717,7 +733,8 @@ class PositionTestCase(TestCase):
         ShareholderGenerator().generate(company=operator.company)
         TwoInitialSecuritiesGenerator().generate(company=operator.company)
 
-        logged_in = self.client.login(username=user.username, password='test')
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
 
         data = {}
@@ -809,7 +826,8 @@ class ShareholderTestCase(TestCase):
         operator = OperatorGenerator().generate()
         user = operator.user
 
-        logged_in = self.client.login(username=user.username, password='test')
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
 
         data = {
@@ -842,7 +860,8 @@ class ShareholderTestCase(TestCase):
         shareholder = ShareholderGenerator().generate(company=operator.company)
         user = operator.user
 
-        logged_in = self.client.login(username=user.username, password='test')
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
 
         data = {
@@ -876,7 +895,8 @@ class ShareholderTestCase(TestCase):
         operator = OperatorGenerator().generate()
         user = operator.user
 
-        logged_in = self.client.login(username=user.username, password='test')
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
 
         data = {
@@ -918,7 +938,8 @@ class ShareholderTestCase(TestCase):
         p.language = "de"
         p.save()
 
-        logged_in = self.client.login(username=user.username, password='test')
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
 
         data = {
@@ -1018,7 +1039,8 @@ class OptionTransactionTestCase(APITestCase):
         optiontransaction = OptionTransactionGenerator().generate(
             company=operator.company)
 
-        logged_in = self.client.login(username=user.username, password='test')
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
 
         res = self.client.delete(
@@ -1038,7 +1060,7 @@ class OptionTransactionTestCase(APITestCase):
         optiontransaction = OptionTransactionGenerator().generate(
             company=operator.company)
 
-        logged_in = self.client.login(username=user.username, password='test')
+        logged_in = self.client.login(username=user.username, password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
 
         res = self.client.delete(
@@ -1057,7 +1079,8 @@ class OptionTransactionTestCase(APITestCase):
         optiontransaction.is_draft = False
         optiontransaction.save()
 
-        logged_in = self.client.login(username=user.username, password='test')
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
 
         res = self.client.delete(
@@ -1073,11 +1096,13 @@ class OptionTransactionTestCase(APITestCase):
         optiontransaction = OptionTransactionGenerator().generate(
             seller=seller)
 
-        logged_in = self.client.login(username=user.username, password='test')
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
 
         # get and prep data
-        res = self.client.login(username=user.username, password='test')
+        res = self.client.login(username=user.username,
+                                password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(res)
 
         res = self.client.get(
@@ -1128,4 +1153,3 @@ class SecurityTestCase(APITestCase):
 
         security = Security.objects.get(id=security.id)
         self.assertEqual(security.number_segments, [u'1-4', u'8-10'])
-

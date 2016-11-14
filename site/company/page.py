@@ -11,6 +11,7 @@ from django.core.urlresolvers import reverse
 from selenium.webdriver.common.by import By
 
 from project.page import BasePage
+from project.generators import DEFAULT_TEST_DATA
 
 
 class CompanyPage(BasePage):
@@ -26,7 +27,8 @@ class CompanyPage(BasePage):
 
         # load page
         self.operator = user.operator_set.all()[0]
-        self.login(username=user.username, password='test')
+        self.login(username=user.username,
+                   password=DEFAULT_TEST_DATA['password'])
         self.driver.get('%s%s' % (live_server_url, reverse(
             "company", kwargs={'company_id': self.company.pk}
         )))

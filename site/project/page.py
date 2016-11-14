@@ -261,7 +261,8 @@ class StartPage(BasePage):
         # load page
         if user.operator_set.exists():
             self.operator = user.operator_set.all()[0]
-        self.login(username=user.username, password='test')
+        self.login(username=user.username,
+                   password=DEFAULT_TEST_DATA['password'])
         self.driver.get('%s%s' % (live_server_url, '/start/'))
 
     # --- ACTIONS
