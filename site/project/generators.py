@@ -89,7 +89,7 @@ class CompanyGenerator(object):
     def generate(self, **kwargs):
 
         word = random.choice(_make_wordlist())
-        name = kwargs.get('name') or '{} A.B.'.format(word)
+        name = kwargs.get('name') or u'{} àäå A.B.'.format(word)
         share_count = kwargs.get('share_count') or 3
         country = kwargs.get('country') or CountryGenerator().generate()
 
