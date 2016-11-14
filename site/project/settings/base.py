@@ -15,6 +15,21 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 import os
 from kombu import Exchange, Queue
 
+from django.core.exceptions import ImproperlyConfigured
+
+
+def get_env_variable(var_name, fail_on_error=True):
+    try:
+        env_var = os.environ[var_name]
+    except KeyError:
+        if fail_on_error:
+            raise ImproperlyConfigured("Set %s environment variable" % var_name)
+        else:
+            env_var = ''
+
+    return env_var
+
+
 VERSION = '0.3.55'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
@@ -58,10 +73,13 @@ INSTALLED_APPS = (
     'raven.contrib.django.raven_compat',
     'sorl.thumbnail',
     'djrill',
-    'djcelery',
     'django_markdown',
     'markdownx',
     'reversion',
+    'storages',
+    'dbbackup',
+    'django_celery_results',
+    'django_celery_beat',
 
     # -- zinnia
     'django_comments',
@@ -220,8 +238,6 @@ EMAIL_SUBJECT_PREFIX = '[darg] '
 
 MANAGERS = ADMINS + ()
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
 # -- STATIC FILES
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
@@ -304,8 +320,7 @@ CELERY_DEFAULT_QUEUE = 'darg'
 CELERY_QUEUES = (
     Queue('darg', Exchange('darg'), routing_key='darg'),
 )
-CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
-CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+CELERY_RESULT_BACKEND = 'django-db'
 BROKER_URL = 'amqp://darg:darg@localhost:5672/darg'
 
 # --- MARKDOWN X
@@ -339,6 +354,15 @@ TEST_WEBDRIVER_PAGE_LOAD_TIMEOUT = 5
 TEST_CHROMEDRIVER_EXECUTABLE = os.environ.get(
     'DJANGO_TEST_CHROMEDRIVER_EXECUTABLE', './chromedriver')
 
+
+# django-dbbackup
+DROPBOX_ROOT_PATH = get_env_variable('DROPBOX_ROOT_PATH', fail_on_error=False)
+
+if DROPBOX_ROOT_PATH:
+    DBBACKUP_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
+    DBBACKUP_STORAGE_OPTIONS = {
+        'oauth2_access_token': get_env_variable('DROPBOX_ACCESS_TOKEN'),
+    }
 
 try:
     from project.settings.local import *  # noqa
