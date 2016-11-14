@@ -234,16 +234,40 @@ html, body
     color: #b7a533 !important
 
 // --- HEADER
+.navbar-custom
+  background: transparent
+  border: 0 !important
+  .navbar-toggle
+    border: 0
+    padding: 0
+    &:focus
+      background: transparent
+    &:hover
+      background: transparent
+    .icon-bar
+      background-color: $color-white
+  .navbar-nav
+    padding: 0 !important
+    display: -webkit-box
+    display: -ms-flexbox
+    display: flex
+    -webkit-box-orient: horizontal
+    -webkit-box-direction: normal
+    -ms-flex-direction: row
+    flex-direction: row
+    -webkit-box-align: center
+    -ms-flex-align: center
+    align-items: center
+
 nav.navbar
   a:not(.navbar-brand)
-    color: $color-link !important
+    color: $color-link 
   a.navbar-brand
     img
       position: relative
       top: -0.3em
   .navbar-text
     margin-top: 18px
-
 
 // --- AUTH Views
 div#auth
@@ -279,8 +303,21 @@ div#auth
     .container
       a
         margin: 0 0.5em 0 0.5em
+      .navigation-bar-container
+        display: -webkit-box
+        display: -ms-flexbox
+        display: flex
+        -webkit-box-orient: horizontal
+        -webkit-box-direction: normal
+        -ms-flex-direction: row
+        flex-direction: row
+        -webkit-box-align: center
+        -ms-flex-align: center
+        align-items: center
+        -webkit-box-pack: justify
+        -ms-flex-pack: justify
+        justify-content: space-between
       .logo
-        +zen-grid-item(3, 1)
         text-align: left
         font-size: 1.4em
         .el-icon-leaf
@@ -289,15 +326,28 @@ div#auth
           font-size: 0.7em
           left: -0.4em
       .menu
-        +zen-grid-item(6, 3)
         text-align: right
+        li
+          padding-top: 0
+      .btn-inline.btn-with-separator
+        position: relative
+        &:after
+          content: ""
+          display: block
+          width: 1px
+          height: 1em
+          position: absolute
+          right: -7px
+          bottom: 0
+          background-color: $color-white
       .btn-inline
         border: none
-        color: white
+        color: $color-white
         font-size: 1em
         :hover
           text-decoration: none
   a.btn-white
+    padding: 6px 12px
     box-shadow: 0 1px 1px rgba(0,0,0,.15)
     color: $color-blue
     border-color: $color-blue

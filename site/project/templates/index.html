@@ -9,24 +9,45 @@
 
 <div class="intro" ng_controller="IndexController">
   <header class="home core">
-    <div class="container">
-      <div class="logo">
-        <span>{% trans "Das Aktienregister" %}</span>
-        <span class="el-icon-leaf"></span>
-      </div>
-      <div class="menu">
-        <a href="/kostenloses-muster-aktienbuch/" title="Gratis Aktienbuch Muster" class="btn-inline orange">
-          {% trans "Gratis Aktienbuch-Muster" %}
-        </a>
-        <a href="{% url "auth_login" %}" title="Login" class="btn-inline">{% trans "Login" %}</a>
-        <a href="{% url "django.contrib.flatpages.views.flatpage" url="preisliste/" %}" title="Preise" class="btn-inline">{% trans "prices and plans" %}</a>
-        <a href="/blog/" title="Blog" class="btn-inline">{% trans "Blog" %}</a>
-        |
-        <a href="{% url "registration_register" %}" title="{% trans "Try for free" %}" class="btn btn-default btn-white">
-          {% trans "Try for free" %}
-        </a>
-      </div>
-    </div>
+    <nav class="navbar navbar-default navbar-custom">
+      <div class="container">
+        <div class="navigation-bar-container">
+        <!-- Logo and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#das-aktienregister-navbar-collapse" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <div class="logo">
+              <span>{% trans "Das Aktienregister" %}</span>
+              <span class="el-icon-leaf"></span>
+            </div>
+          </div>
+          <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="das-aktienregister-navbar-collapse">
+              <ul class="nav navbar-nav navbar-right menu">
+                <li class="">
+                  <a href="/kostenloses-muster-aktienbuch/" title="Gratis Aktienbuch Muster" class="btn-inline orange">{% trans "Gratis Aktienbuch-Muster" %}</a>
+                </li>
+                <li>
+                  <a href="{% url "auth_login" %}" title="Login" class="btn-inline">{% trans "Login" %}</a>
+                </li>
+                <li>
+                  <a href="{% url "django.contrib.flatpages.views.flatpage" url="preisliste/" %}" title="Preise" class="btn-inline">{% trans "prices and plans" %}</a>
+                </li>
+                <li>
+                  <a href="/blog/" title="Blog" class="btn-inline btn-with-separator">{% trans "Blog" %}</a>
+                </li>
+                <li>
+                  <a href="{% url "registration_register" %}" title="{% trans "Try for free" %}" class="btn btn-default btn-white">{% trans "Try for free" %}</a>
+                </li>
+              </ul>
+            </div><!-- /.navbar-collapse -->
+          </div><!-- /.container -->
+        </div>
+    </nav>
   </header>
   <div class="container">
     <h1>{% trans "Das Online-Aktienbuch" %}</h1>

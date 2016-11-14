@@ -49,11 +49,76 @@
     .tagline
       padding: 0
 
+/* change default collapse menu breakpoint */
+
+@media (max-width: 1000px)
+  .navbar-header
+    float: none
+  .navbar-left,.navbar-right
+    float: none !important
+  .navbar-toggle
+    display: block
+  .navbar-fixed-top
+    top: 0
+    border-width: 0
+  .navbar-collapse.collapse
+    display: none !important
+  .navbar-nav
+    float: none !important
+    margin-top: 7.5px
+  .navbar-nav > li
+    float: none
+  .navbar-nav > li > a
+    padding-top: 10px
+    padding-bottom: 10px
+  .collapse.in
+    display: block !important
+  /* hide separator in menu */
+  .btn-inline.btn-with-separator
+    &:after
+      width: 0 !important
+
+/* end of collapse menu */
+
+@media only screen and (min-width:768px) and (max-width:1000px)
+  body
+    header
+      .navigation-bar-container
+        -webkit-box-orient: vertical !important
+        -webkit-box-direction: normal !important
+        -ms-flex-direction: column !important
+        flex-direction: column !important
+        align-items: inherit !important
+      .menu
+        -webkit-box-pack: center
+        -ms-flex-pack: center
+        justify-content: center
+@media only screen and (max-width: 768px)
+  body
+    header
+      .menu
+        -webkit-box-orient: vertical !important
+        -webkit-box-direction: normal !important
+        -ms-flex-direction: column !important
+        flex-direction: column !important
+        li
+          margin: 5px 0
+      .navbar-collapse
+        border: 0 !important
+        box-shadow: unset 
+      .navigation-bar-container
+        -webkit-box-orient: vertical !important
+        -webkit-box-direction: normal !important
+        -ms-flex-direction: column !important
+        flex-direction: column !important
+        .navbar-header
+          width: 100%
+
 @media only screen and (max-width: 640px)
 
   body
     header
-      height: 180px
+      min-height: 180px
       text-align: center
       .container
         .logo
@@ -70,6 +135,12 @@
 @media only screen and (max-width: 400px)
 
   body
+    .intro
+      blockquote
+        word-wrap: break-word
+      .benefits
+        ul > li
+          font-size: 1.6em
     #flatpage
       .pricing
         .box
