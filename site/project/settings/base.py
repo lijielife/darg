@@ -366,10 +366,12 @@ if DROPBOX_ROOT_PATH:
 
 
 # need to differentiate instances
-def backup_filename(databasename, servername, datetime, extension):
+def backup_filename(databasename, servername, datetime, extension, content_type):
     import getpass
     username = getpass.getuser()
-    return '%s-{databasename}-{servername}-{datetime}.{extension}' % username
+    return '{username}-{databasename}-{servername}-{datetime}.{extension}'.format(
+        **{'username': username, 'databasename': databasename,
+        'servername': servername, 'datetime': datetime, 'extension': extension})
 
 DBBACKUP_FILENAME_TEMPLATE = backup_filename
 
