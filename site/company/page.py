@@ -94,6 +94,7 @@ class CompanyPage(BasePage):
         btn = el.find_element_by_xpath(
             '//td[@class="date-field"]//span[@class="input-group-btn"]//button'
         )
+        self.scroll_to(element=btn)
         btn.click()
 
     def click_date_in_datepicker(self, class_name):
