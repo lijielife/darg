@@ -11,6 +11,7 @@ from datetime import datetime
 from django.conf import settings
 
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -145,9 +146,9 @@ class BasePage(object):
             # go through day tds and find the day to click
             for td in dp_row.find_elements_by_tag_name('td'):
                 el2 = td.find_elements_by_tag_name('span')
-                if (el2 and
-                        el2[0].get_attribute('innerHTML') ==
-                        datetime.strftime(date, '%d')
+                if (
+                    el2 and el2[0].get_attribute('innerHTML') ==
+                    datetime.strftime(date, '%d')
                 ):
                     el2[0].click()
                     return
@@ -174,8 +175,12 @@ class BasePage(object):
         scroll to element or coordinate
         """
         if element:
+
+            y = element.location['y']
             self.driver.execute_script(
-                "return arguments[0].scrollIntoView();", element)
+                'window.scrollTo(0, {0} - 320)'.format(y))
+            ActionChains(self.driver).move_to_element(element).perform()
+
         else:
             self.driver.execute_script("window.scrollTo(0, {})".format(Y))
 
