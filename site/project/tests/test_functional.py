@@ -184,6 +184,29 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
         except Exception, e:
             self._handle_exception(e)
 
+    def test_general_display(self):
+        """
+        test on start page that diverse things are shown properly
+        e.g. #128
+        """
+        optiontransactions, shs = \
+            ComplexOptionTransactionsWithSegmentsGenerator().generate()
+
+        try:
+            start = page.StartPage(
+                self.selenium, self.live_server_url,
+                shs[0].company.operator_set.first().user)
+            # wait for list
+            start.wait_until_visible((By.CSS_SELECTOR, '#shareholder_list'))
+            start.is_properly_displayed()
+            self.assertEqual(start.get_total_share_count(), 3)
+            self.assertEqual(start.get_company_share_count(), 3)
+            self.assertEqual(start.get_total_share_count(),
+                             start.get_company_share_count())
+
+        except Exception, e:
+            self._handle_exception(e)
+
     def test_operator_same_email_as_shareholder(self):
         """
         user signs up and adds himself as shareholder

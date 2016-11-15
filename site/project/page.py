@@ -310,6 +310,16 @@ class StartPage(BasePage):
             '//tr[./td="{}" and contains(@class, "option-holders")]'.format(
                 shareholder.user.email))
 
+    def get_total_share_count(self):
+        tds = self.driver.find_elements_by_xpath('//tr[@class="totals"]//td')
+        td = tds[-1]
+        return int(td.text.split('(')[0].rstrip())
+
+    def get_company_share_count(self):
+        tds = self.driver.find_elements_by_xpath('//tr[@class="totals"]//td')
+        td = tds[-1]
+        return int(td.text.split('(')[1][:-1].rstrip())
+
     # --- CHECKS
     def has_shareholder_count(self, count):
         return len(self.driver.find_elements_by_tag_name('tr')) == count
