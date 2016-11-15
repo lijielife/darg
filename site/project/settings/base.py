@@ -364,6 +364,15 @@ if DROPBOX_ROOT_PATH:
         'oauth2_access_token': get_env_variable('DROPBOX_ACCESS_TOKEN'),
     }
 
+
+# need to differentiate instances
+def backup_filename(databasename, servername, datetime, extension):
+    import getpass
+    username = getpass.getuser()
+    return '%s-{databasename}-{servername}-{datetime}.{extension}' % username
+
+DBBACKUP_FILENAME_TEMPLATE = backup_filename
+
 try:
     from project.settings.local import *  # noqa
 except ImportError:
