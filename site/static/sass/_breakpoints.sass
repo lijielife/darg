@@ -18,9 +18,26 @@
   body.core
     .container
       width: 100%
-
+    .summary
+      padding-bottom: 1.5em
+    .newsletter
+      padding-top: 1.5em
+    blockquote
+      p.says
+        font-size: 1.4em
+    .benefits
+      ul > li
+        font-size: 1.4em
     header
       .container
+        .menu
+          display: initial !important /* Reset table view */
+          li
+            display: block !important
+            text-align: center
+            a
+              display: initial !important
+
         .search-box
           span.glyphicon
             &.el-icon-search
@@ -49,15 +66,26 @@
     .tagline
       padding: 0
 
+/* Hide orange items on 800 - 1000 px screen size */
+
+@media only screen and (min-width: 801px) and (max-width: 1000px)
+  header
+    .container
+      .menu
+        li
+          .orange
+            display: none !important
+
 /* change default collapse menu breakpoint */
 
-@media (max-width: 1000px)
+@media (max-width: 800px)
   .navbar-header
     float: none
   .navbar-left,.navbar-right
     float: none !important
   .navbar-toggle
     display: block
+    margin-top: 10px /* Vertial align toggle button*/
   .navbar-fixed-top
     top: 0
     border-width: 0
@@ -80,43 +108,55 @@
 
 /* end of collapse menu */
 
-@media only screen and (min-width:768px) and (max-width:1000px)
-  body
-    header
-      .navigation-bar-container
-        -webkit-box-orient: vertical !important
-        -webkit-box-direction: normal !important
-        -ms-flex-direction: column !important
-        flex-direction: column !important
-        align-items: inherit !important
-      .menu
-        -webkit-box-pack: center
-        -ms-flex-pack: center
-        justify-content: center
+      
+
 @media only screen and (max-width: 768px)
   body
     header
       .menu
-        -webkit-box-orient: vertical !important
-        -webkit-box-direction: normal !important
-        -ms-flex-direction: column !important
-        flex-direction: column !important
         li
           margin: 5px 0
       .navbar-collapse
         border: 0 !important
         box-shadow: unset 
-      .navigation-bar-container
-        -webkit-box-orient: vertical !important
-        -webkit-box-direction: normal !important
-        -ms-flex-direction: column !important
-        flex-direction: column !important
         .navbar-header
           width: 100%
+
+/* Screenshot container no repeating */
+@media only screen and (max-width: 650px)
+  .main-screenshot
+    .screenshot
+      background-position: center
+      background-size: 100% 100%
+
+@media only screen and (max-width: 480px)
+  .main-screenshot
+    .screenshot
+      height: 160px
+      background-size: 100%
+      background-position: center top
+
+@media only screen and (max-width: 360px)
+  .main-screenshot
+    .screenshot
+      height: 130px
+      background-size: cover
+/* end screenshot container */
 
 @media only screen and (max-width: 640px)
 
   body
+    .intro
+      .summary
+        padding-bottom: 2em
+      .newsletter
+        padding-top: 2em
+      blockquote
+        p.says
+          font-size: 1.4em
+      .benefits
+        ul > li
+          font-size: 1.4em
     header
       min-height: 180px
       text-align: center
@@ -136,11 +176,20 @@
 
   body
     .intro
+      .validate.ng-pristine
+        input
+          width: 50% !important
+      .summary
+        padding-bottom: 2em
+      .newsletter
+        padding-top: 2em
       blockquote
+        p.says
+          font-size: 1.2em
         word-wrap: break-word
       .benefits
         ul > li
-          font-size: 1.6em
+          font-size: 1.2em
     #flatpage
       .pricing
         .box

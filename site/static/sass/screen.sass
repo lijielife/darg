@@ -83,6 +83,10 @@ html, body
   p
     margin: 0 0 10px
 
+  button
+    border: 0 !important
+    outline: none !important
+
   label
     text-decoration: none
     cursor: pointer
@@ -239,7 +243,10 @@ html, body
   border: 0 !important
   .navbar-toggle
     border: 0
-    padding: 0
+    outline: none !important
+    margin-right: 0
+    padding: 4px
+    background: transparent !important
     &:focus
       background: transparent
     &:hover
@@ -248,16 +255,7 @@ html, body
       background-color: $color-white
   .navbar-nav
     padding: 0 !important
-    display: -webkit-box
-    display: -ms-flexbox
-    display: flex
-    -webkit-box-orient: horizontal
-    -webkit-box-direction: normal
-    -ms-flex-direction: row
-    flex-direction: row
-    -webkit-box-align: center
-    -ms-flex-align: center
-    align-items: center
+
 
 nav.navbar
   a:not(.navbar-brand)
@@ -304,31 +302,31 @@ div#auth
       a
         margin: 0 0.5em 0 0.5em
       .navigation-bar-container
-        display: -webkit-box
-        display: -ms-flexbox
-        display: flex
-        -webkit-box-orient: horizontal
-        -webkit-box-direction: normal
-        -ms-flex-direction: row
-        flex-direction: row
-        -webkit-box-align: center
-        -ms-flex-align: center
-        align-items: center
-        -webkit-box-pack: justify
-        -ms-flex-pack: justify
-        justify-content: space-between
+
       .logo
         text-align: left
         font-size: 1.4em
+        display: table-row
+        .logo-text
+          display: table-cell
+          vertical-align: middle
+          height: 43.6px
         .el-icon-leaf
-          top: -0.7em
+          top: 0.2em
           position: relative
           font-size: 0.7em
-          left: -0.4em
+          left: 0.1em
       .menu
         text-align: right
+        display: table-row /* Vertical align  */
         li
-          padding-top: 0
+          vertical-align: middle
+          display: table-cell
+          margin: 0 10px
+          a
+            height: 34px
+            vertical-align: middle
+            display: table-cell
       .btn-inline.btn-with-separator
         position: relative
         &:after
@@ -338,7 +336,7 @@ div#auth
           height: 1em
           position: absolute
           right: -7px
-          bottom: 0
+          top: 9px
           background-color: $color-white
       .btn-inline
         border: none
