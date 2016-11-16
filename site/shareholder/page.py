@@ -256,6 +256,10 @@ class OptionsPage(BasePage):
             count_td = tr.find_element_by_class_name('count')
             if s1 == buyer_td.text and s2 == count_td.text:
                 return True
+
+        extra = {'s1': s1, 's2': s2}
+        logger.warning('option transaction not found in markup',
+                       extra=extra)
         return False
 
     def is_option_date_equal(self, date):
