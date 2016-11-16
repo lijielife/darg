@@ -40,7 +40,7 @@ DEFAULT_TEST_DATA = {
 
 def _make_wordlist():
 
-    words = [line.strip() for line in open('/usr/share/dict/american-english')]
+    words = [unicode(line.strip(), 'utf-8') for line in open('/usr/share/dict/american-english')]
     return words
 
 
