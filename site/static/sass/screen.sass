@@ -83,10 +83,6 @@ html, body
   p
     margin: 0 0 10px
 
-  button
-    border: 0 !important
-    outline: none !important
-
   label
     text-decoration: none
     cursor: pointer
@@ -241,16 +237,18 @@ html, body
 .navbar-custom
   background: transparent
   border: 0 !important
+  .navbar-collapse.collapse.in
+    padding-bottom: 10px
   .navbar-toggle
-    border: 0
+    border: 0 !important
     outline: none !important
     margin-right: 0
     padding: 4px
     background: transparent !important
     &:focus
-      background: transparent
+      background: transparent !important
     &:hover
-      background: transparent
+      background: transparent !important
     .icon-bar
       background-color: $color-white
   .navbar-nav
@@ -301,8 +299,6 @@ div#auth
     .container
       a
         margin: 0 0.5em 0 0.5em
-      .navigation-bar-container
-
       .logo
         text-align: left
         font-size: 1.4em
@@ -412,7 +408,8 @@ div#auth
       label
         font-size: 1em
       input
-        margin: 1em 30% 0 30%
+        display: block
+        margin: 1em auto 0 auto
         width: 30%
   .price-badge
     position: absolute

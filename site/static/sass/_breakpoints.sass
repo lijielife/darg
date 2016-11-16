@@ -35,6 +35,8 @@
           li
             display: block !important
             text-align: center
+            .btn-default.btn-white
+              margin-bottom: 10px
             a
               display: initial !important
 
@@ -147,6 +149,9 @@
 
   body
     .intro
+      .validate.ng-pristine
+        input
+          width: 50% !important
       .summary
         padding-bottom: 2em
       .newsletter
@@ -172,13 +177,20 @@
             top: 156px  // FIXME
             width: +zen-grid-item-width(6)
 
+@media only screen and (max-width: 480px)
+  body
+    .intro
+      .validate.ng-pristine
+        input
+          width: 50% !important
+
 @media only screen and (max-width: 400px)
 
   body
     .intro
       .validate.ng-pristine
         input
-          width: 50% !important
+          width: 70% !important
       .summary
         padding-bottom: 2em
       .newsletter
