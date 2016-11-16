@@ -19,7 +19,8 @@ from project.generators import (CompanyGenerator, CompanyShareholderGenerator,
                                 OperatorGenerator, OptionPlanGenerator,
                                 OptionTransactionGenerator, PositionGenerator,
                                 SecurityGenerator, ShareholderGenerator,
-                                TwoInitialSecuritiesGenerator, UserGenerator)
+                                TwoInitialSecuritiesGenerator, UserGenerator,
+                                DEFAULT_TEST_DATA)
 from shareholder.models import Country, Position, Security, Shareholder
 
 logger = logging.getLogger(__name__)
@@ -36,6 +37,11 @@ class CompanyTestCase(TestCase):
         company.name = u'Mühleggbahn AG'
         company.save()
         security = company.security_set.all()[0]
+        force_text(security)  # must not raise exception
+
+        company.name = u'UniCodeTestÄGå'
+        company.save()
+        # see https://sentry.ttg-dresden.de/sentry-internal/production/issues/46437/
         force_text(security)  # must not raise exception
 
     def test_get_all_option_plan_segments(self):
@@ -385,7 +391,8 @@ class ShareholderTestCase(TestCase):
         shareholder = ShareholderGenerator().generate()
 
         response = self.client.login(
-            username=shareholder.user.username, password="test")
+            username=shareholder.user.username,
+            password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(response)
 
         response = self.client.get(

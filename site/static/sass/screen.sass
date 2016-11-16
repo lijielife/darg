@@ -234,16 +234,36 @@ html, body
     color: #b7a533 !important
 
 // --- HEADER
+.navbar-custom
+  background: transparent
+  border: 0 !important
+  .navbar-collapse.collapse.in
+    padding-bottom: 10px
+  .navbar-toggle
+    border: 0 !important
+    outline: none !important
+    margin-right: 0
+    padding: 4px
+    background: transparent !important
+    &:focus
+      background: transparent !important
+    &:hover
+      background: transparent !important
+    .icon-bar
+      background-color: $color-white
+  .navbar-nav
+    padding: 0 !important
+
+
 nav.navbar
   a:not(.navbar-brand)
-    color: $color-link !important
+    color: $color-link 
   a.navbar-brand
     img
       position: relative
       top: -0.3em
   .navbar-text
     margin-top: 18px
-
 
 // --- AUTH Views
 div#auth
@@ -280,24 +300,48 @@ div#auth
       a
         margin: 0 0.5em 0 0.5em
       .logo
-        +zen-grid-item(3, 1)
         text-align: left
         font-size: 1.4em
+        display: table-row
+        .logo-text
+          display: table-cell
+          vertical-align: middle
+          height: 43.6px
         .el-icon-leaf
-          top: -0.7em
+          top: 0.2em
           position: relative
           font-size: 0.7em
-          left: -0.4em
+          left: 0.1em
       .menu
-        +zen-grid-item(6, 3)
         text-align: right
+        display: table-row /* Vertical align  */
+        li
+          vertical-align: middle
+          display: table-cell
+          margin: 0 10px
+          a
+            height: 34px
+            vertical-align: middle
+            display: table-cell
+      .btn-inline.btn-with-separator
+        position: relative
+        &:after
+          content: ""
+          display: block
+          width: 1px
+          height: 1em
+          position: absolute
+          right: -7px
+          top: 9px
+          background-color: $color-white
       .btn-inline
         border: none
-        color: white
+        color: $color-white
         font-size: 1em
         :hover
           text-decoration: none
   a.btn-white
+    padding: 6px 12px
     box-shadow: 0 1px 1px rgba(0,0,0,.15)
     color: $color-blue
     border-color: $color-blue
@@ -364,7 +408,8 @@ div#auth
       label
         font-size: 1em
       input
-        margin: 1em 30% 0 30%
+        display: block
+        margin: 1em auto 0 auto
         width: 30%
   .price-badge
     position: absolute

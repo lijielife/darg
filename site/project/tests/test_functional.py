@@ -8,7 +8,8 @@ from project.base import BaseSeleniumTestCase
 from project.generators import (CompanyShareholderGenerator,
                                 ComplexOptionTransactionsWithSegmentsGenerator,
                                 OperatorGenerator, ShareholderGenerator,
-                                TwoInitialSecuritiesGenerator, UserGenerator)
+                                TwoInitialSecuritiesGenerator, UserGenerator,
+                                DEFAULT_TEST_DATA)
 from shareholder.models import Security, Shareholder
 
 
@@ -152,6 +153,7 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
             self.assertFalse(p.is_add_company_form_displayed())
             self.assertTrue(user.operator_set.exists())
             company = user.operator_set.first().company
+            self.assertEqual(DEFAULT_TEST_DATA['company_name'], company.name)
             cs = company.get_company_shareholder()
             self.assertTrue(cs.buyer.first().value, value)
 
@@ -178,6 +180,29 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
                                  shareholder.number)
                 self.assertEqual(row.find_element_by_class_name('share').text,
                                  u'6 (200,0%)')
+
+        except Exception, e:
+            self._handle_exception(e)
+
+    def test_general_display(self):
+        """
+        test on start page that diverse things are shown properly
+        e.g. #128
+        """
+        optiontransactions, shs = \
+            ComplexOptionTransactionsWithSegmentsGenerator().generate()
+
+        try:
+            start = page.StartPage(
+                self.selenium, self.live_server_url,
+                shs[0].company.operator_set.first().user)
+            # wait for list
+            start.wait_until_visible((By.CSS_SELECTOR, '#shareholder_list'))
+            start.is_properly_displayed()
+            self.assertEqual(start.get_total_share_count(), 3)
+            self.assertEqual(start.get_company_share_count(), 3)
+            self.assertEqual(start.get_total_share_count(),
+                             start.get_company_share_count())
 
         except Exception, e:
             self._handle_exception(e)

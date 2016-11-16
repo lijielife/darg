@@ -4,6 +4,11 @@ export DEBIAN_FRONTEND=noninteractive; export DBUS_SESSION_BUS_ADDRESS=/dev/null
 export INSTAPAGE_TOKEN='0tIg7LJHIgF04pIP1pBYUq9tsjVTVlnefHYjHFzJCiwD34g5X4rPAAcK9kF5m8e6'
 export INSTAPAGE_ACCESS_TOKEN='5vaWSHQYOLDmxwThfub0Aao72jWyrzKz'
 export LC_ALL=en_US.UTF-8
+
+echo 'WARNING setting empty raven dsn, you wont have sentry tracking...'
+export RAVEN_DSN=''
+export RAVEN_DSN_PUBLIC=''
+
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 1397BC53640DB551
 sudo apt-get update
 sudo apt-get -q -y install python-virtualenv python-dev google-chrome-stable firefox xvfb wamerican exim4
@@ -33,3 +38,4 @@ python ./minify_static.py
 cd site
 cp project/settings/dev_local.dist.py project/settings/dev_local.py
 python manage.py collectstatic --noinput --settings=project.settings.dev
+python manage.py migrate --settings=project.settings.dev

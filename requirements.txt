@@ -17,11 +17,8 @@ uWSGI
 wsgiref==0.1.2
 python-memcached
 ipython
-django-celery>=3.1.17
 pytz
 # see https://github.com/celery/django-celery/blob/master/requirements/default.txt
-celery==3.1.23
-kombu==3.0.35
 git+https://github.com/xhtml2pdf/xhtml2pdf.git@master#egg=xhtml2pdf
 sorl-thumbnail
 djrill
@@ -52,3 +49,16 @@ nose-progressive
 
 # fix https://github.com/xhtml2pdf/xhtml2pdf/issues/318
 html5lib==1.0b8
+
+django-storages==1.5.1
+dropbox==6.9.0
+django-dbbackup==3.0.3
+
+# Celery
+amqp==2.1.1
+billiard==3.5.0.2
+celery==4.0.0
+kombu==4.0.0
+vine==1.1.3
+django-celery-results
+django-celery-beat

@@ -29,7 +29,8 @@ class ShareholderDetailPage(BasePage):
 
         # login and load page
         self.operator = user.operator_set.all()[0]
-        self.login(username=user.username, password='test')
+        self.login(username=user.username,
+                   password=DEFAULT_TEST_DATA['password'])
         if path:
             self.driver.get('%s%s' % (live_server_url, path))
         else:
@@ -90,7 +91,8 @@ class OptionsPage(BasePage):
 
         # load page
         self.operator = user.operator_set.all()[0]
-        self.login(username=user.username, password='test')
+        self.login(username=user.username,
+                   password=DEFAULT_TEST_DATA['password'])
         self.driver.get('%s%s' % (live_server_url, '/options/'))
 
     # -- INPUT COMMANDs
@@ -292,7 +294,8 @@ class OptionsDetailPage(BasePage):
 
         # load page
         self.operator = user.operator_set.all()[0]
-        self.login(username=user.username, password='test')
+        self.login(username=user.username,
+                   password=DEFAULT_TEST_DATA['password'])
         self.driver.get('%s%s' % (live_server_url, path))
 
     def get_security_text(self):
@@ -315,7 +318,8 @@ class PositionPage(BasePage):
 
         # load page
         self.operator = user.operator_set.all()[0]
-        self.login(username=user.username, password='test')
+        self.login(username=user.username,
+                   password=DEFAULT_TEST_DATA['password'])
         self.driver.get('%s%s' % (live_server_url, '/positions/'))
 
     def click_confirm_position(self):

@@ -7,7 +7,27 @@ from django.utils.translation import gettext as _
 
 from project.generators import (
     CompanyGenerator, SecurityGenerator,
-    OperatorGenerator, DEFAULT_TEST_DATA)
+    OperatorGenerator, DEFAULT_TEST_DATA, UserGenerator)
+
+
+class CompanyAdminDetailViewTestCase(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        self.company = CompanyGenerator().generate()
+        self.user = UserGenerator().generate()
+
+    def test_view(self):
+
+        self.user.is_superuser = True
+        self.user.is_staff = True
+        self.user.save()
+
+        self.client.force_login(self.user)
+        res = self.client.get(reverse('admin:shareholder_company_change',
+                                      args=[self.company.pk]))
+
+        self.assertEqual(res.status_code, 200)
 
 
 class CompanyDetailViewTestCase(TestCase):
@@ -29,5 +49,6 @@ class CompanyDetailViewTestCase(TestCase):
             'company', kwargs={'company_id': company.id}))
 
         self.assertEqual(res.status_code, 200)
-        self.assertTrue(
-            _('tracking security numbers for owners enabled. segments:') in res.content)
+        self.assertIn(
+            _('tracking security numbers for owners enabled. segments:'),
+            res.content)

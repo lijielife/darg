@@ -24,26 +24,26 @@ class BaseSeleniumTestCase(LiveServerTestCase):
             settings.TEST_ERROR_SCREENSHOTS_DIR, filename)
         self.selenium.save_screenshot(filepath)
 
-        caller = inspect.stack()[2][3]
-        message = (
-            u'[darg] FE Test failed w/ %s' % caller,
-            u'FE Test failed. See attached screenshot\n\n'
-            u'stacktrace:\n\n%s\n\nbrowser log:\n%s\n\nurl: %s' % (
-                traceback.format_exc(),
-                self.selenium.get_log('browser'),
-                self.selenium.current_url
-            )
-        )
-
+        # in test env its using locmem backend
         if settings.TEST_ERROR_SEND_EMAIL:
-            # in test env its using locmem backend
-            email = EmailMessage(
-                message,
-                settings.TEST_ERROR_FROM_EMAIL,
-                ('jirka.schaefer@tschitschereengreen.com',),
-                [],
-                get_connection('django.core.mail.backends.smtp.EmailBackend'),
+            caller = inspect.stack()[2][3]
+            message = (
+                u'FE Test failed. See attached screenshot\n\n'
+                u'stacktrace:\n\n%s\n\nbrowser log:\n%s\n\nurl: %s' % (
+                    traceback.format_exc(),
+                    self.selenium.get_log('browser'),
+                    self.selenium.current_url
+                )
             )
+            email = EmailMessage(
+                subject='[darg] FE Test failed w/ %s' % caller,
+                body=message,
+                from_email='no-reply@das-aktienregister.ch',
+                to=('jirka.schaefer@tschitschereengreen.com',),
+                connection=get_connection(
+                    backend='django.core.mail.backends.smtp.EmailBackend'),
+            )
+
             email.attach_file(filepath)
             email.send()
             print("Email with Screenshot was sent...")
