@@ -49,8 +49,10 @@ def _make_user():
 
     words = _make_wordlist()
     hash_user = hashlib.sha1()
+    # update method only accepts ascii
     hash_user.update(
-        random.choice(words).decode('utf8') + str(random.randint(0, 100000))
+        random.choice(words).encode('ascii', 'ignore') + str(
+            random.randint(0, 100000))
     )
     username = hash_user.hexdigest()[0:25]
     email = "{}@{}".format(username, 'example.com')
