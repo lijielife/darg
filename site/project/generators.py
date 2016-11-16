@@ -40,7 +40,8 @@ DEFAULT_TEST_DATA = {
 
 def _make_wordlist():
 
-    words = [unicode(line.strip(), 'utf-8') for line in open('/usr/share/dict/american-english')]
+    words = [unicode(line.strip(), 'utf-8') for line in
+             open('/usr/share/dict/american-english')]
     return words
 
 
@@ -49,7 +50,7 @@ def _make_user():
     words = _make_wordlist()
     hash_user = hashlib.sha1()
     hash_user.update(
-        random.choice(words) + str(random.randint(0, 100000))
+        random.choice(words).decode('utf8') + str(random.randint(0, 100000))
     )
     username = hash_user.hexdigest()[0:25]
     email = "{}@{}".format(username, 'example.com')
