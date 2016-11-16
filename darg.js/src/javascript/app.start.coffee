@@ -46,6 +46,8 @@ app.controller 'StartController', ['$scope', '$http', 'CompanyAdd', 'Shareholder
         $scope.total_shares = 0
         angular.forEach shareholders, (item) ->
             $scope.total_shares = item.share_count + $scope.total_shares
+        angular.forEach option_holders, (item) ->
+            $scope.total_shares = item.options_count + $scope.total_shares
 
     $scope.add_company = ->
         $scope.newCompany.$save().then (result) ->

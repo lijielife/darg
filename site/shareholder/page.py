@@ -29,7 +29,8 @@ class ShareholderDetailPage(BasePage):
 
         # login and load page
         self.operator = user.operator_set.all()[0]
-        self.login(username=user.username, password='test')
+        self.login(username=user.username,
+                   password=DEFAULT_TEST_DATA['password'])
         if path:
             self.driver.get('%s%s' % (live_server_url, path))
         else:
@@ -38,8 +39,8 @@ class ShareholderDetailPage(BasePage):
     def click_to_edit(self, class_name):
         el = self.wait_until_visible((
             By.XPATH,
-            '//tr[contains(@class, "{}")]//'
-            'span[contains(@class, "editable-click")]'.format(class_name)
+            u'//tr[contains(@class, "{}")]//'
+            u'span[contains(@class, "editable-click")]'.format(class_name)
         ))
         el.click()
 
@@ -90,7 +91,8 @@ class OptionsPage(BasePage):
 
         # load page
         self.operator = user.operator_set.all()[0]
-        self.login(username=user.username, password='test')
+        self.login(username=user.username,
+                   password=DEFAULT_TEST_DATA['password'])
         self.driver.get('%s%s' % (live_server_url, '/options/'))
 
     # -- INPUT COMMANDs
@@ -249,7 +251,7 @@ class OptionsPage(BasePage):
         s2 = u"{} (#{})".format(ot.count,
                                 human_readable_segments(ot.number_segments))
         for table in self.driver.find_elements_by_class_name('table'):
-            tr = table.find_element_by_xpath('//tr[./td="{}"]'.format(s1))
+            tr = table.find_element_by_xpath(u'//tr[./td="{}"]'.format(s1))
             buyer_td = tr.find_element_by_class_name('buyer')
             count_td = tr.find_element_by_class_name('count')
             if s1 == buyer_td.text and s2 == count_td.text:
@@ -277,6 +279,9 @@ class OptionsPage(BasePage):
         self.enter_option_plan_form_data()
         self.click_save_option_plan_form()
 
+        # wait for form to disappear
+        self.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
+
 
 class OptionsDetailPage(BasePage):
     """Options Detail View"""
@@ -289,7 +294,8 @@ class OptionsDetailPage(BasePage):
 
         # load page
         self.operator = user.operator_set.all()[0]
-        self.login(username=user.username, password='test')
+        self.login(username=user.username,
+                   password=DEFAULT_TEST_DATA['password'])
         self.driver.get('%s%s' % (live_server_url, path))
 
     def get_security_text(self):
@@ -312,12 +318,13 @@ class PositionPage(BasePage):
 
         # load page
         self.operator = user.operator_set.all()[0]
-        self.login(username=user.username, password='test')
+        self.login(username=user.username,
+                   password=DEFAULT_TEST_DATA['password'])
         self.driver.get('%s%s' % (live_server_url, '/positions/'))
 
     def click_confirm_position(self):
         table = self.driver.find_element_by_tag_name('table')
-        time.sleep(1)
+        time.sleep(1)  # FIXME
         trs = table.find_elements_by_tag_name('tr')
         row = trs[2]
         td = row.find_elements_by_tag_name('td')[-1]
@@ -325,7 +332,7 @@ class PositionPage(BasePage):
 
     def click_delete_position(self):
         table = self.driver.find_element_by_tag_name('table')
-        time.sleep(1)
+        time.sleep(1)  # FIXME
         trs = table.find_elements_by_tag_name('tr')
         row = trs[2]
         td = row.find_elements_by_tag_name('td')[-1]
@@ -363,13 +370,13 @@ class PositionPage(BasePage):
 
         # select elements: seller, buyer, security - before inputs to have magic
         # working
-        time.sleep(2)
+        time.sleep(2)  # FIXME
 
         self.enter_seller(position.seller)
 
         # buyer
-        name = '{} {}'.format(position.buyer.user.first_name,
-                              position.buyer.user.last_name)
+        name = u'{} {}'.format(position.buyer.user.first_name,
+                               position.buyer.user.last_name)
         select = Select(selects[1])
         select.select_by_visible_text(name)
 
@@ -400,7 +407,7 @@ class PositionPage(BasePage):
         """
         enter position.bought_at in form
         """
-        time.sleep(1)
+        time.sleep(1)  # FIXME
 
         # input #0 use datepicker
         self.use_datepicker('add-position-form', None)
@@ -422,7 +429,7 @@ class PositionPage(BasePage):
         selects = form.find_elements_by_tag_name('select')
 
         name = u'{} {}'.format(seller.user.first_name,
-                              seller.user.last_name)
+                               seller.user.last_name)
         select = Select(selects[0])
         select.select_by_visible_text(name)
 
@@ -470,14 +477,14 @@ class PositionPage(BasePage):
         return list of data from position in single row of table
         """
         table = self.driver.find_element_by_tag_name('table')
-        time.sleep(1)
+        time.sleep(1)  # FIXME
         trs = table.find_elements_by_tag_name('tr')
         row = trs[2]
         return [td.text for td in row.find_elements_by_tag_name('td')]
 
     def get_position_row_count(self):
         table = self.driver.find_element_by_tag_name('table')
-        time.sleep(1)
+        time.sleep(1)  # FIXME
         trs = table.find_elements_by_tag_name('tr')
         return [tr.is_displayed() for tr in trs].count(True)
 

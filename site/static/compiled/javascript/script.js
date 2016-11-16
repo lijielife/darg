@@ -958,8 +958,11 @@
       });
       $scope.$watchCollection('shareholders', function(shareholders) {
         $scope.total_shares = 0;
-        return angular.forEach(shareholders, function(item) {
+        angular.forEach(shareholders, function(item) {
           return $scope.total_shares = item.share_count + $scope.total_shares;
+        });
+        return angular.forEach(option_holders, function(item) {
+          return $scope.total_shares = item.options_count + $scope.total_shares;
         });
       });
       $scope.add_company = function() {

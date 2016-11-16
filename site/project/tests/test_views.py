@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -10,7 +11,8 @@ from rest_framework.test import APIClient
 
 from project.generators import (CompanyGenerator, OperatorGenerator,
                                 PositionGenerator, ShareholderGenerator,
-                                TwoInitialSecuritiesGenerator, UserGenerator)
+                                TwoInitialSecuritiesGenerator, UserGenerator,
+                                DEFAULT_TEST_DATA)
 from shareholder.models import Shareholder, UserProfile
 
 
@@ -68,6 +70,10 @@ class InstapageTestCase(TestCase):
         """
         user arriving from instapage must be imported, logged in and redirected
         """
+
+        if not settings.INSTPAGE_ENABLED:
+            return
+
         response = self.client.get(reverse('instapage'), follow=True)
 
         self.assertEqual(response.status_code, 400)
@@ -96,6 +102,10 @@ class InstapageTestCase(TestCase):
         """
         user arriving from instapage must be imported, logged in and redirected
         """
+
+        if not settings.INSTPAGE_ENABLED:
+            return
+
         response = self.client.get(reverse('instapage'), follow=True)
 
         self.assertEqual(response.status_code, 400)
@@ -110,6 +120,7 @@ class InstapageTestCase(TestCase):
                 'Please login or reset your password.')
         self.assertRedirects(response, reverse('auth_login'))
         self.assertContains(response, msg)
+
 
 class TrackingTestCase(TestCase):
 
@@ -128,7 +139,7 @@ class TrackingTestCase(TestCase):
         user = UserGenerator().generate()
 
         is_loggedin = self.client.login(
-            username=user.username, password='test')
+            username=user.username, password=DEFAULT_TEST_DATA['password'])
 
         self.assertTrue(is_loggedin)
 
@@ -151,7 +162,7 @@ class TrackingTestCase(TestCase):
             self.assertTrue(is_operator_added)
 
             is_loggedin = self.client.login(
-                username=user.username, password='test')
+                username=user.username, password=DEFAULT_TEST_DATA['password'])
 
             self.assertTrue(is_loggedin)
 
@@ -220,7 +231,8 @@ class DownloadTestCase(TestCase):
         # login and retest
         user = UserGenerator().generate()
         OperatorGenerator().generate(user=user, company=company)
-        is_loggedin = self.client.login(username=user.username, password='test')
+        is_loggedin = self.client.login(username=user.username,
+                                        password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(is_loggedin)
         response = self.client.get(reverse('captable_csv',
                                    kwargs={"company_id": company.id}))
@@ -277,7 +289,8 @@ class DownloadTestCase(TestCase):
         # login and retest
         user = UserGenerator().generate()
         OperatorGenerator().generate(user=user, company=company)
-        is_loggedin = self.client.login(username=user.username, password='test')
+        is_loggedin = self.client.login(username=user.username,
+                                        password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(is_loggedin)
         response = self.client.get(reverse('captable_csv',
                                    kwargs={"company_id": company.id}))
@@ -329,7 +342,8 @@ class DownloadTestCase(TestCase):
 
         # login and retest
         user = UserGenerator().generate()
-        is_loggedin = self.client.login(username=user.username, password='test')
+        is_loggedin = self.client.login(username=user.username,
+                                        password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(is_loggedin)
         response = self.client.get(
             reverse('captable_csv', kwargs={"company_id": company.id}))
@@ -350,7 +364,8 @@ class DownloadTestCase(TestCase):
         # login and retest
         user = UserGenerator().generate()
         OperatorGenerator().generate(user=user, company=company)
-        is_loggedin = self.client.login(username=user.username, password='test')
+        is_loggedin = self.client.login(username=user.username,
+                                        password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(is_loggedin)
         response = self.client.get(
             reverse('captable_pdf', kwargs={"company_id": company.id}))
@@ -372,7 +387,8 @@ class DownloadTestCase(TestCase):
         # login and retest
         user = UserGenerator().generate()
         OperatorGenerator().generate(user=user, company=company)
-        is_loggedin = self.client.login(username=user.username, password='test')
+        is_loggedin = self.client.login(username=user.username,
+                                        password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(is_loggedin)
         response = self.client.get(reverse('captable_pdf',
                                            kwargs={"company_id": company.id}))
@@ -395,11 +411,11 @@ class DownloadTestCase(TestCase):
 
         # login and retest
         user = UserGenerator().generate()
-        is_loggedin = self.client.login(username=user.username, password='test')
+        is_loggedin = self.client.login(username=user.username,
+                                        password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(is_loggedin)
         response = self.client.get(
             reverse('captable_pdf', kwargs={"company_id": company.id}))
 
         # assert response code
         self.assertEqual(response.status_code, 403)
-

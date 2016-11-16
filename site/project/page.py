@@ -8,7 +8,10 @@ import random
 import time
 from datetime import datetime
 
+from django.conf import settings
+
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -27,11 +30,13 @@ class BasePage(object):
 
     def __init__(self, driver):
         self.driver = driver
-        self.driver.implicitly_wait(10)
+        # self.driver.implicitly_wait(settings.TEST_WEBDRIVER_IMPLICIT_WAIT)
+        self.driver.set_page_load_timeout(
+            settings.TEST_WEBDRIVER_PAGE_LOAD_TIMEOUT)
 
     def _is_element_displayed(self, **kwargs):
 
-        time.sleep(3)
+        time.sleep(3)  # FIXME
 
         if kwargs.get('cls'):
             el = self.driver.find_element_by_class_name(
@@ -53,6 +58,7 @@ class BasePage(object):
             '//*[@id="id_password"]').send_keys(password)
         self.driver.find_element_by_xpath(
             '//*[@id="auth"]/form/button').click()
+        time.sleep(1)  # wait for page reload  # FIXME
         page_heading = self.driver.find_element_by_tag_name(
             'h1').get_attribute('innerHTML')
         assert page_heading == 'Willkommen {}!'.format(
@@ -122,10 +128,10 @@ class BasePage(object):
             for x in range(0, abs(delta)):
                 if delta > 0:
                     self.click_datepicker_next_month()
-                    time.sleep(0.5)
+                    time.sleep(0.5)  # FIXME
                 else:
                     self.click_datepicker_previous_month()
-                    time.sleep(0.5)
+                    time.sleep(0.5)  # FIXME
 
         # get day rows
         el = self.driver.find_element_by_class_name(class_name)
@@ -133,16 +139,16 @@ class BasePage(object):
             '//table[@class="uib-daypicker"]//tr[@class="uib-weeks ng-scope"]')
 
         # in case we have multiple dps
-        time.sleep(1)
+        time.sleep(1)  # FIXME
         for dp_row in dp_rows:
             if not dp_row.is_displayed():
                 continue
             # go through day tds and find the day to click
             for td in dp_row.find_elements_by_tag_name('td'):
                 el2 = td.find_elements_by_tag_name('span')
-                if (el2 and
-                        el2[0].get_attribute('innerHTML') ==
-                        datetime.strftime(date, '%d')
+                if (
+                    el2 and el2[0].get_attribute('innerHTML') ==
+                    datetime.strftime(date, '%d')
                 ):
                     el2[0].click()
                     return
@@ -169,8 +175,12 @@ class BasePage(object):
         scroll to element or coordinate
         """
         if element:
+
+            y = element.location['y']
             self.driver.execute_script(
-                "return arguments[0].scrollIntoView();", element)
+                'window.scrollTo(0, {0} - 320)'.format(y))
+            ActionChains(self.driver).move_to_element(element).perform()
+
         else:
             self.driver.execute_script("window.scrollTo(0, {})".format(Y))
 
@@ -178,7 +188,7 @@ class BasePage(object):
         """
         wait until element is clickable
         """
-        wait = WebDriverWait(self.driver, 10)
+        wait = WebDriverWait(self.driver, settings.TEST_WEBDRIVER_WAIT_TIMEOUT)
         element = wait.until(EC.element_to_be_clickable(element))
         return element
 
@@ -186,7 +196,7 @@ class BasePage(object):
         """
         wait until element is clickable
         """
-        wait = WebDriverWait(self.driver, 10)
+        wait = WebDriverWait(self.driver, settings.TEST_WEBDRIVER_WAIT_TIMEOUT)
         if isinstance(element, WebElement):
             element = wait.until(EC.visibility_of(element))
         else:
@@ -197,12 +207,12 @@ class BasePage(object):
         """
         wait until element is clickable
         """
-        wait = WebDriverWait(self.driver, 10)
+        wait = WebDriverWait(self.driver, settings.TEST_WEBDRIVER_WAIT_TIMEOUT)
         element = wait.until(EC.invisibility_of_element_located(element))
         return element
 
     def wait_until_present(self, element):
-        wait = WebDriverWait(self.driver, 10)
+        wait = WebDriverWait(self.driver, settings.TEST_WEBDRIVER_WAIT_TIMEOUT)
         element = wait.until(EC.presence_of_element_located(element))
         return element
 
@@ -210,7 +220,7 @@ class BasePage(object):
         """
         wait until element is clickable
         """
-        wait = WebDriverWait(self.driver, 10)
+        wait = WebDriverWait(self.driver, settings.TEST_WEBDRIVER_WAIT_TIMEOUT)
         element = wait.until(EC.text_to_be_present_in_element(element, text))
         return element
 
@@ -256,7 +266,8 @@ class StartPage(BasePage):
         # load page
         if user.operator_set.exists():
             self.operator = user.operator_set.all()[0]
-        self.login(username=user.username, password='test')
+        self.login(username=user.username,
+                   password=DEFAULT_TEST_DATA['password'])
         self.driver.get('%s%s' % (live_server_url, '/start/'))
 
     # --- ACTIONS
@@ -287,7 +298,7 @@ class StartPage(BasePage):
         el.click()
 
     def click_open_add_shareholder(self):
-        time.sleep(2)
+        time.sleep(2)  # FIXME
         el = self.driver.find_element_by_link_text(
             "Aktionär hinzufügen")
         el.click()
@@ -303,6 +314,16 @@ class StartPage(BasePage):
         return self.driver.find_element_by_xpath(
             '//tr[./td="{}" and contains(@class, "option-holders")]'.format(
                 shareholder.user.email))
+
+    def get_total_share_count(self):
+        tds = self.driver.find_elements_by_xpath('//tr[@class="totals"]//td')
+        td = tds[-1]
+        return int(td.text.split('(')[0].rstrip())
+
+    def get_company_share_count(self):
+        tds = self.driver.find_elements_by_xpath('//tr[@class="totals"]//td')
+        td = tds[-1]
+        return int(td.text.split('(')[1][:-1].rstrip())
 
     # --- CHECKS
     def has_shareholder_count(self, count):

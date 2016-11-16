@@ -6,11 +6,12 @@ http://selenium-python.readthedocs.org/en/latest/page-objects.html
 # from element import BasePageElement (save all locators here)
 # from locators import MainPageLocators (save all setter/getter here)
 
-import time
-
 from django.core.urlresolvers import reverse
 
+from selenium.webdriver.common.by import By
+
 from project.page import BasePage
+from project.generators import DEFAULT_TEST_DATA
 
 
 class CompanyPage(BasePage):
@@ -26,7 +27,8 @@ class CompanyPage(BasePage):
 
         # load page
         self.operator = user.operator_set.all()[0]
-        self.login(username=user.username, password='test')
+        self.login(username=user.username,
+                   password=DEFAULT_TEST_DATA['password'])
         self.driver.get('%s%s' % (live_server_url, reverse(
             "company", kwargs={'company_id': self.company.pk}
         )))
@@ -46,7 +48,8 @@ class CompanyPage(BasePage):
 
     # -- CLICKs
     def click_save_new_operator(self):
-        time.sleep(2)
+        # wait for form
+        self.wait_until_visible((By.CSS_SELECTOR, '#add-operator-form'))
         el = self.driver.find_element_by_id('add-operator-form')
         button = el.find_element_by_class_name(
             "btn-focus")
@@ -91,6 +94,7 @@ class CompanyPage(BasePage):
         btn = el.find_element_by_xpath(
             '//td[@class="date-field"]//span[@class="input-group-btn"]//button'
         )
+        self.scroll_to(element=btn)
         btn.click()
 
     def click_date_in_datepicker(self, class_name):
@@ -117,7 +121,6 @@ class CompanyPage(BasePage):
 
     # -- VALIDATIONs
     def is_operator_displayed(self, email):
-        time.sleep(1)
         return email in self.driver.page_source
 
     # --- GET DATA

@@ -15,6 +15,21 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 import os
 from kombu import Exchange, Queue
 
+from django.core.exceptions import ImproperlyConfigured
+
+
+def get_env_variable(var_name, fail_on_error=True):
+    try:
+        env_var = os.environ[var_name]
+    except KeyError:
+        if fail_on_error:
+            raise ImproperlyConfigured("Set %s environment variable" % var_name)
+        else:
+            env_var = ''
+
+    return env_var
+
+
 VERSION = '0.3.55'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
@@ -58,10 +73,13 @@ INSTALLED_APPS = (
     'raven.contrib.django.raven_compat',
     'sorl.thumbnail',
     'djrill',
-    'djcelery',
     'django_markdown',
     'markdownx',
     'reversion',
+    'storages',
+    'dbbackup',
+    'django_celery_results',
+    'django_celery_beat',
 
     # -- zinnia
     'django_comments',
@@ -95,7 +113,7 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         # 'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -198,6 +216,10 @@ LOGGING = {
             'level': 'INFO',
             'handlers': ['console'],
         },
+        'tests': {
+            'level': 'DEBUG',
+            'handlers': ['console']
+        }
     },
 }
 
@@ -215,8 +237,6 @@ SERVER_EMAIL = 'no-reply@das-aktienregister.ch'
 EMAIL_SUBJECT_PREFIX = '[darg] '
 
 MANAGERS = ADMINS + ()
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # -- STATIC FILES
 # Static files (CSS, JavaScript, Images)
@@ -256,9 +276,12 @@ APPEND_SLASH = False
 # --- I18N
 # add here for app module dirs to show up under 'project' filter in rosetta
 LOCALE_PATHS = (
-    './i18n/locale/',
-    './shareholder/locale/',
-    './services/locale/',
+    # './i18n/locale/',
+    # './shareholder/locale/',
+    # './services/locale/',
+    os.path.join(BASE_DIR, 'i18n', 'locale'),
+    os.path.join(BASE_DIR, 'shareholder', 'locale'),
+    os.path.join(BASE_DIR, 'services', 'locale')
 )
 
 # --- Sentry
@@ -297,8 +320,7 @@ CELERY_DEFAULT_QUEUE = 'darg'
 CELERY_QUEUES = (
     Queue('darg', Exchange('darg'), routing_key='darg'),
 )
-CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
-CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+CELERY_RESULT_BACKEND = 'django-db'
 BROKER_URL = 'amqp://darg:darg@localhost:5672/darg'
 
 # --- MARKDOWN X
@@ -311,9 +333,49 @@ MARKDOWNX_MARKDOWN_EXTENSIONS = [
 ]
 
 # Media path
-MARKDOWNX_MEDIA_PATH = 'f/'  # Path, where images will be stored in MEDIA_ROOT folder
+# Path, where images will be stored in MEDIA_ROOT folder
+MARKDOWNX_MEDIA_PATH = 'f/'
+
+# TESTING
+TEST_ERROR_SEND_EMAIL = bool(
+    os.environ.get('DJANGO_TEST_ERROR_SEND_EMAIL', True))
+TEST_ERROR_FROM_EMAIL = 'no-reply@das-aktienregister.ch'
+TEST_ERROR_EMAIL_RECIPIENTS = os.environ.get(
+    'DJANGO_TEST_ERROR_EMAIL_RECIPIENTS',
+    'jirka.schaefer@tschitschereengreen.com').split(',')
+TEST_ERROR_KEEP_SCREENSHOTS = bool(os.environ.get(
+    'DJANGO_TEST_ERROR_KEEP_SCREENSHOTS', False))
+TEST_ERROR_SCREENSHOTS_DIR = '.'
+TEST_WEBDRIVER_IMPLICIT_WAIT = 10
+TEST_WEBDRIVER_WAIT_TIMEOUT = 10
+TEST_WEBDRIVER_PAGE_LOAD_TIMEOUT = 5
+
+# chromedriver
+TEST_CHROMEDRIVER_EXECUTABLE = os.environ.get(
+    'DJANGO_TEST_CHROMEDRIVER_EXECUTABLE', './chromedriver')
+
+
+# django-dbbackup
+DROPBOX_ROOT_PATH = get_env_variable('DROPBOX_ROOT_PATH', fail_on_error=False)
+
+if DROPBOX_ROOT_PATH:
+    DBBACKUP_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
+    DBBACKUP_STORAGE_OPTIONS = {
+        'oauth2_access_token': get_env_variable('DROPBOX_ACCESS_TOKEN'),
+    }
+
+
+# need to differentiate instances
+def backup_filename(databasename, servername, datetime, extension, content_type):
+    import getpass
+    username = getpass.getuser()
+    return '{username}-{databasename}-{servername}-{datetime}.{extension}'.format(
+        **{'username': username, 'databasename': databasename,
+        'servername': servername, 'datetime': datetime, 'extension': extension})
+
+DBBACKUP_FILENAME_TEMPLATE = backup_filename
 
 try:
-    from project.settings.local import *
+    from project.settings.local import *  # noqa
 except ImportError:
     print "no local conf"

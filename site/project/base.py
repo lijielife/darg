@@ -1,52 +1,78 @@
 import os
 import datetime
+import logging
 import traceback
 import inspect
 
+from django.conf import settings
 from django.test import LiveServerTestCase
 from django.core.mail import EmailMessage, get_connection
 
-from selenium.webdriver.chrome.webdriver import WebDriver
-from selenium.webdriver.chrome.options import Options
+from selenium import webdriver
 from pyvirtualdisplay import Display
 
 
 class BaseSeleniumTestCase(LiveServerTestCase):
 
     def _screenshot(self):
+        # filename = 'screenshot_{}.png'.format(datetime.datetime.now())
+        # self.selenium.save_screenshot(filename)
         filename = 'screenshot_{}.png'.format(datetime.datetime.now())
-        self.selenium.save_screenshot(filename)
-        caller = inspect.stack()[2][3]
+        if not os.path.exists(settings.TEST_ERROR_SCREENSHOTS_DIR):
+            os.mkdir(settings.TEST_ERROR_SCREENSHOTS_DIR)
+        filepath = os.path.join(
+            settings.TEST_ERROR_SCREENSHOTS_DIR, filename)
+        self.selenium.save_screenshot(filepath)
 
         # in test env its using locmem backend
-        email = EmailMessage(
-            '[darg] FE Test failed w/ %s' % caller,
-            'FE Test failed. See attached screenshot\n\n'
-            'stacktrace:\n\n%s\n\nbrowser log:\n%s\n\nurl: %s' % (
-                traceback.format_exc(),
-                self.selenium.get_log('browser'),
-                self.selenium.current_url
-            ),
-            'no-reply@das-aktienregister.ch',
-            ('jirka.schaefer@tschitschereengreen.com',),
-            [],
-            get_connection('django.core.mail.backends.smtp.EmailBackend'),
-        )
-        email.attach_file(filename)
-        email.send()
-        print "Email with Screenshot was sent..."
-        os.remove(filename)
+        if settings.TEST_ERROR_SEND_EMAIL:
+            caller = inspect.stack()[2][3]
+            message = (
+                u'FE Test failed. See attached screenshot\n\n'
+                u'stacktrace:\n\n%s\n\nbrowser log:\n%s\n\nurl: %s' % (
+                    traceback.format_exc(),
+                    self.selenium.get_log('browser'),
+                    self.selenium.current_url
+                )
+            )
+            email = EmailMessage(
+                subject='[darg] FE Test failed w/ %s' % caller,
+                body=message,
+                from_email='no-reply@das-aktienregister.ch',
+                to=('jirka.schaefer@tschitschereengreen.com',),
+                connection=get_connection(
+                    backend='django.core.mail.backends.smtp.EmailBackend'),
+            )
+
+            email.attach_file(filepath)
+            email.send()
+            print("Email with Screenshot was sent...")
+
+        if not settings.TEST_ERROR_KEEP_SCREENSHOTS:
+            os.remove(filepath)
 
     def _handle_exception(self, e):
         """ on error print JS console of browser and also make a screenshot"""
         # print browser console
-        for entry in self.selenium.get_log('browser'):
-            print entry
+        # for entry in self.selenium.get_log('browser'):
+        #     print(entry)
+
+        logger = logging.getLogger('tests')
+
+        try:
+            logger.error(self.selenium.get_log('browser'))
+        except Exception as ex:
+            logger.warn(u'Could not get browser log: {}'.format(ex))
 
         # print python exception
-        print u"Python Exception: {}".format(e), traceback.format_exc()
+        logger.error(
+            u"\nPython Exception: {}\n{}".format(e, traceback.format_exc()))
+        # print(u"Python Exception: {}".format(e), traceback.format_exc())
 
-        self._screenshot()  # make screenshot
+        try:
+            self._screenshot()  # make screenshot
+        except Exception as ex:
+            logger.warn(u'Could not handle debug screenshot: {}'.format(ex))
 
         # reraise Exc
         raise
@@ -59,19 +85,25 @@ class BaseSeleniumTestCase(LiveServerTestCase):
         # service_log_path = "./chromedriver.log"
         # service_args = ['--verbose']
 
+        window_size = (1024, 768)
+
         # Add following 2 line before start the Chrome
-        display = Display(visible=0, size=(1024, 768))
-        display.start()
+        cls.display = Display(visible=0, size=window_size)
+        cls.display.start()
 
-        chrome_options = Options()
+        chrome_options = webdriver.chrome.options.Options()
         chrome_options.add_argument("--start-maximized")
-        cls.selenium = WebDriver(
-            './chromedriver', chrome_options=chrome_options)
+        cls.selenium = webdriver.Chrome(
+            settings.TEST_CHROMEDRIVER_EXECUTABLE,
+            chrome_options=chrome_options
+        )
+        cls.selenium.set_window_size(*window_size)
+        # cls.selenium.implicitly_wait(settings.TEST_WEBDRIVER_IMPLICIT_WAIT)
 
-        cls.selenium.implicitly_wait(10)
         super(BaseSeleniumTestCase, cls).setUpClass()
 
     @classmethod
     def tearDownClass(cls):
         cls.selenium.quit()
+        cls.display.stop()
         super(BaseSeleniumTestCase, cls).tearDownClass()

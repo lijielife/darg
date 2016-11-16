@@ -7,7 +7,10 @@ import os
 
 import celery
 import raven
+from celery.schedules import crontab
 from raven.contrib.celery import register_signal, register_logger_signal
+
+from django.core.management import call_command
 
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings.base')
@@ -26,12 +29,20 @@ class Celery(celery.Celery):
         # hook into the Celery error handler
         register_signal(client)
 
+
 app = Celery(__name__)
 
 app.config_from_object('django.conf:settings')
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 
-@app.task(bind=True)
-def debug_task(self):
-    print('Request: {0!r}'.format(self.request))
+@app.task
+def backup():
+    call_command('dbbackup')
+    call_command('mediabackup')
+
+
+@app.on_after_configure.connect
+def setup_periodic_tasks(sender, **kwargs):
+    sender.add_periodic_task(
+        crontab(hour=3, minute=0), backup.s())  # Nightly backups at 3AM

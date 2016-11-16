@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import mail_managers, send_mail
 from django.core.urlresolvers import reverse
+from django.db import transaction
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from rest_framework import serializers
@@ -109,45 +110,48 @@ class AddCompanySerializer(serializers.Serializer):
         position' """
 
         user = validated_data.get("user")
-        company = Company.objects.create(
-            share_count=validated_data.get("count"),
-            name=validated_data.get("name"),
-            founded_at=validated_data.get('founded_at')
-        )
-        security = Security.objects.create(
-            title="C",
-            count=validated_data.get("count"),
-            company=company,
-        )
 
-        username = make_username('Company', 'itself', company.name)
-        # user tried to add company already
-        if User.objects.filter(username=username).exists():
-            username = username[:25] + u'-' + random_hash(digits=4)
+        # handle creation operation as an atomic transaction to not create an inconsistent database
+        with transaction.atomic():
+            company = Company.objects.create(
+                share_count=validated_data.get("count"),
+                name=validated_data.get("name"),
+                founded_at=validated_data.get('founded_at')
+            )
+            security = Security.objects.create(
+                title="C",
+                count=validated_data.get("count"),
+                company=company,
+            )
 
-        # create company user
-        companyuser = User.objects.create(
-            username=username,
-            first_name='Unternehmen:', last_name=company.name[:30],
-            email='info+{}@darg.ch'.format(slugify(company.name))
-        )
-        shareholder = Shareholder.objects.create(user=companyuser,
-                                                 company=company, number='0')
-        Position.objects.create(
-            bought_at=validated_data.get(
-                'founded_at') or datetime.datetime.now(),
-            buyer=shareholder, count=validated_data.get("count"),
-            value=validated_data.get("face_value"),
-            security=security,
-        )
-        Operator.objects.create(user=user, company=company)
+            username = make_username('Company', 'itself', company.name)
+            # user tried to add company already
+            if User.objects.filter(username=username).exists():
+                username = username[:25] + u'-' + random_hash(digits=4)
 
-        mail_managers(
-            u'new user signed up',
-            u'user {} signed up for company {}'.format(user, company)
-        )
+            # create company user
+            companyuser = User.objects.create(
+                username=username,
+                first_name='Unternehmen:', last_name=company.name[:30],
+                email='info+{}@darg.ch'.format(slugify(company.name))
+            )
+            shareholder = Shareholder.objects.create(user=companyuser,
+                                                     company=company, number='0')
+            Position.objects.create(
+                bought_at=validated_data.get(
+                    'founded_at') or datetime.datetime.now(),
+                buyer=shareholder, count=validated_data.get("count"),
+                value=validated_data.get("face_value"),
+                security=security,
+            )
+            Operator.objects.create(user=user, company=company)
 
-        return validated_data
+            mail_managers(
+                u'new user signed up',
+                u'user {} signed up for company {}'.format(user, company)
+            )
+
+            return validated_data
 
 
 class UserProfileSerializer(serializers.HyperlinkedModelSerializer):

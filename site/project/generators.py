@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import datetime
 import hashlib
 import logging
@@ -19,25 +22,25 @@ logger = logging.getLogger(__name__)
 User = get_user_model()
 
 DEFAULT_TEST_DATA = {
-    'password': 'test',
-    'username': 'testusername',
-    'date': '13. Mai 2016',  # datepicker format
-    'title': '2016 OptionsPlan',
-    'exercise_price': '2.05',
-    'share_count': '156',
-    'comment': '2345',
-    'security': __('Preferred Stock'),
-    'count': '2222',
+    'password': u'testàäå',
+    'username': u'testusernameàäå',
+    'date': u'13. Mai 2016',  # datepicker format
+    'title': u'2016 OptionsPlan àäå',
+    'exercise_price': u'2.05',
+    'share_count': u'156',
+    'comment': u'2345àäå',
+    'security': __(u'Preferred Stock'),
+    'count': u'2222',
     'vesting_period': 3,
-    'number_segments': '2100, 2101, 2102-2255',
-    'company_name': 'SuperStart AG',
-    'value': '4.55',
+    'number_segments': u'2100, 2101, 2102-2255',
+    'company_name': u'SuperStart àäå AG',
+    'value': u'4.55',
 }
 
 
 def _make_wordlist():
 
-    words = [line.strip() for line in open('/usr/share/dict/american-english')]
+    words = [unicode(line.strip(), 'utf-8') for line in open('/usr/share/dict/american-english')]
     return words
 
 
@@ -86,7 +89,7 @@ class CompanyGenerator(object):
     def generate(self, **kwargs):
 
         word = random.choice(_make_wordlist())
-        name = kwargs.get('name') or '{} A.B.'.format(word)
+        name = kwargs.get('name') or u'{} àäå A.B.'.format(word)
         share_count = kwargs.get('share_count') or 3
         country = kwargs.get('country') or CountryGenerator().generate()
 
