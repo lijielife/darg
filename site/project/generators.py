@@ -140,7 +140,7 @@ class OperatorGenerator(object):
 
     def generate(self, **kwargs):
 
-        word = random.choice(_make_wordlist()).decode('utf8')
+        word = random.choice(_make_wordlist())
         user = kwargs.get("user") or _make_user()
 
         company = kwargs.get("company") or \
