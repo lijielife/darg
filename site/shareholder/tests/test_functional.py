@@ -1005,6 +1005,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.wait_until_visible(
                 (By.CSS_SELECTOR, '#positions table tr.panel'))
             app.click_open_split_form()
+            app.wait_until_visible((By.CLASS_NAME, 'alert-warning'))
             self.assertTrue(app.has_split_warning_for_numbered_shares())
 
         except Exception, e:
