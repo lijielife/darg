@@ -373,7 +373,16 @@ def backup_filename(databasename, servername, datetime, extension, content_type)
         **{'username': username, 'databasename': databasename,
         'servername': servername, 'datetime': datetime, 'extension': extension})
 
+
+def media_backup_filename(databasename, servername, datetime, extension, content_type):
+    import getpass
+    username = getpass.getuser()
+    return '{username}-mediafiles-{servername}-{datetime}.{extension}'.format(
+        **{'username': username, 'servername': servername,
+           'datetime': datetime, 'extension': extension})
+
 DBBACKUP_FILENAME_TEMPLATE = backup_filename
+DBBACKUP_MEDIA_FILENAME_TEMPLATE = media_backup_filename
 
 try:
     from project.settings.local import *  # noqa
