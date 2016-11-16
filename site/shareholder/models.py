@@ -7,22 +7,33 @@ from collections import Counter
 from decimal import Decimal
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import JSONField
+from django.contrib.sites.models import Site
 from django.core.mail import send_mail
+from django.core.urlresolvers import reverse
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import Sum
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.utils.translation import ugettext as _
+from django.template.loader import select_template
+from django.utils.formats import date_format
+from django.utils.text import slugify
+from django.utils.translation import ugettext as _, activate as activate_lang
 from django_languages import fields as language_fields
 from rest_framework.authtoken.models import Token
 from sorl.thumbnail import get_thumbnail
+from dateutil.relativedelta import relativedelta
 
 from utils.formatters import (deflate_segments, flatten_list,
                               human_readable_segments, inflate_segments,
                               string_list_to_json)
 from utils.math import substract_list
+from utils.pdf import render_pdf
+
+from .mixins import AddressModelMixin
+from .validators import validate_remote_email_id
 
 
 logger = logging.getLogger(__name__)
@@ -37,7 +48,8 @@ class Country(models.Model):
         return self.name
 
     class Meta:
-        verbose_name_plural = "Countries"
+        verbose_name = _("Country")
+        verbose_name_plural = _("Countries")
         ordering = ["name", "iso_code"]
 
 
@@ -46,12 +58,12 @@ def get_company_logo_upload_path(instance, filename):
         "public", "company", "%d" % instance.id, "logo", filename)
 
 
-class Company(models.Model):
+class Company(AddressModelMixin, models.Model):
 
     name = models.CharField(max_length=255)
     share_count = models.PositiveIntegerField(blank=True, null=True)
-    country = models.ForeignKey(
-        Country, null=True, blank=False, help_text=_("Headquarter location"))
+    # country = models.ForeignKey(
+    #     Country, null=True, blank=False, help_text=_("Headquarter location"))
     founded_at = models.DateField(
         _('Foundation date of the company'),
         null=True, blank=False)
@@ -59,6 +71,15 @@ class Company(models.Model):
     logo = models.ImageField(
         blank=True, null=True,
         upload_to=get_company_logo_upload_path,)
+
+    is_statement_sending_enabled = models.BooleanField(
+        _('Is statement sending enabled'), default=True)
+    statement_sending_date = models.DateField(_('statement sending date'),
+                                              null=True, blank=True)
+
+    class Meta:
+        verbose_name = _('Company')
+        verbose_name_plural = _('Companies')
 
     def __unicode__(self):
         return u"{}".format(self.name)
@@ -191,6 +212,16 @@ class Company(models.Model):
         kwargs = {'crop': 'center', 'quality': 99, 'format': "PNG"}
         return get_thumbnail(self.logo.file, 'x40', **kwargs).url
 
+    def get_statement_template(self):
+        """
+        return template for statement pdf (maybe company specific)
+        """
+        company_template = 'pdf/statement.{}.pdf.html'.format(self.pk)
+        fallback_template = 'pdf/statement.pdf.html'  # shareholder/templates
+        return select_template([company_template, fallback_template])
+
+    statement_template = property(get_statement_template)
+
     # --- LOGIC
     def split_shares(self, data):
         """ split all existing positions """
@@ -271,15 +302,11 @@ class Company(models.Model):
         self.save()
 
 
-class UserProfile(models.Model):
+class UserProfile(AddressModelMixin, models.Model):
 
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL)
-    street = models.CharField(max_length=255, blank=True, null=True)
-    city = models.CharField(max_length=255, blank=True, null=True)
-    province = models.CharField(max_length=255, blank=True, null=True)
-    postal_code = models.CharField(max_length=255, blank=True, null=True)
-    country = models.ForeignKey(Country, blank=True, null=True)
+
     language = language_fields.LanguageField(blank=True, null=True)
 
     company_name = models.CharField(max_length=255, blank=True, null=True)
@@ -289,8 +316,7 @@ class UserProfile(models.Model):
     tnc_accepted = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return u"%s, %s %s" % (self.city, self.province,
-                              str(self.country))
+        return u"%s, %s %s" % (self.city, self.province, self.country)
 
     class Meta:
         verbose_name_plural = "UserProfile"
@@ -319,7 +345,7 @@ class Shareholder(models.Model):
 
     def is_company_shareholder(self):
         """
-        returns bool if shareholder is ocmpany shareholder
+        returns bool if shareholder is company shareholder
         """
         return Shareholder.objects.filter(
             company=self.company).earliest('id').id == self.id
@@ -470,8 +496,8 @@ class Shareholder(models.Model):
             qs_sold = self.option_seller.filter(bought_at__lte=date)
 
         if security:
-            qs_bought = qs_bought.filter(security=security)
-            qs_sold = qs_sold.filter(security=security)
+            qs_bought = qs_bought.filter(option_plan__security=security)
+            qs_sold = qs_sold.filter(option_plan__security=security)
 
         count_bought = sum(qs_bought.values_list('count', flat=True))
         count_sold = sum(qs_sold.values_list('count', flat=True))
@@ -629,6 +655,14 @@ class Shareholder(models.Model):
         # set as items can occur only once
         segments_owning = set(counter_bought - counter_sold)
         return deflate_segments(segments_owning)
+
+    def get_user_name(self):
+        """
+        returns full name of user if given, else email
+        """
+        return self.user.get_full_name() or self.user.email
+
+    user_name = property(get_user_name)
 
 
 class Operator(models.Model):
@@ -809,6 +843,259 @@ class OptionTransaction(models.Model):
             self.buyer,
             self.option_plan
         )
+
+
+class ShareholderStatementReport(models.Model):
+    """
+    report for company regarding all shareholder statements
+    """
+    company = models.ForeignKey('Company', verbose_name=_('company'))
+    report_date = models.DateField(_('report date'))
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = _('shareholder statement report')
+        verbose_name_plural = _('shareholder statement reports')
+
+    def __unicode__(self):
+        return u'{} - {}'.format(self.company, date_format(self.report_date))
+
+    def get_statement_count(self):
+        """
+        get count of all related ShareholderStatements
+        """
+        return self.shareholderstatement_set.count()
+
+    statement_count = property(get_statement_count)
+
+    def get_statement_sent_count(self):
+        """
+        get count of all related ShareholderStatements with email_sent_at set
+        """
+        return self.shareholderstatement_set.exclude(
+            email_sent_at__exact=None).count()
+
+    statement_sent_count = property(get_statement_sent_count)
+
+    def get_statement_letter_count(self):
+        """
+        get count of all related ShareholderStatements with letter_sent_at set
+        """
+        return self.shareholderstatement_set.exclude(
+            letter_sent_at__exact=None).count()
+
+    statement_letter_count = property(get_statement_letter_count)
+
+    def get_statement_opened_count(self):
+        """
+        get count of all related ShareholderStatements with email_opened_at set
+        """
+        return self.shareholderstatement_set.exclude(
+            email_opened_at__exact=None).count()
+
+    statement_opened_count = property(get_statement_opened_count)
+
+    def get_statement_downloaded_count(self):
+        """
+        get count of all related ShareholderStatements with pdf_downloaded_at
+        set
+        """
+        return self.shareholderstatement_set.exclude(
+            pdf_downloaded_at__exact=None).count()
+
+    statement_downloaded_count = property(get_statement_downloaded_count)
+
+    def generate_statements(self):
+        """
+        generate statements for shareholder users of company,
+        then set the statement_sending_date on company to next year
+        TODO: check subscription
+        """
+        shareholders = self.company.shareholder_set.all()
+        users = get_user_model().objects.filter(
+            pk__in=shareholders.values_list('user_id', flat=True))
+        for user in users:
+            statement, created = self._create_shareholder_statement_for_user(
+                user)
+            # if created:
+            #     statement.send_email_notification()
+
+        # set new sending date
+        # if self.company.statement_sending_date:
+        #     self.company.statement_sending_date += relativedelta(
+        #         year=self.company.statement_sending_date.year + 1)
+        #     self.company.save()
+
+    def _get_statement_pdf_path_for_user(self, user, report):
+        """
+        returns a unique directory path to for the user
+        """
+        path = os.path.join(settings.SHAREHOLDER_STATEMENT_ROOT,
+                            str(user.pk),
+                            str(report.company.pk),
+                            str(report.report_date.year))
+        if not os.path.exists(path):
+            os.makedirs(path)
+        return path
+
+    def _create_shareholder_statement_for_user(self, user):
+        """
+        create the shareholder statement for all shareholders of self.company
+        for given user
+        """
+
+        statement, created = None, False
+
+        # check if user has shareholder(s)
+        user_shareholders = user.shareholder_set.all()
+        if not user_shareholders.count():
+            return (None, False)
+
+        # check if shareholder/user has any shares or options
+        share_count = sum([s.share_count(date=self.report_date)
+                           for s in user_shareholders])
+        options_count = sum([s.options_count(date=self.report_date)
+                             for s in user_shareholders])
+
+        if not sum([share_count, options_count]):
+            # nothing for a statement
+            return (statement, created)
+
+        if self.shareholderstatement_set.filter(user=user).exists():
+            # FIXME: what to do? for now we don't change any existing entries
+            statement = self.shareholderstatement_set.filter(user=user).get()
+
+        pdf_dir = self._get_statement_pdf_path_for_user(user, self)
+        pdf_filename = u'{}-{}-{}.pdf'.format(
+            slugify(user.get_full_name() or user.email),
+            slugify(self.company),
+            self.report_date.strftime('%Y-%m-%d')
+        )
+        pdf_filepath = os.path.join(pdf_dir, pdf_filename)
+
+        if not statement or not os.path.isfile(statement.pdf_file):
+
+            # create pdf
+            context = dict(
+                report=self,
+                company=self.company,
+                report_date=self.report_date,
+                user=user,
+                user_name=user.get_full_name() or user.email,
+                shareholder_list=self.company.shareholder_set.filter(
+                    user_id=user.pk),
+                site=Site.objects.get_current(),
+                STATIC_URL=settings.STATIC_ROOT + '/'
+            )
+
+            if not self._create_statement_pdf(pdf_filepath, context):
+                # TODO: handle error properly
+                raise Exception('Error generating statement pdf')
+
+            if not statement:
+                statement = self.shareholderstatement_set.create(
+                    user=user, pdf_file=pdf_filepath)
+                created = True
+            else:
+                statement.pdf_file = pdf_filepath
+                statement.save()
+
+        return (statement, created)
+
+    def _create_statement_pdf(self, filepath, context):
+        """
+        generate pdf file of statement
+        """
+        activate_lang(settings.LANGUAGE_CODE)
+        # check for a custom company template
+        pdf = render_pdf(self.company.statement_template.render(context))
+
+        if not pdf:
+            return False
+
+        with open(filepath, 'w') as f:
+            f.write(pdf.getvalue())
+
+        return True
+
+
+class ShareholderStatement(models.Model):
+    """
+    statement with snapshot of data of all shareholders of the user
+    """
+    report = models.ForeignKey(ShareholderStatementReport,
+                               verbose_name=_('shareholder statement report'))
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    pdf_file = models.FilePathField(path=settings.SHAREHOLDER_STATEMENT_ROOT,
+                                    match='.+\.pdf', recursive=True,
+                                    max_length=500)
+
+    # metrics
+    email_sent_at = models.DateTimeField(_('email sent at'),
+                                         null=True, blank=True)
+    email_opened_at = models.DateTimeField(_('email opened at'),
+                                           null=True, blank=True)
+    pdf_downloaded_at = models.DateTimeField(_('PDF downloaded at'),
+                                             null=True, blank=True)
+    letter_sent_at = models.DateTimeField(_('letter sent at'),
+                                          null=True, blank=True)
+
+    remote_email_id = models.CharField(
+        _('remote email id'), max_length=200, blank=True,
+        validators=[validate_remote_email_id],
+        help_text=_(
+            'Prefix id with provider, e.g. mandrill{sep}[EMAIL_ID]').format(
+            **dict(sep=getattr(settings, 'REMOTE_EMAIL_SEPARATOR', '$')))
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = _('shareholder statement')
+        verbose_name_plural = _('shareholder statements')
+        unique_together = ('report', 'user')
+
+    def __unicode__(self):
+        return u'{}: {}'.format(self.user, self.report)
+
+    def send_email_notification(self):
+        """
+        send a notification to the user
+        """
+        from .tasks import send_statement_email
+        # call task
+        send_statement_email.delay(self.pk)
+
+    def send_letter(self):
+        """
+        send letter with statement PDF to user
+        """
+        from .tasks import send_statement_letter
+        # call task
+        send_statement_letter.delay(self.pk)
+
+    def get_pdf_download_url(self, absolute=True, with_auth_token=False):
+        """
+        return url to download pdf file
+
+        Keyword arguments:
+        absolute -- get absolute url including domain (default: True)
+        with_auth_token -- append authentication token (default: False)
+        """
+        url = reverse('statement_download_pdf', args=[self.pk])
+        if with_auth_token:
+            url += u'?token={}'.format(self.user.auth_token.key)
+        if absolute:
+            url = u'{}://{}{}'.format(
+                (getattr(settings, 'FORCE_SECURE_CONNECTION',
+                         not settings.DEBUG) and 'https' or 'http'),
+                Site.objects.get_current().domain, url)
+        return url
+
+    pdf_download_url = property(get_pdf_download_url)
 
 
 # --------- SIGNALS ----------

@@ -76,6 +76,7 @@ INSTALLED_APPS = (
     'company',
     'project',
     'utils',
+    'pingen'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -220,8 +221,6 @@ EMAIL_SUBJECT_PREFIX = '[darg] '
 
 MANAGERS = ADMINS + ()
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
 # -- STATIC FILES
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
@@ -296,6 +295,8 @@ MANDRILL_SETTINGS = {
     'tracking_domain': 'mail.das-aktienregister.ch',
     'track_opens': True,
 }
+MANDRILL_SHAREHOLDER_STATEMENT_TEMPLATE = None
+MANDRILL_API_BASE_URL = 'https://mandrillapp.com/api/1.0/'
 
 # --- CELERY
 # CELERY_ALWAYS_EAGER = False # use default anyway
@@ -338,6 +339,28 @@ TEST_WEBDRIVER_PAGE_LOAD_TIMEOUT = 5
 # chromedriver
 TEST_CHROMEDRIVER_EXECUTABLE = os.environ.get(
     'DJANGO_TEST_CHROMEDRIVER_EXECUTABLE', './chromedriver')
+
+
+# -- SHAREHOLDER STATEMENT
+# NOTE: since the statements are user-specific, we need to ensure that only the
+#       appropriate user can access them and can therefore not place them
+#       within MEDIA_ROOT
+RESTRICTED_MEDIA_ROOT = os.path.join(BASE_DIR, 'media_restricted')
+SHAREHOLDER_STATEMENT_ROOT = os.path.join(
+    RESTRICTED_MEDIA_ROOT, 'shareholder', 'statements')
+# send notify to operators that statements will be generated
+SHAREHOLDER_STATEMENT_OPERATOR_NOTIFY_DAYS = 7
+# days to watch if email was opened
+SHAREHOLDER_STATEMENT_EMAIL_OPENED_DAYS = 7
+# send notify to operators that statement were generated
+SHAREHOLDER_STATEMENT_REPORT_OPERATOR_NOTIFY_DAYS = 14
+
+# PINGEN API
+PINGEN_API_TOKEN = None  # set this in local settings
+PINGEN_SEND_ON_UPLOAD = False  # careful here!
+PINGEN_SEND_COLOR = 2
+PINGEN_API_URL = 'https://api.pingen.com'  # can't upload to stage api!
+# see pingen/conf.py for more options
 
 
 try:

@@ -15,7 +15,9 @@
     {% trans "The Share Register, 2016" %}
     v{{VERSION}} |
     {% trans "do you know our" %}
-    <a href="/blog/" title="Das Aktienregister Blog" class="btn-inline">{% trans "our blog" %}</a>?
+    <a href="{% url 'zinnia:entry_archive_index' %}" title="Das Aktienregister Blog" class="btn-inline">
+      {% trans "our blog" %}
+    </a>?
   </footer>
   {% endblock %}
   </div>

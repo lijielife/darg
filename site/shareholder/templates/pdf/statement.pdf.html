@@ -1,0 +1,344 @@
+{% load i18n shareholder_tags %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{{ user_name }} - {{ company.name }} ({{ report_date|date:"DATE_FORMAT" }})</title>
+    <style>
+
+      @page {
+        size: a4 portrait;  /* 210mm x 297mm */
+        @frame header_frame {
+          -pdf-frame-content: header_content;
+          left: 6mm; width: 198mm; top: 6mm; height: 30mm;
+        }
+        @frame footer_frame {
+            -pdf-frame-content: footer_content;
+            left: 10mm; width: 190mm; top: 280mm; height: 10mm;
+        }
+        @frame content_frame {
+          left: 10mm; width: 190mm; top: 40mm; height: 240mm;
+        }
+      }
+
+      /* FIXME: font do not work properly! */
+      @font-face {
+        font-family: 'Muli';
+        src: url({{ STATIC_URL }}compiled/fonts/Muli-Regular.ttf);
+      }
+      @font-face {
+        font-family: 'Muli-Light';
+        src: url({{ STATIC_URL }}compiled/fonts/Muli-Light.ttf);
+      }
+
+      .break {page-break-before: always;}
+      table {page-break-inside: avoid;}
+      .pull-right {text-align: right;}
+      .center {text-align: center;}
+
+      #header_content table {
+        width: 100%; height: 75pt;
+        padding-top: 15pt;
+        background: #337ab7; color: #fff;
+      }
+      #header_content h1 {margin: 0 0 0 10mm; font-weight: normal;}
+      #header_content h3 {margin: 0 10mm 0 0; font-family: 'Muli-Light'; font-weight: normal;}
+
+      #footer_content {color: #777; font-size: 16px; line-height: 18px;}
+      #footer_content table {width: 100%;}
+      #footer_content table td {width: 50%; height: 24px;}
+      #footer_content table td .center {display: inline-block;}
+
+      h1 {font-size: 24px;}
+      h3 {font-size: 16px;}
+      body {
+        font-family: 'Muli';
+        font-size: 16px; line-height: 18px;
+      }
+
+      .address {
+        padding-top: 12mm;
+      }
+      .address table {
+        width: 100%;
+      }
+      .address td {
+        vertical-align: top;
+      }
+      .address .user, .address .company {
+        padding-left: 10mm;
+      }
+
+      .shareholder h1 {font-size: 24px; color: #337ab7;}
+      .shareholder .indent {display: block; margin-left: 40px;}
+      .shareholder table {border: 1px solid #ccc; border-spacing: 0;}
+      .shareholder table .head td {
+        line-height: 14px;
+        background-color: #337ab7;
+        color: #FFF;
+        font-weight: bold;
+        padding: 5px 10px;
+      }
+      .shareholder table .row td {font-size: 14px; line-height: 16px; color: #777; padding: 5px 10px;}
+      .shareholder table .row td.pull-right {text-align: right;}
+      .shareholder table tr.row.even {background-color: #f9f9f9;}
+
+    </style>
+    <style media="screen">
+      .break {border-bottom: 1px solid #777;}
+    </style>
+  </head>
+  <body>
+    <div id="header_content">
+      <table>
+        <tr>
+          <td>
+            <h1>Das Aktienregister</h1>
+          </td>
+          <td class="pull-right">
+            <h3>{{site.domain}}</h3>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div id="footer_content">
+      <table>
+        <tr>
+          <td>
+            <p class="center">
+              {% trans "Created automatically by" %}<br />
+              {{ site.domain }}. {% trans "Valid without signature." %}
+            </p>
+          </td>
+          <td class="pull-right">
+            {% trans "Page" %} <pdf:pagenumber> {% trans "of" %} <pdf:pagecount>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    {% for shareholder in shareholder_list %}
+
+      {# address #}
+      <div class="address">
+        <table>
+          <tr>
+            <td class="user">
+              {{ shareholder.user_name }}<br />
+              {{ shareholder.user.userprofile.street }}<br />
+              {{ shareholder.user.userprofile.postal_code }} {{ shareholder.user.userprofile.city }}<br />
+              {% if shareholder.user.userprofile.province %}{{ shareholder.user.userprofile.province }}<br />{% endif %}
+              {{ shareholder.user.userprofile.country.name }}
+            </td>
+            <td class="company">
+              {{ shareholder.company.name }}<br />
+              {{ shareholder.company.street }}<br />
+              {{ shareholder.company.postal_code }} {{ shareholder.company.city }}<br />
+              {% if shareholder.company.province %}{{ shareholder.company.province }}<br />{% endif %}
+              {{ shareholder.company.country.name }}
+              <br /><br />
+              {% trans "Your contact person(s):" %}<br />
+              {% for operator in shareholder.company.get_operators %}
+                {{ operator.user.get_full_name }}{% if not forloop.last %}, {% endif %}
+              {% endfor %}
+              <br /><br />
+              {% trans "Your shareholder number:" %}<br />
+              {{ shareholder.number }}
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" class="pull-right">{{ report_date|date:"DATE_FORMAT" }}</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="shareholder">
+        <h1>
+          {% trans "Depot statement for" %} {{ shareholder.user_name }} ({{ shareholder.number }})
+        </h1>
+
+        <p>{% trans "Herewith company" %}</p>
+
+        <p>
+          <span class="indent">{{ shareholder.company.name }}</span>
+          {% if shareholder.company.has_address %}
+            {% if shareholder.company.street %}
+              <span class="indent">{{ shareholder.company.street }}</span>
+            {% endif %}
+            {% if shareholder.company.street or shareholder.company.city %}
+              <span class="indent">{{ shareholder.company.postal_code }} {{ shareholder.company.city }}</span>
+            {% endif %}
+            {% if shareholder.company.province %}
+              <span class="indent">{{ shareholder.company.province }}</span>
+            {% endif %}
+            {% if shareholder.company.country %}
+              <span class="indent">{{ shareholder.company.country }}</span>
+            {% endif %}
+          {% endif %}
+        </p>
+
+        <p>{% trans "confirms that" %}</p>
+
+        <p>
+          <span class="indent">{{ shareholder.get_user_name }} ({{ shareholder.number }})</span>
+        </p>
+
+        <p>
+          {% trans "is the record holder of the following investment(s)" %}:
+        </p>
+
+        <div class="break"></div>
+
+        {% get_shareholder_assets shareholder report_date as asset_list %}
+        {% if asset_list %}
+          <p>{% trans "Assets" %}</p>
+          <table>
+            <tr class="head">
+              <td>{% trans "Type" %}</td>
+              <td>{% trans "Record Date" %}</td>
+              <td>{% trans "Quantity" %}</td>
+              <td>{% trans "Nominal Value" %}</td>
+            </tr>
+            {% for asset in asset_list %}
+              <tr class="row {% cycle 'odd' 'even' %}">
+                <td>{{ asset.name }}</td>
+                <td>{{ asset.date }}</td>
+                <td class="pull-right">{{ asset.count }}</td>
+                <td class="pull-right">{{ asset.value|floatformat:2 }}</td>
+              </tr>
+            {% endfor %}
+          </table>
+        {% endif %}
+
+        {% get_shareholder_options shareholder report_date as option_list %}
+        {% if option_list %}
+          <p>{% trans "Options" %}</p>
+          <table>
+            <tr class="head">
+              <td>{% trans "Type" %}</td>
+              <td>{% trans "Record Date" %}</td>
+              <td>{% trans "Quantity" %}</td>
+              <td>{% trans "Strike Price" %}</td>
+            </tr>
+            {% for option in option_list %}
+              <tr class="row {% cycle 'odd' 'even' %}">
+                <td>{{ option.name }}</td>
+                <td>{{ report_date|date:"DATE_FORMAT" }}</td>
+                <td class="pull-right">{{ option.count }}</td>
+                <td class="pull-right">{{ option.value|floatformat:2 }}</td>
+              </tr>
+            {% endfor %}
+          </table>
+        {% endif %}
+
+        <p>
+          <br />
+          {% get_share_value shareholder report_date as share_value %}
+          {% get_options_value shareholder report_date as options_value %}
+          {% blocktrans with share_value|floatformat:2 as share_value and options_value|floatformat:2 as options_value %}
+          According to the company's valuation based on the traded shares with the last 12 months, your
+holdings currently value: {{share_value}} in shares and {{options_value}} in options.
+          {% endblocktrans %}
+        </p>
+
+        <br />
+        <p>{% trans "Zurich" %}, {{ report_date|date:"DATE_FORMAT" }}</p>
+        <p>
+          {% for operator in shareholder.company.get_operators %}
+            {{ operator.company.name }}{% if not forloop.last %}<br />{% endif %}
+          {% endfor %}
+        </p>
+
+        <div class="break"></div>
+
+        <h1>
+          {% trans "Depot statement for" %} {{ shareholder.get_user_name }} ({{ shareholder.number }})
+        </h1>
+
+        <p>{% trans "Herewith company" %}</p>
+
+        <p>
+          <span class="indent">{{ shareholder.company.name }}</span>
+          {% if shareholder.company.has_address %}
+            {% if shareholder.company.street %}
+              <span class="indent">{{ shareholder.company.street }}</span>
+            {% endif %}
+            {% if shareholder.company.street or shareholder.company.city %}
+              <span class="indent">{{ shareholder.company.postal_code }} {{ shareholder.company.city }}</span>
+            {% endif %}
+            {% if shareholder.company.province %}
+              <span class="indent">{{ shareholder.company.province }}</span>
+            {% endif %}
+            {% if shareholder.company.country %}
+              <span class="indent">{{ shareholder.company.country }}</span>
+            {% endif %}
+          {% endif %}
+        </p>
+
+        <p>{% trans "confirms that" %}</p>
+
+        <p>
+          <span class="indent">{{ shareholder.get_user_name }} ({{ shareholder.number }})</span>
+        </p>
+
+        <p>{% trans "is the record holder of the following investment(s)" %}:</p>
+
+        {% if asset_list %}
+          <p>{% trans "Assets" %}</p>
+          <table>
+            <tr class="head">
+              <td>{% trans "Type" %}</td>
+              <td>{% trans "Record Date" %}</td>
+              <td>{% trans "Quantity" %}</td>
+              <td>{% trans "Nominal Value" %}</td>
+            </tr>
+            {% for asset in asset_list %}
+              <tr class="row {% cycle 'odd' 'even' %}">
+                <td>{{ asset.name }}</td>
+                <td>{{ report_date|date:"DATE_FORMAT" }}</td>
+                <td class="pull-right">{{ asset.count }}</td>
+                <td class="pull-right">{{ asset.value|floatformat:2 }}</td>
+              </tr>
+            {% endfor %}
+          </table>
+        {% endif %}
+
+        {% if option_list %}
+          <p>{% trans "Options" %}</p>
+          <table>
+            <tr class="head">
+              <td>{% trans "Type" %}</td>
+              <td>{% trans "Record Date" %}</td>
+              <td>{% trans "Quantity" %}</td>
+              <td>{% trans "Strike Price" %}</td>
+            </tr>
+            {% for option in option_list %}
+              <tr class="row {% cycle 'odd' 'even' %}">
+                <td>{{ option.name }}</td>
+                <td>{{ report_date|date:"DATE_FORMAT" }}</td>
+                <td class="pull-right">{{ option.count }}</td>
+                <td class="pull-right">{{ option.value|floatformat:2 }}</td>
+              </tr>
+            {% endfor %}
+          </table>
+        {% endif %}
+
+        <p>
+          <br />
+          {% trans "This document is to be used for tax authority." %}
+        </p>
+
+        <br />
+        <p>{% trans "Zurich" %}, {{ report_date|date:"DATE_FORMAT" }}</p>
+        <p>
+          {% for operator in company.get_operators %}
+            {{ operator.company.name }}{% if not forloop.last %}<br />{% endif %}
+          {% endfor %}
+        </p>
+      </div>
+
+    {% endfor %}
+
+  </body>
+</html>

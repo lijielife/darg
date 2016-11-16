@@ -104,6 +104,15 @@ urlpatterns = [
     url(r'^blog/', include('zinnia.urls', namespace='zinnia')),
     url(r'^comments/', include('django_comments.urls')),
     url(r'^markdown/', include('django_markdown.urls')),
+
+    # shareholder/user statements
+    url(r'^statements/$',
+        'shareholder.views.statement_list',
+        name='statements'),
+    url(r'^statements/(?P<pk>\d+)/download/pdf/$',
+        'shareholder.views.statement_download_pdf',
+        name='statement_download_pdf')
+
 ]
 
 # admin

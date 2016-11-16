@@ -10,10 +10,17 @@ from django.http import HttpResponse
 from cgi import escape
 
 
-def render_to_pdf(template_src, context_dict):
-    template = get_template(template_src)
-    context = Context(context_dict)
-    html = template.render(context)
+def fetch_resources(uri, rel):
+    path = os.path.join(
+        settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
+
+    return path
+
+
+def render_pdf(html):
+    """
+    render html to pdf (returns None if any errors occur)
+    """
     result = StringIO.StringIO()
 
     pdf = pisa.pisaDocument(
@@ -21,13 +28,28 @@ def render_to_pdf(template_src, context_dict):
         result,
         link_callback=fetch_resources,
         encoding='UTF-8')
-    if not pdf.err:
-        return HttpResponse(result.getvalue(), content_type='application/pdf')
-    return HttpResponse('We had some errors<pre>%s</pre>' % escape(html))
+
+    if pdf.err:
+        return
+
+    return result
 
 
-def fetch_resources(uri, rel):
-    path = os.path.join(
-        settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
+def render_to_pdf_response(template_src, context_dict):
+    """
+    render a pdf and return as HttpResponse
+    """
+    template = get_template(template_src)
+    html = template.render(Context(context_dict))
+    pdf = render_to_pdf(template_src, context_dict)
+    if not pdf:
+        return HttpResponse('We had some errors<pre>%s</pre>' % escape(html))
+    return HttpResponse(pdf.getvalue(), content_type='application/pdf')
 
-    return path
+
+def render_to_pdf(template_src, context_dict):
+    """
+    this method is named a bit misleading as it actually returns a HttpResponse
+    instead of a suggested pdf (use render_to_pdf_response instead)
+    """
+    return render_to_pdf_response(template_src, context_dict)

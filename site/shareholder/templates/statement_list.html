@@ -1,0 +1,23 @@
+{% extends "base_auth.html" %}
+
+{% load trans from i18n %}
+
+{% block content %}
+
+  <h1>{% trans "Your shareholder statements" %}</h1>
+
+  <div>
+    {% for object in object_list %}
+      {% ifchanged object.report_id %}
+        <div class="panel">{{ object.report.company }}</div>
+      {% endifchanged %}
+      <p>
+        <a href="{% url 'statement_download_pdf' object.pk %}">
+          {{ object.report.report_date }}
+        </a>
+      </p>
+    {% endfor %}
+
+  <div>
+
+{% endblock content %}

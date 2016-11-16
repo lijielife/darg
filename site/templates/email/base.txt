@@ -1,0 +1,10 @@
+{% load trans from i18n %}
+Das Aktienregister
+------------------
+
+{% block content %}{% endblock content %}
+
+
+------------------
+
+{% trans "The Share Register, 2016" %} {{VERSION}}
