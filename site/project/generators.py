@@ -138,12 +138,12 @@ class OperatorGenerator(object):
 
     def generate(self, **kwargs):
 
-        word = random.choice(_make_wordlist())
+        word = random.choice(_make_wordlist()).decode('utf8')
         user = kwargs.get("user") or _make_user()
 
         company = kwargs.get("company") or \
             CompanyGenerator().generate(
-                name='{} A.B.'.format(word),
+                name=u'{} A.B.'.format(word),
                 share_count=3,
             )
 
