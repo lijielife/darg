@@ -83,7 +83,7 @@ class CompanyPage(BasePage):
     def click_to_edit(self, class_name):
         el = self.driver.find_element_by_class_name(class_name)
         el = el.find_element_by_class_name('editable-click')
-        # self.scroll_to(element=el)
+        self.scroll_to(element=el)
         el.click()
 
     def click_open_datepicker(self, class_name):
