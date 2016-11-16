@@ -50,7 +50,8 @@ nose-progressive
 # fix https://github.com/xhtml2pdf/xhtml2pdf/issues/318
 html5lib==1.0b8
 
-django-storages==1.5.1
+# django-storages==1.5.1  # using deprecated dropbox v1
+git+https://github.com/patroqueeet/django-storages.git@master#egg=django-storages
 dropbox==6.9.0
 django-dbbackup==3.0.3
 
