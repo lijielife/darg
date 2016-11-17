@@ -155,6 +155,9 @@
       $http.get('/services/rest/company/' + company_id).then(function(result) {
         $scope.company = new Company(result.data);
         $scope.company.founded_at = new Date($scope.company.founded_at);
+        if ($scope.company.statement_sending_date) {
+          $scope.company.statement_sending_date = new Date($scope.company.statement_sending_date);
+        }
         if ($scope.company.country) {
           return $http.get($scope.company.country).then(function(result1) {
             return $scope.company.country = result1.data;
@@ -213,12 +216,18 @@
         });
       };
       $scope.edit_company = function() {
+        var sending_date;
         if ($scope.company.country) {
           $scope.company.country = $scope.company.country.url;
         }
         $scope.company.founded_at = $scope.company.founded_at.toISOString().substring(0, 10);
+        sending_date = $scope.company.statement_sending_date.toISOString().substring(0, 10);
+        $scope.company.statement_sending_date = sending_date;
         return $scope.company.$update().then(function(result) {
           result.founded_at = new Date(result.founded_at);
+          if (result.statement_sending_date) {
+            result.statement_sending_date = new Date(result.statement_sending_date);
+          }
           $scope.company = new Company(result);
           return $http.get($scope.company.country).then(function(result1) {
             return $scope.company.country = result1.data;
@@ -265,6 +274,7 @@
                   var company;
                   company = new Company(response.data);
                   company.founded_at = new Date(company.founded_at);
+                  company.statement_sending_date = new Date(company.statement_sending_date);
                   $scope.company = company;
                   $scope.logo_success = true;
                   $scope.logo_errors = false;

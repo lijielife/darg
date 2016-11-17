@@ -23,6 +23,9 @@ app.controller 'CompanyController', ['$scope', '$http', 'Company', 'Country', 'O
     $http.get('/services/rest/company/' + company_id).then (result) ->
         $scope.company = new Company(result.data)
         $scope.company.founded_at = new Date($scope.company.founded_at)
+        if $scope.company.statement_sending_date
+            $scope.company.statement_sending_date = new Date(
+                $scope.company.statement_sending_date)
         if $scope.company.country
             $http.get($scope.company.country).then (result1) ->
                 $scope.company.country = result1.data
@@ -77,8 +80,12 @@ app.controller 'CompanyController', ['$scope', '$http', 'Company', 'Country', 'O
         if $scope.company.country
             $scope.company.country = $scope.company.country.url
         $scope.company.founded_at = $scope.company.founded_at.toISOString().substring(0, 10)
+        sending_date = $scope.company.statement_sending_date.toISOString().substring(0, 10)
+        $scope.company.statement_sending_date = sending_date
         $scope.company.$update().then (result) ->
             result.founded_at = new Date(result.founded_at)
+            if (result.statement_sending_date)
+                result.statement_sending_date = new Date(result.statement_sending_date)
             $scope.company = new Company(result)
             # refetch country data
             $http.get($scope.company.country).then (result1) ->
@@ -125,6 +132,7 @@ app.controller 'CompanyController', ['$scope', '$http', 'Company', 'Country', 'O
                 $timeout ->
                   company = new Company(response.data)
                   company.founded_at = new Date(company.founded_at)
+                  company.statement_sending_date = new Date(company.statement_sending_date)
                   $scope.company = company
                   $scope.logo_success = true
                   $scope.logo_errors = false
