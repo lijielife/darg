@@ -13,5 +13,5 @@ cd ..
 
 python ./minify_static.py && ./site/manage.py migrate && ./site/manage.py collectstatic --noinput
 echo "touching to reload uwsgi..."
-touch /tmp/dargprod-master.pid
+touch "/tmp/$USER-master.pid"
 echo "...done"
