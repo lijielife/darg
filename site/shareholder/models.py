@@ -1066,8 +1066,13 @@ class ShareholderStatement(models.Model):
         send a notification to the user
         """
         from .tasks import send_statement_email
-        # call task
-        send_statement_email.delay(self.pk)
+
+        if not self.user.email:
+            # sent letter immediately
+            self.send_letter()
+        else:
+            # call task
+            send_statement_email.delay(self.pk)
 
     def send_letter(self):
         """
