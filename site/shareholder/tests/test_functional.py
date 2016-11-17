@@ -25,7 +25,6 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
 
     def setUp(self):
         self.operator = OperatorGenerator().generate()
-        TwoInitialSecuritiesGenerator().generate(company=self.operator.company)
         self.buyer = ShareholderGenerator().generate(
             company=self.operator.company)
         self.seller = ShareholderGenerator().generate(
@@ -101,7 +100,8 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
         """
         test that security with and without segments is properly displayed
         """
-        positions, shs = ComplexPositionsWithSegmentsGenerator().generate()
+        positions, shs = ComplexPositionsWithSegmentsGenerator().generate(
+            company=self.operator.company)
 
         try:
 
