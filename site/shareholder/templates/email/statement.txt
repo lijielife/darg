@@ -1,5 +1,21 @@
 {% extends 'email/base.txt' %}
 
+{% load i18n %}
+
 {% block content %}
-statement.txt
+{% blocktrans with company_name as company_name %}
+Depot statement from {{ company_name }}
+{% endblocktrans %}
+{% blocktrans with user_name as user_name and download_url as download_url %}
+Dear {{ user_name }},
+an automatically generated depot statement is ready for download!
+
+You can download the file here: {{ download_url }}
+{% endblocktrans %}
+{% if user_has_address %}
+{% blocktrans with letter_sent_offset as letter_sent_offset %}
+If you do not download the statement within the next {{ letter_sent_offset }}
+days, a physical letter with the statement will be sent to you.
+{% endblocktrans %}
+{% endif %}
 {% endblock %}

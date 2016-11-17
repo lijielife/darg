@@ -919,14 +919,14 @@ class ShareholderStatementReport(models.Model):
         for user in users:
             statement, created = self._create_shareholder_statement_for_user(
                 user)
-            # if created:
-            #     statement.send_email_notification()
+            if created:
+                statement.send_email_notification()
 
         # set new sending date
-        # if self.company.statement_sending_date:
-        #     self.company.statement_sending_date += relativedelta(
-        #         year=self.company.statement_sending_date.year + 1)
-        #     self.company.save()
+        if self.company.statement_sending_date:
+            self.company.statement_sending_date += relativedelta(
+                year=self.company.statement_sending_date.year + 1)
+            self.company.save()
 
     def _get_statement_pdf_path_for_user(self, user, report):
         """

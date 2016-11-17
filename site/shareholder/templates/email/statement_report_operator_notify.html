@@ -1,5 +1,37 @@
 {% extends "email/base.html" %}
 
+{% load i18n %}
+
 {% block content %}
-statement_report_operator_notify.html
+<h2>{% trans "Statement report" %}{% trans "for" %} {{ company_name }}</h2>
+<p>
+  {% blocktrans with report_date as report_date %}
+    Depot statements were generated automatically at {{ report_date }}.
+  {% endblocktrans %}
+</p>
+<h4>{% trans "Overview" %}</h4>
+<p>
+  <ul>
+    <li>{{ statement_count }} {% trans "Statements" %} {% trans "created" %}</li>
+    <li>{{ statement_sent_count }} {% trans "Statements" %} {% trans "sent via email" %}</li>
+    <li>{{ statement_opened_count }} {% trans "Statements" %} {% trans "emails opened" %}</li>
+    <li>{{ statement_downloaded_count }} {% trans "Statements" %} {% trans "PDFs downloaded" %}</li>
+    <li>{{ statement_letter_count }} {% trans "Statements" %} {% trans "sent as letter" %}</li>
+  </ul>
+</p>
+{% if users_without_address %}
+  <p>
+    {% trans "The following users could not be sent a letter because an address was missing" %}:
+    <ul>
+      {% for user in users_without_address %}
+        <li>{{ user.name }}</li>
+      {% endfor %}
+    </ul>
+  </p>
+{% endif %}
+<p>
+  {% blocktrans with report_url as report_url %}
+    Detailed information can be found <a href="{{ report_url }}">here</a>.
+  {% endblocktrans %}
+</p>
 {% endblock content %}

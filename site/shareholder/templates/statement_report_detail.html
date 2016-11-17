@@ -1,0 +1,51 @@
+{% extends "base_auth.html" %}
+
+{% load trans from i18n %}
+{% load shareholder_tags %}
+
+{% block content %}
+
+  <h2>{% trans "Shareholder Statement Report" %}</h2>
+  <h3>{{ object.company }} - {{ object.report_date }}</h3>
+  <hr />
+  <div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>{% trans "User" %}</th>
+          <th title="{% trans 'Statement email sent to shareholder' %}">
+            {% trans "email" %}
+          </th>
+          <th title="{% trans 'Statement email was opened' %}">
+            {% trans "Opened" %}
+          </th>
+          <th title="{% trans 'Statement PDF was downloaded' %}">
+            {% trans "Downloaded" %}
+          </th>
+          <th title="{% trans 'Statement letter was sent to shareholder' %}">
+            {% trans "Letter" %}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for statement in object.shareholderstatement_set.all %}
+          <tr class="panel">
+            <td>{{ statement.user|user_name }}</td>
+            <td>{{ statement.email_sent_at|date:"SHORT_DATETIME_FORMAT" }}</td>
+            <td>{{ statement.email_opened_at|date:"SHORT_DATETIME_FORMAT" }}</td>
+            <td>{{ statement.pdf_downloaded_at|date:"SHORT_DATETIME_FORMAT" }}</td>
+            <td>{{ statement.letter_sent_at|date:"SHORT_DATETIME_FORMAT" }}</td>
+          </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5">
+            <span class="note">{% trans "No statements found." %}</span>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </div>
+
+{% endblock content %}

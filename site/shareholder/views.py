@@ -12,7 +12,8 @@ from django.views.generic import ListView, DetailView
 
 from sendfile import sendfile
 
-from shareholder.models import Shareholder, OptionPlan, ShareholderStatement
+from shareholder.models import (Shareholder, OptionPlan, ShareholderStatement,
+                                ShareholderStatementReport)
 from utils.formatters import human_readable_segments
 
 from .mixins import AuthTokenSingleViewMixin
@@ -92,8 +93,6 @@ class StatementListView(ListView):
         qs = ShareholderStatement.objects.filter(user=self.request.user)
         return qs.order_by('report_id')
 
-    # TODO: add statment reports for operators
-
 
 statement_list = login_required(StatementListView.as_view())
 
@@ -128,3 +127,30 @@ class StatementDownloadPDFView(AuthTokenSingleViewMixin, DetailView):
 
 
 statement_download_pdf = StatementDownloadPDFView.as_view()
+
+
+class StatementReportListView(ListView):
+
+    template_name = 'statement_report_list.html'  # in shareholder/templates
+    allow_empty = False
+
+    def get_queryset(self):
+        company_ids = self.request.user.operator_set.values_list(
+            'company_id', flat=True)
+        qs = ShareholderStatementReport.objects.filter(company__in=company_ids)
+        return qs.order_by('company__name')
+
+statement_report_list = login_required(StatementReportListView.as_view())
+
+
+class StatementReportDetailView(DetailView):
+
+    template_name = 'statement_report_detail.html'  # in shareholder/templates
+
+    def get_queryset(self):
+        company_ids = self.request.user.operator_set.values_list(
+            'company_id', flat=True)
+        qs = ShareholderStatementReport.objects.filter(company__in=company_ids)
+        return qs
+
+statement_report_detail = login_required(StatementReportDetailView.as_view())

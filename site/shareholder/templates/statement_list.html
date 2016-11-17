@@ -4,12 +4,13 @@
 
 {% block content %}
 
-  <h1>{% trans "Your shareholder statements" %}</h1>
+  <h2>{% trans "Your shareholder statements" %}</h2>
 
   <div>
     {% for object in object_list %}
       {% ifchanged object.report_id %}
-        <div class="panel">{{ object.report.company }}</div>
+        <h3>{{ object.report.company }}</h3>
+        <hr />
       {% endifchanged %}
       <p>
         <a href="{% url 'statement_download_pdf' object.pk %}">

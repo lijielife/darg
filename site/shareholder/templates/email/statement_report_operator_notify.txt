@@ -1,5 +1,30 @@
 {% extends 'email/base.txt' %}
 
+{% load i18n %}
+
 {% block content %}
-statement_report_operator_notify.txt
+{% trans "Statement report" %}{% trans "for" %} {{ company_name }}
+
+{% blocktrans with report_date as report_date %}
+Depot statements were generated automatically at {{ report_date }}.
+{% endblocktrans %}
+
+{% trans "Overview" %}
+
+{{ statement_count }} {% trans "Statements" %} {% trans "created" %}
+{{ statement_sent_count }} {% trans "Statements" %} {% trans "sent via email" %}
+{{ statement_opened_count }} {% trans "Statements" %} {% trans "emails opened" %}
+{{ statement_downloaded_count }} {% trans "Statements" %} {% trans "PDFs downloaded" %}
+{{ statement_letter_count }} {% trans "Statements" %} {% trans "sent as letter" %}
+
+{% if users_without_address %}
+{% trans "The following users could not be sent a letter because an address was missing" %}:
+{% for user in users_without_address %}
+{{ user.name }}
+{% endfor %}
+{% endif %}
+
+{% blocktrans with report_url as report_url %}
+Detailed information can be found here: {{ report_url }}.
+{% endblocktrans %}
 {% endblock %}

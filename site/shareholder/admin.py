@@ -5,6 +5,7 @@ from django.conf import settings
 from django.conf.urls import url
 from django.contrib import admin, sites
 from django.core.urlresolvers import reverse
+from django.http import Http404
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.utils.html import mark_safe
@@ -40,6 +41,8 @@ class ShareholderAdmin(VersionAdmin):
 
     def statement_preview(self, request, object_id):
         obj = self.get_object(request, admin.utils.unquote(object_id))
+        if not obj:
+            raise Http404()
         context = dict(
             user=obj.user,
             user_name=obj.user_name,
@@ -64,6 +67,36 @@ class CompanyAdmin(VersionAdmin):
         (_('Statements'), {'fields': ('is_statement_sending_enabled',
                                       'statement_sending_date')})
     )
+
+    def get_urls(self):
+
+        def wrap(view):
+            def wrapper(*args, **kwargs):
+                return self.admin_site.admin_view(view)(*args, **kwargs)
+            wrapper.model_admin = self
+            return update_wrapper(wrapper, view)
+
+        urls = [
+            # FIXME: only when settings.DEBUG?
+            url(r'^(.+)/statement_preview/$', wrap(self.statement_preview),
+                name='shareholder_company_statement_preview')
+        ]
+        return urls + super(CompanyAdmin, self).get_urls()
+
+    def statement_preview(self, request, object_id):
+        obj = self.get_object(request, admin.utils.unquote(object_id))
+        if not obj:
+            raise Http404()
+        context = dict(
+            user_name=_('Preview'),
+            company=obj,
+            report_date=now().date(),
+            site=sites.models.Site.objects.get_current(),
+            STATIC_URL=settings.STATIC_URL,
+            preview=True
+        )
+        return render_to_response(obj.statement_template.template.name,
+                                  context, RequestContext(request))
 
 
 class OperatorAdmin(VersionAdmin):

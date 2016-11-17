@@ -86,6 +86,7 @@
     </style>
     <style media="screen">
       .break {border-bottom: 1px solid #777;}
+      #footer_content {display: none;}
     </style>
   </head>
   <body>
@@ -117,6 +118,10 @@
         </tr>
       </table>
     </div>
+
+    {% if preview %}
+      {% include "pdf/_statement_preview.pdf.html" %}
+    {% endif %}
 
     {% for shareholder in shareholder_list %}
 
@@ -181,7 +186,7 @@
         <p>{% trans "confirms that" %}</p>
 
         <p>
-          <span class="indent">{{ shareholder.get_user_name }} ({{ shareholder.number }})</span>
+          <span class="indent">{{ shareholder.user_name }} ({{ shareholder.number }})</span>
         </p>
 
         <p>

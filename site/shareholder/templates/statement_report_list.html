@@ -1,0 +1,60 @@
+{% extends "base_auth.html" %}
+
+{% load trans from i18n %}
+
+{% block content %}
+  <h2>{% trans "Your shareholder statements reports" %}</h2>
+
+  <div>
+
+    {% for object in object_list %}
+      {% ifchanged object.company_id %}
+        {% if not forloop.last %}</table><hr />{% endif %}
+        <h3>{{ object.company }}</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th title="{% trans 'Date when report was created' %}">
+                {% trans "Date" %}
+              </th>
+              <th title="{% trans 'Number of generated statements' %}">
+                {% trans "Count" %}
+              </th>
+              <th title="{% trans 'Number of statements sent to shareholder via email' %}">
+                {% trans "email" %}
+              </th>
+              <th title="{% trans 'Number of shareholders that opened statement email' %}">
+                {% trans "Opened" %}
+              </th>
+              <th title="{% trans 'Number of shareholders that downloaded statement PDF' %}">
+                {% trans "Downloaded" %}
+              </th>
+              <th title="{% trans 'Number of shareholders the statment was sent via letter' %}">
+                {% trans "Letter" %}
+              </th>
+            </tr>
+          </thead>
+      {% endifchanged %}
+
+      <tbody>
+        <tr class="panel">
+          <td>
+            <a href="{% url 'statement_report' object.pk %}">
+              {{ object.report_date|date:"SHORT_DATE_FORMAT" }}
+            </a>
+          </td>
+          <td>{{ object.statement_count }}</td>
+          <td>{{ object.statement_sent_count }}</td>
+          <td>{{ object.statement_opened_count }}</td>
+          <td>{{ object.statement_downloaded_count }}</td>
+          <td>{{ object.statement_letter_count }}</td>
+        </tr>
+      </tbody>
+
+    {% endfor %}
+
+    </table>
+
+  </div>
+
+{% endblock content %}

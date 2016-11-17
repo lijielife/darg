@@ -1,5 +1,23 @@
 {% extends "email/base.html" %}
 
+{% load i18n %}
+
 {% block content %}
-statement_operator_notify.html
+{% blocktrans with report_date as report_date and company_name as company_name and company_url as company_url %}
+  <p>
+    The following company is about to get depot statements generated automatically:
+    <br /><br />
+    <strong>{{ company_name }}</strong>
+    <br /><br />
+    The planned date for the generation of these statements is:
+    <br /><br />
+    <strong>{{ report_date }}</strong>
+    <br /><br />
+    Attached you'll find a preview of a statement.
+  </p>
+  <p>
+    If you want to change the date or disable statement generation all
+    together, you may visit the <a href="{{ company_url }}">company page</a>.
+  </p>
+{% endblocktrans %}
 {% endblock content %}

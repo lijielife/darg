@@ -1,0 +1,232 @@
+{% load i18n %}
+<div class="address">
+  <table>
+    <tr>
+      <td class="user">
+        &lt;{% trans "User" %} {% trans "Name" %}&gt;<br />
+        &lt;{% trans "User" %} {% trans "Street" %}&gt;<br />
+        &lt;{% trans "User" %} {% trans "Postal code" %}&gt;
+        &lt;{% trans "User" %} {% trans "City" %}&gt; <br />
+        &lt;{% trans "User" %} {% trans "Province" %}&gt;<br />
+        &lt;{% trans "User" %} {% trans "Country" %}&gt;
+      </td>
+      <td class="company">
+        &lt;{% trans "Company" %} {% trans "Name" %}&gt;<br />
+        &lt;{% trans "Company" %} {% trans "Street" %}&gt;<br />
+        &lt;{% trans "Company" %} {% trans "Postal code" %}&gt;
+        &lt;{% trans "Company" %} {% trans "City" %}&gt; <br />
+        &lt;{% trans "Company" %} {% trans "Province" %}&gt;<br />
+        &lt;{% trans "Company" %} {% trans "Country" %}&gt;
+        <br /><br />
+        {% trans "Your contact person(s):" %}<br />
+        &lt;{% trans "Operator" %} 1&gt;[, &lt;{% trans "Operator" %} 2&gt;]
+        <br /><br />
+        {% trans "Your shareholder number:" %}<br />
+        &lt;{% trans "shareholder number" %}&gt;
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" class="pull-right">{{ report_date|date:"DATE_FORMAT" }}</td>
+    </tr>
+  </table>
+</div>
+
+<div class="shareholder">
+  <h1>
+    {% trans "Depot statement for" %}
+    &lt;{% trans "Shareholder" %} {% trans "User" %} {% trans "Name" %}&gt;
+    (&lt;{% trans "shareholder number" %}&gt;)
+  </h1>
+
+  <p>{% trans "Herewith company" %}</p>
+
+  <p>
+    <span class="indent">{{ company.name }}</span>
+    {% if company.has_address %}
+      {% if company.street %}
+        <span class="indent">{{ company.street }}</span>
+      {% endif %}
+      {% if company.street or company.city %}
+        <span class="indent">{{ company.postal_code }} {{ company.city }}</span>
+      {% endif %}
+      {% if company.province %}
+        <span class="indent">{{ company.province }}</span>
+      {% endif %}
+      {% if company.country %}
+        <span class="indent">{{ company.country }}</span>
+      {% endif %}
+    {% endif %}
+  </p>
+
+  <p>{% trans "confirms that" %}</p>
+
+  <p>
+    <span class="indent">
+      &lt;{% trans "Shareholder" %} {% trans "User" %} {% trans "Name" %}&gt;
+      (&lt;{% trans "shareholder number" %}&gt;)
+    </span>
+  </p>
+
+  <p>
+    {% trans "is the record holder of the following investment(s)" %}:
+  </p>
+
+  <div class="break"></div>
+
+  <p>{% trans "Assets" %}</p>
+  <table>
+    <tr class="head">
+      <td>{% trans "Type" %}</td>
+      <td>{% trans "Record Date" %}</td>
+      <td>{% trans "Quantity" %}</td>
+      <td>{% trans "Nominal Value" %}</td>
+    </tr>
+    <tr class="row odd">
+      <td>&lt;{% trans "Asset name" %}&gt;</td>
+      <td>&lt;{% trans "Asset date" %}&gt;</td>
+      <td class="pull-right">&lt;{% trans "Asset count" %}&gt;</td>
+      <td class="pull-right">&lt;{% trans "Asset value" %}&gt;</td>
+    </tr>
+    <tr class="row even">
+      <td>&lt;{% trans "Asset name" %}&gt;</td>
+      <td>&lt;{% trans "Asset date" %}&gt;</td>
+      <td class="pull-right">&lt;{% trans "Asset count" %}&gt;</td>
+      <td class="pull-right">&lt;{% trans "Asset value" %}&gt;</td>
+    </tr>
+  </table>
+
+  <p>{% trans "Options" %}</p>
+  <table>
+    <tr class="head">
+      <td>{% trans "Type" %}</td>
+      <td>{% trans "Record Date" %}</td>
+      <td>{% trans "Quantity" %}</td>
+      <td>{% trans "Strike Price" %}</td>
+    </tr>
+    <tr class="row odd">
+      <td>&lt;{% trans "Option name" %}&gt;</td>
+      <td>&lt;{% trans "Option date" %}&gt;</td>
+      <td class="pull-right">&lt;{% trans "Option count" %}&gt;</td>
+      <td class="pull-right">&lt;{% trans "Option value" %}&gt;</td>
+    </tr>
+    <tr class="row even">
+      <td>&lt;{% trans "Option name" %}&gt;</td>
+      <td>&lt;{% trans "Option date" %}&gt;</td>
+      <td class="pull-right">&lt;{% trans "Option count" %}&gt;</td>
+      <td class="pull-right">&lt;{% trans "Option value" %}&gt;</td>
+    </tr>
+  </table>
+
+  <p>
+    <br />
+    {% blocktrans with 'XXX.XX' as share_value and 'XXX.XX' as options_value %}
+    According to the company's valuation based on the traded shares with the last 12 months, your
+holdings currently value: {{share_value}} in shares and {{options_value}} in options.
+    {% endblocktrans %}
+  </p>
+
+  <br />
+  <p>{% trans "Zurich" %}, {{ report_date|date:"DATE_FORMAT" }}</p>
+  <p>
+    &lt;{% trans "Operator company" %} 1&gt;<br />
+    [&lt;{% trans "Operator company" %} 2&gt;]
+  </p>
+
+  <div class="break"></div>
+
+  <h1>
+    {% trans "Depot statement for" %}
+    &lt;{% trans "Shareholder" %} {% trans "User" %} {% trans "Name" %}&gt;
+    (&lt;{% trans "shareholder number" %}&gt;)
+  </h1>
+
+  <p>{% trans "Herewith company" %}</p>
+
+  <p>
+    <span class="indent">{{ company.name }}</span>
+    {% if company.has_address %}
+      {% if company.street %}
+        <span class="indent">{{ company.street }}</span>
+      {% endif %}
+      {% if company.street or company.city %}
+        <span class="indent">{{ company.postal_code }} {{ company.city }}</span>
+      {% endif %}
+      {% if company.province %}
+        <span class="indent">{{ company.province }}</span>
+      {% endif %}
+      {% if company.country %}
+        <span class="indent">{{ company.country }}</span>
+      {% endif %}
+    {% endif %}
+  </p>
+
+  <p>{% trans "confirms that" %}</p>
+
+  <p>
+    <span class="indent">
+      &lt;{% trans "Shareholder" %} {% trans "User" %} {% trans "Name" %}&gt;
+      (&lt;{% trans "shareholder number" %}&gt;)
+    </span>
+  </p>
+
+  <p>
+    {% trans "is the record holder of the following investment(s)" %}:
+  </p>
+
+  <p>{% trans "Assets" %}</p>
+  <table>
+    <tr class="head">
+      <td>{% trans "Type" %}</td>
+      <td>{% trans "Record Date" %}</td>
+      <td>{% trans "Quantity" %}</td>
+      <td>{% trans "Nominal Value" %}</td>
+    </tr>
+    <tr class="row odd">
+      <td>&lt;{% trans "Asset name" %}&gt;</td>
+      <td>&lt;{% trans "Asset date" %}&gt;</td>
+      <td class="pull-right">&lt;{% trans "Asset count" %}&gt;</td>
+      <td class="pull-right">&lt;{% trans "Asset value" %}&gt;</td>
+    </tr>
+    <tr class="row even">
+      <td>&lt;{% trans "Asset name" %}&gt;</td>
+      <td>&lt;{% trans "Asset date" %}&gt;</td>
+      <td class="pull-right">&lt;{% trans "Asset count" %}&gt;</td>
+      <td class="pull-right">&lt;{% trans "Asset value" %}&gt;</td>
+    </tr>
+  </table>
+
+  <p>{% trans "Options" %}</p>
+  <table>
+    <tr class="head">
+      <td>{% trans "Type" %}</td>
+      <td>{% trans "Record Date" %}</td>
+      <td>{% trans "Quantity" %}</td>
+      <td>{% trans "Strike Price" %}</td>
+    </tr>
+    <tr class="row odd">
+      <td>&lt;{% trans "Option name" %}&gt;</td>
+      <td>&lt;{% trans "Option date" %}&gt;</td>
+      <td class="pull-right">&lt;{% trans "Option count" %}&gt;</td>
+      <td class="pull-right">&lt;{% trans "Option value" %}&gt;</td>
+    </tr>
+    <tr class="row even">
+      <td>&lt;{% trans "Option name" %}&gt;</td>
+      <td>&lt;{% trans "Option date" %}&gt;</td>
+      <td class="pull-right">&lt;{% trans "Option count" %}&gt;</td>
+      <td class="pull-right">&lt;{% trans "Option value" %}&gt;</td>
+    </tr>
+  </table>
+
+  <p>
+    <br />
+    {% trans "This document is to be used for tax authority." %}
+  </p>
+
+  <br />
+  <p>{% trans "Zurich" %}, {{ report_date|date:"DATE_FORMAT" }}</p>
+  <p>
+    &lt;{% trans "Operator company" %} 1&gt;<br />
+    [&lt;{% trans "Operator company" %} 2&gt;]
+  </p>
+
+</div>

@@ -6,8 +6,10 @@ from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.mail import (send_mail, EmailMessage, EmailMultiAlternatives,
                               mail_admins)
+from django.core.urlresolvers import reverse
 from django.template import Context, loader
 from django.utils.formats import date_format
+from django.utils.text import slugify
 from django.utils.timezone import now, timedelta, datetime
 from django.utils.translation import ugettext as _, activate as activate_lang
 
@@ -15,6 +17,7 @@ import requests
 
 from pingen.api import Pingen
 from project.celery import app
+from utils.pdf import render_pdf
 
 from .models import Company, ShareholderStatement, ShareholderStatementReport
 
@@ -60,7 +63,13 @@ def send_statement_generation_operator_notify():
 
         context = dict(
             company_name=company.name,
-            report_date=date_format(company.statement_sending_date)
+            report_date=date_format(company.statement_sending_date),
+            company_url='{}://{}{}'.format(
+                (getattr(settings, 'FORCE_SECURE_CONNECTION',
+                         not settings.DEBUG) and 'https' or 'http'),
+                Site.objects.get_current().domain,
+                reverse('company', args=[company.pk])
+            )
         )
 
         if ('djrill' in settings.EMAIL_BACKEND and
@@ -97,7 +106,29 @@ def send_statement_generation_operator_notify():
 
         msg.to = operators
 
-        # TODO: statement preview
+        # add statement preview
+        preview_context = dict(
+            user_name=_('Preview'),
+            company=company,
+            report_date=now().date(),
+            site=Site.objects.get_current(),
+            STATIC_URL=settings.STATIC_URL,
+            preview=True
+        )
+        preview_html = loader.render_to_string(
+            company.statement_template.template.name, preview_context)
+        preview_pdf = render_pdf(preview_html)
+        if preview_pdf:
+            preview_file_name = u'{}-statement-preview.pdf'.format(
+                slugify(company.name))
+            msg.attach(
+                preview_file_name,
+                preview_pdf.getvalue(),
+                'application/pdf'
+            )
+        else:
+            # TODO: what now?
+            pass
 
         result = msg.send()
 
@@ -145,12 +176,12 @@ def send_statement_report_operator_notify():
         no_letter_statements = report.shareholderstatement_set.filter(
             pdf_downloaded_at=None, letter_sent_at=None)
         users_without_address = [s.user for s in no_letter_statements
-                                 if not s.user.has_address]
+                                 if not s.user.userprofile.has_address]
 
         context = dict(
             company_name=report.company.name,
             report_date=date_format(report.report_date),
-            statment_count=report.statement_count,
+            statement_count=report.statement_count,
             statement_sent_count=report.statement_sent_count,
             statement_opened_count=report.statement_opened_count,
             statement_downloaded_count=report.statement_downloaded_count,
@@ -158,7 +189,13 @@ def send_statement_report_operator_notify():
             users_without_address=[
                 {'id': user.pk, 'name': user.get_full_name() or user.email}
                 for user in users_without_address
-            ]
+            ],
+            report_url='{}://{}{}'.format(
+                (getattr(settings, 'FORCE_SECURE_CONNECTION',
+                         not settings.DEBUG) and 'https' or 'http'),
+                Site.objects.get_current().domain,
+                reverse('statement_report', args=[report.pk])
+            )
         )
 
         if ('djrill' in settings.EMAIL_BACKEND and
@@ -287,13 +324,16 @@ def send_statement_email(statement_id):
 
     shareholders = obj.user.shareholder_set.filter(
         company_id=obj.report.company_id)
+    letter_sent_offset = getattr(
+        settings, 'SHAREHOLDER_STATMENT_LETTER_OFFSET_DAYS', 7)
     context = dict(
         user_name=obj.user.get_full_name() or obj.user.email,
         company_name=obj.report.company.name,
         shareholder_numbers=shareholders.values_list('number', flat=True),
-        # TODO: add actual statement data
         report_date=date_format(obj.report.report_date),
-        pdf=obj.get_pdf_download_url(with_auth_token=True)
+        download_url=obj.get_pdf_download_url(with_auth_token=True),
+        letter_sent_offset=letter_sent_offset,
+        user_has_address=obj.user.userprofile.has_address
     )
 
     if ('djrill' in settings.EMAIL_BACKEND and

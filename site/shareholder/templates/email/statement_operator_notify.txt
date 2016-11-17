@@ -1,5 +1,20 @@
 {% extends 'email/base.txt' %}
 
+{% load i18n %}
+
 {% block content %}
-statement_operator_notify.txt
+{% blocktrans with report_date as report_date and company_name as company_name and company_url as company_url %}
+The following company is about to get depot statements generated automatically:
+
+{{ company_name }}
+
+The planned date for the generation of these statements is:
+
+{{ report_date }}
+
+Attached you'll find a preview of a statement.
+
+If you want to change the date or disable statement generation all together,
+you may visit the company page: {{ company_url }}
+{% endblocktrans %}
 {% endblock content %}
