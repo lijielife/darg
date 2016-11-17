@@ -8,7 +8,7 @@ echo "Creating fresh DB and media backups..."
 # needs to be run from site dir
 cd site
 ./manage.py dbbackup
-# ./manage.py mediabackup  # broken as of now
+./manage.py mediabackup
 cd ..
 
 python ./minify_static.py && ./site/manage.py migrate && ./site/manage.py collectstatic --noinput
