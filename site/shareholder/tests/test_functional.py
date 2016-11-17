@@ -25,7 +25,6 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
 
     def setUp(self):
         self.operator = OperatorGenerator().generate()
-        TwoInitialSecuritiesGenerator().generate(company=self.operator.company)
         self.buyer = ShareholderGenerator().generate(
             company=self.operator.company)
         self.seller = ShareholderGenerator().generate(
@@ -42,7 +41,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                 self.selenium, self.live_server_url, self.operator.user,
                 path=reverse(
                     'shareholder',
-                    kwargs={'shareholder_id': self.buyer.id}
+                    kwargs={'pk': self.buyer.id}
                     )
                 )
             # wait for 'link'
@@ -71,7 +70,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                 self.selenium, self.live_server_url, self.operator.user,
                 path=reverse(
                     'shareholder',
-                    kwargs={'shareholder_id': self.buyer.id}
+                    kwargs={'pk': self.buyer.id}
                     )
                 )
             # wait for 'link'
@@ -101,7 +100,8 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
         """
         test that security with and without segments is properly displayed
         """
-        positions, shs = ComplexPositionsWithSegmentsGenerator().generate()
+        positions, shs = ComplexPositionsWithSegmentsGenerator().generate(
+            company=self.operator.company)
 
         try:
 
@@ -109,7 +109,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                 self.selenium, self.live_server_url, self.operator.user,
                 path=reverse(
                     'shareholder',
-                    kwargs={'shareholder_id': shs[1]}
+                    kwargs={'pk': shs[1]}
                     )
                 )
             # wait for table
@@ -131,7 +131,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                 self.selenium, self.live_server_url, self.operator.user,
                 path=reverse(
                     'shareholder',
-                    kwargs={'shareholder_id': self.buyer.id}
+                    kwargs={'pk': self.buyer.id}
                     )
                 )
             # wait for 'link'
@@ -1005,6 +1005,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.wait_until_visible(
                 (By.CSS_SELECTOR, '#positions table tr.panel'))
             app.click_open_split_form()
+            app.wait_until_visible((By.CLASS_NAME, 'alert-warning'))
             self.assertTrue(app.has_split_warning_for_numbered_shares())
 
         except Exception, e:

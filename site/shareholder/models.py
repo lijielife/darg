@@ -331,6 +331,20 @@ class Shareholder(models.Model):
     def __unicode__(self):
         return u'{}'.format(self.id)
 
+    def can_view(self, user):
+        """
+        permission method to check if user is permitted to view shareholder obj
+        """
+        # shareholder can see hos own stuff
+        if user == self.user:
+            return True
+
+        # user is an operator
+        if self.company.operator_set.filter(user=user).exists():
+            return True
+
+        return False
+
     def get_number_segments_display(self):
         """
         returns string for date=today and all securities showing number segments

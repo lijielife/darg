@@ -30,7 +30,7 @@ def get_env_variable(var_name, fail_on_error=True):
     return env_var
 
 
-VERSION = '0.3.56'
+VERSION = '0.3.61'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
@@ -375,7 +375,16 @@ def backup_filename(databasename, servername, datetime, extension, content_type)
         **{'username': username, 'databasename': databasename,
         'servername': servername, 'datetime': datetime, 'extension': extension})
 
+
+def media_backup_filename(databasename, servername, datetime, extension, content_type):
+    import getpass
+    username = getpass.getuser()
+    return '{username}-mediafiles-{servername}-{datetime}.{extension}'.format(
+        **{'username': username, 'servername': servername,
+           'datetime': datetime, 'extension': extension})
+
 DBBACKUP_FILENAME_TEMPLATE = backup_filename
+DBBACKUP_MEDIA_FILENAME_TEMPLATE = media_backup_filename
 
 
 # -- SHAREHOLDER STATEMENT

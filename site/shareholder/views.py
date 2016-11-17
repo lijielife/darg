@@ -14,6 +14,7 @@ from sendfile import sendfile
 
 from shareholder.models import (Shareholder, OptionPlan, ShareholderStatement,
                                 ShareholderStatementReport)
+from project.permissions import OperatorPermissionRequiredMixin
 from utils.formatters import human_readable_segments
 
 from .mixins import AuthTokenSingleViewMixin
@@ -33,30 +34,31 @@ def options(request):
     return HttpResponse(template.render(context))
 
 
-@login_required
-def log(request):
-    template = loader.get_template('log.html')
-    context = RequestContext(request, {})
-    return HttpResponse(template.render(context))
+class ShareholderView(OperatorPermissionRequiredMixin, DetailView):
+    """
+    shows details for one shareholder
+    """
+    model = Shareholder
+    context_object_name = 'shareholder'
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(ShareholderView, self).get_context_data(*args, **kwargs)
 
-@login_required
-def shareholder(request, shareholder_id):
-    template = loader.get_template('shareholder.html')
-    shareholder = get_object_or_404(Shareholder, id=int(shareholder_id))
-    securities = shareholder.company.security_set.all()
+        shareholder = self.get_object()
+        securities = shareholder.company.security_set.all()
 
-    # hack security props for shareholder spec data
-    for sec in securities:
-        if sec.track_numbers:
-            if shareholder.current_segments(sec):
-                sec.segments = human_readable_segments(
-                    shareholder.current_segments(sec))
-        sec.count = shareholder.share_count(security=sec) or 0
-    context = RequestContext(request, {
-                             'shareholder': shareholder,
-                             'securities': securities})
-    return HttpResponse(template.render(context))
+        # hack security props for shareholder spec data
+        for sec in securities:
+            if sec.track_numbers:
+                if shareholder.current_segments(sec):
+                    sec.segments = human_readable_segments(
+                        shareholder.current_segments(sec))
+            sec.count = shareholder.share_count(security=sec) or 0
+
+        context.update({
+            'securities': securities})
+
+        return context
 
 
 @login_required

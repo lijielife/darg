@@ -26,6 +26,8 @@ from services.rest.views import (
     LanguageView, AvailableOptionSegmentsView
 )
 
+from shareholder.views import ShareholderView
+
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'shareholders', ShareholderViewSet, base_name="shareholders")
 router.register(r'operators', OperatorViewSet, base_name="operators")
@@ -51,12 +53,11 @@ sitemaps = {'tags': TagSitemap,
 
 urlpatterns = [
     # web views
-    url(r'^$', 'project.views.index', name='index'),
-    url(r'^start/$', 'project.views.start', name='start'),
+    url(r'^$', 'project.views.index', name='index'),  # landing page
+    url(r'^start/$', 'project.views.start', name='start'),  # user home
     url(r'^positions/$', 'shareholder.views.positions', name='positions'),
-    url(r'^log/$', 'shareholder.views.log', name='log'),
-    url(r'^shareholder/(?P<shareholder_id>[0-9]+)/$',
-        'shareholder.views.shareholder', name='shareholder'),
+    url(r'^shareholder/(?P<pk>[0-9]+)/$',
+        ShareholderView.as_view(), name='shareholder'),
 
     url(r'^company/(?P<company_id>[0-9]+)/$', 'company.views.company',
         name='company'),
