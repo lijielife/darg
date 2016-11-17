@@ -42,7 +42,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                 self.selenium, self.live_server_url, self.operator.user,
                 path=reverse(
                     'shareholder',
-                    kwargs={'shareholder_id': self.buyer.id}
+                    kwargs={'pk': self.buyer.id}
                     )
                 )
             # wait for 'link'
@@ -71,7 +71,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                 self.selenium, self.live_server_url, self.operator.user,
                 path=reverse(
                     'shareholder',
-                    kwargs={'shareholder_id': self.buyer.id}
+                    kwargs={'pk': self.buyer.id}
                     )
                 )
             # wait for 'link'
@@ -109,7 +109,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                 self.selenium, self.live_server_url, self.operator.user,
                 path=reverse(
                     'shareholder',
-                    kwargs={'shareholder_id': shs[1]}
+                    kwargs={'pk': shs[1]}
                     )
                 )
             # wait for table
@@ -131,7 +131,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                 self.selenium, self.live_server_url, self.operator.user,
                 path=reverse(
                     'shareholder',
-                    kwargs={'shareholder_id': self.buyer.id}
+                    kwargs={'pk': self.buyer.id}
                     )
                 )
             # wait for 'link'
