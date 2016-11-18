@@ -11,9 +11,8 @@ from cgi import escape
 
 
 def fetch_resources(uri, rel):
-    path = os.path.join(
-        settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
-
+    path = os.path.join(settings.MEDIA_ROOT,
+                        uri.replace(settings.MEDIA_URL, "").lstrip(os.sep))
     return path
 
 

@@ -1001,7 +1001,7 @@ class ShareholderStatementReport(models.Model):
                 shareholder_list=self.company.shareholder_set.filter(
                     user_id=user.pk),
                 site=Site.objects.get_current(),
-                STATIC_URL=settings.STATIC_ROOT + '/'
+                STATIC_URL=settings.STATIC_URL
             )
 
             if not self._create_statement_pdf(pdf_filepath, context):
