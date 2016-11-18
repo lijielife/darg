@@ -164,10 +164,10 @@ class CompanyFunctionalTestCase(BaseSeleniumTestCase):
 
     def test_alter_number_segment(self):
 
-        security = self.operator.company.security_set.all()[0]
-        security.number_segments = [1, 2]
-        security.track_numbers = True
-        security.save()
+        for security in self.operator.company.security_set.all():
+            security.number_segments = [1, 2]
+            security.track_numbers = True
+            security.save()
 
         try:
             p = page.CompanyPage(
@@ -193,10 +193,10 @@ class CompanyFunctionalTestCase(BaseSeleniumTestCase):
 
     def test_save_invalid_number_segment(self):
 
-        security = self.operator.company.security_set.all()[0]
-        security.number_segments = [1, 2]
-        security.track_numbers = True
-        security.save()
+        for security in self.operator.company.security_set.all():
+            security.number_segments = [1, 2]
+            security.track_numbers = True
+            security.save()
 
         try:
             p = page.CompanyPage(
