@@ -7,6 +7,7 @@ http://selenium-python.readthedocs.org/en/latest/page-objects.html
 # from locators import MainPageLocators (save all setter/getter here)
 
 import time
+import logging
 
 from django.utils.translation import gettext as _
 from selenium.webdriver.common.by import By
@@ -16,6 +17,8 @@ from project.generators import DEFAULT_TEST_DATA
 from project.page import BasePage
 
 from utils.formatters import human_readable_segments
+
+logger = logging.getLogger(__name__)
 
 
 class ShareholderDetailPage(BasePage):
