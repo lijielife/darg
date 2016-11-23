@@ -9,7 +9,7 @@ import random
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as __
-from model_mommy import generators
+from model_mommy import random_gen
 
 from shareholder.models import (Company, Country, Operator, OptionPlan,
                                 OptionTransaction, Position, Security,
@@ -243,7 +243,7 @@ class PositionGenerator(object):
             "count": count,
             "value": value,
             "security": security,
-            "comment": kwargs.get('comment') or generators.gen_string(55),
+            "comment": kwargs.get('comment') or random_gen.gen_string(55),
             "number_segments": kwargs.get('number_segments', [])
         }
         if seller:
