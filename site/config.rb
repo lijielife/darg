@@ -9,6 +9,9 @@ sass_dir = "static/sass"
 images_dir = "static/compiled/images"
 javascripts_dir = "static/compiled/javascripts"
 
+# disable comments with lines to make the compiled css and its diff nicer
+line_comments = false
+
 # You can select your preferred output style here (can be overridden via the command line):
 # output_style = :expanded or :nested or :compact or :compressed
 
