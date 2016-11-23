@@ -528,21 +528,18 @@ class PositionPage(BasePage):
         el = self.driver.find_element_by_id('add_position')
         form = el.find_element_by_tag_name('form')
         inputs = form.find_elements_by_tag_name('input')
+        popover_xpath = ('//div[@class="add-position-form"]'
+                         '//div[contains(@class,"popover")]')
 
-        els = self.driver.find_elements_by_xpath(
-            '//div[@class="add-position-form"]'
-            '//div[contains(@class,"popover")]')
+        els = self.driver.find_elements_by_xpath(popover_xpath)
+        time.sleep(1)
 
-        # tooltip is active on click and stays like that. detect of open or
+        # tooltip is active on click and stays like that. detect if opened or
         # attempt to set element active
         if inputs[3].is_displayed() and not els:
             inputs[3].click()
-
             time.sleep(2)
-
-            els = self.driver.find_elements_by_xpath(
-                '//div[@class="add-position-form"]'
-                '//div[contains(@class,"popover")]')
+            els = self.driver.find_elements_by_xpath(popover_xpath)
 
         return bool(els and els[0].is_displayed())
 
