@@ -3,9 +3,9 @@
 {% trans "Please enter your option plan data:" %}
 {% verbatim %}
 <div>
-  <form class="form-inline">
+  <form class="form-inline add-information-inline form">
     <div class="form-group block-level">
-        {% endverbatim %}{% trans "Board Approval Date" %}{% verbatim %}
+        <p>{% endverbatim %}{% trans "Board Approval Date" %}{% verbatim %}</p>
         <span class="input-group date-field">
           <input type="text" class="form-control"
             ng-model="newOptionPlan.board_approved_at"

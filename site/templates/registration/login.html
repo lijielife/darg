@@ -8,16 +8,16 @@
   {% endblock %}
 
 <div class="container">
-  <div class="centered" id="auth">
+  <div class="form-align-center" id="auth">
 	{% include "_messages.html" %}
     <h1>Login</h1>
-    <form method="post" action=".">
+    <form method="post" class="form" action=".">
       {% csrf_token %}
       {{ form.as_p }}
-      <button>{% trans "Log in" %}</button>
+      <button class="btn-submit">{% trans "Log in" %}</button>
       <input type="hidden" name="next" value="{{ next }}" />
     </form>
-    <p class="comment">
+    <p>
       {% trans "Not  a member?" %}
       <a href="{% url 'registration_register' %}"  class="btn-inline">{% trans "Register" %}</a>
       <br />

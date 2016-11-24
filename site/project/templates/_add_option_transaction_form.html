@@ -4,10 +4,9 @@
 {% verbatim %}
 <div>
   <form class="form-inline">
-    <div class="form-group block-level">
-        {% endverbatim %}{% trans "Buying Date" %}{% verbatim %}
+    <div class="form-group block-level add-information-inline form">
         <span class="input-group date-field">
-          <input type="text" class="form-control"
+          <input placeholder="Kaufdatum" type="text" class="form-control"
             ng-model="newOptionTransaction.bought_at"
             uib-datepicker-popup="{{ datepicker.format }}"
             datepicker-options="datepicker.options"

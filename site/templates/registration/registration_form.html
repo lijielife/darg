@@ -10,14 +10,13 @@
   <div id="auth">
     <div class="registration-form" >
       <h1>{% trans "Register Here" %}</h1>
-      <form method="post" action=".">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-
-                    <input type="submit" value="{% trans "Sign up now" %}" />
+      <form method="post" class="form" action=".">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" class="btn-submit" value="{% trans "Sign up now" %}" />
       </form>
 
-      <p class="comment">
+      <p class="">
         {% trans "Already registered?" %}
         <a href="{% url 'auth_login' %}" class="btn-inline">{% trans "Login" %}</a>
         <br />
