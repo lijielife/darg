@@ -7,14 +7,14 @@
 {% block content %}
 <div ng_controller="StartController">
   {% include "_form_errors.html" %}
-  <div id="add_company" ng-show="!user.operator_set.length && !loading">
+  <div id="add_company" class="add-company-container" ng-show="!user.operator_set.length && !loading">
     {% include "_add_company_form.html" %}
   </div>
 
   {% verbatim %}
 
   <!-- spinner -->
-  <div class="spinner" ng-show="loading">
+  <div class="spinner text-center" ng-show="loading">
     <img src="{% endverbatim %}{% static "compiled/images/loading_spinner.gif" %}{% verbatim %}" />
   </div>
 
@@ -47,8 +47,8 @@
     </p>
 
     <!-- TABLE -->
-
-    <table class="table table-hover">
+    <div class="table-responsive">
+      <table class="table table-hover">
       <caption></caption>
       <thead>
         <tr>
@@ -101,6 +101,8 @@
         </tr>
       </tbody>
     </table>
+    </div>
+    
     {% endverbatim %}
     <div class="panel" ng-show="!shareholders.length">
       <div class="clearfix">

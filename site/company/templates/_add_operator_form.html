@@ -1,11 +1,13 @@
 {% load i18n %}
 
 <div id="add-operator-form" class="form" ng-show="show_add_operator_form">
-  {% trans "To add a new operator enter the email of a registered user" %}:
+  <span class="add-operator-comment">
+    {% trans "To add a new operator enter the email of a registered user" %}:
+  </span>
   {% include "_form_errors.html" %}
 
   {% verbatim %}
-  <form class="form-inline">
+  <form class="form-inline form">
     <div class="form-group block-level">
       <input type="email" class="form-control" ng-model="newOperator.user.email" placeholder="Email" required>
     </div>

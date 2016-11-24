@@ -12,7 +12,7 @@
   </p>
   {% include "_form_errors.html" %}
 
-  <div class="panel">
+  <div class="panel panel-column">
     <a class="btn-inline align-left add-position" href="" ng-click="show_add_position_form()">{% trans "Transfer Shares" %}</a>
     <a class="btn-inline add-capital" href="" ng-click="show_add_capital_form()">{% trans "Increase Capital" %}</a>
     <a class="btn-inline split-shares" href="" ng-click="show_split_form()">{% trans "Split Shares" %}</a>
@@ -29,7 +29,8 @@
   </div>
 
   <div id="positions" ng-hide="!positions.length">
-    <table class="table table-hover">
+    <div class="table-responsive">
+      <table class="table table-hover">
       <caption></caption>
       <thead>
         <tr>
@@ -97,6 +98,7 @@
         </tr>
       </tbody>
     </table>
+    </div>
     <div class="panel" ng-show="!shareholders.length">
       <div class="clearfix">
         <em>{% trans "No Postions yet." %}</em>

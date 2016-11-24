@@ -7,7 +7,7 @@
 <div class="alert alert-warning" ng-show="hasSecurityWithTrackNumbers();">{% endverbatim %}{% trans "The split feature does not handle numbered shares. Please contact us for further details and advices." %}{% verbatim %}</div>
 
 <div class="split-shares-form">
-  <form class="form-inline">
+  <form class="form-inline add-information-inline form">
     <div class="form-group block-level">
         <span class="input-group date-field">
           <input type="text" class="form-control"
@@ -24,7 +24,7 @@
             <button type="button" class="btn btn-default" ng-click="open_datepicker()"><i class="glyphicon glyphicon-calendar"></i></button>
           </span>
         </span>
-      <input type="number" class="form-control" ng-model="newSplit.dividend" translate translate-attr-placeholder="Ratio: Dividend" ng-maxlength="3">:
+      <input type="number" class="form-control" ng-model="newSplit.dividend" translate translate-attr-placeholder="Ratio: Dividend" ng-maxlength="3">
       <input type="number" class="form-control" ng-model="newSplit.divisor" translate translate-attr-placeholder="Ratio: Divisor" ng-maxlength="3">
       <select class="form-control" ng-model="newSplit.security" ng-options="security as security.readable_title for security in securities" translate translate-attr-placeholder="Security">
         <option value='' disabled>{% endverbatim %}{% trans "Security" %}{% verbatim %}</option>
