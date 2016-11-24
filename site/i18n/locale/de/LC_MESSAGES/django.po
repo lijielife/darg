@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-31 01:24+0000\n"
+"POT-Creation-Date: 2016-11-24 05:37+0000\n"
 "PO-Revision-Date: 2016-08-29 21:08+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,17 +19,17 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Translated-Using: django-rosetta 0.7.11\n"
 
-#: company/templates/_add_operator_form.html:4
+#: company/templates/_add_operator_form.html:5
 msgid "To add a new operator enter the email of a registered user"
 msgstr ""
 "Fügen Sie die Email eines bereits registrierten Nutzers ein, um diesen als "
 "Administrator für dieses Unternehmen anzulegen."
 
-#: company/templates/_add_operator_form.html:13
+#: company/templates/_add_operator_form.html:15
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: company/templates/_add_operator_form.html:14
+#: company/templates/_add_operator_form.html:16
 msgid "Add Operator"
 msgstr "Administrator hinzufügen"
 
@@ -73,7 +73,7 @@ msgstr "Land des Unternehmenssitzes"
 msgid "Securities"
 msgstr "Aktienart"
 
-#: company/templates/company.html:128 company/tests/test_views.py:33
+#: company/templates/company.html:128 company/tests/test_views.py:53
 msgid "tracking security numbers for owners enabled. segments:"
 msgstr "Nummerierte Aktiensegmente:"
 
@@ -125,58 +125,54 @@ msgstr "Kennen Sie unseren"
 msgid "our blog"
 msgstr "Blog"
 
-#: templates/menu.html:30
+#: templates/menu.html:29
 msgid "Start"
 msgstr "Start"
 
-#: templates/menu.html:33
+#: templates/menu.html:32
 msgid "Positions"
 msgstr "Transaktionen"
 
-#: templates/menu.html:36
+#: templates/menu.html:35
 msgid "Options"
 msgstr "Optionen"
 
-#: templates/menu.html:42
+#: templates/menu.html:43
 msgid "Other"
 msgstr "Mehr"
 
-#: templates/menu.html:45
+#: templates/menu.html:47
 msgid "Admin"
 msgstr "Admin"
 
-#: templates/menu.html:46
+#: templates/menu.html:50
 msgid "I18N"
 msgstr "I18N"
 
-#: templates/menu.html:50 templates/menu.html:51
-msgid "Change Log"
-msgstr "Änderungslog"
-
-#: templates/menu.html:56 templates/registration/password_reset_form.html:4
+#: templates/menu.html:54 templates/registration/password_reset_form.html:4
 #: templates/registration/password_reset_form.html:14
-#: templates/registration/password_reset_form.html:34
+#: templates/registration/password_reset_form.html:33
 msgid "Reset password"
 msgstr "Passwort zurücksetzen"
 
-#: templates/menu.html:57 templates/registration/password_change_form.html:4
-#: templates/registration/password_change_form.html:13
+#: templates/menu.html:55 templates/registration/password_change_form.html:4
+#: templates/registration/password_change_form.html:12
 msgid "Change password"
 msgstr "Passwort ändern"
 
-#: templates/menu.html:63
+#: templates/menu.html:62
 msgid "Logged in as"
 msgstr "Eingeloggt als "
 
-#: templates/menu.html:65
+#: templates/menu.html:64
 msgid "Logout"
 msgstr "Logout"
 
-#: templates/menu.html:69 templates/registration/login.html:22
+#: templates/menu.html:68 templates/registration/login.html:22
 msgid "Register"
 msgstr "Registrieren"
 
-#: templates/menu.html:72 templates/registration/registration_form.html:22
+#: templates/menu.html:71 templates/registration/registration_form.html:21
 msgid "Login"
 msgstr "Login"
 
@@ -197,12 +193,12 @@ msgid "Reset Password"
 msgstr "Passwort zurücksetzen"
 
 #: templates/registration/login.html:29
-#: templates/registration/registration_form.html:25
+#: templates/registration/registration_form.html:24
 msgid "Do you know our "
 msgstr "Kennen Sie unseren"
 
 #: templates/registration/login.html:30
-#: templates/registration/registration_form.html:25
+#: templates/registration/registration_form.html:24
 msgid "Blog"
 msgstr "Blog"
 
@@ -243,7 +239,7 @@ msgid "log in"
 msgstr "Login"
 
 #: templates/registration/password_reset_confirm.html:4
-#: templates/registration/password_reset_confirm.html:16
+#: templates/registration/password_reset_confirm.html:12
 msgid "Confirm password reset"
 msgstr "Passwort zurücksetzen bestätigen"
 
@@ -251,11 +247,11 @@ msgstr "Passwort zurücksetzen bestätigen"
 msgid "Enter your new password below to reset your password:"
 msgstr "Geben Sie Ihr neues Passwort ein:"
 
-#: templates/registration/password_reset_confirm.html:32
+#: templates/registration/password_reset_confirm.html:31
 msgid "Set password"
 msgstr "Passwort speichern"
 
-#: templates/registration/password_reset_confirm.html:40
+#: templates/registration/password_reset_confirm.html:39
 msgid ""
 "The password reset link was invalid, possibly because it has already been "
 "used.  Please request a new password reset."
@@ -345,11 +341,11 @@ msgstr "Sie sind jetzt registriert. Starten Sie hier:"
 msgid "Register Here"
 msgstr "Registrierung"
 
-#: templates/registration/registration_form.html:17
+#: templates/registration/registration_form.html:16
 msgid "Sign up now"
 msgstr "Jetzt registrieren"
 
-#: templates/registration/registration_form.html:21
+#: templates/registration/registration_form.html:20
 msgid "Already registered?"
 msgstr "Bereits registriert?"
 
@@ -441,6 +437,9 @@ msgstr "Links"
 #: templates/zinnia/skeleton.html:74 templates/zinnia/skeleton.html:75
 msgid "Weblog index"
 msgstr "Blog Start"
+
+#~ msgid "Change Log"
+#~ msgstr "Änderungslog"
 
 #~ msgid "tracking security numbers for owners enabled "
 #~ msgstr "Nummerierte Aktien sind aktiviert."

@@ -16,7 +16,8 @@ from rest_framework import routers
 from rest_framework.authtoken import views
 
 from registration.backends.simple.views import RegistrationView
-from registration.forms import RegistrationFormUniqueEmail
+
+from project.forms import RegistrationForm
 
 from services.rest.views import (
     ShareholderViewSet, CompanyViewSet, UserViewSet,
@@ -77,7 +78,7 @@ urlpatterns = [
 
     # auth
     url(r'^accounts/register/$', RegistrationView.as_view(
-        form_class=RegistrationFormUniqueEmail), name='registration_register'),
+        form_class=RegistrationForm), name='registration_register'),
     url(r'^accounts/', include('registration.backends.simple.urls')),
     url(r'^instapage/', 'project.views.instapage', name='instapage'),
 

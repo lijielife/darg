@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-31 01:24+0000\n"
+"POT-Creation-Date: 2016-11-24 05:37+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,15 +17,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: company/templates/_add_operator_form.html:4
+#: company/templates/_add_operator_form.html:5
 msgid "To add a new operator enter the email of a registered user"
 msgstr ""
 
-#: company/templates/_add_operator_form.html:13
+#: company/templates/_add_operator_form.html:15
 msgid "Cancel"
 msgstr ""
 
-#: company/templates/_add_operator_form.html:14
+#: company/templates/_add_operator_form.html:16
 msgid "Add Operator"
 msgstr ""
 
@@ -69,7 +69,7 @@ msgstr ""
 msgid "Securities"
 msgstr ""
 
-#: company/templates/company.html:128 company/tests/test_views.py:33
+#: company/templates/company.html:128 company/tests/test_views.py:53
 msgid "tracking security numbers for owners enabled. segments:"
 msgstr ""
 
@@ -119,58 +119,54 @@ msgstr ""
 msgid "our blog"
 msgstr ""
 
-#: templates/menu.html:30
+#: templates/menu.html:29
 msgid "Start"
 msgstr ""
 
-#: templates/menu.html:33
+#: templates/menu.html:32
 msgid "Positions"
 msgstr ""
 
-#: templates/menu.html:36
+#: templates/menu.html:35
 msgid "Options"
 msgstr ""
 
-#: templates/menu.html:42
+#: templates/menu.html:43
 msgid "Other"
 msgstr ""
 
-#: templates/menu.html:45
+#: templates/menu.html:47
 msgid "Admin"
 msgstr ""
 
-#: templates/menu.html:46
+#: templates/menu.html:50
 msgid "I18N"
 msgstr ""
 
-#: templates/menu.html:50 templates/menu.html:51
-msgid "Change Log"
-msgstr ""
-
-#: templates/menu.html:56 templates/registration/password_reset_form.html:4
+#: templates/menu.html:54 templates/registration/password_reset_form.html:4
 #: templates/registration/password_reset_form.html:14
-#: templates/registration/password_reset_form.html:34
+#: templates/registration/password_reset_form.html:33
 msgid "Reset password"
 msgstr ""
 
-#: templates/menu.html:57 templates/registration/password_change_form.html:4
-#: templates/registration/password_change_form.html:13
+#: templates/menu.html:55 templates/registration/password_change_form.html:4
+#: templates/registration/password_change_form.html:12
 msgid "Change password"
 msgstr ""
 
-#: templates/menu.html:63
+#: templates/menu.html:62
 msgid "Logged in as"
 msgstr ""
 
-#: templates/menu.html:65
+#: templates/menu.html:64
 msgid "Logout"
 msgstr ""
 
-#: templates/menu.html:69 templates/registration/login.html:22
+#: templates/menu.html:68 templates/registration/login.html:22
 msgid "Register"
 msgstr ""
 
-#: templates/menu.html:72 templates/registration/registration_form.html:22
+#: templates/menu.html:71 templates/registration/registration_form.html:21
 msgid "Login"
 msgstr ""
 
@@ -191,12 +187,12 @@ msgid "Reset Password"
 msgstr ""
 
 #: templates/registration/login.html:29
-#: templates/registration/registration_form.html:25
+#: templates/registration/registration_form.html:24
 msgid "Do you know our "
 msgstr ""
 
 #: templates/registration/login.html:30
-#: templates/registration/registration_form.html:25
+#: templates/registration/registration_form.html:24
 msgid "Blog"
 msgstr ""
 
@@ -237,7 +233,7 @@ msgid "log in"
 msgstr ""
 
 #: templates/registration/password_reset_confirm.html:4
-#: templates/registration/password_reset_confirm.html:16
+#: templates/registration/password_reset_confirm.html:12
 msgid "Confirm password reset"
 msgstr ""
 
@@ -245,11 +241,11 @@ msgstr ""
 msgid "Enter your new password below to reset your password:"
 msgstr ""
 
-#: templates/registration/password_reset_confirm.html:32
+#: templates/registration/password_reset_confirm.html:31
 msgid "Set password"
 msgstr ""
 
-#: templates/registration/password_reset_confirm.html:40
+#: templates/registration/password_reset_confirm.html:39
 msgid ""
 "The password reset link was invalid, possibly because it has already been "
 "used.  Please request a new password reset."
@@ -323,11 +319,11 @@ msgstr ""
 msgid "Register Here"
 msgstr ""
 
-#: templates/registration/registration_form.html:17
+#: templates/registration/registration_form.html:16
 msgid "Sign up now"
 msgstr ""
 
-#: templates/registration/registration_form.html:21
+#: templates/registration/registration_form.html:20
 msgid "Already registered?"
 msgstr ""
 
