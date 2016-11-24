@@ -26,5 +26,4 @@ class RegistrationForm(RegistrationFormTermsOfService,
             'Terms of Service'
             '</a>'
         ))
-        self.fields['tos'].widget.attrs['class'] = 'checkbox'
         return res

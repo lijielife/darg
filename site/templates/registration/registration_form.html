@@ -12,7 +12,12 @@
       <h1>{% trans "Register Here" %}</h1>
       <form method="post" class="form" action=".">
         {% csrf_token %}
-        {{ form.as_p }}
+        {% for field in form %}
+          <p class="{{ field.name }}">
+              {{ field.errors }}
+              {{ field.label_tag }} {{ field }}
+          </p>
+        {% endfor %}
         <input type="submit" class="btn-submit" value="{% trans "Sign up now" %}" />
       </form>
 
