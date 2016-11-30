@@ -2786,7 +2786,7 @@ html, body {
 }
 
 .collapse-expanded .navbar-username {
-  color: #333;
+  color: #888;
   display: block;
   line-height: 13px;
   position: relative;
@@ -2883,6 +2883,9 @@ nav.navbar .navbar-text {
   box-sizing: border-box;
 }
 
+.tos {
+  display: inline-block;
+}
 .tos label {
   float: right;
   width: 90%;
