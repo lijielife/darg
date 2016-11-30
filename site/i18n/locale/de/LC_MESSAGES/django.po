@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-11-24 05:37+0000\n"
-"PO-Revision-Date: 2016-11-30 20:27+0000\n"
+"PO-Revision-Date: 2016-11-30 20:37+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -329,7 +329,7 @@ msgstr "Sie sind jetzt registriert. Starten Sie hier:"
 
 #: templates/registration/registration_form.html:12
 msgid "Register Here"
-msgstr "Aktienbuch erstellen"
+msgstr "Erstellen Sie Ihr Online-Aktienbuch:"
 
 #: templates/registration/registration_form.html:16
 msgid "Sign up now"
