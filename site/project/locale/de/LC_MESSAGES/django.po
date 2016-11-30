@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-11-24 05:37+0000\n"
-"PO-Revision-Date: 2016-11-30 16:19+0000\n"
+"PO-Revision-Date: 2016-11-30 20:00+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -337,13 +337,15 @@ msgstr "Blog jetzt lesen"
 
 #: project/templates/index.html:114
 msgid "Subscribe to our newsletter!"
-msgstr "Abonnieren Sie unseren Newsletter!"
+msgstr "Email-Verteiler für Verwaltungsräte und Geschäftsleitung!"
 
 #: project/templates/index.html:115
 msgid "Stay up to date about our work and latest share register industry news"
 msgstr ""
-"Bleiben Sie auf dem neuesten Stand über unsere Arbeit und aktuelle "
-"Entwickungen der Branche."
+"Bleiben Sie auf dem neuesten Stand über unsere Arbeit, Bereitstellung neuer "
+"Funktionen des Online-Aktienbuches/-registers und Verbesserung der "
+"Aktienbuch-Vorlagen. Diese Email wird nicht öfter als alle 2-3 Monate "
+"versendet."
 
 #: project/templates/index.html:122
 msgid "Geben Sie Ihre Email-Adresse ein"
