@@ -8,8 +8,8 @@
   {% endblock %}
 <div class="container">
   <div id="auth">
-    <div class="registration-form" >
       <h1>{% trans "Register Here" %}</h1>
+    <div class="registration-form" >
       <form method="post" class="form" action=".">
         {% csrf_token %}
         {% for field in form %}
@@ -31,7 +31,7 @@
     </div>
 
     <div class="registration-teaser">
-      <img src="{% static 'compiled/images/Das-Aktienregister-Screenshot.png' %}" alt="Das Aktienregister Screenshot" />
+      <img src="{% static 'compiled/images/aktienbuch-muster-schweiz-ipad.png' %}" alt="Das Aktienregister Screenshot" />
     </div>
   </div>
 </div>
