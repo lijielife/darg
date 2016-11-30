@@ -2819,15 +2819,18 @@ html, body {
   padding: 0 !important;
 }
 
-.bold {
-  font-weight: 700;
-}
-
 .limit-letters {
   max-width: 100px;
   overflow: hidden;
   text-overflow: ellipsis;
   display: inline-block;
+}
+
+.navbar-default .navbar-nav .open a {
+  background: transparent;
+}
+.navbar-default .navbar-nav .open a:hover, .navbar-default .navbar-nav .open a:focus {
+  background: transparent;
 }
 
 nav.navbar a:not(.navbar-brand) {
