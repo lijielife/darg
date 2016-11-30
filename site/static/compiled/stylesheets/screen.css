@@ -2883,9 +2883,6 @@ nav.navbar .navbar-text {
   box-sizing: border-box;
 }
 
-.tos {
-  display: inline-block;
-}
 .tos label {
   float: right;
   width: 90%;
