@@ -2786,8 +2786,7 @@ html, body {
 }
 
 .collapse-expanded .navbar-username {
-  margin-top: 18px;
-  margin-left: 15px;
+  color: #333;
   display: block;
   line-height: 13px;
   position: relative;
@@ -2882,6 +2881,15 @@ nav.navbar .navbar-text {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
+}
+
+.tos label {
+  float: right;
+  width: 90%;
+}
+.tos #id_tos {
+  width: initial;
+  float: left;
 }
 
 .form .form-control {
