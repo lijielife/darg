@@ -2820,15 +2820,18 @@ html, body {
   padding: 0 !important;
 }
 
-.bold {
-  font-weight: 700;
-}
-
 .limit-letters {
   max-width: 100px;
   overflow: hidden;
   text-overflow: ellipsis;
   display: inline-block;
+}
+
+.navbar-default .navbar-nav .open a {
+  background: transparent;
+}
+.navbar-default .navbar-nav .open a:hover, .navbar-default .navbar-nav .open a:focus {
+  background: transparent;
 }
 
 nav.navbar a:not(.navbar-brand) {
@@ -3418,60 +3421,12 @@ div#optionplan .pdf_upload_preview {
     display: none;
   }
 }
-/* change default collapse menu breakpoint */
-@media (max-width: 960px) {
-  .collapse-expanded .navbar-username {
-    margin-top: 0;
-  }
-  .collapse-expanded .bold {
-    font-weight: 700;
-  }
-  .collapse-expanded .dropdown-menu {
-    position: static;
-    float: none;
-    width: auto;
-    margin-top: 0;
-    background-color: transparent;
-    border: 0;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-  }
-  .collapse-expanded .top-separator {
-    border-top: 1px solid #e6e6e6;
-  }
-  .collapse-expanded .navbar-header {
-    float: none;
-  }
-  .collapse-expanded .navbar-left, .collapse-expanded .navbar-right {
-    float: none !important;
-  }
-  .collapse-expanded .navbar-toggle {
-    display: block;
-    margin-top: 10px;
-  }
-  .collapse-expanded .navbar-fixed-top {
-    top: 0;
-    border-width: 0;
-  }
-  .collapse-expanded .navbar-collapse.collapse {
-    display: none !important;
-  }
-  .collapse-expanded .navbar-nav {
-    float: none !important;
-    margin-top: 7.5px;
-  }
-  .collapse-expanded .navbar-nav > li {
-    float: none;
-  }
-  .collapse-expanded .navbar-nav > li > a {
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-  .collapse-expanded .collapse.in {
-    display: block !important;
-  }
-}
 @media (max-width: 800px) {
+  .pull-right-mobile {
+    float: right;
+    margin-right: 10px;
+  }
+
   .navbar-header {
     float: none;
   }
@@ -3512,11 +3467,29 @@ div#optionplan .pdf_upload_preview {
     display: block !important;
   }
 
+  .collapse-expanded .dropdown-menu {
+    position: static;
+    float: none;
+    width: auto;
+    margin-top: 0;
+    background-color: transparent;
+    border: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
+
   .intro header.home .container .btn-inline.btn-with-separator:after {
     width: 0;
   }
 }
 /* end of collapse menu */
+@media only screen and (min-width: 768px) {
+  /* override bootstrap default class */
+  .navbar-right .dropdown-menu {
+    right: 20px;
+    top: 110%;
+  }
+}
 @media only screen and (max-width: 768px) {
   body.core .container .control-label {
     padding-left: 15px;
