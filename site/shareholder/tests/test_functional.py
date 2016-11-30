@@ -65,6 +65,8 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
         edit shareholders birthday using the datepicker
         """
         try:
+            today = datetime.datetime.now().date()
+            birthday = datetime.date(today.year, today.month, today.day)
 
             p = page.ShareholderDetailPage(
                 self.selenium, self.live_server_url, self.operator.user,
@@ -78,13 +80,11 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                 (By.CSS_SELECTOR, 'tr.birthday span.el-icon-pencil'))
             p.click_to_edit("birthday")
             p.click_open_datepicker("birthday")
-            p.click_date_in_datepicker("birthday")
+            p.click_date_in_datepicker("birthday", birthday)
             p.save_edit("birthday")
             # wait for form to disappear
             p.wait_until_invisible((By.CSS_SELECTOR, 'tr.birthday form'))
 
-            today = datetime.datetime.now().date()
-            birthday = datetime.date(today.year, today.month, today.day)
             self.assertEqual(
                 p.get_birthday(),
                 birthday.strftime('%d.%m.%y'))
