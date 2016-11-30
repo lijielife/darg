@@ -263,8 +263,7 @@ html, body
 // --- HEADER
 .collapse-expanded
   .navbar-username
-    margin-top: 18px
-    margin-left: 15px
+    color: $color-dark-gray
     display: block
     line-height: 13px
     position: relative
@@ -336,6 +335,14 @@ nav.navbar
 .password-reset-container, .password-change-container
   +zen-new-row()
   +zen-grid-item(6,2)
+.tos
+  label
+    float: right
+    width: 90%
+  #id_tos
+    width: initial
+    float: left
+
 .form
   .form-control
     box-shadow: unset
