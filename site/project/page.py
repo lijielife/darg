@@ -148,7 +148,8 @@ class BasePage(object):
                 el2 = td.find_elements_by_tag_name('span')
                 if (
                     el2 and el2[0].get_attribute('innerHTML') ==
-                    datetime.strftime(date, '%d')
+                    datetime.strftime(date, '%d') and
+                    'text-muted' not in el2[0].get_attribute('class')
                 ):
                     el2[0].click()
                     return
