@@ -159,6 +159,15 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   font-size: 1.2em;
   border-radius: 0px;
 }
+/* line 61, ../../sass/_flatpages.sass */
+#pricing.confirm {
+  float: none;
+}
+/* line 63, ../../sass/_flatpages.sass */
+#pricing.confirm .box {
+  margin: 0 auto;
+  float: none;
+}
 
 @-webkit-keyframes fadeIn {
   0% {

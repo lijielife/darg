@@ -1,0 +1,45 @@
+{% load static i18n shareholder_tags %}
+
+<div id="history-table">
+  <h2>
+    {% trans "Payment History" %}
+    <img class="in-progress-gif" src="{% static 'img/in-progress.gif' %}" /></h2>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>{% trans "Transaction ID" %}</th>
+        <th>{% trans "Date" %}</th>
+        <th>{% trans "Amount" %}</th>
+      </tr>
+    </thead>
+    {% for invoice in customer.invoices.all %}
+      <tr>
+        <td class="fixed">#{{ invoice.id }}</td>
+        <td>{{ invoice.date|date:"M d" }}</td>
+        </td>
+        <td colspan=2>
+          {% if invoice.paid and invoice.total > 0 %}
+            <p>
+              <span class="label label-success">{% trans "Paid" %}</span>
+              {% get_invoice_currency invoice %}{{ invoice.total|floatformat:"2" }}
+            </p>
+          {% endif %}
+
+          {% if invoice.paid and invoice.total < 0 %}
+            <p>
+              <span class="label label-success">{% trans "Credit" %}</span>
+              {% get_invoice_currency invoice %}{{ invoice.total|floatformat:"2" }}
+            </p>
+          {% endif %}
+        </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="3">
+          <img class="in-progress-gif" src="{% static 'img/in-progress.gif' %}" />
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+</div>

@@ -1,0 +1,55 @@
+{% load i18n %}
+
+{% if subscription %}
+  {% if subscription.status == subscription.STATUS_ACTIVE and not subscription.current_period_end %}
+    <div class="alert alert-success">
+      {% blocktrans with subscription.status as subscription_status %}
+        Your subscription is <strong>{{ subscription_status }}</strong>.
+      {% endblocktrans %}
+    </div>
+  {% else %}
+    {% if subscription.status == subscription.STATUS_TRIALING %}
+      {% if subscription.plan and customer.card_kind %}
+        <div class="alert alert-info">
+          {% blocktrans with subscription.current_period_end|timeuntil as subscription_end and subscription.plan_display as plan_display %}
+            Your free trial will end in <strong>{{ subscription_end }}</strong>
+            after which you commence a <strong>{{ plan_display }}</strong> plan.
+          {% endblocktrans %}
+        </div>
+      {% else %}
+        <div class="alert alert-warning">
+          {% blocktrans with subscription.current_period_end|timeuntil as subscription_end %}
+            Your free trial will end in <strong>{{ subscription_end }}</strong>
+            after which you will need to get a subscription to continue using the site.
+          {% endblocktrans %}
+        </div>
+      {% endif %}
+    {% else %}
+      {% if subscription.status == subscription.STATUS_CANCELLED %}
+        <div class="alert alert-danger">
+          {% blocktrans %}
+            Your subscription has been <strong>canceled</strong>.
+          {% endblocktrans %}
+        </div>
+      {% elif customer.current_subscription.is_status_temporarily_current %}
+      	<div class="alert alert-warning">
+          {% blocktrans with subscription.canceled_at as subscription_canceled %}
+            Your subscription has been <strong>canceled</strong> on {{ subscription_canceled }}
+          {% endblocktrans %}
+          {% if subscription.is_period_current %}
+            {% blocktrans with subscription.current_period_end|timeuntil as subscription_end %}
+              You can continue to use the site for another
+              <strong>{{ subscription_end }}.</strong>
+            {% endblocktrans %}
+          {% endif %}
+        </div>
+      {% else %}
+        <div class="alert alert-success">
+          {% blocktrans with subscription.status as subscription_status %}
+            Your subscription is <strong>{{ subscription_status }}</strong>.
+          {% endblocktrans %}
+        </div>
+      {% endif %}
+    {% endif %}
+  {% endif %}
+{% endif %}

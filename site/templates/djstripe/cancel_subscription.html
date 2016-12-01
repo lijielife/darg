@@ -1,0 +1,62 @@
+{% extends "djstripe/base.html" %}
+
+{% load i18n %}
+
+{# {% block title %}{% trans "Cancel Subscription" %}{% endblock title %} #}
+
+{% block content %}
+
+{% url 'djstripe:account' company_id=customer.subscriber_id as account_url %}
+{% url 'djstripe:subscribe' company_id=customer.subscriber_id as subscribe_url %}
+
+<div class="row">
+  <div class="col-xs-12">
+    <h2>{% trans "Cancel Subscription" %}</h2>
+    {% if not customer.current_subscription %}
+      {% blocktrans with account_url as account_url and subscribe_url as subscribe_url  %}
+        <p>You have no subscription on file.</p>
+        <p>
+          See your <a href="{{ account_url }}">account status</a> or better yet,
+          <a href="{{ subscribe_url }}">subscribe</a>.
+        </p>
+      {% endblocktrans %}
+    {% elif customer.current_subscription.status == customer.current_subscription.STATUS_CANCELLED %}
+      {% blocktrans with account_url as account_url and subscribe_url as subscribe_url %}
+        <p>Your subscription has already been canceled.</p>
+        <p>
+          See your <a href="{{ account_url }}">account status</a> or better yet,
+          get a <a href="{{ subscribe_url }}">fresh subscription</a>.
+        </p>
+      {% endblocktrans %}
+    {% elif customer.current_subscription.is_status_temporarily_current %}
+      {% blocktrans with customer.current_subscription.current_period_end|timeuntil as subscription_end %}
+        <p>Your subscription has already been canceled.</p>
+        <p>However, you can still use the site for another {{ subscription_end }}.</p>
+      {% endblocktrans %}
+    {% else %}
+      <p class="lead">
+        {% trans "Are you sure you want to cancel your subscription?" %}
+      </p>
+      {% block cancellation_ramifications %}
+      <h5>{% trans "What you lose by cancelling your subscription:" %}</h5>
+      <ul>
+        <li>{% trans "Access to subscription-only content." %}</li>
+        <li>{% trans "Ability to use subscription-only features." %}</li>
+      </ul>
+      {% endblock cancellation_ramifications %}
+
+      <p class="lead">{% trans "Are you sure you want to cancel?" %}</p>
+      <form action="{% url 'djstripe:cancel_subscription' company_id=customer.subscriber_id %}"
+            method="post" id="cancel-form">
+        {% csrf_token %}
+        <a href="{{ account_url }}" class="btn btn-primary">
+          {% trans "I change my mind!" %}
+        </a>
+        <button class="btn btn-danger">
+          {% trans "Cancel my subscription!" %}
+        </button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock content %}

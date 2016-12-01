@@ -1,0 +1,17 @@
+{% load i18n djstripe_tags shareholder_tags %}
+<div class="heading">{{ plan.name }}</div>
+<div class="target">{{ plan.description }}</div>
+<div class="price">
+  <p class="note">{{ plan.currency|upper }} {% trans "per" %} {% trans plan.interval %}</p>
+  <p>{{ plan.price|djdiv:100|floatformat:'2' }}</p>
+  <p class="note">
+    {% get_plan_price_per_shareholder plan as shareholder_price %}
+    {% if shareholder_price %}
+      + {{ plan.currency|upper }}
+      {{ shareholder_price|djdiv:100|floatformat:'2' }} / {% trans "Shareholder" %}
+    {% else %}
+      &nbsp;
+    {% endif %}
+  </p>
+</div>
+<div><strong>TODO:</strong> FEATURES</div>

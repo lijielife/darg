@@ -71,6 +71,7 @@ class Company(AddressModelMixin, models.Model):
     logo = models.ImageField(
         blank=True, null=True,
         upload_to=get_company_logo_upload_path,)
+    email = models.EmailField(_('Email'), blank=True)  # required by djstripe
 
     is_statement_sending_enabled = models.BooleanField(
         _('Is statement sending enabled'), default=True)

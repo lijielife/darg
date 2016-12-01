@@ -1,0 +1,167 @@
+{% extends "djstripe/base.html" %}
+
+{% load i18n %}
+
+{# {% block title %}{% trans "Accounts Dashboard" %}{% endblock title %} #}
+
+{% block content %}
+  {{ block.super }}
+
+  {# panel?! #}
+
+  <div class="row">
+    <div class="col-xs-12">
+      {% include "djstripe/includes/_subscription_status.html" %}
+      <h2>{% trans "Account Information for" %} {{ customer.subscriber }}</h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-4">
+      <p>
+        {% if customer.has_valid_card %}
+          {% trans "Credit Card on file." %}
+          <a class="btn btn-info" data-toggle="modal" href="#show-card">
+            {% trans "Show Card" %}
+          </a>
+        {% else %}
+          {% trans "No Credit Card on file." %}
+        {% endif %}
+      </p>
+    </div>
+    <div class="col-xs-4">
+      <p>
+        <a class="btn btn-primary pull-right"
+           href="{% url 'djstripe:change_card' company_id=customer.subscriber_id %}">
+        {% if customer.has_valid_card %}
+          {% trans "Change Card" %}
+        {% else %}
+          {% trans "Add Card" %}
+        {% endif %}
+      </a>
+      </p>
+    </div>
+  </div>
+
+  {% if subscription.is_status_current and not subscription.is_status_temporarily_current %}
+    <p>{% trans "Next billed on" %} {{ subscription.current_period_end|date }}.</p>
+    {% url 'djstripe:subscribe' company_id=customer.subscriber_id as subscribe_url %}
+    {% url 'djstripe:cancel_subscription' company_id=customer.subscriber_id as cancel_url %}
+    {% blocktrans with subscribe_url as subscribe_url and cancel_url as cancel_url %}
+      <p>You can <a href="{{ subscribe_url }}">change</a> your plan
+      or <a href="{{ cancel_url }}">cancel</a> your subscription.
+      </p>
+    {% endblocktrans %}
+  {% else %}
+    {% url 'djstripe:subscribe' company_id=customer.subscriber_id as subscribe_url %}
+    {% blocktrans with subscribe_url as subscribe_url %}
+      <p>You can <a href="{{ subscribe_url }}">subscribe</a>.</p>
+    {% endblocktrans %}
+  {% endif %}
+
+  {% url 'djstripe:history' company_id=customer.subscriber_id as history_url %}
+  {% blocktrans with history_url as history_url %}
+    <p>Or consult your <a href="{{ history_url }}">payment history</a>.</p>
+  {% endblocktrans %}
+
+  {% if plans %}
+    {# Show available plans #}
+    <div class="row">
+      <div class="col-xs-12">
+        <h2>{% trans "Subscription" %}</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>{% trans "Plan" %}</th>
+              <th>{% trans "Interval" %}</th>
+              <th>{% trans "Description" %}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for plan in plans %}
+            <tr {% if plan.plan == subscription.plan %}
+                {% if subscription.is_status_current and not subscription.is_status_temporarily_current and subscription.status != subscription.STATUS_TRIALING %}
+                    class="success"
+                {% elif subscription.is_status_temporarily_current or subscription.status == subscription.STATUS_TRIALING %}
+                    class="warning"
+                {% endif %}
+            {% endif %}>
+              <td>{{ plan.name }}</td>
+              <td>{{ plan.interval.title }}ly</td>
+              <td>{{ plan.description }}</td>
+              <td>
+                {% if plan.plan == subscription.plan and subscription.status != subscription.STATUS_CANCELLED %}
+                  <strong>{% trans "Your plan" %}</strong>
+                {% else %}
+                  <a href="{% url 'djstripe:confirm' company_id=customer.subscriber_id plan=plan.plan %}"
+                     class="btn btn-primary">
+                    {% trans "Subscribe" %}
+                  </a>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% else %}
+    {# No plans so just show payment history #}
+    {% include "djstripe/includes/_history_table.html" %}
+  {% endif %}
+
+  <!-- Modal for showing card -->
+  <div class="modal fade" id="show-card">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">{% trans "Card on File" %}</h4>
+        </div>
+        <div class="modal-body">
+          <p><strong>{% trans "Type" %}:</strong> {{ customer.card_kind }}</p>
+          <p><strong>{% trans "Last 4 Digits" %}:</strong> {{ customer.card_last_4 }}</p>
+          {% blocktrans %}
+            <p>
+              <small>
+                For security, your card information is stored on
+                <a href="https://stripe.com">stripe.com</a>.
+              </small>
+            </p>
+          {% endblocktrans %}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            {% trans "Close" %}
+          </button>
+      </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+{% endblock content %}
+
+{% block scripts %}
+{{ block.super }}
+{% if plans %}
+  <script>
+    $(function() {
+      $.post("{% url 'djstripe:sync_history' company_id=customer.subscriber_id %}", function(data) {
+        $('#history-table').html(data);
+      });
+    });
+  </script>
+{% else %}
+  <script>
+    $(function() {
+      $.post("{% url 'djstripe:sync_history' company_id=customer.subscriber_id %}", function(data) {
+        $('#history-table').html(data);
+        $('.in-progress-gif').hide();
+      });
+    });
+  </script>
+{% endif %}
+{% endblock scripts %}

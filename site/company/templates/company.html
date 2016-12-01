@@ -115,6 +115,18 @@
       </td>
     </tr>
 
+    <tr>
+      <td>{% trans "Email" %}:</td>
+      <td>
+        {% verbatim %}
+        <span editable-email="company.email" onaftersave="edit_company()">
+          {{ company.email }}
+          <span class="el-icon-pencil"></span>
+        </span>
+        {% endverbatim %}
+      </td>
+    </tr>
+
     {# TODO: check for subscription #}
     <tr>
       <td>{% trans "Is statement sending enabled" %}</td>

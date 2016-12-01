@@ -12,10 +12,12 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import collections
 import os
 from kombu import Exchange, Queue
 
 from django.core.exceptions import ImproperlyConfigured
+from django.utils.translation import ugettext_lazy as _
 
 
 def get_env_variable(var_name, fail_on_error=True):
@@ -80,6 +82,7 @@ INSTALLED_APPS = (
     'dbbackup',
     'django_celery_results',
     'django_celery_beat',
+    'djstripe',
 
     # -- zinnia
     'django_comments',
@@ -407,6 +410,50 @@ PINGEN_SEND_ON_UPLOAD = False  # careful here!
 PINGEN_SEND_COLOR = 2
 PINGEN_API_URL = 'https://api.pingen.com'  # can't upload to stage api!
 # see pingen/conf.py for more options
+
+# stripe
+STRIPE_PUBLIC_KEY = get_env_variable('STRIPE_PUBLIC_KEY', fail_on_error=False)
+STRIPE_SECRET_KEY = get_env_variable('STRIPE_SECRET_KEY', fail_on_error=False)
+DJSTRIPE_INVOICE_FROM_EMAIL = DEFAULT_FROM_EMAIL
+DJSTRIPE_SUBSCRIBER_MODEL = 'shareholder.Company'
+DJSTRIPE_CURRENCIES = (('chf', _('Swiss franc'),),)
+DJSTRIPE_PLANS = collections.OrderedDict((
+    ('startup', {
+        'stripe_plan_id': 'startup',
+        'name': _('StartUp'),
+        'description': _(u'Designed für StartUps und Neugründungen'),
+        'price': 0,
+        'currency': 'chf',
+        'interval': 'month'
+    }),
+    ('professional', {
+        'stripe_plan_id': 'professional',
+        'name': _('Professional'),
+        'description': _(u'Für etablierte Aktiengesellschaften und KMU'),
+        'price': 1799,  # 17.99
+        'currency': 'chf',
+        'interval': 'month'
+    }),
+    ('enterprise', {
+        'stripe_plan_id': 'enterprise',
+        'name': _('Enterprise'),
+        'description': _(
+            u'First-Class-Service für grosse Aktionärsgesellschaften'),
+        'price': 17900,  # 179.00
+        'currency': 'chf',
+        'interval': 'month'
+    })
+))
+
+PAYMENT_PER_SHAREHOLDER = {
+    'startup': 0,
+    'professional': 49,  # 0.49
+    'enterprise': 9  # 0.09
+}
+
+from utils.payment import stripe_subscriber_request_callback
+DJSTRIPE_SUBSCRIBER_MODEL_REQUEST_CALLBACK = stripe_subscriber_request_callback
+
 
 try:
     from project.settings.local import *  # noqa

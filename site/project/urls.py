@@ -18,6 +18,8 @@ from rest_framework.authtoken import views
 from registration.backends.simple.views import RegistrationView
 from registration.forms import RegistrationFormUniqueEmail
 
+from djstripe.views import WebHook
+
 from services.rest.views import (
     ShareholderViewSet, CompanyViewSet, UserViewSet,
     PositionViewSet,
@@ -118,7 +120,12 @@ urlpatterns = [
         name='statement_reports'),
     url(r'^statements/reports/(?P<pk>\d+)/$',
         'shareholder.views.statement_report_detail',
-        name='statement_report')
+        name='statement_report'),
+
+    # stripe
+    url(r'^company/(?P<company_id>[0-9]+)/payments/',
+        include('company.urls_djstripe', namespace="djstripe")),
+    url(r'^_stripe/webhooks/$', WebHook.as_view())
 ]
 
 # admin

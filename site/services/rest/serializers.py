@@ -83,7 +83,7 @@ class CompanySerializer(serializers.HyperlinkedModelSerializer):
         fields = ('pk', 'name', 'share_count', 'country', 'url',
                   'shareholder_count', 'security_set', 'founded_at',
                   'provisioned_capital', 'profile_url', 'captable_pdf_url',
-                  'captable_csv_url', 'logo_url',
+                  'captable_csv_url', 'logo_url', 'email',
                   'is_statement_sending_enabled', 'statement_sending_date')
 
     def get_profile_url(self, obj):

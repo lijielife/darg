@@ -1,0 +1,23 @@
+{% extends "djstripe/base.html" %}
+
+{# {% block title %}{% trans "Payment History" %}{% endblock title %} #}
+
+{% block content %}
+<div class="row">
+  <div class="col-xs-12">
+    {% include "djstripe/includes/_history_table.html" %}
+  </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+  $(function() {
+    $.post("{% url 'djstripe:sync_history' company_id=customer.subscriber_id %}", function(data) {
+      $('#history-table').html(data);
+      $('.in-progress-gif').hide();
+    });
+  });
+</script>
+{% endblock scripts %}

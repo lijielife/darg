@@ -1,0 +1,106 @@
+{% extends "djstripe/base.html" %}
+
+{% load i18n %}
+
+{# {% block title %}{% trans "Change Card" %}{% endblock title %} #}
+
+{% block content %}
+
+<div class="row">
+  <div class="col-xs-12">
+    <h2>{% trans "Current Card" %}</h2>
+    <p class="">
+      {% if customer.card_kind and customer.card_last_4 %}
+        {% blocktrans with customer.card_kind as card_kind and customer.card_last_4 as card_last_4 %}
+          Current card on file is a <strong>{{ card_kind }}</strong>
+          ending in the digits <strong>{{ card_last_4 }}</strong>.
+        {% endblocktrans %}
+      {% else %}
+        {% trans "You do not currently have a card on file." %}
+      {% endif %}
+    </p>
+
+    {% if stripe_error %}
+      <p class="alert alert-danger form-error">{{ stripe_error }}</p>
+    {% endif %}
+
+    <form action="{% url 'djstripe:change_card' company_id=customer.subscriber_id %}"
+          method="POST" id="change-card-form" class="form-inline">
+      {% csrf_token %}
+      <p class="alert alert-danger form-error" style="display: none;" {# FIXME #}>
+        <span class="payment-errors"></span>
+      </p>
+
+      <div class="form-group">
+        <div>
+          {% trans "Card Number" %}
+          <span class="input-group">
+            <input type="text" size="20" pattern="\d*" autocomplete="off" data-stripe="number"/>
+          </span>
+
+          {% trans "CVC" %}
+          <span class="input-group">
+            <input type="text" size="4" pattern="\d*" data-stripe="cvc"/>
+          </span>
+
+          {% trans "Expiration (MM/YYYY)" %}
+          <span class="input-group">
+            <input type="text" size="2" pattern="\d*" autocomplete="off" data-stripe="exp-month"/>
+            /
+            <input type="text" size="4" pattern="\d*" autocomplete="off" data-stripe="exp-year"/>
+          </span>
+        </div>
+
+        <a href="{% url 'djstripe:account' company_id=customer.subscriber_id %}"
+           class="btn btn-default cancel">{% trans "Cancel" %}</a>
+        <button class="btn btn-focus change-card" type="submit">{% trans "Change Card" %}</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock content %}
+
+
+{% block scripts %}
+{{ block.super }}
+<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+<script type="text/javascript">
+  // This identifies your website in the createToken call below
+  Stripe.setPublishableKey('{{ STRIPE_PUBLIC_KEY }}');
+  jQuery(function($) {
+    $('#change-card-form').submit(function(event) {
+      var $form = $(this);
+
+      // Hide errors
+      $form.find('.form-error').hide();
+
+      // Disable the submit button to prevent repeated clicks
+      $form.find('button').prop('disabled', true);
+
+      Stripe.card.createToken($form, stripeResponseHandler);
+
+      // Prevent the form from submitting with the default action
+      return false;
+    });
+
+    var stripeResponseHandler = function(status, response) {
+      var $form = $('#change-card-form');
+
+      if (response.error) {
+        // Show the errors on the form
+        $form.find('.payment-errors').text(response.error.message);
+        $form.find('.form-error').show();
+        $form.find('button').prop('disabled', false);
+      } else {
+        // token contains id, last4, and card type
+        var token = response.id;
+        // Insert the token into the form so it gets submitted to the server
+        $form.append($('<input type="hidden" name="stripe_token" />').val(token));
+        // and submit
+        $form.get(0).submit();
+      }
+    };
+});
+</script>
+
+{% endblock scripts %}

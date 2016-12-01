@@ -61,7 +61,7 @@ class CompanyAdmin(VersionAdmin):
     search_fields = ('name',)
     fieldsets = (
         ('', {'fields': ('name', 'founded_at', 'share_count',
-                         'provisioned_capital', 'logo')}),
+                         'provisioned_capital', 'logo', 'email')}),
         (_('Address'), {'fields': ('street', 'city', 'province', 'postal_code',
                                    'country')}),
         (_('Statements'), {'fields': ('is_statement_sending_enabled',

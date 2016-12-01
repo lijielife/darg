@@ -1,5 +1,6 @@
 
 from django import template
+from django.conf import settings
 from django.utils.timezone import now
 
 
@@ -68,3 +69,18 @@ def get_options_value(shareholder, date=None):
 @register.assignment_tag
 def get_options_percent(shareholder, date=None):
     return shareholder.options_percent(date=date)
+
+
+@register.assignment_tag
+def get_plan_price_per_shareholder(plan):
+    return settings.PAYMENT_PER_SHAREHOLDER.get(plan.get('stripe_plan_id'))
+
+
+@register.assignment_tag
+def get_invoice_currency(invoice):
+    """
+    return currency for invoice if all invoice items have same currency
+    """
+    item_currencies = invoice.items.all().values_list('currency', flat=True)
+    if len(set(item_currencies)) == 1:
+        return item_currencies[0].upper()

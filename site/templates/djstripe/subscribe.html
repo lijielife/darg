@@ -1,0 +1,38 @@
+{% extends "djstripe/base.html" %}
+{% load static djstripe_tags i18n %}
+
+{# {% block title %}{% trans "Choose a Subscription" %}{% endblock title %} #}
+
+{% block content %}
+{{ block.super }}
+
+<h2>{% trans "Choose a Subscription for" %} {{ customer.subscriber }}</h2>
+
+{% if error %}
+  <div class="alert alert-error">{{ error }}</div>
+{% endif %}
+{% if view.error %}
+  <div class="alert alert-error">{{ view.error }}</div>
+{% endif %}
+
+<div id="pricing" class="row">
+  {% for plan in PLAN_LIST %}
+    <div class="box box1">
+      {% include "djstripe/_plan.html" %}
+      <div class="action">
+        {% if customer.current_subscription.plan == plan.plan and customer.current_subscription.status != CurrentSubscription.STATUS_CANCELLED %}
+          <a href="" class="btn btn-focus" disabled="disabled">
+            {% trans "Your plan" %}
+          </a>
+        {% else %}
+          <a href="{% url 'djstripe:confirm' company_id=customer.subscriber_id plan=plan.plan %}"
+             class="btn btn-focus">
+            {% trans "Subscribe" %}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+{% endblock content %}
