@@ -6,7 +6,7 @@ app.config ['$translateProvider', ($translateProvider) ->
     $translateProvider.useSanitizeValueStrategy('escaped')
 ]
 
-app.controller 'PositionsController', ['$scope', '$http', 'Position', 'Split', ($scope, $http, Position, Split) ->
+app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position', 'Split', ($scope, $http, $window, Position, Split) ->
     $scope.positions = []
     $scope.shareholders = []
     $scope.securities = []
@@ -60,6 +60,7 @@ app.controller 'PositionsController', ['$scope', '$http', 'Position', 'Split', (
         .then ->
             # Clear any errors
             $scope.errors = null
+            $window.ga('send', 'event', 'form-send', 'add-transaction')
             $scope.addPositionLoading = false
         , (rejection) ->
             $scope.errors = rejection.data

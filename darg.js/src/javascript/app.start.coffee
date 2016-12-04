@@ -90,6 +90,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
         .then ->
             # Clear any errors
             $scope.errors = null
+            $window.ga('send', 'event', 'form-send', 'add-shareholder')
         , (rejection) ->
             $scope.errors = rejection.data
             Raven.captureMessage('form error: ' + rejection.statusText, {
