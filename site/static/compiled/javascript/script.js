@@ -926,7 +926,7 @@
   ]);
 
   app.controller('StartController', [
-    '$scope', '$http', 'CompanyAdd', 'Shareholder', 'User', 'Company', '$timeout', function($scope, $http, CompanyAdd, Shareholder, User, Company, $timeout) {
+    '$scope', '$window', '$http', 'CompanyAdd', 'Shareholder', 'User', 'Company', '$timeout', function($scope, $window, $http, CompanyAdd, Shareholder, User, Company, $timeout) {
       $scope.shareholders = [];
       $scope.option_holders = [];
       $scope.user = [];
@@ -958,11 +958,8 @@
       });
       $scope.$watchCollection('shareholders', function(shareholders) {
         $scope.total_shares = 0;
-        angular.forEach(shareholders, function(item) {
+        return angular.forEach(shareholders, function(item) {
           return $scope.total_shares = item.share_count + $scope.total_shares;
-        });
-        return angular.forEach(option_holders, function(item) {
-          return $scope.total_shares = item.options_count + $scope.total_shares;
         });
       });
       $scope.add_company = function() {
@@ -986,7 +983,8 @@
             });
           });
         }).then(function() {
-          return $scope.company = new Company();
+          $scope.company = new Company();
+          return $window.ga('send', 'event', 'form-send', 'add-company');
         }).then(function() {
           return $scope.errors = null;
         }, function(rejection) {
