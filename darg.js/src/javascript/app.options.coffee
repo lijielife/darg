@@ -6,7 +6,7 @@ app.config ['$translateProvider', ($translateProvider) ->
     $translateProvider.useSanitizeValueStrategy('escaped')
 ]
 
-app.controller 'OptionsController', ['$scope', '$http', '$filter', 'OptionPlan', 'OptionTransaction', ($scope, $http, $filter, OptionPlan, OptionTransaction) ->
+app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'OptionPlan', 'OptionTransaction', ($scope, $http, $window, $filter, OptionPlan, OptionTransaction) ->
 
     $scope.option_plans = []
     $scope.securities = []
@@ -59,6 +59,7 @@ app.controller 'OptionsController', ['$scope', '$http', '$filter', 'OptionPlan',
         .then ->
             # Clear any errors
             $scope.errors = null
+            $window.ga('send', 'event', 'form-send', 'add-optionplan')
         , (rejection) ->
             $scope.errors = rejection.data
             Raven.captureMessage('form error: ' + rejection.statusText, {
@@ -85,6 +86,7 @@ app.controller 'OptionsController', ['$scope', '$http', '$filter', 'OptionPlan',
         .then ->
             # Clear any errors
             $scope.errors = null
+            $window.ga('send', 'event', 'form-send', 'add-option-transaction')
         , (rejection) ->
             $scope.errors = rejection.data
             Raven.captureMessage('form error: ' + rejection.statusText, {
