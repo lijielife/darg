@@ -926,7 +926,7 @@
   ]);
 
   app.controller('StartController', [
-    '$scope', '$http', 'CompanyAdd', 'Shareholder', 'User', 'Company', '$timeout', function($scope, $http, CompanyAdd, Shareholder, User, Company, $timeout) {
+    '$scope', '$window', '$http', 'CompanyAdd', 'Shareholder', 'User', 'Company', '$timeout', function($scope, $window, $http, CompanyAdd, Shareholder, User, Company, $timeout) {
       $scope.shareholders = [];
       $scope.option_holders = [];
       $scope.user = [];
@@ -984,7 +984,7 @@
           });
         }).then(function() {
           $scope.company = new Company();
-          return ga('send', 'event', 'form-send', 'add-company');
+          return $window.ga('send', 'event', 'form-send', 'add-company');
         }).then(function() {
           return $scope.errors = null;
         }, function(rejection) {
