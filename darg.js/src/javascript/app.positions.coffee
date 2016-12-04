@@ -99,6 +99,7 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
         .then ->
             $scope.errors = null
             $scope.show_split = false
+            $window.ga('send', 'event', 'form-send', 'add-split')
         , (rejection) ->
             $scope.errors = rejection.data
             Raven.captureMessage('form error: ' + rejection.statusText, {
