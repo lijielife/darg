@@ -19,6 +19,13 @@
           +zen-grid-item(5,4)
           .auto-suggestions
             width: +zen-grid-item-width(4.5)
+  .table
+    .tr
+      .td
+        font-size: 0.9em
+        @include align-items(baseline)
+    .th
+      font-size: 0.9em
 
 @media only screen and (max-width: 800px)
   
@@ -185,6 +192,20 @@
       background-size: cover
 /* end screenshot container */
 
+/* Mobile first method | Responsive table breakpoint*/
+@media only screen and (min-width: 640px)
+  .table
+    .th
+      font-weight: 700
+      background-color: #f2f2f2
+    .tr
+      @include display-flex(flex)
+      @include flex-flow(row)
+      .td
+        padding: 0.5em
+        &:before
+          content: none
+
 @media only screen and (max-width: 640px)
 
   body.core
@@ -233,8 +254,10 @@
           .auto-suggestions
             top: 156px  // FIXME
             width: +zen-grid-item-width(6)
-
-
+    .table
+      .tr
+        .td
+          word-break: inherit
 
 @media only screen and (max-width: 480px)
   body.core
@@ -255,6 +278,13 @@
       .validate.ng-pristine
         input
           width: 50%
+  .table
+    .td
+      @include flex-wrap(wrap)
+      &:before
+        padding-right: 0.8em
+    .tr
+      font-size: 0.75em
 
 @media only screen and (max-width: 400px)
 
