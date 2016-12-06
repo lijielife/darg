@@ -532,10 +532,8 @@ nav.navbar
 // -- responsive table 
 .text-right-flex
   @include justify-content(flex-end) //make text right aligned
-
 .totals
   border-top: 2px solid $color-gray-lighten
-
 .table
   @include display-flex(flex)
   @include flex-flow(column)
@@ -556,7 +554,7 @@ nav.navbar
     @include transition(opacity 0.15s linear)
   &:hover
     &:not(.th)
-      background: $color-gray-lighten-2
+      background: $color-gray-lighten
     .el-icon-eye-open
       opacity: 1
 .td
@@ -568,7 +566,7 @@ nav.navbar
   @include flex-flow(row)
   @include flex-grow(1)
   @include flex-basis(0)
-  @include align-items(center)
+  @include align-items(baseline)
   word-wrap: break-word
   overflow-wrap: break-word
   padding: 0.8em
@@ -582,21 +580,22 @@ nav.navbar
   width: 30%
   font-weight: 700
   text-align: left
-
+  margin-right: 10px
 .td-width-1
   @include flex-grow(1)
+  word-break: normal
+.td-width-2
+  @include flex-grow(2)
   word-break: normal
 .td-width-3
   &.no-before
     &:before
       width: 0
   @include flex-grow(3)
-
 .td-width-10 
   @include flex-grow(10)
   &:before
     width: 0
-
 //-- end responsive table
 
 // --  start
@@ -609,23 +608,11 @@ div #add_company
 div #add_company p
   line-height: 1.5em
 
-div #shareholder_list table a
-  padding: 0em
-  padding-left: 1em
-  visibility: hidden
-  margin: 0em
-
-div #shareholder_list table tr:hover a
-  visibility: visible
-
-div #shareholder_list table tr td.summary
-  border-top: 1px solid black
-
 div.captable_context_actions
   text-align: right
 .table
   .option-holders-heading
-    background: #f7f7f7
+    background: $color-gray-lighten
 
 // -- positions
 
@@ -717,4 +704,3 @@ div#optionplan
 
 // end of file to override above styles
 @import breakpoints
- 
