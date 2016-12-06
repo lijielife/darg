@@ -190,7 +190,7 @@
     .screenshot
       height: 130px
       background-size: cover
-/* end screenshot container */
+/* end screenshot container */  
 
 /* Mobile first method | Responsive table breakpoint*/
 @media only screen and (min-width: 640px)
@@ -199,11 +199,10 @@
       &.th
         font-weight: 700
         border-bottom: 2px solid $color-gray-lighten
-      &:not(first-child)
-        border-bottom: 1px solid $color-gray-lighten
+      border-bottom: 1px solid $color-gray-lighten
+        
       &.totals
-        .td
-          border-bottom: 0
+        border-bottom: 0
       @include display-flex(flex)
       @include flex-flow(row)
       .td

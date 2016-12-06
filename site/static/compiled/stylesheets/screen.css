@@ -3181,6 +3181,9 @@ nav.navbar .navbar-text {
   -webkit-transition: all 0.15s linear;
   transition: all 0.15s linear;
 }
+.tr.totals {
+  border-bottom: 0;
+}
 .tr .el-icon-eye-open {
   opacity: 0;
   -moz-transition: opacity 0.15s linear;
@@ -3651,6 +3654,7 @@ div#optionplan .pdf_upload_preview {
 /* Mobile first method | Responsive table breakpoint */
 @media only screen and (min-width: 640px) {
   .table .tr {
+    border-bottom: 1px solid #ddd;
     display: -webkit-flex;
     display: flex;
     -webkit-flex-flow: row;
@@ -3660,10 +3664,7 @@ div#optionplan .pdf_upload_preview {
     font-weight: 700;
     border-bottom: 2px solid #ddd;
   }
-  .table .tr:not(first-child) {
-    border-bottom: 1px solid #ddd;
-  }
-  .table .tr.totals .td {
+  .table .tr.totals {
     border-bottom: 0;
   }
   .table .tr .td {
