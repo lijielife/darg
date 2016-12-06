@@ -3148,8 +3148,13 @@ nav.navbar .navbar-text {
   padding-top: 6px;
 }
 
+.text-right-flex {
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+}
+
 .totals {
-  border-top: 2px solid #ccc;
+  border-top: 2px solid #ddd;
 }
 
 .table {
@@ -3168,6 +3173,7 @@ nav.navbar .navbar-text {
 }
 
 .tr {
+  border-bottom: 1px solid #ddd;
   width: 100%;
   background-color: #fff;
   -moz-transition: all 0.15s linear;
@@ -3175,8 +3181,18 @@ nav.navbar .navbar-text {
   -webkit-transition: all 0.15s linear;
   transition: all 0.15s linear;
 }
-.tr:hover {
+.tr .el-icon-eye-open {
+  opacity: 0;
+  -moz-transition: opacity 0.15s linear;
+  -o-transition: opacity 0.15s linear;
+  -webkit-transition: opacity 0.15s linear;
+  transition: opacity 0.15s linear;
+}
+.tr:hover:not(.th) {
   background: #f5f5f5;
+}
+.tr:hover .el-icon-eye-open {
+  opacity: 1;
 }
 
 .td {
@@ -3195,7 +3211,11 @@ nav.navbar .navbar-text {
   padding: 0.8em;
   word-break: break-word;
   word-break: break-all;
-  font-size: 0.95em;
+  font-size: 0.9em;
+}
+.td.text-right-flex {
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
 }
 .td:hover {
   cursor: pointer;
@@ -3208,6 +3228,13 @@ nav.navbar .navbar-text {
   content: attr(data-header);
   width: 30%;
   font-weight: 700;
+  text-align: left;
+}
+
+.td-width-1 {
+  -webkit-flex-grow: 1;
+  flex-grow: 1;
+  word-break: normal;
 }
 
 .td-width-3 {
@@ -3623,18 +3650,29 @@ div#optionplan .pdf_upload_preview {
 /* end screenshot container */
 /* Mobile first method | Responsive table breakpoint */
 @media only screen and (min-width: 640px) {
-  .table .th {
-    font-weight: 700;
-    background-color: #f2f2f2;
-  }
   .table .tr {
     display: -webkit-flex;
     display: flex;
     -webkit-flex-flow: row;
     flex-flow: row;
   }
+  .table .tr.th {
+    font-weight: 700;
+    border-bottom: 2px solid #ddd;
+  }
+  .table .tr:not(first-child) {
+    border-bottom: 1px solid #ddd;
+  }
+  .table .tr.totals .td {
+    border-bottom: 0;
+  }
   .table .tr .td {
     padding: 0.5em;
+  }
+  .table .tr .td.text-right-flex {
+    text-align: right;
+    -webkit-justify-content: flex-end;
+    justify-content: flex-end;
   }
   .table .tr .td:before {
     content: none;
