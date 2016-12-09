@@ -74,8 +74,8 @@
         <div class="td td-width-10" data-header="">{% endverbatim %}{% trans "Option Holders" %}{% verbatim %}</div>
       </div>
       <div class="tr option-holders" ng-show="option_holders.length" ng-repeat="option_holder in option_holders  | orderBy:'-share_count'" ng-click="goto_shareholder(option_holder.pk)" ng-mouseover="">
-        <div class="td td-width-2 order-1 option-holders">{{ option_holder.user.first_name }} {{ option_holder.user.last_name }}</div>
-        <div class="td td-width-2 order-3">{{ option_holder.user.email }}<a class="btn-inline"><span class="el-icon-eye-open"></span></a></div>
+        <div class="td td-width-2 order-1 option-holders full-name">{{ option_holder.user.first_name }} {{ option_holder.user.last_name }}</div>
+        <div class="td td-width-2 order-3 email">{{ option_holder.user.email }}<a class="btn-inline"><span class="el-icon-eye-open"></span></a></div>
         <div class="td text-right-flex number order-2">{{ option_holder.number }}</div>
         <div class="td text-right-flex share shareholders-count">
           <value ng-if="option_holder.options_count != '-'">
