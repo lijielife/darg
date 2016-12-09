@@ -548,6 +548,9 @@ nav.navbar
   border-bottom: 1px solid $color-gray-lighten
   width: 100%
   background-color: $color-white
+  &:not(.th)
+    @include display-flex(flex)
+    @include flex-flow(column)
   @include transition(all 0.15s linear)
   .el-icon-eye-open
     opacity: 0
@@ -568,19 +571,10 @@ nav.navbar
   @include flex-basis(0)
   @include align-items(baseline)
   word-wrap: break-word
-  overflow-wrap: break-word
   padding: 0.8em
-  word-break: break-word
-  word-break: break-all
   font-size: 0.9em
   [class*='el-icon-']
     padding: 0 5px
-.td:before 
-  content: attr(data-header)
-  width: 30%
-  font-weight: 700
-  text-align: left
-  margin-right: 10px
 .td-width-1
   @include flex-grow(1)
   word-break: normal
@@ -596,10 +590,8 @@ nav.navbar
   @include flex-grow(10)
   &:before
     width: 0
-//-- end responsive table
 
 // --  start
-
 div #add_shareholder
   margin-bottom: 1em
 div #add_company

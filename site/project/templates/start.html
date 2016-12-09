@@ -55,14 +55,14 @@
         <div class="td text-right-flex">{% endverbatim %}{% trans "Shares (Voting-%%)" %}{% verbatim %}</div>
       </div>
       <div class="tr" ng-repeat="shareholder in shareholders  | orderBy:['-share_count', '-last_name']" ng-click="goto_shareholder(shareholder.pk)" ng-mouseover="">
-        <div class="td td-width-2" data-header="{% endverbatim %}{% trans "Name" %}{% verbatim %}">
+        <div class="td td-width-2 order-1 full-name">
           <span class="el-icon-exclamation-sign" ng-hide="shareholder.validate_gafi.is_valid" data-toggle="tooltip" title="{% endverbatim %}{% trans "Gafi Validation failed" %}{% verbatim %}"></span>{{ shareholder.user.first_name }} {{ shareholder.user.last_name }}</div>
-        <div class="td td-width-2" data-header="{% endverbatim %}{% trans "Email" %}{% verbatim %}">{{ shareholder.user.email }}<a class="btn-inline"><span class="el-icon-eye-open"></span></a></div>
-        <div class="td text-right-flex" data-header="{% endverbatim %}{% trans "Shareholder Number" %}{% verbatim %}">{{ shareholder.number }}</div>
-        <div class="td text-right-flex" data-header="{% endverbatim %}{% trans "Shares (Voting-%%)" %}{% verbatim %}">
+        <div class="td td-width-2 order-3 email">{{ shareholder.user.email }}<a class="btn-inline"><span class="el-icon-eye-open"></span></a></div>
+        <div class="td text-right-flex order-2 number">{{ shareholder.number }}</div>
+        <div class="td text-right-flex order-4 shareholders-count">
           <value ng-if="shareholder.share_count != '-'">
               {{ shareholder.share_count | number : 0}}
-              <span ng-hide="shareholder.is_company">
+              <span class="shares-count" ng-hide="shareholder.is_company">
                   ({{shareholder.share_percent | number : 1}}%)
               </span>
           </value>
@@ -74,10 +74,10 @@
         <div class="td td-width-10" data-header="">{% endverbatim %}{% trans "Option Holders" %}{% verbatim %}</div>
       </div>
       <div class="tr option-holders" ng-show="option_holders.length" ng-repeat="option_holder in option_holders  | orderBy:'-share_count'" ng-click="goto_shareholder(option_holder.pk)" ng-mouseover="">
-        <div class="td td-width-2 option-holders" data-header="{% endverbatim %}{% trans "Name" %}{% verbatim %}">{{ option_holder.user.first_name }} {{ option_holder.user.last_name }}</div>
-        <div class="td td-width-2" data-header="{% endverbatim %}{% trans "Email" %}{% verbatim %}">{{ option_holder.user.email }}<a class="btn-inline"><span class="el-icon-eye-open"></span></a></div>
-        <div class="td text-right-flex number" data-header="{% endverbatim %}{% trans "Shareholder Number" %}{% verbatim %}">{{ option_holder.number }}</div>
-        <div class="td text-right-flex share" data-header="{% endverbatim %}{% trans "Shares (Voting-%%)" %}{% verbatim %}">
+        <div class="td td-width-2 order-1 option-holders">{{ option_holder.user.first_name }} {{ option_holder.user.last_name }}</div>
+        <div class="td td-width-2 order-3">{{ option_holder.user.email }}<a class="btn-inline"><span class="el-icon-eye-open"></span></a></div>
+        <div class="td text-right-flex number order-2">{{ option_holder.number }}</div>
+        <div class="td text-right-flex share shareholders-count">
           <value ng-if="option_holder.options_count != '-'">
             {{ option_holder.options_count | number : 0}} ({{option_holder.options_percent | number : 1}}%)
           </value>
@@ -89,7 +89,7 @@
             {% endverbatim %}{% trans "Total Shares distributed (total shares registered with company)" %}{% verbatim %}
           </value>
         </div>
-        <div class="td summary text-right-flex" data-header="{% endverbatim %}{% trans "Shares (Voting-%%)" %}{% verbatim %}">
+        <div class="td summary text-right-flex">
           {{ total_shares }} ({{ shareholders[0].company.share_count }})
         </div>
       </div>

@@ -3184,6 +3184,12 @@ nav.navbar .navbar-text {
 .tr.totals {
   border-bottom: 0;
 }
+.tr:not(.th) {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-flow: column;
+  flex-flow: column;
+}
 .tr .el-icon-eye-open {
   opacity: 0;
   -moz-transition: opacity 0.15s linear;
@@ -3210,10 +3216,7 @@ nav.navbar .navbar-text {
   -webkit-align-items: baseline;
   align-items: baseline;
   word-wrap: break-word;
-  overflow-wrap: break-word;
   padding: 0.8em;
-  word-break: break-word;
-  word-break: break-all;
   font-size: 0.9em;
 }
 .td.text-right-flex {
@@ -3225,14 +3228,6 @@ nav.navbar .navbar-text {
 }
 .td [class*='el-icon-'] {
   padding: 0 5px;
-}
-
-.td:before {
-  content: attr(data-header);
-  width: 30%;
-  font-weight: 700;
-  text-align: left;
-  margin-right: 10px;
 }
 
 .td-width-1 {
@@ -3527,14 +3522,7 @@ div#optionplan .pdf_upload_preview {
   #flatpage .tagline {
     padding: 0;
   }
-}
-/* Hide orange items on 800 - 1000 px screen size */
-@media only screen and (min-width: 801px) and (max-width: 1000px) {
-  .intro header.home .container .menu li .orange {
-    display: none;
-  }
-}
-@media (max-width: 800px) {
+
   #auth h1 {
     text-align: center;
   }
@@ -3599,52 +3587,20 @@ div#optionplan .pdf_upload_preview {
     width: 0;
   }
 }
-/* end of collapse menu */
+/* Hide orange items on 800 - 1000 px screen size */
+@media only screen and (min-width: 801px) and (max-width: 1000px) {
+  .intro header.home .container .menu li .orange {
+    display: none;
+  }
+}
 @media only screen and (min-width: 768px) {
   /* override bootstrap default class */
   .navbar-right .dropdown-menu {
     right: 20px;
     top: 110%;
   }
-}
-@media only screen and (max-width: 768px) {
-  body.core .container .control-label {
-    padding-left: 15px;
-  }
-  body.core header .menu li {
-    margin: 5px 0;
-  }
-  body.core header .navbar-collapse {
-    border: 0;
-    box-shadow: unset;
-  }
-  body.core header .navbar-collapse .navbar-header {
-    width: 100%;
-  }
-}
-/* Screenshot container no repeating */
-@media only screen and (max-width: 650px) {
-  .main-screenshot .screenshot {
-    background-position: center;
-    background-size: 100% 100%;
-  }
-}
-@media only screen and (max-width: 480px) {
-  .main-screenshot .screenshot {
-    height: 160px;
-    background-size: 100%;
-    background-position: center top;
-  }
-}
-@media only screen and (max-width: 360px) {
-  .main-screenshot .screenshot {
-    height: 130px;
-    background-size: cover;
-  }
-}
-/* end screenshot container */
-/* Mobile first method | Responsive table breakpoint */
-@media only screen and (min-width: 710px) {
+
+  /* Responsive table breakpoint */
   .table .tr {
     border-bottom: 1px solid #f5f5f5;
     display: -webkit-flex;
@@ -3672,8 +3628,106 @@ div#optionplan .pdf_upload_preview {
     -webkit-justify-content: flex-end;
     justify-content: flex-end;
   }
-  .table .tr .td:before {
-    content: none;
+}
+@media only screen and (max-width: 768px) {
+  .order-1 {
+    -webkit-order: 1;
+    order: 1;
+  }
+
+  .order-2 {
+    -webkit-order: 2;
+    order: 2;
+  }
+
+  .order-3 {
+    -webkit-order: 3;
+    order: 3;
+  }
+
+  .order-4 {
+    -webkit-order: 4;
+    order: 4;
+  }
+
+  .table .tr {
+    min-height: 70px;
+    padding: 10px 75px 10px 0;
+    position: relative;
+  }
+  .table .tr.option-holders-heading {
+    font-weight: 700;
+    background: transparent;
+  }
+  .table .tr.option-holders-heading .note {
+    padding-left: 0;
+    font-weight: 300;
+  }
+  .table .tr .full-name {
+    font-weight: 700;
+    font-size: 1.1em;
+  }
+  .table .tr .email {
+    font-style: italic;
+    font-size: 80%;
+    margin-top: 5px;
+  }
+  .table .tr .shares-count {
+    display: block;
+  }
+  .table .tr .shareholders-count {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    border-radius: 100%;
+    background-color: #aaa;
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    font-size: 10px;
+  }
+  .table .tr .shareholders-count value {
+    text-align: center;
+    font-weight: 700;
+    font-size: 1em;
+  }
+  .table .tr .shareholders-count value .shares-count {
+    font-size: 10px;
+  }
+  .table .tr .td {
+    word-break: normal;
+    padding: 0 10px;
+  }
+
+  body.core .container .td .el-icon-exclamation-sign {
+    display: none;
+  }
+  body.core .container .control-label {
+    padding-left: 15px;
+  }
+  body.core header .menu li {
+    margin: 5px 0;
+  }
+  body.core header .navbar-collapse {
+    border: 0;
+    box-shadow: unset;
+  }
+  body.core header .navbar-collapse .navbar-header {
+    width: 100%;
+  }
+}
+@media only screen and (max-width: 650px) {
+  .main-screenshot .screenshot {
+    background-position: center;
+    background-size: 100% 100%;
   }
 }
 @media only screen and (max-width: 640px) {
@@ -3786,13 +3840,17 @@ div#optionplan .pdf_upload_preview {
     -webkit-flex-wrap: wrap;
     flex-wrap: wrap;
   }
-  .table .td:before {
-    padding-bottom: 0.3em;
-    width: 100%;
-    padding-right: 0.8em;
-  }
   .table .tr {
     font-size: 1em;
+  }
+  .table .tr .full-name {
+    font-size: 0.75em;
+  }
+
+  .main-screenshot .screenshot {
+    height: 160px;
+    background-size: 100%;
+    background-position: center top;
   }
 }
 @media only screen and (max-width: 400px) {
@@ -3846,5 +3904,11 @@ div#optionplan .pdf_upload_preview {
     float: none;
     width: 98%;
     margin-top: 1em;
+  }
+}
+@media only screen and (max-width: 360px) {
+  .main-screenshot .screenshot {
+    height: 130px;
+    background-size: cover;
   }
 }
