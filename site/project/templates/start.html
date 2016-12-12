@@ -57,7 +57,7 @@
       <div class="tr" ng-repeat="shareholder in shareholders  | orderBy:['-share_count', '-last_name']" ng-click="goto_shareholder(shareholder.pk)" ng-mouseover="">
         <div class="td td-width-2 order-1 full-name">
           <span class="el-icon-exclamation-sign" ng-hide="shareholder.validate_gafi.is_valid" data-toggle="tooltip" title="{% endverbatim %}{% trans "Gafi Validation failed" %}{% verbatim %}"></span>{{ shareholder.user.first_name }} {{ shareholder.user.last_name }}</div>
-        <div class="td td-width-2 order-3 email">{{ shareholder.user.email }}<a class="btn-inline"><span class="el-icon-eye-open"></span></a></div>
+        <div class="td td-width-2 order-3 email"><span>{{ shareholder.user.email }}</span><a class="btn-inline"><span class="el-icon-eye-open"></span></a></div>
         <div class="td text-right-flex order-2 number">{{ shareholder.number }}</div>
         <div class="td text-right-flex order-4 shareholders-count">
           <value ng-if="shareholder.share_count != '-'">

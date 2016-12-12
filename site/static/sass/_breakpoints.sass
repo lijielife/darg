@@ -192,14 +192,26 @@
       .full-name
         font-weight: 700
         font-size: 1.1em
+      .number
+        line-height: 1.2em
+        margin: 5px 0
       .email
         font-style: italic
         font-size: 80%
-        margin-top: 5px
+        @include flex-wrap(nowrap)
+        span
+          white-space: nowrap /* No break word */
+          overflow: hidden /* truncate content */
+          text-overflow: ellipsis /* truncate with ... */
       .shares-count
         display: block
       .shareholders-count
         value
+          position: absolute
+          top: 50%
+          left: 50%
+          transform: translate(-50%, -50%)
+          -webkit-transform: translate(-50%, -50%) //safari support
           text-align: center
           font-weight: 700
           font-size: 1em
@@ -215,9 +227,7 @@
         top: 50%
         right: 15px
         transform: translateY(-50%)
-        @include display-flex(flex)
-        @include align-items(center)
-        @include justify-content(center)
+        -webkit-transform: translateY(-50%) //safari support
         font-size: 10px
       .td
         word-break: normal
@@ -324,7 +334,7 @@
     .tr
       font-size: 1em
       .full-name
-        font-size: 0.75em
+        font-size: 0.75em      
   .main-screenshot
     .screenshot
       height: 160px

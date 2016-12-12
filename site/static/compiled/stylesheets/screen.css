@@ -3667,10 +3667,20 @@ div#optionplan .pdf_upload_preview {
     font-weight: 700;
     font-size: 1.1em;
   }
+  .table .tr .number {
+    line-height: 1.2em;
+    margin: 5px 0;
+  }
   .table .tr .email {
     font-style: italic;
     font-size: 80%;
-    margin-top: 5px;
+    -webkit-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+  }
+  .table .tr .email span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .table .tr .shares-count {
     display: block;
@@ -3686,15 +3696,15 @@ div#optionplan .pdf_upload_preview {
     top: 50%;
     right: 15px;
     transform: translateY(-50%);
-    display: -webkit-flex;
-    display: flex;
-    -webkit-align-items: center;
-    align-items: center;
-    -webkit-justify-content: center;
-    justify-content: center;
+    -webkit-transform: translateY(-50%);
     font-size: 10px;
   }
   .table .tr .shareholders-count value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
     text-align: center;
     font-weight: 700;
     font-size: 1em;
