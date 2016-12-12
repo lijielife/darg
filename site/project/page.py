@@ -51,8 +51,13 @@ class BasePage(object):
 
     def login(self, username, password):
         """ log the user in """
-        time.sleep(3)
-        self.driver.get('%s%s' % (self.live_server_url, '/accounts/login/'))
+        try:
+            self.driver.get('%s%s' % (self.live_server_url, '/accounts/login/'))
+        # randomly failes with TimeoutException
+        except:
+            time.sleep(5)
+            self.driver.get('%s%s' % (self.live_server_url, '/accounts/login/'))
+
         self.driver.find_element_by_xpath(
             '//*[@id="id_username"]').send_keys(username)
         self.driver.find_element_by_xpath(
