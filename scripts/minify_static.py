@@ -9,7 +9,7 @@ print("Minify Static Files (Javascripts & Stylesheets)")
 
 
 DIR = os.path.abspath(os.path.dirname(__file__))
-STATIC_DIR = os.path.join(DIR, "site", "static")
+STATIC_DIR = os.path.join(DIR, '..', "site", "static")
 SOURCE_DIR = os.path.join(STATIC_DIR, "compiled")
 OUTPUT_DIR = os.path.join(STATIC_DIR, "minified")
 
