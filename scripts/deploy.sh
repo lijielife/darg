@@ -1,4 +1,7 @@
 #!/bin/bash
+if [ ! -d "scripts" ]; then
+  echo 'this script must be executed from project root'
+fi
 
 source .ve/bin/activate
 
@@ -11,7 +14,7 @@ cd site
 ./manage.py mediabackup
 cd ..
 
-python ./minify_static.py && ./site/manage.py migrate && ./site/manage.py collectstatic --noinput
+python ./scripts/minify_static.py && ./site/manage.py migrate && ./site/manage.py collectstatic --noinput
 echo "touching to reload uwsgi..."
 touch "/tmp/$USER-master.pid"
 echo "...done"
