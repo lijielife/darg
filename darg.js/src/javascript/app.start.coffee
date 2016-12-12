@@ -6,7 +6,7 @@ app.config ['$translateProvider', ($translateProvider) ->
     $translateProvider.useSanitizeValueStrategy('escaped')
 ]
 
-app.controller 'StartController', ['$scope', '$http', 'CompanyAdd', 'Shareholder', 'User', 'Company', '$timeout', ($scope, $http, CompanyAdd, Shareholder, User, Company, $timeout) ->
+app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', 'Shareholder', 'User', 'Company', '$timeout', ($scope, $window, $http, CompanyAdd, Shareholder, User, Company, $timeout) ->
 
     # from server
     $scope.shareholders = []
@@ -46,8 +46,6 @@ app.controller 'StartController', ['$scope', '$http', 'CompanyAdd', 'Shareholder
         $scope.total_shares = 0
         angular.forEach shareholders, (item) ->
             $scope.total_shares = item.share_count + $scope.total_shares
-        angular.forEach option_holders, (item) ->
-            $scope.total_shares = item.options_count + $scope.total_shares
 
     $scope.add_company = ->
         $scope.newCompany.$save().then (result) ->
@@ -68,6 +66,7 @@ app.controller 'StartController', ['$scope', '$http', 'CompanyAdd', 'Shareholder
         .then ->
             # Reset our editor to a new blank post
             $scope.company = new Company()
+            $window.ga('send', 'event', 'form-send', 'add-company')
         .then ->
             # Clear any errors
             $scope.errors = null
@@ -91,6 +90,7 @@ app.controller 'StartController', ['$scope', '$http', 'CompanyAdd', 'Shareholder
         .then ->
             # Clear any errors
             $scope.errors = null
+            $window.ga('send', 'event', 'form-send', 'add-shareholder')
         , (rejection) ->
             $scope.errors = rejection.data
             Raven.captureMessage('form error: ' + rejection.statusText, {

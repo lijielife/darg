@@ -352,7 +352,7 @@
   ]);
 
   app.controller('OptionsController', [
-    '$scope', '$http', '$filter', 'OptionPlan', 'OptionTransaction', function($scope, $http, $filter, OptionPlan, OptionTransaction) {
+    '$scope', '$http', '$window', '$filter', 'OptionPlan', 'OptionTransaction', function($scope, $http, $window, $filter, OptionPlan, OptionTransaction) {
       $scope.option_plans = [];
       $scope.securities = [];
       $scope.shareholders = [];
@@ -408,7 +408,8 @@
           $scope.newOptionPlan = new OptionPlan();
           return $scope.show_add_option_plan = false;
         }).then(function() {
-          return $scope.errors = null;
+          $scope.errors = null;
+          return $window.ga('send', 'event', 'form-send', 'add-optionplan');
         }, function(rejection) {
           $scope.errors = rejection.data;
           Raven.captureMessage('form error: ' + rejection.statusText, {
@@ -437,7 +438,8 @@
           $scope.newOptionTransaction = new OptionPlan();
           return $scope.show_add_option_transaction = false;
         }).then(function() {
-          return $scope.errors = null;
+          $scope.errors = null;
+          return $window.ga('send', 'event', 'form-send', 'add-option-transaction');
         }, function(rejection) {
           $scope.errors = rejection.data;
           Raven.captureMessage('form error: ' + rejection.statusText, {
@@ -638,7 +640,7 @@
   ]);
 
   app.controller('PositionsController', [
-    '$scope', '$http', 'Position', 'Split', function($scope, $http, Position, Split) {
+    '$scope', '$http', '$window', 'Position', 'Split', function($scope, $http, $window, Position, Split) {
       $scope.positions = [];
       $scope.shareholders = [];
       $scope.securities = [];
@@ -695,6 +697,7 @@
           return $scope.newPosition = new Position();
         }).then(function() {
           $scope.errors = null;
+          $window.ga('send', 'event', 'form-send', 'add-transaction');
           return $scope.addPositionLoading = false;
         }, function(rejection) {
           $scope.errors = rejection.data;
@@ -741,7 +744,8 @@
           return $scope.newSplit = new Split();
         }).then(function() {
           $scope.errors = null;
-          return $scope.show_split = false;
+          $scope.show_split = false;
+          return $window.ga('send', 'event', 'form-send', 'add-split');
         }, function(rejection) {
           $scope.errors = rejection.data;
           return Raven.captureMessage('form error: ' + rejection.statusText, {
@@ -926,7 +930,7 @@
   ]);
 
   app.controller('StartController', [
-    '$scope', '$http', 'CompanyAdd', 'Shareholder', 'User', 'Company', '$timeout', function($scope, $http, CompanyAdd, Shareholder, User, Company, $timeout) {
+    '$scope', '$window', '$http', 'CompanyAdd', 'Shareholder', 'User', 'Company', '$timeout', function($scope, $window, $http, CompanyAdd, Shareholder, User, Company, $timeout) {
       $scope.shareholders = [];
       $scope.option_holders = [];
       $scope.user = [];
@@ -958,11 +962,8 @@
       });
       $scope.$watchCollection('shareholders', function(shareholders) {
         $scope.total_shares = 0;
-        angular.forEach(shareholders, function(item) {
+        return angular.forEach(shareholders, function(item) {
           return $scope.total_shares = item.share_count + $scope.total_shares;
-        });
-        return angular.forEach(option_holders, function(item) {
-          return $scope.total_shares = item.options_count + $scope.total_shares;
         });
       });
       $scope.add_company = function() {
@@ -986,7 +987,8 @@
             });
           });
         }).then(function() {
-          return $scope.company = new Company();
+          $scope.company = new Company();
+          return $window.ga('send', 'event', 'form-send', 'add-company');
         }).then(function() {
           return $scope.errors = null;
         }, function(rejection) {
@@ -1009,7 +1011,8 @@
             return $scope.shareholder_added_success = false;
           }, 30000);
         }).then(function() {
-          return $scope.errors = null;
+          $scope.errors = null;
+          return $window.ga('send', 'event', 'form-send', 'add-shareholder');
         }, function(rejection) {
           $scope.errors = rejection.data;
           return Raven.captureMessage('form error: ' + rejection.statusText, {
