@@ -192,6 +192,10 @@
       .full-name
         font-weight: 700
         font-size: 1.1em
+        .truncate
+          white-space: nowrap /* No break word */
+          overflow: hidden /* truncate content */
+          text-overflow: ellipsis /* truncate with ... */
       .number
         line-height: 1.2em
         margin: 5px 0
@@ -357,6 +361,8 @@
         display: block
         width: 100%
     .table
+      .td
+        @include flex-basis(auto)
       td
         span
           display: block
