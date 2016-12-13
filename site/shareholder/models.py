@@ -19,6 +19,7 @@ from django_languages import fields as language_fields
 from rest_framework.authtoken.models import Token
 from sorl.thumbnail import get_thumbnail
 
+from shareholder.validators import ShareRegisterValidator
 from utils.formatters import (deflate_segments, flatten_list,
                               human_readable_segments, inflate_segments,
                               string_list_to_json)
@@ -107,6 +108,13 @@ class Company(models.Model):
         return Position.objects.filter(
             buyer__company=self, seller__isnull=True).count()
 
+    def full_validate(self):
+        """
+        entry point for entire share register validation
+        """
+        validator = ShareRegisterValidator(self)
+        return validator.is_valid()
+
     def get_active_shareholders(self, date=None):
         """ returns list of all active shareholders """
         shareholder_list = []
@@ -151,7 +159,13 @@ class Company(models.Model):
         return flatten_list(segments)
 
     def get_company_shareholder(self):
-        return self.shareholder_set.earliest('id')
+        """
+        return company shareholder, raise ValueError if not existing
+        """
+        try:
+            return self.shareholder_set.earliest('id')
+        except Shareholder.DoesNotExist:
+            raise ValueError('Company Shareholder does not exist')
 
     def get_operators(self):
         return self.operator_set.all().distinct()
@@ -290,7 +304,7 @@ class UserProfile(models.Model):
 
     def __unicode__(self):
         return u"%s, %s %s" % (self.city, self.province,
-                              str(self.country))
+                               str(self.country))
 
     class Meta:
         verbose_name_plural = "UserProfile"
@@ -303,7 +317,7 @@ class Shareholder(models.Model):
     number = models.CharField(max_length=255)
 
     def __unicode__(self):
-        return u'{}'.format(self.id)
+        return u'{} {} (#{})'.format(self.user.first_name, self.user.last_name, self.number)
 
     def can_view(self, user):
         """
@@ -660,6 +674,7 @@ class Security(models.Model):
     SECURITY_TITLES = (
         ('P', _('Preferred Stock')),
         ('C', _('Common Stock')),
+        ('R', _('Registered Shares')),
         # ('O', 'Option'),
         # ('W', 'Warrant'),
         # ('V', 'Convertible Instrument'),
@@ -667,7 +682,7 @@ class Security(models.Model):
     title = models.CharField(max_length=1, choices=SECURITY_TITLES)
     face_value = models.DecimalField(
         _('Nominal value of this asset'),
-        max_digits=16, decimal_places=8, blank=True,
+        max_digits=16, decimal_places=4, blank=True,
         null=True)
     company = models.ForeignKey(Company)
     count = models.PositiveIntegerField()
@@ -681,7 +696,7 @@ class Security(models.Model):
           'transaction with segments on enabling.'), default=False)
 
     def __unicode__(self):
-        return u"{} ({})".format(self.get_title_display(), self.company)
+        return _(u"{} ({} CHF)").format(self.get_title_display(), self.face_value)
 
     def count_in_segments(self, segments=None):
         """
@@ -809,6 +824,8 @@ class OptionTransaction(models.Model):
     seller = models.ForeignKey('Shareholder', blank=True, null=True,
                                related_name="option_seller")
     vesting_months = models.PositiveIntegerField(blank=True, null=True)
+    certificate_id = models.CharField(max_length=255, blank=True, null=True,
+        help_text=_('id of the issued certificate'))
     number_segments = JSONField(
         _('JSON list of segments of ids for securities. can be 1, 2, 3, 4-10'),
         default=list, blank=True, null=True)
