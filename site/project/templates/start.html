@@ -2,6 +2,10 @@
 {% load i18n %}
 {% load staticfiles %}
 
+{% block title %}
+  <TITLE>{% trans "Captable" %} - Das Aktienregister</TITLE>
+{% endblock %}
+
 {% block ng_app %}js.darg.app.start{% endblock %}
 
 {% block content %}

@@ -1,6 +1,10 @@
 {% extends "base_auth.html" %}
 {% load i18n %}
 
+{% block title %}
+  <TITLE>{% trans "Shareholder" %} {{ shareholder.number }} - Das Aktienregister</TITLE>
+{% endblock %}
+
 {% block ng_app %}js.darg.app.shareholder{% endblock %}
 
 {% block content %}
