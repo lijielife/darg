@@ -3667,6 +3667,11 @@ div#optionplan .pdf_upload_preview {
     font-weight: 700;
     font-size: 1.1em;
   }
+  .table .tr .full-name .truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   .table .tr .number {
     line-height: 1.2em;
     margin: 5px 0;
