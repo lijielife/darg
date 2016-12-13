@@ -1,14 +1,68 @@
 import time
 import logging
 
+from django.core.management import call_command
 from django.test import TestCase
 
+from project.generators import CompanyGenerator
+from shareholder.models import OptionTransaction
 from utils.formatters import (deflate_segments, flatten_list, inflate_segments,
                               string_list_to_json)
 from utils.math import substract_list
 from utils.user import make_username
+from utils.import_backends import SisWareImportBackend
 
 logger = logging.getLogger(__name__)
+
+
+class ImportTestCaseMixin(object):
+
+    def setUp(self):
+        self.filename = '../imports/rotenfluebahn/test-export-rfbag.csv'
+        self.company = CompanyGenerator().generate()
+        self.backend = SisWareImportBackend(self.filename)
+
+    def assertImport(self):
+        """
+        reusable asserts after an import
+        """
+        # trigger fully featured share register validation,
+        # raises ValidationError
+        self.company.full_validate()
+
+
+class CommandTestCase(ImportTestCaseMixin, TestCase):
+
+    def test_import_initial(self):
+        call_command('import', str(self.company.pk), self.filename)
+        self.assertImport()
+
+
+class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
+
+    def test_import_repeated(self):
+        self.backend.import_from_file(str(self.company.pk))
+        self.assertImport()
+
+        # does the company be a seller for each position?
+        self.company_shareholder = self.company.get_company_shareholder()
+        self.assertEqual(self.backend.row_count,
+                         self.company_shareholder.seller.count() +
+                         OptionTransaction.objects.filter(
+                            option_plan__company=self.company).count()
+                         )
+
+        # redo the import and validate again
+        self.backend.import_from_file(str(self.company.pk))
+        self.assertImport()
+
+        # does the company be a seller for each position?
+        self.company_shareholder = self.company.get_company_shareholder()
+        self.assertEqual(self.backend.row_count,
+                         self.company_shareholder.seller.count() +
+                         OptionTransaction.objects.filter(
+                            option_plan__company=self.company).count()
+                            )
 
 
 class UtilsTestCase(TestCase):

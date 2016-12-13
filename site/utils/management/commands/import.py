@@ -15,7 +15,7 @@ class Command(BaseCommand):
         """
         shortcut to write to stdout
         """
-        self.stdout.write(self.style.NOTICE(msg))
+        self.stdout.write(msg)
 
     def _success(self, msg):
         """
@@ -61,17 +61,12 @@ class Command(BaseCommand):
         """
         main call for management command. prepares data and sends it to backend
         """
-        try:
-            self._notice(
-                'attempting import for company id "{}" from "{}"'.format(
-                    options['company_pk'], options['file']))
+        self._notice(
+            'attempting import for company id "{}" from "{}"'.format(
+                options['company_pk'][0], options['file'][0]))
 
-            filename = self._get_file(options['file'][0])
-            backend = self._detect_backend(filename)
-            count = backend.import_from_file(
-                filename, options['company_pk'][0]) or 0
-
-        except Exception as e:
-            raise CommandError('Import failed with "{}"'.format(e))
+        filename = self._get_file(options['file'][0])
+        backend = self._detect_backend(filename)
+        count = backend.import_from_file(options['company_pk'][0]) or 0
 
         self._success('Successfully imported {} data sets'.format(count))
