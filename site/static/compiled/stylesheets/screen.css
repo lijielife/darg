@@ -3879,6 +3879,10 @@ div#optionplan .pdf_upload_preview {
     display: block;
     width: 100%;
   }
+  body.core .table .td {
+    -webkit-flex-basis: auto;
+    flex-basis: auto;
+  }
   body.core .table td {
     word-break: break-all;
   }
