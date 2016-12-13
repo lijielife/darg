@@ -7,6 +7,7 @@ from shareholder.models import Shareholder, Company, Operator, Position, \
 
 class ShareholderAdmin(VersionAdmin):
     search_fields = ['user__email', 'user__first_name', 'user__last_name']
+    list_filter = ('company',)
 
 
 class CompanyAdmin(VersionAdmin):
@@ -60,8 +61,8 @@ class CountryAdmin(VersionAdmin):
 
 
 class SecurityAdmin(VersionAdmin):
-    list_display = ('title', 'company')
-    pass
+    list_display = ('title', 'company', 'face_value')
+    list_filter = ('company',)
 
 
 class OptionTransactionAdmin(VersionAdmin):
@@ -71,7 +72,7 @@ class OptionTransactionAdmin(VersionAdmin):
 
 class OptionPlanAdmin(VersionAdmin):
     list_display = ('title',)
-    pass
+    list_filter = ('company',)
 
 
 admin.site.register(Shareholder, ShareholderAdmin)
