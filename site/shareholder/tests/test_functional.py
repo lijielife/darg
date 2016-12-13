@@ -869,7 +869,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.click_save_position()
 
             # wait for form to disappear
-            app.wait_until_invisible((By.CSS_SELECTOR, '#add_position'))
+            app.wait_until_invisible((By.CLASS_NAME, 'add_position'))
 
             self.assertEqual(len(app.get_position_row_data()), 8)
             self.assertTrue(app.is_no_errors_displayed())

@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import time
+
 from selenium.webdriver.common.by import By
 
 from project import page
@@ -75,9 +77,9 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
                 start.click_save_add_shareholder()
                 # wait for list entry
                 xpath = (
-                    u'//div[@id="shareholder_list"]//table'
-                    u'//tbody//tr[contains(@class, "panel")]'
-                    u'//td[text()="{}"]'.format(user.email)
+                    u'//div[@id="shareholder_list"]/div[@class="table"]'
+                    u'/div[contains(@class, "tr")][2]'
+                    u'/div/span[text()="{}"]'.format(user.email)
                 )
                 start.wait_until_visible((By.XPATH, xpath))
                 start.has_shareholder_count(Shareholder.objects.filter(
@@ -114,14 +116,16 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
             # company shareholder count
             self.assertEqual(int(
                 self.selenium.find_element_by_xpath(
-                    '//table/tbody/tr[1]/td[last()]/value'
+                    u'//div[@class="table"]/div[contains(@class, "tr")][2]'
+                    u'/div[contains(@class, "td")][last()]/value'
                 ).text),
                 share_count
             )
             # totals
             self.assertEqual(
                 self.selenium.find_element_by_xpath(
-                    '//table/tbody/tr[6]/td[last()]'
+                    u'//div[@class="table"]/div[contains(@class, "tr")][7]'
+                    u'/div[contains(@class, "td")][last()]'
                 ).text,
                 "{} ({})".format(share_count, share_count)
             )
@@ -174,8 +178,11 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
             # wait for list
             start.wait_until_visible((By.CSS_SELECTOR, '#shareholder_list'))
             start.is_properly_displayed()
+            time.sleep(2)
             for shareholder in shs[1:]:  # not for company shareholder
-                row = start.get_row_by_shareholder(shareholder)
+                row = self.selenium.find_elements_by_xpath(
+                    '//div[./div="{}" and contains(@class, "tr")]'.format(
+                        shareholder.user.email))[1]
                 self.assertEqual(row.find_element_by_class_name('number').text,
                                  shareholder.number)
                 self.assertEqual(row.find_element_by_class_name('share').text,
@@ -227,9 +234,9 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
             start.click_save_add_shareholder()
             # wait for list entry
             xpath = (
-                u'//div[@id="shareholder_list"]//table'
-                u'//tbody//tr[contains(@class, "panel")]'
-                u'//td[text()="{}"]'.format(self.operator.user.email)
+                u'//div[@id="shareholder_list"]/div[@class="table"]'
+                u'/div[contains(@class, "tr")]'
+                u'/div/span[text()="{}"]'.format(self.operator.user.email)
             )
             start.wait_until_visible((By.XPATH, xpath))
             start.has_shareholder_count(Shareholder.objects.filter(
