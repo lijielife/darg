@@ -334,6 +334,7 @@ class ComplexShareholderConstellationGenerator(object):
     def generate(self, **kwargs):
 
         company = kwargs.get('company') or CompanyGenerator().generate()
+        shareholder_count = kwargs.get('shareholder_count', 10)
 
         # intial securities
         s1, s2 = TwoInitialSecuritiesGenerator().generate(company=company)
@@ -349,7 +350,7 @@ class ComplexShareholderConstellationGenerator(object):
         # random shareholder generation
         shareholders = [cs]
         # initial share seeding
-        for i in range(0, 10):
+        for i in range(0, shareholder_count):
             shareholders.append(PositionGenerator().generate(
                 company=company, security=s1, seller=cs).buyer)
 

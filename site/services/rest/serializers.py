@@ -285,8 +285,11 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Shareholder
         fields = (
-            'pk', 'user', 'number', 'company', 'share_percent', 'share_count',
-            'share_value', 'validate_gafi', 'is_company', 'full_name'
+            'pk', 'number',
+            'user', 'company', 'share_percent', 'share_count',
+            'share_value', 'validate_gafi',
+            'is_company',
+            'full_name'
         )
 
     def create(self, validated_data):

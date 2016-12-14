@@ -49,7 +49,10 @@ class ShareholderViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        return Shareholder.objects.filter(company__operator__user=user)\
+        company = user.operator_set.first().company
+        return Shareholder.objects.filter(company=company)\
+            .select_related('company', 'user', 'user__userprofile') \
+            .prefetch_related('user__operator_set') \
             .distinct()
 
     @detail_route(methods=['get'])

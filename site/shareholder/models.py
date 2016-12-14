@@ -347,7 +347,7 @@ class Shareholder(models.Model):
 
     def is_company_shareholder(self):
         """
-        returns bool if shareholder is ocmpany shareholder
+        returns bool if shareholder is company shareholder
         """
         return Shareholder.objects.filter(
             company=self.company).earliest('id').id == self.id

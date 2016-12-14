@@ -1,7 +1,7 @@
 # coding=utf-8
-import time
 import datetime
 import logging
+import time
 
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
@@ -10,14 +10,15 @@ from django.test import RequestFactory, TestCase
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
-from project.generators import (CompanyGenerator, CompanyShareholderGenerator,
+from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
+                                CompanyShareholderGenerator,
                                 ComplexOptionTransactionsWithSegmentsGenerator,
                                 ComplexPositionsWithSegmentsGenerator,
+                                ComplexShareholderConstellationGenerator,
                                 OperatorGenerator, OptionTransactionGenerator,
                                 PositionGenerator, SecurityGenerator,
                                 ShareholderGenerator,
-                                TwoInitialSecuritiesGenerator, UserGenerator,
-                                DEFAULT_TEST_DATA)
+                                TwoInitialSecuritiesGenerator, UserGenerator)
 from services.rest.serializers import SecuritySerializer
 from shareholder.models import (Operator, OptionTransaction, Position,
                                 Security, Shareholder)
@@ -1026,6 +1027,24 @@ class ShareholderTestCase(TestCase):
                                       kwargs={'pk': shs[1].pk}))
 
         self.assertEqual(res.data[security.pk], [u'1000-1200', 1666])
+
+    def test_get_list(self):
+        """
+        check list for performance and content
+        """
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        ComplexShareholderConstellationGenerator().generate(
+            company=operator.company, shareholder_count=100)
+
+        self.client.force_login(user)
+
+        with self.assertNumQueries(3192):
+            res = self.client.get('/services/rest/shareholders')
+
+        logger.warning('FIXME: 30+ queries per shareholder in rest api')
+
+        self.assertEqual(res.status_code, 200)
 
 
 class OptionTransactionTestCase(APITestCase):
