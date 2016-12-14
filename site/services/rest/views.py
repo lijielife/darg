@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from rest_framework import status, viewsets
 from rest_framework.decorators import detail_route
-from rest_framework.pagination import PageNumberPagination
+from services.rest.pagination import SmallPagePagination
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -38,7 +38,7 @@ class ShareholderViewSet(viewsets.ModelViewSet):
     """
     # FIXME filter by user perms
     serializer_class = ShareholderSerializer
-    pagination_class = PageNumberPagination
+    pagination_class = SmallPagePagination
     permission_classes = [
         UserIsOperatorPermission,
     ]
@@ -298,7 +298,7 @@ class InviteeUpdateView(APIView):
 class PositionViewSet(viewsets.ModelViewSet):
     """ API endpoint to get positions """
     serializer_class = PositionSerializer
-    pagination_class = PageNumberPagination
+    pagination_class = SmallPagePagination
     permission_classes = [
         UserIsOperatorPermission,
     ]
@@ -383,7 +383,7 @@ class OptionPlanViewSet(viewsets.ModelViewSet):
 class OptionTransactionViewSet(viewsets.ModelViewSet):
     """ API endpoint to get options """
     serializer_class = OptionTransactionSerializer
-    pagination_class = PageNumberPagination
+    pagination_class = SmallPagePagination
     permission_classes = [
         UserIsOperatorPermission
     ]
