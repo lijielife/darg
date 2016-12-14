@@ -233,10 +233,10 @@ class SisWareImportBackend(BaseImportBackend):
             reader = csv.reader(f, delimiter=';', dialect=csv.excel)
             self.row_count = 0
             for row in reader:
+                row = [self.to_unicode(field) for field in row]
                 if row == SISWARE_CSV_HEADER:
                     continue
-                self.row_count += self._import_row(
-                    [self.to_unicode(value.strip()) for value in row])
+                self.row_count += self._import_row(row)
 
         self._finish_import()
 
