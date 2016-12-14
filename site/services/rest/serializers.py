@@ -357,8 +357,14 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
         user = shareholder.user
 
         # don't create duplicate users with same email
-        if User.objects.get(email=validated_data['user']['email']) != user:
-            raise ValidationError({'email': [_('This email is already taken by another user/shareholder.')]})
+        if (
+                User.objects.filter(
+                    email=validated_data['user']['email']
+                ).exists() and User.objects.get(
+                    email=validated_data['user']['email']
+                ) != user):
+            raise ValidationError({'email': [_(
+                'This email is already taken by another user/shareholder.')]})
 
         user.email = validated_data['user']['email']
         user.first_name = validated_data['user']['first_name']
