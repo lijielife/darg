@@ -264,7 +264,7 @@ LOGIN_URL = '/accounts/login/'  # The page users are directed to if they are n
 # --- REST
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
-    'PAGE_SIZE': 1000,
+    'PAGE_SIZE': 20,  # default for list views
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
