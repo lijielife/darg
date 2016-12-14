@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import time
 import logging
 
@@ -39,6 +42,17 @@ class CommandTestCase(ImportTestCaseMixin, TestCase):
 
 
 class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
+
+    def test_encoding(self):
+        """
+        file content must be encoded to utf8 for db insertion
+        """
+        with open(self.filename) as fp:
+            for i, line in enumerate(fp):
+                if i == 18:
+                    res = self.backend.to_unicode(line)
+
+        self.assertIn(u'Natürliche', res)
 
     def test_import_repeated(self):
         self.backend.import_from_file(str(self.company.pk))

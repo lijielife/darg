@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 import csv
 import logging
 import datetime
@@ -15,12 +16,13 @@ from shareholder.models import (Company, Position, Security,
                                 Shareholder, OptionPlan, OptionTransaction)
 
 SISWARE_CSV_HEADER = [
-    'Aktion\x8arID', 'Aktion\x8arsArt', 'Eintragungsart', 'Suchname',
-    'Firmaname', 'FirmaAbteilung', 'Titel', 'Anrede', 'Vorname',
-    'Vorname Zusatz', 'Name', 'Adresse', 'Adresse2', 'Postfach', 'Nr Postfach',
-    'PLZ', 'Ort', 'Land', 'C/O', 'Geburtsdatum', 'Sprache', 'VersandArt',
-    'Nationalit\x8at', 'AktienArt', 'Valoren-Nr', 'Nennwert', 'Anzahl Aktien',
-    'Zertifikat-Nr', 'Ausgestellt am', 'Skontro-Nr', 'DepotArt'
+    u'Aktion\xe4rID', u'Aktion\xe4rsArt', u'Eintragungsart', u'Suchname',
+    u'Firmaname', u'FirmaAbteilung', u'Titel', u'Anrede', u'Vorname',
+    u'Vorname Zusatz', u'Name', u'Adresse', u'Adresse2', u'Postfach',
+    u'Nr Postfach', u'PLZ', u'Ort', u'Land', u'C/O', u'Geburtsdatum',
+    u'Sprache', u'VersandArt', u'Nationalit\xe4t', u'AktienArt', u'Valoren-Nr',
+    u'Nennwert', u'Anzahl Aktien', u'Zertifikat-Nr', u'Ausgestellt am',
+    u'Skontro-Nr', u'DepotArt'
 ]
 
 logger = logging.getLogger(__name__)
@@ -47,6 +49,12 @@ class BaseImportBackend(object):
         read file contents and place them into the database
         """
         raise NotImplementedError('create me!')
+
+    def to_unicode(self, value):
+        if isinstance(value, list):
+            return [unicode(el, 'utf8') for el in value]
+        else:
+            return unicode(value, 'utf8')
 
 
 class SisWareImportBackend(BaseImportBackend):
@@ -206,8 +214,9 @@ class SisWareImportBackend(BaseImportBackend):
         validate if file can be used
         """
         with open(filename) as f:
-            reader = csv.reader(f, delimiter=';')
+            reader = csv.reader(f, delimiter=';', dialect=csv.excel)
             for row in reader:
+                row = [self.to_unicode(field) for field in row]
                 if row == SISWARE_CSV_HEADER:
                     break
                 else:
@@ -221,13 +230,13 @@ class SisWareImportBackend(BaseImportBackend):
         self._init_import(company_pk)
 
         with open(self.filename) as f:
-            reader = csv.reader(f, delimiter=';')
+            reader = csv.reader(f, delimiter=';', dialect=csv.excel)
             self.row_count = 0
             for row in reader:
                 if row == SISWARE_CSV_HEADER:
                     continue
                 self.row_count += self._import_row(
-                    [value.strip().decode('ISO-8859-1') for value in row])
+                    [self.to_unicode(value.strip()) for value in row])
 
         self._finish_import()
 
