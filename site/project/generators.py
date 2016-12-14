@@ -229,8 +229,13 @@ class PositionGenerator(object):
 
         buyer = kwargs.get('buyer') or ShareholderGenerator().generate(
             company=company)
-        seller = kwargs.get('seller', ShareholderGenerator().generate(
-            company=company))
+
+        # seller only if not sent as kwarg
+        if 'seller' not in kwargs.keys():
+            seller = ShareholderGenerator().generate(company=company)
+        else:
+            seller = kwargs.get('seller')
+
         count = kwargs.get('count') or 3
         value = kwargs.get('value') or 2
         security = kwargs.get('security') or SecurityGenerator().generate(
