@@ -183,6 +183,7 @@
       min-height: 70px
       padding: 10px 75px 10px 0
       position: relative
+      border: 1px solid #f5f5f5
       &.option-holders-heading
         font-weight: 700
         background: transparent
@@ -192,6 +193,10 @@
       .full-name
         font-weight: 700
         font-size: 1.1em
+      .td
+        @include flex-basis(auto)
+        &.full-name-padding
+          padding-left: 85px
         .truncate
           white-space: nowrap /* No break word */
           overflow: hidden /* truncate content */
@@ -209,8 +214,43 @@
           text-overflow: ellipsis /* truncate with ... */
       .shares-count
         display: block
-      .shareholders-count
-        value
+      .bought-at-column
+        position: absolute
+      .exercise-price
+        margin-top: 25px
+      .bought-at
+        left: calc(-1rem - 0.8em)
+        margin-right: -1.2em
+        padding-left: calc(1rem + 1.2em)
+        padding-right: 1.2em
+        position: relative
+        margin: 0
+        border-radius: 0 .3rem .3rem 0
+        border-color: rgba(0,0,0,.05)
+        display: inline-block
+        line-height: 1
+        vertical-align: baseline
+        margin: 0 .15em
+        background-color: #f5f5f5
+        background-image: none
+        padding: .6em .8em
+        &:after
+          position: absolute
+          content: ''
+          top: 100%
+          left: 0
+          background-color: transparent
+          border-style: solid
+          border-width: 0 1.2em 1.2em 0
+          border-color: transparent
+          border-right-color: inherit
+          width: 0
+          height: 0
+      .gray-circle
+        .transform--center
+          &.large
+            font-weight: 700
+            font-size: 2em
           position: absolute
           top: 50%
           left: 50%
@@ -312,7 +352,18 @@
       .tr
         .td
           word-break: inherit
-
+@media only screen and (max-width: 600px)
+  .table
+    .tr
+      .td
+        &.full-name-padding
+          padding-left: 10px
+          padding-top: 5px
+      .exercise-price
+        margin-top: 0
+      .bought-at-column
+        position: relative
+    position: relative
 @media only screen and (max-width: 480px)
   body.core
     .password-reset-container, .password-change-container

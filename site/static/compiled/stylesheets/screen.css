@@ -3219,6 +3219,10 @@ nav.navbar .navbar-text {
   padding: 0.8em;
   font-size: 0.9em;
 }
+.td.flex-column {
+  -webkit-flex-flow: column;
+  flex-flow: column;
+}
 .td.text-right-flex {
   -webkit-justify-content: flex-start;
   justify-content: flex-start;
@@ -3654,6 +3658,7 @@ div#optionplan .pdf_upload_preview {
     min-height: 70px;
     padding: 10px 75px 10px 0;
     position: relative;
+    border: 1px solid #f5f5f5;
   }
   .table .tr.option-holders-heading {
     font-weight: 700;
@@ -3667,7 +3672,14 @@ div#optionplan .pdf_upload_preview {
     font-weight: 700;
     font-size: 1.1em;
   }
-  .table .tr .full-name .truncate {
+  .table .tr .td {
+    -webkit-flex-basis: auto;
+    flex-basis: auto;
+  }
+  .table .tr .td.full-name-padding {
+    padding-left: 85px;
+  }
+  .table .tr .td .truncate {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -3690,7 +3702,43 @@ div#optionplan .pdf_upload_preview {
   .table .tr .shares-count {
     display: block;
   }
-  .table .tr .shareholders-count {
+  .table .tr .bought-at-column {
+    position: absolute;
+  }
+  .table .tr .exercise-price {
+    margin-top: 25px;
+  }
+  .table .tr .bought-at {
+    left: calc(-1rem - 0.8em);
+    margin-right: -1.2em;
+    padding-left: calc(1rem + 1.2em);
+    padding-right: 1.2em;
+    position: relative;
+    margin: 0;
+    border-radius: 0 0.3rem 0.3rem 0;
+    border-color: rgba(0, 0, 0, 0.05);
+    display: inline-block;
+    line-height: 1;
+    vertical-align: baseline;
+    margin: 0 0.15em;
+    background-color: #f5f5f5;
+    background-image: none;
+    padding: 0.6em 0.8em;
+  }
+  .table .tr .bought-at:after {
+    position: absolute;
+    content: "";
+    top: 100%;
+    left: 0;
+    background-color: transparent;
+    border-style: solid;
+    border-width: 0 1.2em 1.2em 0;
+    border-color: transparent;
+    border-right-color: inherit;
+    width: 0;
+    height: 0;
+  }
+  .table .tr .gray-circle {
     width: 60px;
     height: 60px;
     min-width: 60px;
@@ -3704,7 +3752,7 @@ div#optionplan .pdf_upload_preview {
     -webkit-transform: translateY(-50%);
     font-size: 10px;
   }
-  .table .tr .shareholders-count value {
+  .table .tr .gray-circle .transform--center {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -3714,7 +3762,11 @@ div#optionplan .pdf_upload_preview {
     font-weight: 700;
     font-size: 1em;
   }
-  .table .tr .shareholders-count value .shares-count {
+  .table .tr .gray-circle .transform--center.large {
+    font-weight: 700;
+    font-size: 2em;
+  }
+  .table .tr .gray-circle .transform--center .shares-count {
     font-size: 10px;
   }
   .table .tr .td {
@@ -3818,6 +3870,21 @@ div#optionplan .pdf_upload_preview {
   }
   body .table .tr .td {
     word-break: inherit;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .table {
+    position: relative;
+  }
+  .table .tr .td.full-name-padding {
+    padding-left: 10px;
+    padding-top: 5px;
+  }
+  .table .tr .exercise-price {
+    margin-top: 0;
+  }
+  .table .tr .bought-at-column {
+    position: relative;
   }
 }
 @media only screen and (max-width: 480px) {

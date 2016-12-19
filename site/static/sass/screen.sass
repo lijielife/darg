@@ -561,6 +561,8 @@ nav.navbar
     .el-icon-eye-open
       opacity: 1
 .td
+  &.flex-column
+    @include flex-flow(column)
   &.text-right-flex
     @include justify-content(flex-start) //reset right aligned to left mobile view
   &:hover
