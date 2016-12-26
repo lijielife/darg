@@ -21,7 +21,8 @@ logger = logging.getLogger(__name__)
 class ImportTestCaseMixin(object):
 
     def setUp(self):
-        self.filename = '../imports/rotenfluebahn/test-export-rfbag.csv'
+        self.filename = 'utils/tests/csv/sisware_export.csv'
+        self.code = 'rot13'
         self.company = CompanyGenerator().generate()
         self.backend = SisWareImportBackend(self.filename)
 
@@ -76,7 +77,7 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
                          self.company_shareholder.seller.count() +
                          OptionTransaction.objects.filter(
                             option_plan__company=self.company).count()
-                            )
+                         )
 
 
 class UtilsTestCase(TestCase):
