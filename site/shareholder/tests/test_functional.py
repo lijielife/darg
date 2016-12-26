@@ -109,7 +109,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                 self.selenium, self.live_server_url, self.operator.user,
                 path=reverse(
                     'shareholder',
-                    kwargs={'pk': shs[1]}
+                    kwargs={'pk': shs[1].pk}
                     )
                 )
             # wait for table
