@@ -10,6 +10,7 @@ from services.rest.pagination import SmallPagePagination
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import filters
 
 from services.rest.permissions import (SafeMethodsOnlyPermission,
                                        UserCanAddCompanyPermission,
@@ -42,6 +43,9 @@ class ShareholderViewSet(viewsets.ModelViewSet):
     permission_classes = [
         UserIsOperatorPermission,
     ]
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('user__first_name', 'user__last_name', 'user__email',
+                     'number')
 
     def get_object(self):
         try:
@@ -302,6 +306,11 @@ class PositionViewSet(viewsets.ModelViewSet):
     permission_classes = [
         UserIsOperatorPermission,
     ]
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('buyer__user__first_name', 'buyer__user__last_name',
+                     'buyer__user__email', 'seller__user__first_name',
+                     'seller__user__last_name', 'seller__user__email',
+                     'seller__number', 'buyer__number', 'bought_at', 'comment')
 
     def get_queryset(self):
         user = self.request.user
@@ -387,6 +396,11 @@ class OptionTransactionViewSet(viewsets.ModelViewSet):
     permission_classes = [
         UserIsOperatorPermission
     ]
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('buyer__user__first_name', 'buyer__user__last_name',
+                     'buyer__user__email', 'seller__user__first_name',
+                     'seller__user__last_name', 'seller__user__email',
+                     'seller__number', 'buyer__number', 'bought_at')
 
     def get_queryset(self):
         user = self.request.user

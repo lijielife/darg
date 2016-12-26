@@ -748,6 +748,20 @@ class PositionTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertTrue(len(response.data), 3)
 
+    def test_search(self):
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        position = PositionGenerator().generate(company=operator.company)
+
+        self.client.force_login(user)
+
+        query = position.buyer.user.first_name
+        res = self.client.get(
+            '/services/rest/position?search={}'.format(query))
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['count'], 1)
+
 
 class ShareholderTestCase(TestCase):
 
@@ -1039,12 +1053,31 @@ class ShareholderTestCase(TestCase):
 
         self.client.force_login(user)
 
-        with self.assertNumQueries(3192):
+        with self.assertNumQueries(326):
             res = self.client.get('/services/rest/shareholders')
 
         logger.warning('FIXME: 30+ queries per shareholder in rest api')
 
         self.assertEqual(res.status_code, 200)
+        # must have current page in meta payload
+        self.assertIn('current', res.data.keys())
+        # must have pagination
+        self.assertEqual(len(res.data['results']), 20)
+
+    def test_search(self):
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        ComplexShareholderConstellationGenerator().generate(
+            company=operator.company, shareholder_count=10)
+
+        self.client.force_login(user)
+
+        query = operator.company.shareholder_set.first().user.first_name
+        res = self.client.get(
+            '/services/rest/shareholders?search={}'.format(query))
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['count'], 1)
 
 
 class OptionTransactionTestCase(APITestCase):
@@ -1079,7 +1112,8 @@ class OptionTransactionTestCase(APITestCase):
         optiontransaction = OptionTransactionGenerator().generate(
             company=operator.company)
 
-        logged_in = self.client.login(username=user.username, password=DEFAULT_TEST_DATA['password'])
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
 
         res = self.client.delete(
@@ -1139,6 +1173,22 @@ class OptionTransactionTestCase(APITestCase):
         self.assertEqual(res.status_code, 200)
         self.assertFalse(
             OptionTransaction.objects.get(id=optiontransaction.id).is_draft)
+
+    def test_search(self):
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        seller = ShareholderGenerator().generate(company=operator.company)
+        optiontransaction = OptionTransactionGenerator().generate(
+            seller=seller)
+
+        self.client.force_login(user)
+
+        query = optiontransaction.buyer.user.first_name
+        res = self.client.get(
+            '/services/rest/optiontransaction?search={}'.format(query))
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['count'], 1)
 
 
 class SecurityTestCase(APITestCase):
