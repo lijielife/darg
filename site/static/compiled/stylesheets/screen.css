@@ -2789,6 +2789,9 @@ html, body {
 .core .container .editable-buttons {
   vertical-align: initial;
 }
+.core .container [ng-click], .core .container [data-ng-click], .core .container [x-ng-click] {
+  cursor: pointer;
+}
 
 .collapse-expanded .navbar-username {
   color: #888;
@@ -3285,6 +3288,11 @@ div.captable_context_actions {
 
 .table .option-holders-heading {
   background: #f5f5f5;
+}
+
+div.table-actions .input-group {
+  padding-top: 37px;
+  margin-left: 600px;
 }
 
 div#optionplan .pdf_upload_preview {

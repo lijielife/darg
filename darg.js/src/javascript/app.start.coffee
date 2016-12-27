@@ -16,16 +16,48 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
     $scope.loading = true
     $scope.shareholder_added_success = false
 
+    # pagination:
+    $scope.next = false
+    $scope.previous = false
+    $scope.total = 0
+    $scope.current = 0
+    $scope.current_range = ''
+
+    # search
+    $scope.search = {'query': null}
+
     $scope.show_add_shareholder = false
 
     # empty form data
     $scope.newShareholder = new Shareholder()
     $scope.newCompany = new CompanyAdd()
 
-    # FIXME - its not company specific
-    $http.get('/services/rest/shareholders').then (result) ->
-        angular.forEach result.data.results, (item) ->
-            $scope.shareholders.push item
+
+    # --- INITIAL
+    $scope.reset_search_params = ->
+        $scope.current = null
+        $scope.previous = null
+        $scope.next = null
+        $scope.shareholders = []
+        #$scope.search.query = null
+
+    $scope.load_all_shareholders = ->
+        # FIXME - its not company specific
+        $scope.reset_search_params()
+        $scope.search.query = null
+        $http.get('/services/rest/shareholders').then (result) ->
+            angular.forEach result.data.results, (item) ->
+                $scope.shareholders.push item
+            if result.data.next
+                $scope.next = result.data.next
+            if result.data.previous
+                $scope.previous = result.data.previous
+            if result.data.count
+                $scope.total=result.data.count
+            if result.data.current
+                $scope.current=result.data.current
+    $scope.load_all_shareholders()
+          
 
     $http.get('/services/rest/user').then (result) ->
         $scope.user = result.data.results[0]
@@ -42,11 +74,75 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
     .finally ->
         $scope.loading = false
 
+    # --- Dynamic props
     $scope.$watchCollection 'shareholders', (shareholders)->
         $scope.total_shares = 0
         angular.forEach shareholders, (item) ->
             $scope.total_shares = item.share_count + $scope.total_shares
 
+    $scope.$watchCollection 'current', (current)->
+        start = ($scope.current - 1) * 20
+        end = Math.min($scope.current * 20, $scope.total)
+        $scope.current_range = start.toString() + '-' + end.toString()
+
+    # --- PAGINATION
+    $scope.next_page = ->
+        if $scope.next
+            $http.get($scope.next).then (result) ->
+                $scope.reset_search_params()
+                angular.forEach result.data.results, (item) ->
+                    $scope.shareholders.push item
+                if result.data.next
+                    $scope.next = result.data.next
+                else
+                    $scope.next = false
+                if result.data.previous
+                    $scope.previous = result.data.previous
+                else
+                    $scope.previous = false
+                if result.data.count
+                    $scope.total=result.data.count
+                if result.data.current
+                    $scope.current=result.data.current
+
+    $scope.previous_page = ->
+        if $scope.previous
+            $http.get($scope.previous).then (result) ->
+                $scope.reset_search_params()
+                angular.forEach result.data.results, (item) ->
+                    $scope.shareholders.push item
+                if result.data.next
+                    $scope.next = result.data.next
+                else
+                    $scope.next = false
+                if result.data.previous
+                    $scope.previous = result.data.previous
+                else
+                    $scope.previous = false
+                if result.data.count
+                    $scope.total=result.data.count
+                if result.data.current
+                    $scope.current=result.data.current
+
+    # --- SEARCH
+    $scope.search = ->
+        # FIXME - its not company specific
+        query = $scope.search.query
+        $http.get('/services/rest/shareholders?search=' + query).then (result) ->
+            $scope.reset_search_params()
+            angular.forEach result.data.results, (item) ->
+                $scope.shareholders.push item
+            if result.data.next
+                $scope.next = result.data.next
+            if result.data.previous
+                $scope.previous = result.data.previous
+            if result.data.count
+                $scope.total=result.data.count
+            if result.data.current
+                $scope.current=result.data.current
+            $scope.search.query = query
+
+    # --- FORMS
     $scope.add_company = ->
         $scope.newCompany.$save().then (result) ->
             $http.get('/services/rest/user').then (result) ->
@@ -98,6 +194,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
                 extra: { rejection: rejection },
             })
 
+
     $scope.show_add_shareholder_form = ->
         $scope.show_add_shareholder = true
 
@@ -106,6 +203,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
 
     $scope.goto_shareholder = (shareholder_id) ->
         window.location = "/shareholder/"+shareholder_id+"/"
+
 
     # --- DATEPICKER
     $scope.datepicker = { opened: false }

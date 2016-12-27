@@ -21,6 +21,8 @@
 @import blockquote
 @import chromescreenshot
 
+// --- GLOBAL
+
 @font-face
   font-family: "QuickSandLight"
   src: url('/static/compiled/fonts/Quicksand-Light.otf') format('opentype')
@@ -258,6 +260,10 @@ html, body
     //xeditable
   .editable-buttons
     vertical-align: initial
+
+  // angular ng-click a tags without href have no pointer. fix.
+  [ng-click], [data-ng-click], [x-ng-click]
+    cursor: pointer
 
 // --- HEADER
 .collapse-expanded
@@ -599,12 +605,14 @@ div #add_company
   +zen-grid-item(8,1)
 div #add_company p
   line-height: 1.5em
-
 div.captable_context_actions
   text-align: right
-.table
-  .option-holders-heading
-    background: $color-gray-lighten
+.table .option-holders-heading
+  background: $color-gray-lighten
+div.table-actions
+  & .input-group
+    padding-top: 37px
+    margin-left: 600px
 
 // -- positions
 

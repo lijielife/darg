@@ -50,6 +50,35 @@
       {% endverbatim %}{% trans "Shareholderr added. record share transfers here" %}{% verbatim %}
     </p>
     
+    <!-- TABLE ACTIONS -->
+	<div class="table-actions">
+      <!--
+	  <span class="action filter">
+	    <span class="el-icon-adjust-alt"></span>
+	  </span>
+      -->
+      <nav aria-label="Page navigation" ng-show="next || previous" class="pull-right">
+        <ul class="pagination">
+          <li ng-class="{disabled: !previous}">
+	        <a aria-label="Previous" ng-click="previous_page()">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+		  <li><a>{{ current_range }}/{{ total }}</a></li>
+          <li ng-class="{disabled: !next}">
+            <a aria-label="Next" ng-click="next_page()">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="input-group">
+        <input type="search" class="form-control" ng-model="search.query" translate translate-attr-placeholder="Search Term here">
+        <span class="input-group-addon" id="basic-addon2" ng-click="search()"><span class="el-icon-search"></span></span>
+      </div>
+    </div>
+
     <!-- TABLE -->
     <div class="table">
       <div class="tr th">

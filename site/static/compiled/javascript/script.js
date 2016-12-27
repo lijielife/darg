@@ -937,14 +937,45 @@
       $scope.total_shares = 0;
       $scope.loading = true;
       $scope.shareholder_added_success = false;
+      $scope.next = false;
+      $scope.previous = false;
+      $scope.total = 0;
+      $scope.current = 0;
+      $scope.current_range = '';
+      $scope.search = {
+        'query': null
+      };
       $scope.show_add_shareholder = false;
       $scope.newShareholder = new Shareholder();
       $scope.newCompany = new CompanyAdd();
-      $http.get('/services/rest/shareholders').then(function(result) {
-        return angular.forEach(result.data.results, function(item) {
-          return $scope.shareholders.push(item);
+      $scope.reset_search_params = function() {
+        $scope.current = null;
+        $scope.previous = null;
+        $scope.next = null;
+        return $scope.shareholders = [];
+      };
+      $scope.load_all_shareholders = function() {
+        $scope.reset_search_params();
+        $scope.search.query = null;
+        return $http.get('/services/rest/shareholders').then(function(result) {
+          angular.forEach(result.data.results, function(item) {
+            return $scope.shareholders.push(item);
+          });
+          if (result.data.next) {
+            $scope.next = result.data.next;
+          }
+          if (result.data.previous) {
+            $scope.previous = result.data.previous;
+          }
+          if (result.data.count) {
+            $scope.total = result.data.count;
+          }
+          if (result.data.current) {
+            return $scope.current = result.data.current;
+          }
         });
-      });
+      };
+      $scope.load_all_shareholders();
       $http.get('/services/rest/user').then(function(result) {
         $scope.user = result.data.results[0];
         return angular.forEach($scope.user.operator_set, function(item, key) {
@@ -966,6 +997,87 @@
           return $scope.total_shares = item.share_count + $scope.total_shares;
         });
       });
+      $scope.$watchCollection('current', function(current) {
+        var end, start;
+        start = ($scope.current - 1) * 20;
+        end = Math.min($scope.current * 20, $scope.total);
+        return $scope.current_range = start.toString() + '-' + end.toString();
+      });
+      $scope.next_page = function() {
+        if ($scope.next) {
+          return $http.get($scope.next).then(function(result) {
+            $scope.reset_search_params();
+            angular.forEach(result.data.results, function(item) {
+              return $scope.shareholders.push(item);
+            });
+            if (result.data.next) {
+              $scope.next = result.data.next;
+            } else {
+              $scope.next = false;
+            }
+            if (result.data.previous) {
+              $scope.previous = result.data.previous;
+            } else {
+              $scope.previous = false;
+            }
+            if (result.data.count) {
+              $scope.total = result.data.count;
+            }
+            if (result.data.current) {
+              return $scope.current = result.data.current;
+            }
+          });
+        }
+      };
+      $scope.previous_page = function() {
+        if ($scope.previous) {
+          return $http.get($scope.previous).then(function(result) {
+            $scope.reset_search_params();
+            angular.forEach(result.data.results, function(item) {
+              return $scope.shareholders.push(item);
+            });
+            if (result.data.next) {
+              $scope.next = result.data.next;
+            } else {
+              $scope.next = false;
+            }
+            if (result.data.previous) {
+              $scope.previous = result.data.previous;
+            } else {
+              $scope.previous = false;
+            }
+            if (result.data.count) {
+              $scope.total = result.data.count;
+            }
+            if (result.data.current) {
+              return $scope.current = result.data.current;
+            }
+          });
+        }
+      };
+      $scope.search = function() {
+        var query;
+        query = $scope.search.query;
+        return $http.get('/services/rest/shareholders?search=' + query).then(function(result) {
+          $scope.reset_search_params();
+          angular.forEach(result.data.results, function(item) {
+            return $scope.shareholders.push(item);
+          });
+          if (result.data.next) {
+            $scope.next = result.data.next;
+          }
+          if (result.data.previous) {
+            $scope.previous = result.data.previous;
+          }
+          if (result.data.count) {
+            $scope.total = result.data.count;
+          }
+          if (result.data.current) {
+            $scope.current = result.data.current;
+          }
+          return $scope.search.query = query;
+        });
+      };
       $scope.add_company = function() {
         return $scope.newCompany.$save().then(function(result) {
           $http.get('/services/rest/user').then(function(result) {
