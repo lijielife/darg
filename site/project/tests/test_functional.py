@@ -42,7 +42,8 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
             # wait for list
             start.wait_until_visible((By.CSS_SELECTOR, '#shareholder_list'))
             start.is_properly_displayed()
-            start.has_shareholder_count(Shareholder.objects.count())
+            self.assertEqual(start.has_shareholder_count(),
+                             Shareholder.objects.count())
 
         except Exception, e:
             self._handle_exception(e)
@@ -70,8 +71,9 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
                 start.wait_until_visible(
                     (By.CSS_SELECTOR, '#shareholder_list'))
                 start.is_properly_displayed()
-                start.has_shareholder_count(Shareholder.objects.filter(
-                    company=op.company).count())
+                self.assertEqual(start.has_shareholder_count(),
+                                 Shareholder.objects.filter(
+                                    company=op.company).count())
                 start.click_open_add_shareholder()
                 start.add_shareholder(user)
                 start.click_save_add_shareholder()
@@ -82,8 +84,9 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
                     u'/div/span[text()="{}"]'.format(user.email)
                 )
                 start.wait_until_visible((By.XPATH, xpath))
-                start.has_shareholder_count(Shareholder.objects.filter(
-                    company=op.company).count())
+                self.assertEqual(start.has_shareholder_count(),
+                                 Shareholder.objects.filter(
+                                    company=op.company).count())
 
             # shareholder now, no shareholder login yet
             # start = page.StartPage(
@@ -110,15 +113,16 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
             # wait for list
             start.wait_until_visible((By.CSS_SELECTOR, '#shareholder_list'))
             start.is_properly_displayed()
-            start.has_shareholder_count(Shareholder.objects.count())
+            self.assertEqual(start.has_shareholder_count(),
+                             Shareholder.objects.count())
 
             share_count = self.operator.company.share_count
             # company shareholder count
             self.assertEqual(int(
-                self.selenium.find_element_by_xpath(
-                    u'//div[@class="table"]/div[contains(@class, "tr")][2]'
-                    u'/div[contains(@class, "td")][last()]/value'
-                ).text),
+                start.get_row_by_shareholder(self.company_shareholder) \
+                    .find_element_by_xpath(
+                        u'/div[contains(@class, "td")][last()]/value'
+                    ).text  ),
                 share_count
             )
             # totals
@@ -214,6 +218,58 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
         except Exception, e:
             self._handle_exception(e)
 
+    def test_table_actions(self):
+        """
+        test on start page that diverse things are shown properly
+        e.g. #128
+        """
+        optiontransactions, shs = \
+            ComplexOptionTransactionsWithSegmentsGenerator().generate()
+        for x in range(0, 30):
+            ShareholderGenerator().generate(company=shs[0].company)
+
+        try:
+            start = page.StartPage(
+                self.selenium, self.live_server_url,
+                shs[0].company.operator_set.first().user)
+            # wait for list
+            start.wait_until_visible((By.CSS_SELECTOR, '#shareholder_list'))
+
+            # search
+            start.is_properly_displayed()
+            # FIXME doing strang things here
+            start.enter_search_term(shs[0].user.last_name)
+            time.sleep(1)
+            start.click_search()
+            start.enter_search_term(shs[0].user.last_name)
+            time.sleep(1)
+            start.click_search()
+            self.assertEqual(start.has_shareholder_count(), 1)
+
+            # paginate
+            start.refresh()
+            start.is_properly_displayed()
+            self.assertEqual(start.has_shareholder_count(), 20)
+            start.click_paginate_next()
+            time.sleep(1)
+            self.assertEqual(start.has_shareholder_count(), 12)
+
+            # sort
+            start.refresh()
+            start.is_properly_displayed()
+            start.sort_table_by_number()
+            time.sleep(2)
+            numbers = start.driver.find_elements_by_class_name('number')
+            prev = None
+            for number in numbers:
+                if prev is None:
+                    prev = number.text
+                    continue
+                self.assertTrue(prev < number.text)
+
+        except Exception, e:
+            self._handle_exception(e)
+
     def test_operator_same_email_as_shareholder(self):
         """
         user signs up and adds himself as shareholder
@@ -239,8 +295,9 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
                 u'/div/span[text()="{}"]'.format(self.operator.user.email)
             )
             start.wait_until_visible((By.XPATH, xpath))
-            start.has_shareholder_count(Shareholder.objects.filter(
-                company=self.operator.company).count())
+            self.assertEqual(start.has_shareholder_count(),
+                             Shareholder.objects.filter(
+                                company=self.operator.company).count())
 
             self.assertEqual(
                 self.operator.user.shareholder_set.filter(

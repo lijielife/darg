@@ -1,0 +1,45 @@
+{% load i18n %}
+{% verbatim %}
+<div class="table-actions">
+  <div class="row">
+  <!--
+<span class="action filter">
+<span class="el-icon-adjust-alt"></span>
+</span>
+  -->
+
+    <div class="col-lg-3">
+      <div class="input-group">
+        <input type="search" class="form-control search-input" ng-model="search_params.query" translate translate-attr-placeholder="Search Term here" ng-keyup="$event.keyCode == 13 && search()">
+        <span class="input-group-addon search-btn" ng-click="search()"><span class="el-icon-search"></span></span>
+      </div>
+    </div>    
+    <div class="col-lg-3">
+      <div class="input-group">
+        <select class="form-control" ng-model="search_params.ordering" ng-change="search()" ng-options="option.value as option.name for option in ordering_options">
+          <option value='' disabled>{% endverbatim %}{% trans "Sort" %}{% verbatim %}</option>
+        </select>
+      </div>
+    </div>    
+    <div class="col-lg-6">
+      <div class="input-group pull-right">
+        <nav aria-label="Page navigation" ng-show="next || previous" class="pull-right">
+          <ul class="pagination">
+            <li ng-class="{disabled: !previous}">
+							<a aria-label="Previous" ng-click="previous_page()" class="paginate-previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <li><a>{{ current_range }}/{{ total }}</a></li>
+            <li ng-class="{disabled: !next}">
+              <a aria-label="Next" ng-click="next_page()" class="paginate-next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>    
+  </div>
+</div>
+{% endverbatim %}
