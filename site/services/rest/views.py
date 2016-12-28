@@ -43,9 +43,10 @@ class ShareholderViewSet(viewsets.ModelViewSet):
     permission_classes = [
         UserIsOperatorPermission,
     ]
-    filter_backends = (filters.SearchFilter,)
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('user__first_name', 'user__last_name', 'user__email',
                      'number')
+    ordering_fields = ('user__last_name', 'user__email', 'number')
 
     def get_object(self):
         try:
@@ -306,11 +307,14 @@ class PositionViewSet(viewsets.ModelViewSet):
     permission_classes = [
         UserIsOperatorPermission,
     ]
-    filter_backends = (filters.SearchFilter,)
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('buyer__user__first_name', 'buyer__user__last_name',
                      'buyer__user__email', 'seller__user__first_name',
                      'seller__user__last_name', 'seller__user__email',
                      'seller__number', 'buyer__number', 'bought_at', 'comment')
+    ordering_fields = ('buyer__user__last_name', 'buyer__user__email',
+                       'buyer__number', 'seller__user__last_name',
+                       'seller__user__email', 'seller__number')
 
     def get_queryset(self):
         user = self.request.user
@@ -396,11 +400,14 @@ class OptionTransactionViewSet(viewsets.ModelViewSet):
     permission_classes = [
         UserIsOperatorPermission
     ]
-    filter_backends = (filters.SearchFilter,)
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('buyer__user__first_name', 'buyer__user__last_name',
                      'buyer__user__email', 'seller__user__first_name',
                      'seller__user__last_name', 'seller__user__email',
                      'seller__number', 'buyer__number', 'bought_at')
+    ordering_fields = ('buyer__user__last_name', 'buyer__user__email',
+                       'buyer__number', 'seller__user__last_name',
+                       'seller__user__email', 'seller__number')
 
     def get_queryset(self):
         user = self.request.user
