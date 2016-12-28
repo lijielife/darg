@@ -74,7 +74,7 @@
       </nav>
 
       <div class="input-group">
-        <input type="search" class="form-control" ng-model="search.query" translate translate-attr-placeholder="Search Term here">
+        <input type="search" class="form-control" ng-model="search.query" translate translate-attr-placeholder="Search Term here" ng-keyup="$event.keyCode == 13 && search()">
         <span class="input-group-addon" id="basic-addon2" ng-click="search()"><span class="el-icon-search"></span></span>
       </div>
     </div>
