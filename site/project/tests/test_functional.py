@@ -120,9 +120,7 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
             # company shareholder count
             self.assertEqual(int(
                 start.get_row_by_shareholder(self.company_shareholder) \
-                    .find_element_by_xpath(
-                        u'/div[contains(@class, "td")][last()]/value'
-                    ).text  ),
+                    .find_elements_by_tag_name('div')[-1].text),
                 share_count
             )
             # totals
