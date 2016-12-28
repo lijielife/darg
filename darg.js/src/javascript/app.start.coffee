@@ -24,7 +24,13 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
     $scope.current_range = ''
 
     # search
-    $scope.search = {'query': null}
+    $scope.search_params = {'query': null, 'ordering': null, 'ordering_reverse': null}
+    $scope.ordering_options = [
+        {'name': gettext('Email'), 'value': 'user__email'},
+        {'name': gettext('Shareholder Number'), 'value': 'number'},
+        {'name': gettext('Last Name'), 'value': 'user__last_name'},
+        # {'name': gettext('Clear'), 'value': null},
+    ]
 
     $scope.show_add_shareholder = false
 
@@ -39,12 +45,12 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
         $scope.previous = null
         $scope.next = null
         $scope.shareholders = []
-        #$scope.search.query = null
+        #$scope.search_params.query = null
 
     $scope.load_all_shareholders = ->
         # FIXME - its not company specific
         $scope.reset_search_params()
-        $scope.search.query = null
+        $scope.search_params.query = null
         $http.get('/services/rest/shareholders').then (result) ->
             angular.forEach result.data.results, (item) ->
                 $scope.shareholders.push item
@@ -127,8 +133,16 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
     # --- SEARCH
     $scope.search = ->
         # FIXME - its not company specific
-        query = $scope.search.query
-        $http.get('/services/rest/shareholders?search=' + query).then (result) ->
+        # respect ordering and search
+        params = {}
+        if $scope.search_params.query
+            params.search = $scope.search_params.query
+        if $scope.search_params.ordering
+            params.ordering = $scope.search_params.ordering
+        paramss = $.param(params)
+        console.log(params)
+
+        $http.get('/services/rest/shareholders?' + paramss).then (result) ->
             $scope.reset_search_params()
             angular.forEach result.data.results, (item) ->
                 $scope.shareholders.push item
@@ -140,7 +154,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
                 $scope.total=result.data.count
             if result.data.current
                 $scope.current=result.data.current
-            $scope.search.query = query
+            $scope.search_params.query = params.query
 
     # --- FORMS
     $scope.add_company = ->

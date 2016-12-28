@@ -942,9 +942,23 @@
       $scope.total = 0;
       $scope.current = 0;
       $scope.current_range = '';
-      $scope.search = {
-        'query': null
+      $scope.search_params = {
+        'query': null,
+        'ordering': null,
+        'ordering_reverse': null
       };
+      $scope.ordering_options = [
+        {
+          'name': gettext('Email'),
+          'value': 'user__email'
+        }, {
+          'name': gettext('Shareholder Number'),
+          'value': 'number'
+        }, {
+          'name': gettext('Last Name'),
+          'value': 'user__last_name'
+        }
+      ];
       $scope.show_add_shareholder = false;
       $scope.newShareholder = new Shareholder();
       $scope.newCompany = new CompanyAdd();
@@ -956,7 +970,7 @@
       };
       $scope.load_all_shareholders = function() {
         $scope.reset_search_params();
-        $scope.search.query = null;
+        $scope.search_params.query = null;
         return $http.get('/services/rest/shareholders').then(function(result) {
           angular.forEach(result.data.results, function(item) {
             return $scope.shareholders.push(item);
@@ -1056,9 +1070,17 @@
         }
       };
       $scope.search = function() {
-        var query;
-        query = $scope.search.query;
-        return $http.get('/services/rest/shareholders?search=' + query).then(function(result) {
+        var params, paramss;
+        params = {};
+        if ($scope.search_params.query) {
+          params.search = $scope.search_params.query;
+        }
+        if ($scope.search_params.ordering) {
+          params.ordering = $scope.search_params.ordering;
+        }
+        paramss = $.param(params);
+        console.log(params);
+        return $http.get('/services/rest/shareholders?' + paramss).then(function(result) {
           $scope.reset_search_params();
           angular.forEach(result.data.results, function(item) {
             return $scope.shareholders.push(item);
@@ -1075,7 +1097,7 @@
           if (result.data.current) {
             $scope.current = result.data.current;
           }
-          return $scope.search.query = query;
+          return $scope.search_params.query = params.query;
         });
       };
       $scope.add_company = function() {

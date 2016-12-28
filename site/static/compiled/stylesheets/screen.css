@@ -3290,9 +3290,12 @@ div.captable_context_actions {
   background: #f5f5f5;
 }
 
-div.table-actions .input-group {
-  padding-top: 37px;
-  margin-left: 600px;
+div.table-actions {
+  margin: 4em 0 1em;
+}
+div.table-actions ul.pagination {
+  margin: 0px;
+  padding: 0px;
 }
 
 div#optionplan .pdf_upload_preview {

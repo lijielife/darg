@@ -52,30 +52,45 @@
     
     <!-- TABLE ACTIONS -->
 	<div class="table-actions">
+      <div class="row">
       <!--
 	  <span class="action filter">
 	    <span class="el-icon-adjust-alt"></span>
 	  </span>
       -->
-      <nav aria-label="Page navigation" ng-show="next || previous" class="pull-right">
-        <ul class="pagination">
-          <li ng-class="{disabled: !previous}">
-	        <a aria-label="Previous" ng-click="previous_page()">
-              <span aria-hidden="true">&laquo;</span>
-            </a>
-          </li>
-		  <li><a>{{ current_range }}/{{ total }}</a></li>
-          <li ng-class="{disabled: !next}">
-            <a aria-label="Next" ng-click="next_page()">
-              <span aria-hidden="true">&raquo;</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
 
-      <div class="input-group">
-        <input type="search" class="form-control" ng-model="search.query" translate translate-attr-placeholder="Search Term here" ng-keyup="$event.keyCode == 13 && search()">
-        <span class="input-group-addon" id="basic-addon2" ng-click="search()"><span class="el-icon-search"></span></span>
+        <div class="col-lg-3">
+          <div class="input-group">
+            <input type="search" class="form-control" ng-model="search_params.query" translate translate-attr-placeholder="Search Term here" ng-keyup="$event.keyCode == 13 && search()">
+            <span class="input-group-addon" ng-click="search()"><span class="el-icon-search"></span></span>
+          </div>
+        </div>    
+        <div class="col-lg-3">
+          <div class="input-group">
+            <select class="form-control" ng-model="search_params.ordering" ng-change="search()" ng-options="option.value as option.name for option in ordering_options">
+              <option value='' disabled>{% endverbatim %}{% trans "Sort" %}{% verbatim %}</option>
+            </select>
+          </div>
+        </div>    
+        <div class="col-lg-6">
+          <div class="input-group pull-right">
+            <nav aria-label="Page navigation" ng-show="next || previous" class="pull-right">
+              <ul class="pagination">
+                <li ng-class="{disabled: !previous}">
+      	        <a aria-label="Previous" ng-click="previous_page()">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+      		  <li><a>{{ current_range }}/{{ total }}</a></li>
+                <li ng-class="{disabled: !next}">
+                  <a aria-label="Next" ng-click="next_page()">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>    
       </div>
     </div>
 
@@ -87,7 +102,7 @@
         <div class="td text-right-flex">{% endverbatim %}{% trans "Shareholder Number" %}{% verbatim %}</div>
         <div class="td text-right-flex">{% endverbatim %}{% trans "Shares (Voting-%%)" %}{% verbatim %}</div>
       </div>
-      <div class="tr" ng-repeat="shareholder in shareholders  | orderBy:['-share_count', '-last_name']" ng-click="goto_shareholder(shareholder.pk)" ng-mouseover="">
+      <div class="tr" ng-repeat="shareholder in shareholders" ng-click="goto_shareholder(shareholder.pk)" ng-mouseover="">
         <div class="td td-width-2 order-1 full-name">
           <span class="el-icon-exclamation-sign" ng-hide="shareholder.validate_gafi.is_valid" data-toggle="tooltip" title="{% endverbatim %}{% trans "Gafi Validation failed" %}{% verbatim %}"></span><span class="truncate">{{ shareholder.user.first_name }} {{ shareholder.user.last_name }}</span></div>
         <div class="td td-width-2 order-3 email"><span>{{ shareholder.user.email }}</span><a class="btn-inline"><span class="el-icon-eye-open"></span></a></div>
