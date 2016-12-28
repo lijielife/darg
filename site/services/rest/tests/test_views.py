@@ -1,7 +1,6 @@
 # coding=utf-8
 import datetime
 import logging
-import time
 
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
@@ -784,6 +783,26 @@ class PositionTestCase(TestCase):
         self.assertEqual(numbers, sorted(numbers, key=lambda s: s.lower(),
                          reverse=True))
 
+    def test_pagination(self):
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        cs = CompanyShareholderGenerator().generate(company=operator.company)
+        s1 = ShareholderGenerator().generate(company=operator.company)
+        s2 = ShareholderGenerator().generate(company=operator.company)
+        PositionGenerator().generate(company=operator.company, seller=cs,
+                                     buyer=s1)
+        PositionGenerator().generate(company=operator.company, seller=cs,
+                                     buyer=s2)
+
+        self.client.force_login(user)
+
+        res = self.client.get('/services/rest/position')
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['count'], 3)
+        self.assertEqual(res.data['current'], 1)
+        self.assertEqual(len(res.data['results']), 3)
+
 
 class ShareholderTestCase(TestCase):
 
@@ -1124,6 +1143,27 @@ class ShareholderTestCase(TestCase):
         self.assertEqual(numbers, sorted(numbers, key=lambda s: s.lower(),
                          reverse=True))
 
+    def test_pagination(self):
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        ComplexShareholderConstellationGenerator().generate(
+            company=operator.company, shareholder_count=30)
+
+        self.client.force_login(user)
+
+        res = self.client.get(
+            '/services/rest/shareholders')
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['current'], 1)
+        self.assertEqual(len(res.data['results']), 20)
+
+        res = self.client.get(res.data['next'])
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['current'], 2)
+        self.assertEqual(len(res.data['results']), 13)
+
 
 class OptionTransactionTestCase(APITestCase):
 
@@ -1264,6 +1304,25 @@ class OptionTransactionTestCase(APITestCase):
         numbers = [s.get('seller')['number'] for s in res.data['results']]
         self.assertEqual(numbers, sorted(numbers, key=lambda s: s.lower(),
                          reverse=True))
+
+    def test_pagination(self):
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        seller = ShareholderGenerator().generate(company=operator.company)
+        OptionTransactionGenerator().generate(
+            seller=seller)
+        OptionTransactionGenerator().generate(
+            seller=seller)
+
+        self.client.force_login(user)
+
+        res = self.client.get(
+            '/services/rest/optiontransaction')
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['count'], 2)
+        self.assertEqual(res.data['current'], 1)
+        self.assertEqual(len(res.data['results']), 2)
 
 
 class SecurityTestCase(APITestCase):
