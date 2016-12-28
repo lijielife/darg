@@ -317,7 +317,8 @@ class Shareholder(models.Model):
     number = models.CharField(max_length=255)
 
     def __unicode__(self):
-        return u'{} {} (#{})'.format(self.user.first_name, self.user.last_name, self.number)
+        return u'{} {} (#{})'.format(
+            self.user.first_name, self.user.last_name, self.number)
 
     def can_view(self, user):
         """
@@ -349,8 +350,7 @@ class Shareholder(models.Model):
         """
         returns bool if shareholder is company shareholder
         """
-        return Shareholder.objects.filter(
-            company=self.company).earliest('id').id == self.id
+        return self.company.shareholder_set.earliest('id').id == self.id
 
     def share_percent(self, date=None):
         """
@@ -384,7 +384,6 @@ class Shareholder(models.Model):
 
     def share_count(self, date=None, security=None):
         """ total count of shares for shareholder  """
-        date = date or datetime.datetime.now()
         qs_bought = self.buyer.all()
         qs_sold = self.seller.all()
 
@@ -696,7 +695,8 @@ class Security(models.Model):
           'transaction with segments on enabling.'), default=False)
 
     def __unicode__(self):
-        return _(u"{} ({} CHF)").format(self.get_title_display(), self.face_value)
+        return _(u"{} ({} CHF)").format(
+            self.get_title_display(), self.face_value)
 
     def count_in_segments(self, segments=None):
         """
@@ -824,7 +824,8 @@ class OptionTransaction(models.Model):
     seller = models.ForeignKey('Shareholder', blank=True, null=True,
                                related_name="option_seller")
     vesting_months = models.PositiveIntegerField(blank=True, null=True)
-    certificate_id = models.CharField(max_length=255, blank=True, null=True,
+    certificate_id = models.CharField(
+        max_length=255, blank=True, null=True,
         help_text=_('id of the issued certificate'))
     number_segments = JSONField(
         _('JSON list of segments of ids for securities. can be 1, 2, 3, 4-10'),

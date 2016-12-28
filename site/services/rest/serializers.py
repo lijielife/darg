@@ -80,8 +80,11 @@ class CompanySerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Company
-        fields = ('pk', 'name', 'share_count', 'country', 'url',
-                  'shareholder_count', 'security_set', 'founded_at',
+        fields = ('pk', 'name', 'share_count',
+                  'country', 'url',
+                  # not needed as of now, adding one more db query
+                  # 'shareholder_count',
+                  'security_set', 'founded_at',
                   'provisioned_capital', 'profile_url', 'captable_pdf_url',
                   'captable_csv_url', 'logo_url')
 
@@ -135,8 +138,8 @@ class AddCompanySerializer(serializers.Serializer):
                 first_name='Unternehmen:', last_name=company.name[:30],
                 email='info+{}@darg.ch'.format(slugify(company.name))
             )
-            shareholder = Shareholder.objects.create(user=companyuser,
-                                                     company=company, number='0')
+            shareholder = Shareholder.objects.create(
+                user=companyuser, company=company, number='0')
             Position.objects.create(
                 bought_at=validated_data.get(
                     'founded_at') or datetime.datetime.now(),
@@ -286,8 +289,11 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
         model = Shareholder
         fields = (
             'pk', 'number',
-            'user', 'company', 'share_percent', 'share_count',
-            'share_value', 'validate_gafi',
+            'user', 'company',
+            'share_percent',  # +2 queries/obj
+            'share_count',  # +2 queries/obj
+            'share_value',
+            'validate_gafi',
             'is_company',
             'full_name'
         )
@@ -393,10 +399,7 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
         return shareholder
 
     def get_is_company(self, obj):
-        """
-        bool if shareholder is company itself
-        """
-        return obj.is_company_shareholder()
+        return obj.is_company_shareholder()  # adds one query per obj
 
     def get_full_name(self, obj):
         return u"{} {}".format(obj.user.first_name, obj.user.last_name)

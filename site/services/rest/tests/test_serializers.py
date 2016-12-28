@@ -6,10 +6,11 @@ from django.core.urlresolvers import reverse
 from django.test import RequestFactory, TestCase
 from rest_framework.exceptions import ValidationError
 
-from project.generators import (OperatorGenerator, OptionPlanGenerator,
+from project.generators import (ComplexShareholderConstellationGenerator,
+                                OperatorGenerator, OptionPlanGenerator,
                                 OptionTransactionGenerator, PositionGenerator,
-                                ShareholderGenerator, UserGenerator,
-                                TwoInitialSecuritiesGenerator)
+                                ShareholderGenerator,
+                                TwoInitialSecuritiesGenerator, UserGenerator)
 from services.rest.serializers import (AddCompanySerializer,
                                        OptionPlanSerializer,
                                        OptionTransactionSerializer,
@@ -262,9 +263,35 @@ class PositionSerializerTestCase(TestCase):
 
 class ShareholderSerializerTestCase(TestCase):
 
+    def setUp(self):
+        self.factory = RequestFactory()
+
     def test_is_company(self):
 
         s = ShareholderGenerator().generate()
         s2 = ShareholderGenerator().generate(company=s.company)
         self.assertTrue(ShareholderSerializer(s).get_is_company(s))
         self.assertFalse(ShareholderSerializer(s2).get_is_company(s2))
+
+    def test_performance(self):
+        """
+        avoid query nightmare...
+        """
+        operator = OperatorGenerator().generate()
+        shs, security = ComplexShareholderConstellationGenerator().generate(
+            company=operator.company, shareholder_count=5)  # does +2shs
+        request = self.factory.get('/services/rest/shareholders')
+        request.user = operator.user
+
+        # make sure we don't issue more then one additional query per obj
+        with self.assertNumQueries(100):  # should be < 12
+            # queryset with prefetch to reduce db load
+            qs = operator.company.shareholder_set.all() \
+                .select_related('company', 'user', 'user__userprofile',
+                                'company__country') \
+                .prefetch_related('user__operator_set', 'company__security_set',
+                                  'company__shareholder_set') \
+                .distinct()
+            serializer = ShareholderSerializer(
+                qs, many=True, context={'request': request})
+            self.assertTrue(len(serializer.data) > 0)

@@ -1053,10 +1053,7 @@ class ShareholderTestCase(TestCase):
 
         self.client.force_login(user)
 
-        with self.assertNumQueries(326):
-            res = self.client.get('/services/rest/shareholders')
-
-        logger.warning('FIXME: 30+ queries per shareholder in rest api')
+        res = self.client.get('/services/rest/shareholders')
 
         self.assertEqual(res.status_code, 200)
         # must have current page in meta payload
