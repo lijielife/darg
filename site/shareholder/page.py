@@ -263,6 +263,7 @@ class OptionsPage(BasePage):
         extra = {'s1': s1, 's2': s2}
         logger.warning('option transaction not found in markup',
                        extra=extra)
+        print extra
         return False
 
     def is_option_date_equal(self, date):
