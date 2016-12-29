@@ -3,6 +3,7 @@
 import datetime
 import unittest
 from decimal import Decimal
+import time
 
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -860,6 +861,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.enter_new_position_data(position)
             app.click_save_position()
 
+            time.sleep(1)
             self.assertFalse(app.is_no_errors_displayed())
 
             # working data
