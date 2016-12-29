@@ -375,6 +375,7 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             self.assertTrue(app.is_no_errors_displayed())
             self.assertTrue(app.is_option_plan_displayed())
 
+            ct = shs[1].option_buyer.count()
             app.click_open_transfer_option()
             app.enter_transfer_option_with_segments_data(
                 buyer=shs[1], seller=shs[0])
@@ -384,6 +385,9 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.wait_until_invisible(
                 (By.CSS_SELECTOR, '#add_option_transaction'))
 
+            s = shs[1]
+            s.refresh_from_db()
+            self.assertEqual(ct + 1, s.option_buyer.count())
             self.assertTrue(app.is_no_errors_displayed())
             self.assertTrue(app.is_transfer_option_with_segments_shown(
                 buyer=shs[1], seller=shs[0]
