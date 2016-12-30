@@ -117,32 +117,6 @@ class CompanyViewSetTestCase(TestCase):
         self.client = APIClient()
         self.site = Site.objects.get_current()
 
-    def test_get_option_holders(self):
-        op = OperatorGenerator().generate()
-        opts = []
-        for x in range(0, 10):
-            opts.append(
-                OptionTransactionGenerator().generate(company=op.company))
-
-        self.client.force_authenticate(user=op.user)
-        res = self.client.get(reverse(
-            'company-option-holder', kwargs={'pk': op.company.pk}))
-
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(len(res.data['results']), 10)
-
-        # sell one persions options and check again
-        ot = opts[0]
-        OptionTransactionGenerator().generate(
-            company=ot.option_plan.company, seller=ot.buyer, count=ot.count,
-            price=1, buyer=opts[1].buyer)
-
-        res = self.client.get(reverse(
-            'company-option-holder', kwargs={'pk': ot.option_plan.company.pk}))
-
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(len(res.data['results']), 9)
-
 
 class OperatorTestCase(TestCase):
 
@@ -1163,6 +1137,50 @@ class ShareholderTestCase(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['current'], 2)
         self.assertEqual(len(res.data['results']), 13)
+
+    def test_get_option_holders(self):
+        op = OperatorGenerator().generate()
+        opts = []
+        for x in range(0, 10):
+            opts.append(
+                OptionTransactionGenerator().generate(company=op.company))
+
+        self.client.force_authenticate(user=op.user)
+        res = self.client.get(reverse(
+            'shareholders-option-holder'), {'company': op.company.pk})
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.data['results']), 10)
+
+        # sell one persons options and check again
+        ot = opts[0]
+        OptionTransactionGenerator().generate(
+            company=ot.option_plan.company, seller=ot.buyer, count=ot.count,
+            price=1, buyer=opts[1].buyer)
+
+        res = self.client.get(reverse(
+            'shareholders-option-holder'), {'company': op.company.pk})
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.data['results']), 9)
+
+    def test_get_option_holders_search(self):
+        op = OperatorGenerator().generate()
+        opts = []
+        for x in range(0, 10):
+            opts.append(
+                OptionTransactionGenerator().generate(company=op.company))
+
+        self.client.force_authenticate(user=op.user)
+        query = opts[0].buyer.user.first_name
+        res = self.client.get(
+            reverse('shareholders-option-holder'), {
+                'company': op.company.pk,
+                'search': query})
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.data['results']), 1)
+        self.assertEqual(res.data['results'][0]['user']['first_name'], query)
 
 
 class OptionTransactionTestCase(APITestCase):

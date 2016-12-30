@@ -147,7 +147,7 @@ class Company(models.Model):
             ):
                 logger.error('user sold more options then he got',
                              extra={'shareholder': sh})
-        return oh_list
+        return Shareholder.objects.filter(pk__in=[oh.pk for oh in oh_list])
 
     def get_all_option_plan_segments(self):
         """

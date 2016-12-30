@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-13 21:20+0000\n"
+"POT-Creation-Date: 2016-12-30 19:30+0000\n"
 "PO-Revision-Date: 2016-12-13 21:24+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Translated-Using: django-rosetta 0.7.12\n"
 
@@ -35,12 +35,14 @@ msgstr "Ihre Liste gespaltener Aktienanrechte für das Unternehmen '{}'"
 msgid ""
 "Dear Operator,\n"
 "\n"
-"Your share split has been successful. Please find the list of partial shares below:\n"
+"Your share split has been successful. Please find the list of partial shares "
+"below:\n"
 "\n"
 msgstr ""
 "Lieber Operator,\n"
 "\n"
-"Der Aktiensplit war erfolgreich. Sie finden die Daten zu den teilweisen Aktienanrechten wie folgt:\n"
+"Der Aktiensplit war erfolgreich. Sie finden die Daten zu den teilweisen "
+"Aktienanrechten wie folgt:\n"
 "\n"
 
 #: shareholder/models.py:82
@@ -54,16 +56,19 @@ msgstr "--- Keine partiellen Splitbeträge ---\n"
 #: shareholder/models.py:92
 msgid ""
 "\n"
-"These shareholders are eligible to either sell their partial shares or get compensated.\n"
+"These shareholders are eligible to either sell their partial shares or get "
+"compensated.\n"
 "\n"
 "Please handle them accordingly and update the share register.\n"
 "\n"
 "Your Share Register Team"
 msgstr ""
 "\n"
-"Diese Gesellschafter sind berechtigt Ihre Anrechte zu verschenken, verkaufen oder eine entsprechende Kompensation für die Nichtverwendung zu erhalten.\n"
+"Diese Gesellschafter sind berechtigt Ihre Anrechte zu verschenken, verkaufen "
+"oder eine entsprechende Kompensation für die Nichtverwendung zu erhalten.\n"
 "\n"
-"Bitte handhaben Sie diese Anteile entsprechend und tragen Sie die durchgeführten Transaktionen nach.\n"
+"Bitte handhaben Sie diese Anteile entsprechend und tragen Sie die "
+"durchgeführten Transaktionen nach.\n"
 "\n"
 "Mit besten Grüßen\n"
 "\n"
@@ -71,64 +76,62 @@ msgstr ""
 
 #: shareholder/models.py:237
 msgid "Share split of {} on {} with ratio {}:{}. Return of old shares."
-msgstr ""
-"Aktiensplit von {} für {} mit Verhältnis {}:{}. Rückgabe alter Aktien."
+msgstr "Aktiensplit von {} für {} mit Verhältnis {}:{}. Rückgabe alter Aktien."
 
 #: shareholder/models.py:257
 msgid "Share split of {} on {} with ratio {}:{}. Provisioning of new shares."
 msgstr "Aktiensplit von {} für {} mit Verhältnis {}:{}. Ausgabe neuer Aktien."
 
-#: shareholder/models.py:447
+#: shareholder/models.py:446
 msgid "Missing all data required for #GAFI."
 msgstr "Alle Daten für GAFI-FATF fehlen."
 
-#: shareholder/models.py:454
+#: shareholder/models.py:453
 msgid "Shareholder first name, last name or company name missing."
 msgstr "Vorname, Nachname oder Unternehmensname des Gesellschafters fehlen."
 
-#: shareholder/models.py:458
+#: shareholder/models.py:457
 msgid "Shareholder birthday missing."
 msgstr "Geburstag ist nicht angegeben."
 
-#: shareholder/models.py:462
+#: shareholder/models.py:461
 msgid "Shareholder origin/country missing."
 msgstr "Land des Aktionärs fehlt."
 
-#: shareholder/models.py:471
+#: shareholder/models.py:470
 msgid "Shareholder address or address details missing."
 msgstr "Adresse oder Adressdetails des Aktionärs fehlt."
 
-#: shareholder/models.py:675 shareholder/page.py:109 shareholder/page.py:127
+#: shareholder/models.py:674 shareholder/page.py:109 shareholder/page.py:127
 msgid "Preferred Stock"
 msgstr "Vorzugsaktien"
 
-#: shareholder/models.py:676
+#: shareholder/models.py:675
 msgid "Common Stock"
 msgstr "Stammaktien"
 
-#: shareholder/models.py:677
-#| msgid "Transfer Shares"
+#: shareholder/models.py:676
 msgid "Registered Shares"
 msgstr "Namensaktien"
 
-#: shareholder/models.py:684
+#: shareholder/models.py:683
 msgid "Nominal value of this asset"
 msgstr "Nominalwert"
 
-#: shareholder/models.py:690 shareholder/models.py:741
-#: shareholder/models.py:780 shareholder/models.py:830
+#: shareholder/models.py:689 shareholder/models.py:741
+#: shareholder/models.py:780 shareholder/models.py:831
 msgid "JSON list of segments of ids for securities. can be 1, 2, 3, 4-10"
 msgstr "JSON Liste der IDs der Wertpapiere. Kann [1,2,3, u'5-9'] sein."
 
-#: shareholder/models.py:695
+#: shareholder/models.py:694
 msgid ""
 "App needs to track IDs of shares. WARNING: update initial transaction with "
 "segments on enabling."
 msgstr ""
-"Aktiennummern sollen verfolgt werden. WARNUNG: bei Aktivierung aktualisieren"
-" sie bitte auch alle vorhandenen Transaktionen für dieses Wertpapier!"
+"Aktiennummern sollen verfolgt werden. WARNUNG: bei Aktivierung aktualisieren "
+"sie bitte auch alle vorhandenen Transaktionen für dieses Wertpapier!"
 
-#: shareholder/models.py:699
+#: shareholder/models.py:698
 msgid "{} ({} CHF)"
 msgstr "{} ({} CHF)"
 
@@ -144,12 +147,11 @@ msgstr "Nominalwert (bei Kapitalerhöhung) oder Kaufpreis"
 msgid "Number of shares approved"
 msgstr "Anzahl der genehmigten Aktien"
 
-#: shareholder/models.py:828
+#: shareholder/models.py:829
 msgid "id of the issued certificate"
 msgstr "Nummer des Zertifikates"
 
 #: shareholder/templates/options.html:6
-#| msgid "Options"
 msgid "Options Overview"
 msgstr "Zertifikateübersicht"
 
@@ -326,7 +328,6 @@ msgid "No positions"
 msgstr "Keine Positionen"
 
 #: shareholder/templates/shareholder/shareholder_detail.html:5
-#| msgid "Shareholder Data"
 msgid "Shareholder"
 msgstr "Aktionär"
 
@@ -427,7 +428,7 @@ msgstr "Aktiennummern"
 msgid "Delete shareholder"
 msgstr "Gesellschafter löschen"
 
-#: shareholder/tests/test_functional.py:152
+#: shareholder/tests/test_functional.py:153
 msgid "This email is already taken by another user/shareholder."
 msgstr ""
 "Diese E-Mail wird bereits von einem anderen Nutzer/Gesellschafter verwendet."
@@ -437,7 +438,6 @@ msgid "No company operator existing."
 msgstr "Operator nicht vorhanden."
 
 #: shareholder/validators.py:49
-#| msgid "Shareholder Language"
 msgid "Shareholders have no user assigned: {}"
 msgstr "Gesellschafter hat keinen Nutzer zugewiesen: {}"
 

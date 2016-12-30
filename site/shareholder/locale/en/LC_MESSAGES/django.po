@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-13 21:20+0000\n"
+"POT-Creation-Date: 2016-12-30 19:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -65,54 +65,54 @@ msgstr ""
 msgid "Share split of {} on {} with ratio {}:{}. Provisioning of new shares."
 msgstr ""
 
-#: shareholder/models.py:447
+#: shareholder/models.py:446
 msgid "Missing all data required for #GAFI."
 msgstr ""
 
-#: shareholder/models.py:454
+#: shareholder/models.py:453
 msgid "Shareholder first name, last name or company name missing."
 msgstr ""
 
-#: shareholder/models.py:458
+#: shareholder/models.py:457
 msgid "Shareholder birthday missing."
 msgstr ""
 
-#: shareholder/models.py:462
+#: shareholder/models.py:461
 msgid "Shareholder origin/country missing."
 msgstr ""
 
-#: shareholder/models.py:471
+#: shareholder/models.py:470
 msgid "Shareholder address or address details missing."
 msgstr ""
 
-#: shareholder/models.py:675 shareholder/page.py:109 shareholder/page.py:127
+#: shareholder/models.py:674 shareholder/page.py:109 shareholder/page.py:127
 msgid "Preferred Stock"
 msgstr ""
 
-#: shareholder/models.py:676
+#: shareholder/models.py:675
 msgid "Common Stock"
 msgstr ""
 
-#: shareholder/models.py:677
+#: shareholder/models.py:676
 msgid "Registered Shares"
 msgstr ""
 
-#: shareholder/models.py:684
+#: shareholder/models.py:683
 msgid "Nominal value of this asset"
 msgstr ""
 
-#: shareholder/models.py:690 shareholder/models.py:741
-#: shareholder/models.py:780 shareholder/models.py:830
+#: shareholder/models.py:689 shareholder/models.py:741
+#: shareholder/models.py:780 shareholder/models.py:831
 msgid "JSON list of segments of ids for securities. can be 1, 2, 3, 4-10"
 msgstr ""
 
-#: shareholder/models.py:695
+#: shareholder/models.py:694
 msgid ""
 "App needs to track IDs of shares. WARNING: update initial transaction with "
 "segments on enabling."
 msgstr ""
 
-#: shareholder/models.py:699
+#: shareholder/models.py:698
 msgid "{} ({} CHF)"
 msgstr ""
 
@@ -128,7 +128,7 @@ msgstr ""
 msgid "Number of shares approved"
 msgstr ""
 
-#: shareholder/models.py:828
+#: shareholder/models.py:829
 msgid "id of the issued certificate"
 msgstr ""
 
@@ -406,7 +406,7 @@ msgstr ""
 msgid "Delete shareholder"
 msgstr ""
 
-#: shareholder/tests/test_functional.py:152
+#: shareholder/tests/test_functional.py:153
 msgid "This email is already taken by another user/shareholder."
 msgstr ""
 

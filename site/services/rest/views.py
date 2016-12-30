@@ -5,7 +5,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from rest_framework import status, viewsets
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import detail_route, list_route
 from services.rest.pagination import SmallPagePagination
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -79,6 +79,30 @@ class ShareholderViewSet(viewsets.ModelViewSet):
                 })
         return Response(data, status=status.HTTP_200_OK)
 
+    @list_route(methods=['get'])
+    def option_holder(self, request, pk=None):
+        """
+        returns the captable part for all option holders
+        """
+        company_pk = self.request.GET.get('company')
+
+        if company_pk:
+            company = Company.objects.get(pk=company_pk,
+                                          operator__user=self.request.user)
+        else:
+            company = self.request.user.operator_set.first().company
+
+        ohs = company.get_active_option_holders()
+        ohs = self.filter_queryset(ohs)
+        page = self.paginate_queryset(ohs)
+        if page is not None:
+            serializer = OptionHolderSerializer(
+                page, many=True, context={'request': request})
+            return self.get_paginated_response(serializer.data)
+        serializer = OptionHolderSerializer(
+            ohs, many=True, context={'request': request})
+        return Response(serializer.data)
+
 
 class OperatorViewSet(viewsets.ModelViewSet):
     """
@@ -121,10 +145,15 @@ class CompanyViewSet(viewsets.ModelViewSet):
     """
     # FIXME filter by user perms
     queryset = Company.objects.all()
+    pagination_class = SmallPagePagination
     serializer_class = CompanySerializer
     permission_classes = [
         UserCanEditCompanyPermission,
     ]
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
+    search_fields = ('user__first_name', 'user__last_name', 'user__email',
+                     'number')
+    ordering_fields = ('user__last_name', 'user__email', 'number')
 
     def get_queryset(self):
         user = self.request.user
@@ -140,20 +169,6 @@ class CompanyViewSet(viewsets.ModelViewSet):
             obj,
             context={'request': request}).data,
             status=status.HTTP_201_CREATED)
-
-    @detail_route(methods=['get'])
-    def option_holder(self, request, pk=None):
-        """ returns the captable part for all option holders """
-        obj = self.get_object()
-        ohs = obj.get_active_option_holders()
-        page = self.paginate_queryset(ohs)
-        if page is not None:
-            serializer = OptionHolderSerializer(
-                page, many=True, context={'request': request})
-            return self.get_paginated_response(serializer.data)
-        serializer = OptionHolderSerializer(
-            ohs, many=True, context={'request': request})
-        return Response(serializer.data)
 
 
 # --- VIEWS
