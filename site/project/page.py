@@ -40,15 +40,17 @@ class BasePage(object):
         time.sleep(3)  # FIXME
 
         if kwargs.get('cls'):
-            el = self.driver.find_element_by_class_name(
+            els = self.driver.find_elements_by_class_name(
                 kwargs.get('cls')
             )
         if kwargs.get('id'):
-            el = self.driver.find_element_by_id(
+            els = self.driver.find_elements_by_id(
                 kwargs.get('id')
             )
+        if not len(els):
+            return False
 
-        return el.is_displayed()
+        return els[0].is_displayed()
 
     def login(self, username, password):
         """ log the user in """
@@ -172,11 +174,7 @@ class BasePage(object):
 
     def is_no_errors_displayed(self):
         """ MUST not find it, hence exception is True :) """
-        try:
-            self._is_element_displayed(cls='alert-danger')
-            return False
-        except:
-            return True
+        return not self._is_element_displayed(cls='alert-danger')
 
     def scroll_to(self, Y=None, element=None):
         """

@@ -20,6 +20,17 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
     $scope.newOptionTransaction = new OptionTransaction()
     $scope.newOptionTransaction.bought_at = new Date()
 
+    # pagination:
+    $scope.next = false
+    $scope.previous = false
+    $scope.total = 0
+    $scope.current = 0
+    $scope.current_range = ''
+
+    # search
+    $scope.search_params = {'query': null, 'ordering': null, 'ordering_reverse': null}
+    $scope.ordering_options = false
+
     $scope.numberSegmentsAvailable = ''
     $scope.hasSecurityWithTrackNumbers = () ->
         s = $scope.securities.find((el) ->
@@ -28,9 +39,37 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
         if s != undefined
             return true
 
-    $http.get('/services/rest/optionplan').then (result) ->
-        angular.forEach result.data.results, (item) ->
-            $scope.option_plans.push item
+    # --- Dynamic props
+    $scope.$watchCollection 'current', (current)->
+        start = ($scope.current - 1) * 20
+        end = Math.min($scope.current * 20, $scope.total)
+        $scope.current_range = start.toString() + '-' + end.toString()
+ 
+
+    # --- INITIAL
+    $scope.reset_search_params = ->
+        $scope.current = null
+        $scope.previous = null
+        $scope.next = null
+        $scope.option_plans = []
+        #$scope.search_params.query = null
+
+    $scope.load_all_option_plans = ->
+        # FIXME - its not company specific
+        $scope.reset_search_params()
+        $scope.search_params.query = null
+        $http.get('/services/rest/optionplan').then (result) ->
+            angular.forEach result.data.results, (item) ->
+                $scope.option_plans.push item
+            if result.data.next
+                $scope.next = result.data.next
+            if result.data.previous
+                $scope.previous = result.data.previous
+            if result.data.count
+                $scope.total=result.data.count
+            if result.data.current
+                $scope.current=result.data.current
+    $scope.load_all_option_plans()
 
     $http.get('/services/rest/security').then (result) ->
         angular.forEach result.data.results, (item) ->
@@ -44,6 +83,73 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
     .finally =>
         $scope.loading = false
 
+
+    # --- PAGINATION
+    $scope.next_page = ->
+        if $scope.next
+            $http.get($scope.next).then (result) ->
+                $scope.reset_search_params()
+                angular.forEach result.data.results, (item) ->
+                    $scope.option_plans.push item
+                if result.data.next
+                    $scope.next = result.data.next
+                else
+                    $scope.next = false
+                if result.data.previous
+                    $scope.previous = result.data.previous
+                else
+                    $scope.previous = false
+                if result.data.count
+                    $scope.total=result.data.count
+                if result.data.current
+                    $scope.current=result.data.current
+
+    $scope.previous_page = ->
+        if $scope.previous
+            $http.get($scope.previous).then (result) ->
+                $scope.reset_search_params()
+                angular.forEach result.data.results, (item) ->
+                    $scope.option_plans.push item
+                if result.data.next
+                    $scope.next = result.data.next
+                else
+                    $scope.next = false
+                if result.data.previous
+                    $scope.previous = result.data.previous
+                else
+                    $scope.previous = false
+                if result.data.count
+                    $scope.total=result.data.count
+                if result.data.current
+                    $scope.current=result.data.current
+
+    # --- SEARCH
+    $scope.search = ->
+        # FIXME - its not company specific
+        # respect ordering and search
+        params = {}
+        if $scope.search_params.query
+            params.search = $scope.search_params.query
+        if $scope.search_params.ordering
+            params.ordering = $scope.search_params.ordering
+        paramss = $.param(params)
+        console.log(params)
+
+        $http.get('/services/rest/optionplan?' + paramss).then (result) ->
+            $scope.reset_search_params()
+            angular.forEach result.data.results, (item) ->
+                $scope.option_plans.push item
+            if result.data.next
+                $scope.next = result.data.next
+            if result.data.previous
+                $scope.previous = result.data.previous
+            if result.data.count
+                $scope.total=result.data.count
+            if result.data.current
+                $scope.current=result.data.current
+            $scope.search_params.query = params.query
+
+    # -- LOGIC
     $scope.add_option_plan = ->
         if $scope.newOptionPlan.board_approved_at
             date = $scope.newOptionPlan.board_approved_at

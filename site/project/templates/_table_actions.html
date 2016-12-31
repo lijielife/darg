@@ -8,7 +8,7 @@
         <span class="input-group-addon search-btn" ng-click="{% endverbatim %}{{prefix}}{% verbatim %}search()"><span class="el-icon-search"></span></span>
       </div>
     </div>    
-    <div class="col-lg-3">
+    <div class="col-lg-3" ng-show="ordering_options">
       <div class="input-group">
         <select class="form-control" ng-model="{% endverbatim %}{{prefix}}{% verbatim %}search_params.ordering" ng-change="{% endverbatim %}{{prefix}}{% verbatim %}search()" ng-options="option.value as option.name for option in {% endverbatim %}{{prefix}}{% verbatim %}ordering_options">
           <option value='' disabled>{% endverbatim %}{% trans "Sort" %}{% verbatim %}</option>

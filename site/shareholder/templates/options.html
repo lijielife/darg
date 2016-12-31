@@ -30,6 +30,10 @@
     <img src="{% endverbatim %}{% static "compiled/images/loading_spinner.gif" %}{% verbatim %}" />
   </div>
 
+  <!-- TABLE ACTIONS -->
+  {% endverbatim %}{% include "_table_actions.html" %}{% verbatim %}
+
+  <!-- TABLE -->
   <div id="options" ng-hide="!option_plans.length" ng-repeat="option_plan in option_plans">
     {% endverbatim %}
     <h2>
