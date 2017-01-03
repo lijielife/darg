@@ -639,7 +639,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.wait_until_visible(
                 (By.CSS_SELECTOR, '#positions table tr.panel'))
             self.assertEqual(app.get_position_row_data()[0].split('\n')[0],
-                             datetime.datetime.today().strftime('%-d.%-m.%y'))
+                             datetime.datetime.today().strftime('%-d.%m.%y'))
 
         except Exception, e:
             self._handle_exception(e)
