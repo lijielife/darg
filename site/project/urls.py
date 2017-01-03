@@ -112,7 +112,8 @@ urlpatterns = [
 ]
 
 # admin
-admin.site.__class__ = AdminSiteOTPRequired
+if not settings.DEBUG:
+    admin.site.__class__ = AdminSiteOTPRequired
 admin.autodiscover()
 admin_url = settings.DEBUG and r'^admin/' or r'^__adm/'
 urlpatterns += patterns(
