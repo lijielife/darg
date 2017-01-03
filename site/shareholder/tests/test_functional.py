@@ -630,7 +630,8 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
 
             self.assertEqual(len(app.get_position_row_data()), 8)
             self.assertTrue(app.is_no_errors_displayed())
-            self.assertIn(datetime.datetime.today().strftime('%-d.%-m.%y'),
+            # ('%-d.%-m.%y') in case leading zero is not needed
+            self.assertIn(datetime.datetime.today().strftime('%-d.%m.%y'),
                           app.get_position_row_data()[0].split('\n')[0])
 
             app.refresh()
