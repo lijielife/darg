@@ -52,18 +52,18 @@ class BasePage(object):
     def login(self, username, password):
         """ log the user in """
         try:
-            self.driver.get('%s%s' % (self.live_server_url, '/accounts/login/'))
+            self.driver.get('%s%s' % (self.live_server_url, '/account/login/'))
         # randomly failes with TimeoutException
         except:
             time.sleep(5)
-            self.driver.get('%s%s' % (self.live_server_url, '/accounts/login/'))
+            self.driver.get('%s%s' % (self.live_server_url, '/account/login/'))
 
         self.driver.find_element_by_xpath(
-            '//*[@id="id_username"]').send_keys(username)
+            '//*[@id="id_auth-username"]').send_keys(username)
         self.driver.find_element_by_xpath(
-            '//*[@id="id_password"]').send_keys(password)
+            '//*[@id="id_auth-password"]').send_keys(password)
         self.driver.find_element_by_xpath(
-            '//*[@id="auth"]/form/button').click()
+            '//button[contains(@class, "btn-primary")]').click()
         time.sleep(1)  # wait for page reload  # FIXME
         page_heading = self.driver.find_element_by_tag_name(
             'h1').get_attribute('innerHTML')
