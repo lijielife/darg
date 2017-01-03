@@ -354,6 +354,7 @@
   app.controller('OptionsController', [
     '$scope', '$http', '$window', '$filter', 'OptionPlan', 'OptionTransaction', function($scope, $http, $window, $filter, OptionPlan, OptionTransaction) {
       $scope.option_plans = [];
+      $scope.optiontransactions = [];
       $scope.securities = [];
       $scope.shareholders = [];
       $scope.loading = true;
@@ -363,6 +364,17 @@
       $scope.newOptionPlan.board_approved_at = new Date();
       $scope.newOptionTransaction = new OptionTransaction();
       $scope.newOptionTransaction.bought_at = new Date();
+      $scope.next = false;
+      $scope.previous = false;
+      $scope.total = 0;
+      $scope.current = 0;
+      $scope.current_range = '';
+      $scope.search_params = {
+        'query': null,
+        'ordering': null,
+        'ordering_reverse': null
+      };
+      $scope.ordering_options = false;
       $scope.numberSegmentsAvailable = '';
       $scope.hasSecurityWithTrackNumbers = function() {
         var s;
@@ -373,11 +385,45 @@
           return true;
         }
       };
-      $http.get('/services/rest/optionplan').then(function(result) {
-        return angular.forEach(result.data.results, function(item) {
-          return $scope.option_plans.push(item);
-        });
+      $scope.$watchCollection('current', function(current) {
+        var end, start;
+        start = ($scope.current - 1) * 20;
+        end = Math.min($scope.current * 20, $scope.total);
+        return $scope.current_range = start.toString() + '-' + end.toString();
       });
+      $scope.reset_search_params = function() {
+        $scope.current = null;
+        $scope.previous = null;
+        $scope.next = null;
+        return $scope.optiontransactions = [];
+      };
+      $scope.load_all = function() {
+        $scope.reset_search_params();
+        $scope.search_params.query = null;
+        $http.get('/services/rest/optiontransaction').then(function(result) {
+          angular.forEach(result.data.results, function(item) {
+            return $scope.optiontransactions.push(item);
+          });
+          if (result.data.next) {
+            $scope.next = result.data.next;
+          }
+          if (result.data.previous) {
+            $scope.previous = result.data.previous;
+          }
+          if (result.data.count) {
+            $scope.total = result.data.count;
+          }
+          if (result.data.current) {
+            return $scope.current = result.data.current;
+          }
+        });
+        return $http.get('/services/rest/optionplan').then(function(result) {
+          return angular.forEach(result.data.results, function(item) {
+            return $scope.option_plans.push(item);
+          });
+        });
+      };
+      $scope.load_all();
       $http.get('/services/rest/security').then(function(result) {
         return angular.forEach(result.data.results, function(item) {
           return $scope.securities.push(item);
@@ -395,6 +441,89 @@
           return $scope.loading = false;
         };
       })(this));
+      $scope.next_page = function() {
+        if ($scope.next) {
+          return $http.get($scope.next).then(function(result) {
+            $scope.reset_search_params();
+            angular.forEach(result.data.results, function(item) {
+              return $scope.optiontransactions.push(item);
+            });
+            if (result.data.next) {
+              $scope.next = result.data.next;
+            } else {
+              $scope.next = false;
+            }
+            if (result.data.previous) {
+              $scope.previous = result.data.previous;
+            } else {
+              $scope.previous = false;
+            }
+            if (result.data.count) {
+              $scope.total = result.data.count;
+            }
+            if (result.data.current) {
+              return $scope.current = result.data.current;
+            }
+          });
+        }
+      };
+      $scope.previous_page = function() {
+        if ($scope.previous) {
+          return $http.get($scope.previous).then(function(result) {
+            $scope.reset_search_params();
+            angular.forEach(result.data.results, function(item) {
+              return $scope.optiontransactions.push(item);
+            });
+            if (result.data.next) {
+              $scope.next = result.data.next;
+            } else {
+              $scope.next = false;
+            }
+            if (result.data.previous) {
+              $scope.previous = result.data.previous;
+            } else {
+              $scope.previous = false;
+            }
+            if (result.data.count) {
+              $scope.total = result.data.count;
+            }
+            if (result.data.current) {
+              return $scope.current = result.data.current;
+            }
+          });
+        }
+      };
+      $scope.search = function() {
+        var params, paramss;
+        params = {};
+        if ($scope.search_params.query) {
+          params.search = $scope.search_params.query;
+        }
+        if ($scope.search_params.ordering) {
+          params.ordering = $scope.search_params.ordering;
+        }
+        paramss = $.param(params);
+        console.log(params);
+        return $http.get('/services/rest/optiontransaction?' + paramss).then(function(result) {
+          $scope.reset_search_params();
+          angular.forEach(result.data.results, function(item) {
+            return $scope.optiontransactions.push(item);
+          });
+          if (result.data.next) {
+            $scope.next = result.data.next;
+          }
+          if (result.data.previous) {
+            $scope.previous = result.data.previous;
+          }
+          if (result.data.count) {
+            $scope.total = result.data.count;
+          }
+          if (result.data.current) {
+            $scope.current = result.data.current;
+          }
+          return $scope.search_params.query = params.query;
+        });
+      };
       $scope.add_option_plan = function() {
         var date;
         if ($scope.newOptionPlan.board_approved_at) {
@@ -403,7 +532,7 @@
           $scope.newOptionPlan.board_approved_at = date.toISOString().substring(0, 10);
         }
         return $scope.newOptionPlan.$save().then(function(result) {
-          return $scope.option_plans.push(result);
+          return $scope.load_all();
         }).then(function() {
           $scope.newOptionPlan = new OptionPlan();
           return $scope.show_add_option_plan = false;
@@ -433,9 +562,9 @@
           $scope.newOptionTransaction.bought_at = date.toISOString().substring(0, 10);
         }
         return $scope.newOptionTransaction.$save().then(function(result) {
-          return $scope._reload_option_plans();
+          return $scope._load_all();
         }).then(function() {
-          $scope.newOptionTransaction = new OptionPlan();
+          $scope.newOptionTransaction = new OptionTransaction();
           return $scope.show_add_option_transaction = false;
         }).then(function() {
           $scope.errors = null;
@@ -448,26 +577,18 @@
               rejection: rejection
             }
           });
-          $scope.newOptionTransaction.bought_at = d;
+          $scope.newOptionTransaction.bought_at = date;
           return $scope.newOptionTransaction.option_plan = p;
-        });
-      };
-      $scope._reload_option_plans = function() {
-        $scope.option_plans = [];
-        return $http.get('/services/rest/optionplan').then(function(result) {
-          return angular.forEach(result.data.results, function(item) {
-            return $scope.option_plans.push(item);
-          });
         });
       };
       $scope.delete_option_transaction = function(option_transaction) {
         return $http["delete"]('/services/rest/optiontransaction/' + option_transaction.pk).then(function(result) {
-          return $scope._reload_option_plans();
+          return $scope.load_all();
         });
       };
       $scope.confirm_option_transaction = function(option_transaction) {
         return $http.post('/services/rest/optiontransaction/' + option_transaction.pk + '/confirm').then(function(result) {
-          return $scope._reload_option_plans();
+          return $scope.load_all();
         });
       };
       $scope.show_add_option_plan_form = function() {
@@ -650,6 +771,17 @@
       $scope.show_split = false;
       $scope.newPosition = new Position();
       $scope.newSplit = new Split();
+      $scope.next = false;
+      $scope.previous = false;
+      $scope.total = 0;
+      $scope.current = 0;
+      $scope.current_range = '';
+      $scope.search_params = {
+        'query': null,
+        'ordering': null,
+        'ordering_reverse': null
+      };
+      $scope.ordering_options = false;
       $scope.numberSegmentsAvailable = '';
       $scope.hasSecurityWithTrackNumbers = function() {
         var s;
@@ -662,12 +794,41 @@
       };
       $scope.positionsLoading = true;
       $scope.addPositionLoading = false;
-      $http.get('/services/rest/position').then(function(result) {
-        angular.forEach(result.data.results, function(item) {
-          return $scope.positions.push(item);
-        });
-        return $scope.positionsLoading = false;
+      $scope.$watchCollection('current', function(current) {
+        var end, start;
+        start = ($scope.current - 1) * 20;
+        end = Math.min($scope.current * 20, $scope.total);
+        return $scope.current_range = start.toString() + '-' + end.toString();
       });
+      $scope.reset_search_params = function() {
+        $scope.current = null;
+        $scope.previous = null;
+        $scope.next = null;
+        return $scope.positions = [];
+      };
+      $scope.load_all_positions = function() {
+        $scope.reset_search_params();
+        $scope.search_params.query = null;
+        return $http.get('/services/rest/position').then(function(result) {
+          angular.forEach(result.data.results, function(item) {
+            return $scope.positions.push(item);
+          });
+          $scope.positionsLoading = false;
+          if (result.data.next) {
+            $scope.next = result.data.next;
+          }
+          if (result.data.previous) {
+            $scope.previous = result.data.previous;
+          }
+          if (result.data.count) {
+            $scope.total = result.data.count;
+          }
+          if (result.data.current) {
+            return $scope.current = result.data.current;
+          }
+        });
+      };
+      $scope.load_all_positions();
       $http.get('/services/rest/shareholders').then(function(result) {
         return angular.forEach(result.data.results, function(item) {
           if (item.user.userprofile.birthday) {
@@ -681,6 +842,89 @@
           return $scope.securities.push(item);
         });
       });
+      $scope.next_page = function() {
+        if ($scope.next) {
+          return $http.get($scope.next).then(function(result) {
+            $scope.reset_search_params();
+            angular.forEach(result.data.results, function(item) {
+              return $scope.positions.push(item);
+            });
+            if (result.data.next) {
+              $scope.next = result.data.next;
+            } else {
+              $scope.next = false;
+            }
+            if (result.data.previous) {
+              $scope.previous = result.data.previous;
+            } else {
+              $scope.previous = false;
+            }
+            if (result.data.count) {
+              $scope.total = result.data.count;
+            }
+            if (result.data.current) {
+              return $scope.current = result.data.current;
+            }
+          });
+        }
+      };
+      $scope.previous_page = function() {
+        if ($scope.previous) {
+          return $http.get($scope.previous).then(function(result) {
+            $scope.reset_search_params();
+            angular.forEach(result.data.results, function(item) {
+              return $scope.positions.push(item);
+            });
+            if (result.data.next) {
+              $scope.next = result.data.next;
+            } else {
+              $scope.next = false;
+            }
+            if (result.data.previous) {
+              $scope.previous = result.data.previous;
+            } else {
+              $scope.previous = false;
+            }
+            if (result.data.count) {
+              $scope.total = result.data.count;
+            }
+            if (result.data.current) {
+              return $scope.current = result.data.current;
+            }
+          });
+        }
+      };
+      $scope.search = function() {
+        var params, paramss;
+        params = {};
+        if ($scope.search_params.query) {
+          params.search = $scope.search_params.query;
+        }
+        if ($scope.search_params.ordering) {
+          params.ordering = $scope.search_params.ordering;
+        }
+        paramss = $.param(params);
+        console.log(params);
+        return $http.get('/services/rest/position?' + paramss).then(function(result) {
+          $scope.reset_search_params();
+          angular.forEach(result.data.results, function(item) {
+            return $scope.positions.push(item);
+          });
+          if (result.data.next) {
+            $scope.next = result.data.next;
+          }
+          if (result.data.previous) {
+            $scope.previous = result.data.previous;
+          }
+          if (result.data.count) {
+            $scope.total = result.data.count;
+          }
+          if (result.data.current) {
+            $scope.current = result.data.current;
+          }
+          return $scope.search_params.query = params.search;
+        });
+      };
       $scope.add_position = function() {
         var bought_at;
         $scope.addPositionLoading = true;

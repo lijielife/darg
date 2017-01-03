@@ -146,7 +146,7 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
                 $scope.total=result.data.count
             if result.data.current
                 $scope.current=result.data.current
-            $scope.search_params.query = params.query
+            $scope.search_params.query = params.search
 
     # --- LOGIC
     $scope.add_position = ->

@@ -9,6 +9,7 @@ app.config ['$translateProvider', ($translateProvider) ->
 app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'OptionPlan', 'OptionTransaction', ($scope, $http, $window, $filter, OptionPlan, OptionTransaction) ->
 
     $scope.option_plans = []
+    $scope.optiontransactions = []
     $scope.securities = []
     $scope.shareholders = []
     $scope.loading = true
@@ -44,23 +45,23 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
         start = ($scope.current - 1) * 20
         end = Math.min($scope.current * 20, $scope.total)
         $scope.current_range = start.toString() + '-' + end.toString()
- 
 
     # --- INITIAL
     $scope.reset_search_params = ->
         $scope.current = null
         $scope.previous = null
         $scope.next = null
-        $scope.option_plans = []
+        $scope.optiontransactions = []
         #$scope.search_params.query = null
 
-    $scope.load_all_option_plans = ->
+    $scope.load_all = ->
         # FIXME - its not company specific
         $scope.reset_search_params()
         $scope.search_params.query = null
-        $http.get('/services/rest/optionplan').then (result) ->
+
+        $http.get('/services/rest/optiontransaction').then (result) ->
             angular.forEach result.data.results, (item) ->
-                $scope.option_plans.push item
+                $scope.optiontransactions.push item
             if result.data.next
                 $scope.next = result.data.next
             if result.data.previous
@@ -69,12 +70,19 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
                 $scope.total=result.data.count
             if result.data.current
                 $scope.current=result.data.current
-    $scope.load_all_option_plans()
 
+        $http.get('/services/rest/optionplan').then (result) ->
+            angular.forEach result.data.results, (item) ->
+                $scope.option_plans.push item
+
+    $scope.load_all()
+
+    # used inside the add transaction form
     $http.get('/services/rest/security').then (result) ->
         angular.forEach result.data.results, (item) ->
             $scope.securities.push item
 
+    # used inside the add transaction form
     $http.get('/services/rest/shareholders').then (result) ->
         angular.forEach result.data.results, (item) ->
             if item.user.userprofile.birthday
@@ -90,7 +98,7 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
             $http.get($scope.next).then (result) ->
                 $scope.reset_search_params()
                 angular.forEach result.data.results, (item) ->
-                    $scope.option_plans.push item
+                    $scope.optiontransactions.push item
                 if result.data.next
                     $scope.next = result.data.next
                 else
@@ -109,7 +117,7 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
             $http.get($scope.previous).then (result) ->
                 $scope.reset_search_params()
                 angular.forEach result.data.results, (item) ->
-                    $scope.option_plans.push item
+                    $scope.optiontransactions.push item
                 if result.data.next
                     $scope.next = result.data.next
                 else
@@ -135,10 +143,10 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
         paramss = $.param(params)
         console.log(params)
 
-        $http.get('/services/rest/optionplan?' + paramss).then (result) ->
+        $http.get('/services/rest/optiontransaction?' + paramss).then (result) ->
             $scope.reset_search_params()
             angular.forEach result.data.results, (item) ->
-                $scope.option_plans.push item
+                $scope.optiontransactions.push item
             if result.data.next
                 $scope.next = result.data.next
             if result.data.previous
@@ -156,8 +164,9 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
             # http://stackoverflow.com/questions/1486476/json-stringify-changes-time-of-date-because-of-utc
             date.setHours(date.getHours() - date.getTimezoneOffset() / 60)
             $scope.newOptionPlan.board_approved_at = date.toISOString().substring(0, 10)
+
         $scope.newOptionPlan.$save().then (result) ->
-            $scope.option_plans.push result
+            $scope.load_all()
         .then ->
             # Reset our editor to a new blank post
             $scope.newOptionPlan = new OptionPlan()
@@ -183,11 +192,13 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
             date = $scope.newOptionTransaction.bought_at
             date.setHours(date.getHours() - date.getTimezoneOffset() / 60)
             $scope.newOptionTransaction.bought_at = date.toISOString().substring(0, 10)
+
+        # now save:
         $scope.newOptionTransaction.$save().then (result) ->
-            $scope._reload_option_plans()
+            $scope._load_all()
         .then ->
             # Reset our editor to a new blank post
-            $scope.newOptionTransaction = new OptionPlan()
+            $scope.newOptionTransaction = new OptionTransaction()
             $scope.show_add_option_transaction = false
         .then ->
             # Clear any errors
@@ -199,22 +210,16 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
                 level: 'warning',
                 extra: { rejection: rejection },
             })
-            $scope.newOptionTransaction.bought_at = d
+            $scope.newOptionTransaction.bought_at = date
             $scope.newOptionTransaction.option_plan = p
-
-    $scope._reload_option_plans = () ->
-        $scope.option_plans = []
-        $http.get('/services/rest/optionplan').then (result) ->
-            angular.forEach result.data.results, (item) ->
-                $scope.option_plans.push item
 
     $scope.delete_option_transaction = (option_transaction) ->
         $http.delete('/services/rest/optiontransaction/'+option_transaction.pk).then (result) ->
-            $scope._reload_option_plans()
+            $scope.load_all()
 
     $scope.confirm_option_transaction = (option_transaction) ->
         $http.post('/services/rest/optiontransaction/'+option_transaction.pk+'/confirm').then (result) ->
-            $scope._reload_option_plans()
+            $scope.load_all()
 
     $scope.show_add_option_plan_form = ->
         $scope.show_add_option_plan = true

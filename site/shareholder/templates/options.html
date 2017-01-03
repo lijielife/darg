@@ -18,6 +18,7 @@
     <a class="btn-inline " href="" ng-click="show_add_option_plan_form()">{% trans "Grant New Option Plan" %}</a>
   </div>
 
+  <!-- FORMS -->
   <div id="add_option_transaction" ng-hide="!show_add_option_transaction">
     {% include "_add_option_transaction_form.html" %}
   </div>
@@ -34,74 +35,73 @@
   {% endverbatim %}{% include "_table_actions.html" %}{% verbatim %}
 
   <!-- TABLE -->
-  <div id="options" ng-hide="!option_plans.length" ng-repeat="option_plan in option_plans">
+  <div id="options" ng-hide="!optiontransactions.length" ng-repeat="optiontransaction in optiontransactions">
     {% endverbatim %}
-    <h2>
-      {% trans "Optionplan" %}: {% verbatim %}{{ option_plan.title }}{% endverbatim %} {% trans "for" %} {% verbatim %}{{ option_plan.security.readable_title }}{% endverbatim %}
-      <a href="/optionsplan/{% verbatim %}{{ option_plan.pk }}{% endverbatim %}/" class="el-icon-cogs-wrapper btn-inline">
+    <h2 ng-show="optiontransaction.option_plan.pk != optiontransactions[$index - 1].option_plan.pk">
+      {% trans "Optionplan" %}: {% verbatim %}{{ optiontransaction.option_plan.title }}{% endverbatim %} {% trans "for" %} {% verbatim %}{{ optiontransaction.option_plan.security.readable_title }}{% endverbatim %}
+      <a href="/optionsplan/{% verbatim %}{{ optiontransaction.option_plan.pk }}{% endverbatim %}/" class="el-icon-cogs-wrapper btn-inline">
          <span class="el-icon-cogs"></span>
       </a>
     </h2>
     <div class="table-responsive">
       <table class="table table-hover">
-      <caption></caption>
-      <thead>
-        <tr>
-          <th>{% trans "Grant Date" %}</th>
-          <th>{% trans "Receipient" %}</th>
-          <th class="text-right">
-            {% trans "Share Count" %}<br/>
-            {% verbatim %}<span class="note" ng-show="option_plan.security.track_numbers">{% endverbatim %}
-            ({% trans "Number Segments" %})
-            </span>
-          </th>
-          <th class="text-right">{% trans "Exercise Price" %}</th>
-          <th>{% trans "Issuer" %}</th>
-          <th></th>
-      </thead
-
-       <!-- OPTIONS -->
-
-      <tbody>
-      {% verbatim %}
-      <tr class="panel" ng-repeat="option_transaction in option_plan.optiontransaction_set">
-        <td>
-          <div class="bought-at">{{ option_transaction.bought_at | date : 'd.MM.yy' }}</div>
-          <div ng-show="option_transaction.is_draft" class="draft">
-            {% endverbatim %}
-            {% trans "Draft" %}
-            {% verbatim %}
-          </div>
-        </td>
-        <td class="buyer">{{ option_transaction.buyer.user.first_name }} {{ option_transaction.buyer.user.last_name }}</td>
-        <td class="text-right count">
-          {{ option_transaction.count }}
-          <span class="note" ng-show="option_plan.security.track_numbers && option_transaction.readable_number_segments">
-            (#{{ option_transaction.readable_number_segments }})
-          </span>
-        </td>
-        <td class="text-right">{{ option_plan.exercise_price }}</td>
-        <td>{{ option_transaction.seller.user.first_name }} {{ option_transaction.seller.user.last_name }}</td>
-        <td>
-          <div ng-show="option_transaction.is_draft">
-            <a class="btn-inline" ng-click="delete_option_transaction(option_transaction)" href>
-              {% endverbatim %}{% trans "delete" %}{% verbatim %}
-            </a>
-          </div>
-          <div ng-show="option_transaction.is_draft" ng-click="confirm_option_transaction(option_transaction)" href>
-            <a class="btn-inline">
-              {% endverbatim %}{% trans "confirm" %}{% verbatim %}
-            </a>
-          </div>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-    </div>
+        <caption></caption>
+        <thead ng-show="optiontransaction.option_plan.pk != optiontransactions[$index - 1].option_plan.pk">
+          <tr>
+            <th>{% trans "Grant Date" %}</th>
+            <th>{% trans "Receipient" %}</th>
+            <th class="text-right">
+              {% trans "Share Count" %}<br/>
+              {% verbatim %}<span class="note" ng-show="option_plan.security.track_numbers">{% endverbatim %}
+              ({% trans "Number Segments" %})
+              </span>
+            </th>
+            <th class="text-right">{% trans "Exercise Price" %}</th>
+            <th>{% trans "Issuer" %}</th>
+            <th></th>
+        </thead
+        {% verbatim %}
+  
+        <!-- OPTIONS -->
+        <tbody>
+          <tr class="panel">
+            <td>
+              <div class="bought-at">{{ optiontransaction.bought_at | date : 'd.MM.yy' }}</div>
+              <div ng-show="optiontransaction.is_draft" class="draft">
+                {% endverbatim %}
+                {% trans "Draft" %}
+                {% verbatim %}
+              </div>
+            </td>
+            <td class="buyer">{{ optiontransaction.buyer.user.first_name }} {{ optiontransaction.buyer.user.last_name }}</td>
+            <td class="text-right count">
+              {{ optiontransaction.count }}
+              <span class="note" ng-show="optiontransaction.option_plan.security.track_numbers && optiontransaction.option_transaction.readable_number_segments">
+                (#{{optiontransaction.readable_number_segments }})
+              </span>
+            </td>
+            <td class="text-right">{{ optiontransaction.option_plan.exercise_price }}</td>
+            <td>{{ optiontransaction.seller.user.first_name }} {{ optiontransaction.seller.user.last_name }}</td>
+            <td>
+              <div ng-show="optiontransaction.is_draft">
+                <a class="btn-inline" ng-click="delete_option_transaction(optiontransaction)" href>
+                  {% endverbatim %}{% trans "delete" %}{% verbatim %}
+                </a>
+              </div>
+              <div ng-show="optiontransaction.is_draft" ng-click="confirm_option_transaction(optiontransaction)" href>
+                <a class="btn-inline">
+                  {% endverbatim %}{% trans "confirm" %}{% verbatim %}
+                </a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div> <!-- table-responsive -->
     {% endverbatim %}
-    <div class="panel" ng-show="!option_plans.length">
+    <div class="panel" ng-show="!optiontransactions.length">
       <div class="clearfix">
-        <em>{% trans "No options yet." %}</em>
+        <em>{% trans "No option plans yet." %}</em>
       </div>
     </div>
   </div>

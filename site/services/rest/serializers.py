@@ -42,10 +42,13 @@ class SecuritySerializer(serializers.HyperlinkedModelSerializer,
         model = Security
         fields = ('pk', 'readable_title', 'title', 'url', 'count',
                   'track_numbers', 'readable_number_segments',
-                  'number_segments')
+                  'number_segments', 'face_value')
 
     def get_readable_title(self, obj):
-        return obj.get_title_display()
+        if obj.face_value:
+            return obj.get_title_display() + u' ({})'.format(obj.face_value)
+        else:
+            return obj.get_title_display()
 
     def get_readable_number_segments(self, obj):
         """
@@ -574,11 +577,150 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
         return position
 
 
+class OptionPlanSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    excluded `optiontransaction_set` to speed up performance
+    """
+    security = SecuritySerializer(many=False, required=True)
+    # optiontransaction_set = OptionTransactionSerializer(many=True,
+    #                                                     read_only=True)
+    board_approved_at = serializers.DateField()
+    readable_number_segments = serializers.SerializerMethodField()
+
+    class Meta:
+        model = OptionPlan
+        fields = ('pk', 'title', 'security',  # 'optiontransaction_set',
+                  'exercise_price', 'count', 'comment', 'board_approved_at',
+                  'url', 'pdf_file', 'pdf_file_preview_url', 'pdf_file_url',
+                  'number_segments', 'readable_number_segments')
+
+    def validate_pdf_file(self, value):
+        if not value:
+            return
+
+        if value.content_type == 'application/pdf':
+            return value
+        else:
+            raise serializers.ValidationError(_("Not a pdf file."))
+
+    def create(self, validated_data):
+
+        # prepare data
+        kwargs = {}
+        user = self.context.get("request").user
+        company = user.operator_set.all()[0].company
+        security = Security.objects.get(
+            company=company,
+            title=validated_data.get("security").get('title'),
+            face_value=validated_data.get("security").get('face_value'))
+
+        kwargs.update({
+            "company": company,
+            "board_approved_at": validated_data.get("board_approved_at"),
+            "title": validated_data.get("title"),
+            "security": security,
+            "count": validated_data.get("count"),
+            "exercise_price": validated_data.get("exercise_price"),
+            "comment": validated_data.get("comment"),
+        })
+
+        # segments must be ordered, have no duplicates and must be list...
+        if security.track_numbers and validated_data.get("number_segments"):
+            kwargs.update({
+                "number_segments": string_list_to_json(
+                    validated_data.get("number_segments"))
+            })
+
+        option_plan = OptionPlan.objects.create(**kwargs)
+
+        # assign all initial options to company shareholder
+        cs = company.get_company_shareholder()
+        kwargs = {
+            'option_plan': option_plan,
+            'bought_at': validated_data.get("board_approved_at"),
+            'buyer': cs,
+            'count': validated_data.get("count")
+        }
+
+        # segments must be ordered, have no duplicates and must be list...
+        if security.track_numbers and validated_data.get("number_segments"):
+            kwargs.update({
+                "number_segments": string_list_to_json(
+                    validated_data.get("number_segments"))
+            })
+
+        OptionTransaction.objects.create(**kwargs)
+
+        return option_plan
+
+    def get_readable_number_segments(self, obj):
+        """
+        change json into human readble format
+        """
+        return str(obj.number_segments).translate(None, "'[]u{}")
+
+    def is_valid(self, raise_exception=False):
+        """
+        validate cross data relations
+        """
+        res = super(OptionPlanSerializer, self).is_valid(raise_exception)
+
+        initial_data = self.initial_data
+
+        security = initial_data.get('security')
+        if security and Security.objects.get(id=security['pk']).track_numbers:
+
+            security = Security.objects.get(id=security['pk'])
+            if (isinstance(initial_data.get('number_segments'), str) or
+                    isinstance(initial_data.get('number_segments'), unicode)):
+                segments = string_list_to_json(
+                    initial_data.get('number_segments'))
+            else:
+                segments = initial_data.get('number_segments')
+
+            # we need number_segments if this is a security with .track_numbers
+            if not segments:
+                raise serializers.ValidationError(
+                    {'number_segments':
+                        [_('Invalid or empty security numbers segments.')]})
+
+            # segments must be available by company shareholder
+            cs = security.company.get_company_shareholder()
+            owning, failed_segments, owned_segments = cs.owns_segments(
+                    segments, security)
+
+            # segments must be owned by seller
+            if not owning:
+                raise serializers.ValidationError({
+                    'number_segments':
+                        [_('Segments "{}" must be owned by company shareholder '
+                           '"{}". Available are {}').format(
+                              failed_segments, cs.user.last_name,
+                              owned_segments
+                        )]
+                })
+
+            # validate segment count == share count
+            elif (security.count_in_segments(segments) !=
+                    initial_data.get('count')):
+                raise serializers.ValidationError({
+                    'count':
+                        [_('Number of shares in segments ({}) '
+                           'does not match count {}').format(
+                                security.count_in_segments(segments),
+                                initial_data.get('count')
+                           )]
+                })
+
+        return res
+
+
 class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
     buyer = ShareholderSerializer(many=False, required=True)
     seller = ShareholderSerializer(many=False, required=True)
     bought_at = serializers.DateField()  # e.g. 2015-06-02T23:00:00.000Z
     readable_number_segments = serializers.SerializerMethodField()
+    option_plan = OptionPlanSerializer()
 
     class Meta:
         model = OptionTransaction
@@ -701,140 +843,6 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
         change json into human readble format
         """
         return str(obj.number_segments).translate(None, "'[]u{}")
-
-
-class OptionPlanSerializer(serializers.HyperlinkedModelSerializer):
-    security = SecuritySerializer(many=False, required=True)
-    optiontransaction_set = OptionTransactionSerializer(many=True,
-                                                        read_only=True)
-    board_approved_at = serializers.DateField()
-    readable_number_segments = serializers.SerializerMethodField()
-
-    class Meta:
-        model = OptionPlan
-        fields = ('pk', 'title', 'security', 'optiontransaction_set',
-                  'exercise_price', 'count', 'comment', 'board_approved_at',
-                  'url', 'pdf_file', 'pdf_file_preview_url', 'pdf_file_url',
-                  'number_segments', 'readable_number_segments')
-
-    def validate_pdf_file(self, value):
-        if not value:
-            return
-
-        if value.content_type == 'application/pdf':
-            return value
-        else:
-            raise serializers.ValidationError(_("Not a pdf file."))
-
-    def create(self, validated_data):
-
-        # prepare data
-        kwargs = {}
-        user = self.context.get("request").user
-        company = user.operator_set.all()[0].company
-        security = Security.objects.get(
-            company=company,
-            title=validated_data.get("security").get('title'))
-
-        kwargs.update({
-            "company": company,
-            "board_approved_at": validated_data.get("board_approved_at"),
-            "title": validated_data.get("title"),
-            "security": security,
-            "count": validated_data.get("count"),
-            "exercise_price": validated_data.get("exercise_price"),
-            "comment": validated_data.get("comment"),
-        })
-
-        # segments must be ordered, have no duplicates and must be list...
-        if security.track_numbers and validated_data.get("number_segments"):
-            kwargs.update({
-                "number_segments": string_list_to_json(
-                    validated_data.get("number_segments"))
-            })
-
-        option_plan = OptionPlan.objects.create(**kwargs)
-
-        # assign all initial options to company shareholder
-        cs = company.get_company_shareholder()
-        kwargs = {
-            'option_plan': option_plan,
-            'bought_at': validated_data.get("board_approved_at"),
-            'buyer': cs,
-            'count': validated_data.get("count")
-        }
-
-        # segments must be ordered, have no duplicates and must be list...
-        if security.track_numbers and validated_data.get("number_segments"):
-            kwargs.update({
-                "number_segments": string_list_to_json(
-                    validated_data.get("number_segments"))
-            })
-
-        OptionTransaction.objects.create(**kwargs)
-
-        return option_plan
-
-    def get_readable_number_segments(self, obj):
-        """
-        change json into human readble format
-        """
-        return str(obj.number_segments).translate(None, "'[]u{}")
-
-    def is_valid(self, raise_exception=False):
-        """
-        validate cross data relations
-        """
-        res = super(OptionPlanSerializer, self).is_valid(raise_exception)
-
-        initial_data = self.initial_data
-
-        security = initial_data.get('security')
-        if security and Security.objects.get(id=security['pk']).track_numbers:
-
-            security = Security.objects.get(id=security['pk'])
-            if (isinstance(initial_data.get('number_segments'), str) or
-                    isinstance(initial_data.get('number_segments'), unicode)):
-                segments = string_list_to_json(
-                    initial_data.get('number_segments'))
-            else:
-                segments = initial_data.get('number_segments')
-
-            # we need number_segments if this is a security with .track_numbers
-            if not segments:
-                raise serializers.ValidationError(
-                    {'number_segments':
-                        [_('Invalid or empty security numbers segments.')]})
-
-            # segments must be available by company shareholder
-            cs = security.company.get_company_shareholder()
-            owning, failed_segments, owned_segments = cs.owns_segments(
-                    segments, security)
-
-            # segments must be owned by seller
-            if not owning:
-                raise serializers.ValidationError({
-                    'number_segments':
-                        [_('Segments "{}" must be owned by company shareholder '
-                           '"{}". Available are {}').format(
-                              failed_segments, cs.user.last_name,
-                              owned_segments
-                        )]
-                })
-
-            # validate segment count == share count
-            elif (security.count_in_segments(segments) !=
-                    initial_data.get('count')):
-                raise serializers.ValidationError({
-                    'count':
-                        [_('Number of shares in segments ({}) '
-                           'does not match count {}').format(
-                                security.count_in_segments(segments),
-                                initial_data.get('count')
-                           )]
-                })
-
-        return res
 
 
 class OptionHolderSerializer(serializers.HyperlinkedModelSerializer):
