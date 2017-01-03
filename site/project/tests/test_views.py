@@ -118,7 +118,7 @@ class InstapageTestCase(TestCase):
 
         msg = _(u'You have already an existing user account. '
                 'Please login or reset your password.')
-        self.assertRedirects(response, reverse('auth_login'))
+        self.assertRedirects(response, reverse('two_factor:login'))
         self.assertContains(response, msg)
 
 
