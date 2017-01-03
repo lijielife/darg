@@ -1,0 +1,18 @@
+{% extends "two_factor/_base_focus.html" %}
+{% load i18n %}
+
+{% block content %}
+<div ng_controller="TwoFactorAuthenticationController">
+  <h1>{% block title %}{% trans "Disable Two-factor Authentication" %}{% endblock %}</h1>
+  <p>{% blocktrans %}You are about to disable two-factor authentication. This
+    compromises your account security, are you sure?{% endblocktrans %}</p>
+  <form method="post">
+    {% csrf_token %}
+    <p>
+      <table>{{ form.as_p }}</table>
+    </p>
+    <button class="btn btn-danger" ng-click="submit()"
+            type="submit">{% trans "Disable" %}</button>
+  </form>
+</div>
+{% endblock %}

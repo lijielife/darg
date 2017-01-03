@@ -1,32 +1,29 @@
-from django.conf.urls import include, url, patterns
-from django.contrib import admin
-from django.views.i18n import javascript_catalog
-from django.views.generic import TemplateView
 from django.conf import settings
+from django.conf.urls import include, patterns, url
 from django.conf.urls.static import static
-from django.contrib.flatpages.views import flatpage
+from django.contrib import admin
 from django.contrib.flatpages.sitemaps import FlatPageSitemap
-
-from zinnia.sitemaps import TagSitemap
-from zinnia.sitemaps import EntrySitemap
-from zinnia.sitemaps import CategorySitemap
-from zinnia.sitemaps import AuthorSitemap
-
+from django.contrib.flatpages.views import flatpage
+from django.views.generic import TemplateView
+from django.views.generic.base import RedirectView
+from django.views.i18n import javascript_catalog
+from registration.backends.simple.views import RegistrationView
 from rest_framework import routers
 from rest_framework.authtoken import views
-
-from registration.backends.simple.views import RegistrationView
+from two_factor.gateways.twilio.urls import urlpatterns as tf_twilio_urls
+from two_factor.urls import urlpatterns as tf_urls
+from two_factor.admin import AdminSiteOTPRequired
+from zinnia.sitemaps import (AuthorSitemap, CategorySitemap, EntrySitemap,
+                             TagSitemap)
 
 from project.forms import RegistrationForm
-
-from services.rest.views import (
-    ShareholderViewSet, CompanyViewSet, UserViewSet,
-    PositionViewSet,
-    InviteeUpdateView, AddCompanyView, CountryViewSet, OptionPlanViewSet,
-    SecurityViewSet, OptionTransactionViewSet, OperatorViewSet, AddShareSplit,
-    LanguageView, AvailableOptionSegmentsView
-)
-
+from services.rest.views import (AddCompanyView, AddShareSplit,
+                                 AvailableOptionSegmentsView, CompanyViewSet,
+                                 CountryViewSet, InviteeUpdateView,
+                                 LanguageView, OperatorViewSet,
+                                 OptionPlanViewSet, OptionTransactionViewSet,
+                                 PositionViewSet, SecurityViewSet,
+                                 ShareholderViewSet, UserViewSet)
 from shareholder.views import ShareholderView
 
 router = routers.DefaultRouter(trailing_slash=False)
@@ -76,10 +73,16 @@ urlpatterns = [
         'shareholder.views.optionsplan_download_img',
         name='optionplan_download_img'),
 
-    # auth
+    # --- auth
+    # disable dj registration login
+    url(r'^accounts/login/$', RedirectView.as_view(url='/account/login/'),
+        name='auth_login'),
     url(r'^accounts/register/$', RegistrationView.as_view(
         form_class=RegistrationForm), name='registration_register'),
     url(r'^accounts/', include('registration.backends.simple.urls')),
+    url(r'^accounts/login/$', RedirectView.as_view(url='/account/login/'),
+        name='auth_login'),
+    url(r'', include(tf_urls + tf_twilio_urls, 'two_factor')),  # two factorauth
     url(r'^instapage/', 'project.views.instapage', name='instapage'),
 
     # rest api
@@ -109,6 +112,7 @@ urlpatterns = [
 ]
 
 # admin
+admin.site.__class__ = AdminSiteOTPRequired
 admin.autodiscover()
 admin_url = settings.DEBUG and r'^admin/' or r'^__adm/'
 urlpatterns += patterns(
