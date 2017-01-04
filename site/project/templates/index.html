@@ -31,9 +31,15 @@
                 <li class="">
                   <a href="/kostenloses-muster-aktienbuch/" title="Gratis Aktienbuch Muster" class="btn-inline orange">{% trans "Gratis Aktienbuch-Muster" %}</a>
                 </li>
+				{% if request.user.is_authenticated %}
+                <li>
+                  <a href="{% url "start" %}" title="Dashboard" class="btn-inline">{% trans "My Dashboard" %}</a>
+                </li>
+				{% else %}
                 <li>
                   <a href="{% url "two_factor:login" %}" title="Login" class="btn-inline">{% trans "Login" %}</a>
                 </li>
+				{% endif %}
                 <li>
                   <a href="{% url "django.contrib.flatpages.views.flatpage" url="preisliste/" %}" title="Preise" class="btn-inline">{% trans "prices and plans" %}</a>
                 </li>
