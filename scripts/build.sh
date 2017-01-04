@@ -1,4 +1,6 @@
 #! /bin/bash
+set -xe
+
 if [ ! -d "scripts" ]; then
   echo 'this script must be executed from project root'
 fi
