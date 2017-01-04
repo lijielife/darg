@@ -863,7 +863,11 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.click_save_position()
 
             time.sleep(3)
-            self.assertFalse(app.is_no_errors_displayed())
+            self.assertTrue(
+                self.selenium.find_element_by_xpath(
+                    '//p[contains(@class, "form-error")]').is_displayed()
+                )
+            # self.assertFalse(app.is_no_errors_displayed())
 
             # working data
             position.count = 999999999
