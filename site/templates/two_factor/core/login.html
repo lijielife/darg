@@ -50,4 +50,16 @@
 
     {% include "two_factor/_wizard_actions.html" %}
   </form>
+  <p>
+    {% trans "Not  a member?" %}
+    <a href="{% url 'registration_register' %}"  class="btn-inline">{% trans "Register" %}</a>
+    <br />
+    <br/>
+    {% trans "Password lost?" %}
+    <a href="{% url 'auth_password_reset' %}" class="btn-inline">{% trans "Reset Password" %}</a>
+    <br />
+    <br />
+    {% trans "Do you know our " %}
+    <a href="/blog/" class="btn-inline">{% trans "Blog" %}</a>?
+  </p>
 {% endblock %}
