@@ -6,6 +6,10 @@ django-languages
 django-reversion==1.10.2
 django-rosetta
 django-sendfile
+# native lib failed for voice token see http://bit.ly/2hQAzTz
+# django-two-factor-auth
+git+https://github.com/patroqueeet/django-two-factor-auth.git@master#egg=django-two-factor-auth
+django-otp
 
 raven
 cssmin==0.2.0
@@ -24,6 +28,7 @@ sorl-thumbnail
 djrill
 diff-match-patch
 model_mommy
+twilio
 
 #-- zinnia reqs
 django-mptt>=0.8.5

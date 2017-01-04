@@ -39,31 +39,38 @@ class BasePage(object):
         time.sleep(3)  # FIXME
 
         if kwargs.get('cls'):
-            el = self.driver.find_element_by_class_name(
+            els = self.driver.find_elements_by_class_name(
                 kwargs.get('cls')
             )
         if kwargs.get('id'):
-            el = self.driver.find_element_by_id(
+            els = self.driver.find_elements_by_id(
                 kwargs.get('id')
             )
 
-        return el.is_displayed()
+        if not len(els):
+            return False
+
+        for el in els:
+            if el.is_displayed():
+                return True
+
+        return False
 
     def login(self, username, password):
         """ log the user in """
         try:
-            self.driver.get('%s%s' % (self.live_server_url, '/accounts/login/'))
+            self.driver.get('%s%s' % (self.live_server_url, '/account/login/'))
         # randomly failes with TimeoutException
         except:
             time.sleep(5)
-            self.driver.get('%s%s' % (self.live_server_url, '/accounts/login/'))
+            self.driver.get('%s%s' % (self.live_server_url, '/account/login/'))
 
         self.driver.find_element_by_xpath(
-            '//*[@id="id_username"]').send_keys(username)
+            '//*[@id="id_auth-username"]').send_keys(username)
         self.driver.find_element_by_xpath(
-            '//*[@id="id_password"]').send_keys(password)
+            '//*[@id="id_auth-password"]').send_keys(password)
         self.driver.find_element_by_xpath(
-            '//*[@id="auth"]/form/button').click()
+            '//button[contains(@class, "btn-primary")]').click()
         time.sleep(1)  # wait for page reload  # FIXME
         page_heading = self.driver.find_element_by_tag_name(
             'h1').get_attribute('innerHTML')
@@ -171,11 +178,7 @@ class BasePage(object):
 
     def is_no_errors_displayed(self):
         """ MUST not find it, hence exception is True :) """
-        try:
-            self._is_element_displayed(cls='alert-danger')
-            return False
-        except:
-            return True
+        return not self._is_element_displayed(cls='alert-danger')
 
     def scroll_to(self, Y=None, element=None):
         """

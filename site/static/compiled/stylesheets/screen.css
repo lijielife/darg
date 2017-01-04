@@ -2533,6 +2533,13 @@ blockquote p.says:before {
   margin-top: -1px;
 }
 
+div.members-area ul li {
+  list-style: none;
+}
+div.members-area ul.errorlist {
+  padding: 0;
+}
+
 @font-face {
   font-family: "QuickSandLight";
   src: url("/static/compiled/fonts/Quicksand-Light.otf") format("opentype");
@@ -2730,7 +2737,7 @@ html, body {
 .core .container .panel .btn-inline {
   margin-right: 1em;
 }
-.core .container .btn-focus {
+.core .container .btn-focus, .core .container .btn-info {
   border: 1px solid #337ab7;
   background-color: #337ab7;
   color: #fff;
@@ -2743,7 +2750,7 @@ html, body {
   color: #c0392b;
   background: none;
 }
-.core .container .btn-white {
+.core .container .btn-white, .core .container .btn-default {
   background-color: #fff !important;
   color: #337ab7 !important;
   border: 1px solid #337ab7 !important;

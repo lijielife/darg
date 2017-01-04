@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-24 05:37+0000\n"
+"POT-Creation-Date: 2017-01-04 12:33+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -381,7 +381,7 @@ msgstr ""
 msgid "Delete shareholder"
 msgstr ""
 
-#: shareholder/tests/test_functional.py:152
+#: shareholder/tests/test_functional.py:153
 msgid "This email is already taken by another user/shareholder."
 msgstr ""
 

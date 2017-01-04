@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+import time
 import unittest
 from decimal import Decimal
 
@@ -630,7 +631,8 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
 
             self.assertEqual(len(app.get_position_row_data()), 8)
             self.assertTrue(app.is_no_errors_displayed())
-            self.assertIn(datetime.datetime.today().strftime('%-d.%-m.%y'),
+            # ('%-d.%-m.%y') in case leading zero is not needed
+            self.assertIn(datetime.datetime.today().strftime('%-d.%m.%y'),
                           app.get_position_row_data()[0].split('\n')[0])
 
             app.refresh()
@@ -638,7 +640,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.wait_until_visible(
                 (By.CSS_SELECTOR, '#positions table tr.panel'))
             self.assertEqual(app.get_position_row_data()[0].split('\n')[0],
-                             datetime.datetime.today().strftime('%-d.%-m.%y'))
+                             datetime.datetime.today().strftime('%-d.%m.%y'))
 
         except Exception, e:
             self._handle_exception(e)
@@ -860,6 +862,11 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.enter_new_position_data(position)
             app.click_save_position()
 
+            time.sleep(3)
+            self.assertTrue(
+                self.selenium.find_element_by_xpath(
+                    '//p[contains(@class, "form-error")]').is_displayed()
+                )
             self.assertFalse(app.is_no_errors_displayed())
 
             # working data

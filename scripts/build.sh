@@ -1,4 +1,9 @@
 #! /bin/bash
+set -xe
+
+if [ ! -d "scripts" ]; then
+  echo 'this script must be executed from project root'
+fi
 
 export DEBIAN_FRONTEND=noninteractive; export DBUS_SESSION_BUS_ADDRESS=/dev/null
 export INSTAPAGE_TOKEN='0tIg7LJHIgF04pIP1pBYUq9tsjVTVlnefHYjHFzJCiwD34g5X4rPAAcK9kF5m8e6'
@@ -17,14 +22,14 @@ sudo -u postgres psql -c "CREATE ROLE darg WITH password 'darg' LOGIN;"
 sudo -u postgres psql -c "ALTER ROLE darg WITH CREATEDB;"
 sudo -u postgres psql -c "CREATE DATABASE darg WITH OWNER darg;"
 
-sudo debconf-set-selections exim4_internet_site_debconf.conf
+sudo debconf-set-selections conf/exim4_internet_site_debconf.conf
 sudo dpkg-reconfigure exim4-config -fnoninteractive
 sudo -- sh -c "echo 'helo_allow_chars=_' > /etc/exim4/exim4.conf.localmacros" && sudo -- sh -c "sed -i 's/local/internet/g' /etc/exim4/update-exim4.conf.conf" && sudo update-exim4.conf
 sudo cat /etc/exim4/update-exim4.conf.conf && sudo exim -bP
-sudo hostname -f
+# sudo hostname -f
 sudo /etc/init.d/exim4 restart
 sudo exim -bP
-pwd; sudo cat /var/log/exim4/mainlog
+# pwd; sudo cat /var/log/exim4/mainlog
 
 LATEST=$(wget -q -O - http://chromedriver.storage.googleapis.com/LATEST_RELEASE)
 wget http://chromedriver.storage.googleapis.com/$LATEST/chromedriver_linux64.zip && unzip chromedriver_linux64.zip -d site/
@@ -34,7 +39,7 @@ virtualenv .ve
 source .ve/bin/activate
 pip install -r requirements.txt
 pip install -r requirements_ci.txt
-python ./minify_static.py
+python ./scripts/minify_static.py
 cd site
 cp project/settings/dev_local.dist.py project/settings/dev_local.py
 python manage.py collectstatic --noinput --settings=project.settings.dev
