@@ -19,6 +19,13 @@
           +zen-grid-item(5,4)
           .auto-suggestions
             width: +zen-grid-item-width(4.5)
+  .table
+    .tr
+      .td
+        font-size: 0.9em
+        @include align-items(baseline)
+    .th
+      font-size: 0.9em
 
 @media only screen and (max-width: 800px)
   
@@ -27,7 +34,6 @@
       display: none
     .registration-form
       +zen-grid-item(4, 3)
-
     .container
       width: 100%
     .summary
@@ -40,7 +46,6 @@
     .benefits
       ul > li
         font-size: 1.4em
-
   .intro
     header.home
       .container
@@ -53,8 +58,6 @@
               margin-bottom: 10px
             a
               display: initial
-
-
     header
       .container
         .search-box
@@ -67,7 +70,6 @@
           input
             font-size: 16px
             padding: 15px 0 16px 25px
-
     #mask
       .container
         .mask-wrapper
@@ -78,27 +80,14 @@
               float: none
             .map
               padding-top: 2em
-
   #flatpage
     +zen-new-row()
     +zen-grid-item(8, 1)
     .tagline
       padding: 0
-
-/* Hide orange items on 800 - 1000 px screen size */
-
-@media only screen and (min-width: 801px) and (max-width: 1000px)
-  .intro
-    header.home
-      .container
-        .menu
-          li
-            .orange
-              display: none
-
-@media (max-width: 800px)
   #auth h1
     text-align: center
+  //-- change collapse menu breakpoint 
   .pull-right-mobile
     float: right
     margin-right: 10px
@@ -134,6 +123,7 @@
       border: 0
       -webkit-box-shadow: none
       box-shadow: none
+  //-- end of menu breakpoint
   .intro
     header.home
       .container
@@ -141,17 +131,117 @@
           &:after
             width: 0
 
+/* Hide orange items on 800 - 1000 px screen size */
+@media only screen and (min-width: 801px) and (max-width: 1000px)
+  .intro
+    header.home
+      .container
+        .menu
+          li
+            .orange
+              display: none
 
-/* end of collapse menu */
 @media only screen and (min-width: 768px)
   /* override bootstrap default class*/
   .navbar-right
     .dropdown-menu
       right: 20px
-      top: 110%  
+      top: 110%
+  /* Responsive table breakpoint */
+  .table
+    .tr
+      &.th
+        .td
+          word-break: normal
+        @include align-items(flex-end)
+        font-weight: 700
+        border-bottom: 2px solid $color-gray-lighten
+      border-bottom: 1px solid $color-gray-lighten
+      &.totals
+        border-bottom: 0
+      @include display-flex(flex)
+      @include flex-flow(row)
+      .td
+        &.text-right-flex
+          text-align: right
+          @include justify-content(flex-end) //align right text desktop 
+        padding: 0.5em
+
 @media only screen and (max-width: 768px)
+  //-- custom order items 
+  .order-1
+    @include order(1)
+  .order-2
+    @include order(2)
+  .order-3
+    @include order(3)
+  .order-4
+    @include order(4)
+  //-- responsive table mobile
+  .table
+    .tr
+      min-height: 70px
+      padding: 10px 75px 10px 0
+      position: relative
+      &.option-holders-heading
+        font-weight: 700
+        background: transparent
+        .note
+          padding-left: 0
+          font-weight: 300
+      .full-name
+        font-weight: 700
+        font-size: 1.1em
+        .truncate
+          white-space: nowrap /* No break word */
+          overflow: hidden /* truncate content */
+          text-overflow: ellipsis /* truncate with ... */
+      .number
+        line-height: 1.2em
+        margin: 5px 0
+      .email
+        font-style: italic
+        font-size: 80%
+        @include flex-wrap(nowrap)
+        span
+          white-space: nowrap /* No break word */
+          overflow: hidden /* truncate content */
+          text-overflow: ellipsis /* truncate with ... */
+      .shares-count
+        display: block
+      .shareholders-count
+        value
+          position: absolute
+          top: 50%
+          left: 50%
+          transform: translate(-50%, -50%)
+          -webkit-transform: translate(-50%, -50%) //safari support
+          text-align: center
+          font-weight: 700
+          font-size: 1em
+          .shares-count
+            font-size: 10px
+        width: 60px
+        height: 60px
+        min-width: 60px
+        border-radius: 100%
+        background-color: $color-gray
+        color: #fff
+        position: absolute
+        top: 50%
+        right: 15px
+        transform: translateY(-50%)
+        -webkit-transform: translateY(-50%) //safari support
+        font-size: 10px
+      .td
+        word-break: normal
+        padding: 0 10px
+      //-- end responsive table mobile    
   body.core
     .container
+      .td
+        .el-icon-exclamation-sign
+          display: none
       .control-label
         padding-left: 15px
     header
@@ -164,26 +254,11 @@
         .navbar-header
           width: 100%
 
-/* Screenshot container no repeating */
 @media only screen and (max-width: 650px)
   .main-screenshot
     .screenshot
       background-position: center
-      background-size: 100% 100%
-
-@media only screen and (max-width: 480px)
-  .main-screenshot
-    .screenshot
-      height: 160px
-      background-size: 100%
-      background-position: center top
-
-@media only screen and (max-width: 360px)
-  .main-screenshot
-    .screenshot
-      height: 130px
-      background-size: cover
-/* end screenshot container */
+      background-size: 100% 100% 
 
 @media only screen and (max-width: 640px)
 
@@ -233,8 +308,10 @@
           .auto-suggestions
             top: 156px  // FIXME
             width: +zen-grid-item-width(6)
-
-
+    .table
+      .tr
+        .td
+          word-break: inherit
 
 @media only screen and (max-width: 480px)
   body.core
@@ -255,10 +332,24 @@
       .validate.ng-pristine
         input
           width: 50%
+  .table
+    .td
+      @include flex-wrap(wrap)
+    .tr
+      font-size: 1em
+      .full-name
+        font-size: 0.75em      
+  .main-screenshot
+    .screenshot
+      height: 160px
+      background-size: 100%
+      background-position: center top
 
 @media only screen and (max-width: 400px)
 
   body.core
+    .navbar-brand
+      font-size: 90%
     .registration-form
       width: 100%
       margin: 0
@@ -270,6 +361,8 @@
         display: block
         width: 100%
     .table
+      .td
+        @include flex-basis(auto)
       td
         span
           display: block
@@ -300,6 +393,12 @@
           float: none
           width: 98%
           margin-top: 1em
+
+@media only screen and (max-width: 360px)
+  .main-screenshot
+    .screenshot
+      height: 130px
+      background-size: cover
 
 @media screen and (orientation:portrait)
   // ipad rotation adjustments

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-24 05:37+0000\n"
+"POT-Creation-Date: 2017-01-04 07:52+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -198,19 +198,19 @@ msgstr ""
 
 #: project/templates/active_shareholder_captable.pdf.html:98
 #: project/templates/active_shareholder_captable.pdf.html:141
-#: project/templates/start.html:55
+#: project/templates/start.html:52
 msgid "Name"
 msgstr ""
 
 #: project/templates/active_shareholder_captable.pdf.html:99
 #: project/templates/active_shareholder_captable.pdf.html:142
-#: project/templates/start.html:56
+#: project/templates/start.html:53
 msgid "Email"
 msgstr ""
 
 #: project/templates/active_shareholder_captable.pdf.html:100
 #: project/templates/active_shareholder_captable.pdf.html:143
-#: project/templates/start.html:57
+#: project/templates/start.html:54
 msgid "Shareholder Number"
 msgstr ""
 
@@ -357,44 +357,44 @@ msgstr ""
 msgid "Shareholderr added. record share transfers here"
 msgstr ""
 
-#: project/templates/start.html:58
+#: project/templates/start.html:55
 #, python-format
 msgid "Shares (Voting-%%%%)"
 msgstr ""
 
-#: project/templates/start.html:62
+#: project/templates/start.html:59
 msgid "Gafi Validation failed"
 msgstr ""
 
-#: project/templates/start.html:80
+#: project/templates/start.html:74
 msgid "Option Holders"
 msgstr ""
 
-#: project/templates/start.html:96
+#: project/templates/start.html:89
 msgid "Total Shares distributed (total shares registered with company)"
 msgstr ""
 
-#: project/templates/start.html:109
+#: project/templates/start.html:101
 msgid "No Shareholders yet."
 msgstr ""
 
-#: project/templates/start.html:114
+#: project/templates/start.html:106
 msgid "Download active Shareholders as"
 msgstr ""
 
-#: project/templates/start.html:115
+#: project/templates/start.html:107
 msgid "Download active Shareholders as PDF"
 msgstr ""
 
-#: project/templates/start.html:116
+#: project/templates/start.html:108
 msgid "PDF"
 msgstr ""
 
-#: project/templates/start.html:118
+#: project/templates/start.html:110
 msgid "Download active Shareholders as CSV"
 msgstr ""
 
-#: project/templates/start.html:119
+#: project/templates/start.html:111
 msgid "CSV"
 msgstr ""
 

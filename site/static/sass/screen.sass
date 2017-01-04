@@ -20,6 +20,7 @@
 // custom
 @import blockquote
 @import chromescreenshot
+@import two_factor_auth
 
 @font-face
   font-family: "QuickSandLight"
@@ -149,9 +150,9 @@ html, body
 
   .note
     font-style: italic
-    padding-top: 10px
     font-size: 0.8em
     line-height: 1.3
+    padding-left: 5px
 
   .footer
     +zen-new-row()
@@ -204,7 +205,7 @@ html, body
       margin-right: 1em
 
   // highlight the recommended button amongst buttons
-  .btn-focus
+  .btn-focus, .btn-info
     border: 1px solid $color-focus
     background-color: $color-blue
     color: $color-white
@@ -215,7 +216,7 @@ html, body
     font-weight: bold
     color: $color-red
     background: none
-  .btn-white
+  .btn-white, .btn-default
     background-color: $color-white !important
     color: $color-blue !important
     border: 1px solid $color-blue !important
@@ -251,9 +252,6 @@ html, body
     width: 100%
     img
       margin-left: 20%
-  .table
-    th
-      font-weight: 700
   .orange
     color: #b7a533 !important
   .alert-info
@@ -532,10 +530,69 @@ nav.navbar
       font-size: 0.8em
       padding-top: 6px
 
-
+// -- responsive table 
+.text-right-flex
+  @include justify-content(flex-end) //make text right aligned
+.totals
+  border-top: 2px solid $color-gray-lighten
+.table
+  @include display-flex(flex)
+  @include flex-flow(column)
+  @include justify-content(space-between)
+  font-size: 1rem
+  line-height: 1.5
+.th
+  display: none
+.tr
+  &.totals
+    border-bottom: 0
+  border-bottom: 1px solid $color-gray-lighten
+  width: 100%
+  background-color: $color-white
+  &:not(.th)
+    @include display-flex(flex)
+    @include flex-flow(column)
+  @include transition(all 0.15s linear)
+  .el-icon-eye-open
+    opacity: 0
+    @include transition(opacity 0.15s linear)
+  &:hover
+    &:not(.th)
+      background: $color-gray-lighten
+    .el-icon-eye-open
+      opacity: 1
+.td
+  &.text-right-flex
+    @include justify-content(flex-start) //reset right aligned to left mobile view
+  &:hover
+    cursor: pointer
+  @include display-flex(flex)
+  @include flex-flow(row)
+  @include flex-grow(1)
+  @include flex-basis(0)
+  @include align-items(baseline)
+  word-wrap: break-word
+  padding: 0.8em
+  font-size: 0.9em
+  [class*='el-icon-']
+    padding: 0 5px
+.td-width-1
+  @include flex-grow(1)
+  word-break: normal
+.td-width-2
+  @include flex-grow(2)
+  word-break: normal
+.td-width-3
+  &.no-before
+    &:before
+      width: 0
+  @include flex-grow(3)
+.td-width-10 
+  @include flex-grow(10)
+  &:before
+    width: 0
 
 // --  start
-
 div #add_shareholder
   margin-bottom: 1em
 div #add_company
@@ -544,23 +601,11 @@ div #add_company
 div #add_company p
   line-height: 1.5em
 
-div #shareholder_list table a
-  padding: 0em
-  padding-left: 1em
-  visibility: hidden
-  margin: 0em
-
-div #shareholder_list table tr:hover a
-  visibility: visible
-
-div #shareholder_list table tr td.summary
-  border-top: 1px solid black
-
 div.captable_context_actions
   text-align: right
-
-tr.option-holders-heading td
-  background-color: #f5f5f5
+.table
+  .option-holders-heading
+    background: $color-gray-lighten
 
 // -- positions
 
@@ -652,4 +697,3 @@ div#optionplan
 
 // end of file to override above styles
 @import breakpoints
- 

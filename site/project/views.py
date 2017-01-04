@@ -83,7 +83,7 @@ def instapage(request):
         msg = _(u'You have already an existing user account. '
                 'Please login or reset your password.')
         messages.add_message(request, messages.INFO, msg)
-        return redirect(reverse('auth_login'))
+        return redirect(reverse('two_factor:login'))
 
     # new user
     user.set_password(password)

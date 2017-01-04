@@ -1050,6 +1050,30 @@
 }).call(this);
 
 (function() {
+  var app;
+
+  app = angular.module('js.darg.app.tfa', ['js.darg.api', 'pascalprecht.translate', 'ui.bootstrap']);
+
+  app.config([
+    '$translateProvider', function($translateProvider) {
+      $translateProvider.translations('de', django.catalog);
+      $translateProvider.preferredLanguage('de');
+      return $translateProvider.useSanitizeValueStrategy('escaped');
+    }
+  ]);
+
+  app.controller('TwoFactorAuthenticationController', [
+    '$scope', '$http', '$window', '$filter', function($scope, $http, $window, $filter) {
+      return $scope.submit = function() {
+        $('form')[0].submit();
+        return console.log('f');
+      };
+    }
+  ]);
+
+}).call(this);
+
+(function() {
   $('.table tr').each(function() {
     $(this).css('cursor', 'pointer').hover((function() {
       $(this).addClass('active');
