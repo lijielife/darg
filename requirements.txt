@@ -6,7 +6,9 @@ django-languages
 django-reversion==1.10.2
 django-rosetta
 django-sendfile
-django-two-factor-auth
+# native lib failed for voice token see http://bit.ly/2hQAzTz
+# django-two-factor-auth
+git+https://github.com/patroqueeet/django-two-factor-auth.git@master#egg=django-two-factor-auth
 django-otp
 
 raven
