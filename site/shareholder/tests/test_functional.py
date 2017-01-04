@@ -861,6 +861,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.enter_new_position_data(position)
             app.click_save_position()
 
+            time.sleep(3)
             self.assertFalse(app.is_no_errors_displayed())
 
             # working data
