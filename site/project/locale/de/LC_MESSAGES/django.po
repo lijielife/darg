@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-01-04 10:14+0000\n"
-"PO-Revision-Date: 2017-01-04 10:16+0000\n"
+"PO-Revision-Date: 2017-01-04 12:15+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -456,8 +456,8 @@ msgstr ""
 #, python-format
 msgid "Your token is %(token)s. Repeat: %(token)s. Good bye."
 msgstr ""
-"Ihr Token ist %(token)s. Ich wiederhole noch einmal: Ihr Token ist "
-"%(token)s. Vielen Dank und Auf Wiedersehen."
+"Ihr Token ist %(token)s ., Ich wiederhole noch einmal: Ihr Token ist "
+"%(token)s  ., Vielen Dank und Auf Wiedersehen."
 
 #. Translators: should be a language supported by Twilio,
 #. see http://bit.ly/187I5cr
