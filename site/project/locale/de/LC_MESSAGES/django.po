@@ -8,27 +8,28 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-04 07:52+0000\n"
-"PO-Revision-Date: 2016-11-30 20:00+0000\n"
+"POT-Creation-Date: 2017-01-04 10:14+0000\n"
+"PO-Revision-Date: 2017-01-04 10:16+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Translated-Using: django-rosetta 0.7.12\n"
 
 #: project/forms.py:23
 msgid ""
-"I have read and agree to the <a href=\"http://www1.das-aktienregister.ch/agb"
-"\" alt=\"Darg Terms of Service\" target=\"_blank\" class=\"link tos\">Terms "
-"of Service</a>"
+"I have read and agree to the <a href=\"http://www1.das-"
+"aktienregister.ch/agb\" alt=\"Darg Terms of Service\" target=\"_blank\" "
+"class=\"link tos\">Terms of Service</a>"
 msgstr ""
-"Ich habe die <a href=\"http://www1.das-aktienregister.ch/agb\" alt="
-"\"Nutzungsbedingungen Das-Aktienregister.ch\" target=\"_blank\" class=\"link "
-"tos\">Nutzungsbedingungen</a> und <a href=\"/impressum/#datenschutz\" alt="
-"\"Nutzungsbedingungen Das-Aktienregister.ch\" target=\"_blank\" class=\"link "
+"Ich habe die <a href=\"http://www1.das-aktienregister.ch/agb\" "
+"alt=\"Nutzungsbedingungen Das-Aktienregister.ch\" target=\"_blank\" "
+"class=\"link tos\">Nutzungsbedingungen</a> und <a "
+"href=\"/impressum/#datenschutz\" alt=\"Nutzungsbedingungen Das-"
+"Aktienregister.ch\" target=\"_blank\" class=\"link "
 "tos\">Datenschutzerklärung</a> gelesen und stimme zu."
 
 #: project/tasks.py:18
@@ -323,12 +324,8 @@ msgid ""
 "Gesetzeskonformitaet. Das Online-Aktienbuch macht die Pflege schnell und "
 "effizient, damit Zeit frei wird fuer die wirklichen Herausforderungen"
 msgstr ""
-"Die Automatische Validierung verhindert Fehler und sichert maximale "
-"Gesetzeskonformität. Das Online-Aktienbuch macht die Pflege schnell und "
-"effizient, damit Zeit frei wird für die wirklichen Herausforderungen. <br/"
-"><br/>\n"
-"<strong>PLUS: der rechtlichen Verantwortung des Verwaltungsrates ist Sorge "
-"getragen.</strong>"
+"Die Automatische Validierung verhindert Fehler und sichert maximale Gesetzeskonformität. Das Online-Aktienbuch macht die Pflege schnell und effizient, damit Zeit frei wird für die wirklichen Herausforderungen. <br/><br/>\n"
+"<strong>PLUS: der rechtlichen Verantwortung des Verwaltungsrates ist Sorge getragen.</strong>"
 
 #: project/templates/index.html:101
 msgid "Do you know our Blog?"
@@ -441,8 +438,32 @@ msgid ""
 "You have already an existing user account. Please login or reset your "
 "password."
 msgstr ""
-"Sie haben bereits ein Nutzerkonto. Bitte loggen Sie sich ein oder setzen Sie "
-"Ihr Passwort zurück."
+"Sie haben bereits ein Nutzerkonto. Bitte loggen Sie sich ein oder setzen Sie"
+" Ihr Passwort zurück."
+
+#. Translators: should be a language supported by Twilio,
+#. see http://bit.ly/187I5cr
+#: project/tfa.py:10
+#, python-format
+msgid "Hi, this is %(site_name)s calling. Press any key to continue."
+msgstr ""
+"Hallo, das ist ein Anruf von %(site_name)s. Drücken Sie eine Taste für die "
+"Ansage der Zahlen für den Token."
+
+#. Translators: should be a language supported by Twilio,
+#. see http://bit.ly/187I5cr
+#: project/tfa.py:15
+#, python-format
+msgid "Your token is %(token)s. Repeat: %(token)s. Good bye."
+msgstr ""
+"Ihr Token ist %(token)s. Ich wiederhole noch einmal: Ihr Token ist "
+"%(token)s. Vielen Dank und Auf Wiedersehen."
+
+#. Translators: should be a language supported by Twilio,
+#. see http://bit.ly/187I5cr
+#: project/tfa.py:19
+msgid "You didn't press any keys. Good bye."
+msgstr "Sie haben keine Taste gedrückt. Auf Wiedersehen."
 
 #: project/views.py:135
 msgid "shareholder number"
@@ -514,11 +535,11 @@ msgstr "Keine"
 #~ msgstr "Datenexport als CSV für Excel etc."
 
 #~ msgid ""
-#~ "We are currently in private Beta. Please leave your email address to "
-#~ "receive an invitation soon!"
+#~ "We are currently in private Beta. Please leave your email address to receive"
+#~ " an invitation soon!"
 #~ msgstr ""
-#~ "Wir sind aktuell in geschlossender Beta. Bitte hinterlassen Sie ihre "
-#~ "Email, um eine Einladung zu erhalten."
+#~ "Wir sind aktuell in geschlossender Beta. Bitte hinterlassen Sie ihre Email, "
+#~ "um eine Einladung zu erhalten."
 
 #~ msgid "Your Email"
 #~ msgstr "Email"
@@ -549,8 +570,8 @@ msgstr "Keine"
 
 #~ msgid "GAFI Standard compliant"
 #~ msgstr ""
-#~ "Entspricht <a href=\"http://www.fatf-gafi.org/\" title=\"GAFI\" class="
-#~ "\"regular\">GAFI Standards</a>"
+#~ "Entspricht <a href=\"http://www.fatf-gafi.org/\" title=\"GAFI\" "
+#~ "class=\"regular\">GAFI Standards</a>"
 
 #~ msgid "Extensive data validation to ensure you cannot make a mistake"
 #~ msgstr "Umfangreiche Datenvalidierung  - Garantiert korrekte Daten"
