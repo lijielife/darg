@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-04 10:14+0000\n"
+"POT-Creation-Date: 2017-01-04 12:33+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -236,104 +236,108 @@ msgstr ""
 msgid "Gratis Aktienbuch-Muster"
 msgstr ""
 
-#: project/templates/index.html:35
+#: project/templates/index.html:36
+msgid "My Dashboard"
+msgstr ""
+
+#: project/templates/index.html:40
 msgid "Login"
 msgstr ""
 
-#: project/templates/index.html:38
+#: project/templates/index.html:44
 msgid "prices and plans"
 msgstr ""
 
-#: project/templates/index.html:41
+#: project/templates/index.html:47
 msgid "Blog"
 msgstr ""
 
-#: project/templates/index.html:44 project/templates/index.html:55
-#: project/templates/index.html:56 project/templates/index.html:83
-#: project/templates/index.html:84
+#: project/templates/index.html:50 project/templates/index.html:61
+#: project/templates/index.html:62 project/templates/index.html:89
+#: project/templates/index.html:90
 msgid "Try for free"
 msgstr ""
 
-#: project/templates/index.html:53
+#: project/templates/index.html:59
 msgid "Das Online-Aktienbuch"
 msgstr ""
 
-#: project/templates/index.html:54
+#: project/templates/index.html:60
 msgid "Mit Sicherheit gesetzeskonform durch automatische Validierung."
 msgstr ""
 
-#: project/templates/index.html:69
+#: project/templates/index.html:75
 msgid "Jetzt ab"
 msgstr ""
 
-#: project/templates/index.html:70
+#: project/templates/index.html:76
 msgid "4,99"
 msgstr ""
 
-#: project/templates/index.html:71
+#: project/templates/index.html:77
 msgid "CHF/mtl."
 msgstr ""
 
-#: project/templates/index.html:77
+#: project/templates/index.html:83
 msgid "Eingabe alle Daten mit maximaler Effizienz."
 msgstr ""
 
-#: project/templates/index.html:78
+#: project/templates/index.html:84
 msgid "Revisionssichere Ablage."
 msgstr ""
 
-#: project/templates/index.html:79
+#: project/templates/index.html:85
 msgid "Automatische Validierung der Daten."
 msgstr ""
 
-#: project/templates/index.html:80
+#: project/templates/index.html:86
 msgid "10 Jahre Datengarantie."
 msgstr ""
 
-#: project/templates/index.html:81
+#: project/templates/index.html:87
 msgid "Aktienbuch als PDF herunterladen."
 msgstr ""
 
-#: project/templates/index.html:92
+#: project/templates/index.html:98
 msgid ""
 "Die Automatische Validierung verhindert Fehler und sichert maximale "
 "Gesetzeskonformitaet. Das Online-Aktienbuch macht die Pflege schnell und "
 "effizient, damit Zeit frei wird fuer die wirklichen Herausforderungen"
 msgstr ""
 
-#: project/templates/index.html:101
+#: project/templates/index.html:107
 msgid "Do you know our Blog?"
 msgstr ""
 
-#: project/templates/index.html:106 project/templates/index.html:107
+#: project/templates/index.html:112 project/templates/index.html:113
 msgid "Read our Blog"
 msgstr ""
 
-#: project/templates/index.html:114
+#: project/templates/index.html:120
 msgid "Subscribe to our newsletter!"
 msgstr ""
 
-#: project/templates/index.html:115
+#: project/templates/index.html:121
 msgid "Stay up to date about our work and latest share register industry news"
 msgstr ""
 
-#: project/templates/index.html:122
+#: project/templates/index.html:128
 msgid "Geben Sie Ihre Email-Adresse ein"
 msgstr ""
 
-#: project/templates/index.html:151 project/templates/index.html:152
+#: project/templates/index.html:157 project/templates/index.html:158
 msgid "Read our blog"
 msgstr ""
 
-#: project/templates/index.html:156 project/templates/index.html:157
+#: project/templates/index.html:162 project/templates/index.html:163
 msgid "Service Status"
 msgstr ""
 
-#: project/templates/index.html:161 project/templates/index.html:162
+#: project/templates/index.html:167 project/templates/index.html:168
 msgid "AGB"
 msgstr ""
 
-#: project/templates/index.html:166 project/templates/index.html:167
+#: project/templates/index.html:172 project/templates/index.html:173
 msgid "A service provided by KKD Komm. GmbH"
 msgstr ""
 
