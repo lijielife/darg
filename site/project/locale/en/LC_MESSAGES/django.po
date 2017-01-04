@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-04 07:52+0000\n"
+"POT-Creation-Date: 2017-01-04 10:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -402,6 +402,26 @@ msgstr ""
 msgid ""
 "You have already an existing user account. Please login or reset your "
 "password."
+msgstr ""
+
+#. Translators: should be a language supported by Twilio,
+#. see http://bit.ly/187I5cr
+#: project/tfa.py:10
+#, python-format
+msgid "Hi, this is %(site_name)s calling. Press any key to continue."
+msgstr ""
+
+#. Translators: should be a language supported by Twilio,
+#. see http://bit.ly/187I5cr
+#: project/tfa.py:15
+#, python-format
+msgid "Your token is %(token)s. Repeat: %(token)s. Good bye."
+msgstr ""
+
+#. Translators: should be a language supported by Twilio,
+#. see http://bit.ly/187I5cr
+#: project/tfa.py:19
+msgid "You didn't press any keys. Good bye."
 msgstr ""
 
 #: project/views.py:135
