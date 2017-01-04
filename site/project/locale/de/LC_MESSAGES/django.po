@@ -224,19 +224,19 @@ msgstr "Gründungsdatum"
 
 #: project/templates/active_shareholder_captable.pdf.html:98
 #: project/templates/active_shareholder_captable.pdf.html:141
-#: project/templates/start.html:62
+#: project/templates/start.html:52
 msgid "Name"
 msgstr "Name"
 
 #: project/templates/active_shareholder_captable.pdf.html:99
 #: project/templates/active_shareholder_captable.pdf.html:142
-#: project/templates/start.html:63
+#: project/templates/start.html:53
 msgid "Email"
 msgstr "Email"
 
 #: project/templates/active_shareholder_captable.pdf.html:100
 #: project/templates/active_shareholder_captable.pdf.html:143
-#: project/templates/start.html:64
+#: project/templates/start.html:54
 msgid "Shareholder Number"
 msgstr "Aktieninhabernummer"
 
@@ -262,67 +262,71 @@ msgstr "Optionen (%%)"
 msgid "Gratis Aktienbuch-Muster"
 msgstr "Gratis Aktienbuch-Muster"
 
-#: project/templates/index.html:35
+#: project/templates/index.html:36
+msgid "My Dashboard"
+msgstr "Mein Dashboard"
+
+#: project/templates/index.html:40
 msgid "Login"
 msgstr "Login"
 
-#: project/templates/index.html:38
+#: project/templates/index.html:44
 msgid "prices and plans"
 msgstr "Preise und Pakete"
 
-#: project/templates/index.html:41
+#: project/templates/index.html:47
 msgid "Blog"
 msgstr "Blog"
 
-#: project/templates/index.html:44 project/templates/index.html:55
-#: project/templates/index.html:56 project/templates/index.html:83
-#: project/templates/index.html:84
+#: project/templates/index.html:50 project/templates/index.html:61
+#: project/templates/index.html:62 project/templates/index.html:89
+#: project/templates/index.html:90
 msgid "Try for free"
 msgstr "Kostenlos testen"
 
-#: project/templates/index.html:53
+#: project/templates/index.html:59
 msgid "Das Online-Aktienbuch"
 msgstr "Das Online-Aktienbuch"
 
-#: project/templates/index.html:54
+#: project/templates/index.html:60
 msgid "Mit Sicherheit gesetzeskonform durch automatische Validierung."
 msgstr "Mit Sicherheit gesetzeskonform durch automatische Validierung."
 
-#: project/templates/index.html:69
+#: project/templates/index.html:75
 msgid "Jetzt ab"
 msgstr "Jetzt ab"
 
-#: project/templates/index.html:70
+#: project/templates/index.html:76
 msgid "4,99"
 msgstr "4,99"
 
-#: project/templates/index.html:71
+#: project/templates/index.html:77
 msgid "CHF/mtl."
 msgstr "CHF/mtl."
 
-#: project/templates/index.html:77
+#: project/templates/index.html:83
 msgid "Eingabe alle Daten mit maximaler Effizienz."
 msgstr "☑ Maximale Effizienz bei der Dateneingabe"
 
-#: project/templates/index.html:78
+#: project/templates/index.html:84
 msgid "Revisionssichere Ablage."
 msgstr "☑ Revisionssichere Ablage"
 
-#: project/templates/index.html:79
+#: project/templates/index.html:85
 msgid "Automatische Validierung der Daten."
 msgstr ""
 "☑ Automatische Validierung der Daten auf Vollständigkeit und "
 "Gesetzeskonformität (inkl. GAFI-FATF)"
 
-#: project/templates/index.html:80
+#: project/templates/index.html:86
 msgid "10 Jahre Datengarantie."
 msgstr "☑ 10 Jahre Datengarantie"
 
-#: project/templates/index.html:81
+#: project/templates/index.html:87
 msgid "Aktienbuch als PDF herunterladen."
 msgstr "☑ Aktienbuch als PDF herunterladen"
 
-#: project/templates/index.html:92
+#: project/templates/index.html:98
 msgid ""
 "Die Automatische Validierung verhindert Fehler und sichert maximale "
 "Gesetzeskonformitaet. Das Online-Aktienbuch macht die Pflege schnell und "
@@ -331,19 +335,19 @@ msgstr ""
 "Die Automatische Validierung verhindert Fehler und sichert maximale Gesetzeskonformität. Das Online-Aktienbuch macht die Pflege schnell und effizient, damit Zeit frei wird für die wirklichen Herausforderungen. <br/><br/>\n"
 "<strong>PLUS: der rechtlichen Verantwortung des Verwaltungsrates ist Sorge getragen.</strong>"
 
-#: project/templates/index.html:101
+#: project/templates/index.html:107
 msgid "Do you know our Blog?"
 msgstr "Kennen Sie unser Blog?"
 
-#: project/templates/index.html:106 project/templates/index.html:107
+#: project/templates/index.html:112 project/templates/index.html:113
 msgid "Read our Blog"
 msgstr "Blog jetzt lesen"
 
-#: project/templates/index.html:114
+#: project/templates/index.html:120
 msgid "Subscribe to our newsletter!"
 msgstr "Email-Verteiler für Verwaltungsräte und Geschäftsleitung!"
 
-#: project/templates/index.html:115
+#: project/templates/index.html:121
 msgid "Stay up to date about our work and latest share register industry news"
 msgstr ""
 "Bleiben Sie auf dem neuesten Stand über unsere Arbeit, Bereitstellung neuer "
@@ -351,23 +355,23 @@ msgstr ""
 "Aktienbuch-Vorlagen. Diese Email wird nicht öfter als alle 2-3 Monate "
 "versendet."
 
-#: project/templates/index.html:122
+#: project/templates/index.html:128
 msgid "Geben Sie Ihre Email-Adresse ein"
 msgstr "Geben Sie Ihre Email-Adresse ein"
 
-#: project/templates/index.html:151 project/templates/index.html:152
+#: project/templates/index.html:157 project/templates/index.html:158
 msgid "Read our blog"
 msgstr "Lesen Sie unser Blog"
 
-#: project/templates/index.html:156 project/templates/index.html:157
+#: project/templates/index.html:162 project/templates/index.html:163
 msgid "Service Status"
 msgstr "Service Status"
 
-#: project/templates/index.html:161 project/templates/index.html:162
+#: project/templates/index.html:167 project/templates/index.html:168
 msgid "AGB"
 msgstr "AGB"
 
-#: project/templates/index.html:166 project/templates/index.html:167
+#: project/templates/index.html:172 project/templates/index.html:173
 msgid "A service provided by KKD Komm. GmbH"
 msgstr "A service provided by KKD Komm. GmbH"
 
@@ -402,14 +406,10 @@ msgstr ""
 msgid "Share Ownership"
 msgstr "Aktienbesitz"
 
-#: project/templates/start.html:65
+#: project/templates/start.html:55
 #, python-format
 msgid "Shares (Voting-%%%%)"
 msgstr "Aktien (%Stimmrechte)"
-
-#: project/templates/start.html:69
-msgid "Gafi Validation failed"
-msgstr "GAFI-FATF Validierung fehlgeschlagen"
 
 #: project/templates/start.html:84
 msgid "Total Shares distributed (total shares registered with company)"
@@ -445,6 +445,11 @@ msgid "Download active Shareholders as CSV"
 msgstr "Download Liste der aktiven Aktionäre als CSV"
 
 #: project/templates/start.html:127
+#: project/templates/start.html:59
+msgid "Gafi Validation failed"
+msgstr "GAFI-FATF Validierung fehlgeschlagen"
+
+#: project/templates/start.html:111
 msgid "CSV"
 msgstr "CSV"
 
@@ -455,6 +460,30 @@ msgid ""
 msgstr ""
 "Sie haben bereits ein Nutzerkonto. Bitte loggen Sie sich ein oder setzen Sie"
 " Ihr Passwort zurück."
+
+#. Translators: should be a language supported by Twilio,
+#. see http://bit.ly/187I5cr
+#: project/tfa.py:10
+#, python-format
+msgid "Hi, this is %(site_name)s calling. Press any key to continue."
+msgstr ""
+"Hallo, das ist ein Anruf von %(site_name)s. Drücken Sie eine Taste für die "
+"Ansage der Zahlen für den Token."
+
+#. Translators: should be a language supported by Twilio,
+#. see http://bit.ly/187I5cr
+#: project/tfa.py:15
+#, python-format
+msgid "Your token is %(token)s. Repeat: %(token)s. Good bye."
+msgstr ""
+"Ihr Token ist %(token)s ., Ich wiederhole noch einmal: Ihr Token ist "
+"%(token)s  ., Vielen Dank und Auf Wiedersehen."
+
+#. Translators: should be a language supported by Twilio,
+#. see http://bit.ly/187I5cr
+#: project/tfa.py:19
+msgid "You didn't press any keys. Good bye."
+msgstr "Sie haben keine Taste gedrückt. Auf Wiedersehen."
 
 #: project/views.py:135
 msgid "shareholder number"

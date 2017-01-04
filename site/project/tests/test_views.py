@@ -49,6 +49,7 @@ class IndexTestCase(TestCase):
 
     def setUp(self):
         self.client = Client()
+        self.user = UserGenerator().generate()
 
     def test_index_content(self):
 
@@ -59,6 +60,18 @@ class IndexTestCase(TestCase):
         self.assertTrue("xeditable.min.js" in response.content)
         self.assertTrue("xeditable.css" in response.content)
         self.assertTrue("last css in" in response.content)
+        self.assertIn(u'Login', response.content.decode('utf8'))
+
+    def test_index_content_authd(self):
+        """
+        index page for logged in user
+        """
+
+        self.client.force_login(self.user)
+        response = self.client.get("/", follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(_('My Dashboard'), response.content.decode('utf8'))
 
 
 class InstapageTestCase(TestCase):
@@ -118,7 +131,7 @@ class InstapageTestCase(TestCase):
 
         msg = _(u'You have already an existing user account. '
                 'Please login or reset your password.')
-        self.assertRedirects(response, reverse('auth_login'))
+        self.assertRedirects(response, reverse('two_factor:login'))
         self.assertContains(response, msg)
 
 
