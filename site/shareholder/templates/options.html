@@ -49,7 +49,7 @@
         <div class="td td-width-2">{% trans "Issuer" %}</div>
         <div class="td"></div>
       </div>
-      
+
       <!-- OPTIONS -->
 
       {% verbatim %}
@@ -73,7 +73,7 @@
             (#{{ option_transaction.readable_number_segments }})
           </span>
         </div>
-        <div class="td text-right-flex exercise-price">{{ option_plan.exercise_price }}</div>
+        <div class="td text-right-flex margin-top--additional">{{ option_plan.exercise_price }}</div>
         <div class="td td-width-2">
           {{ option_transaction.seller.user.first_name }} {{ option_transaction.seller.user.last_name }}
         </div>
