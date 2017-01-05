@@ -395,7 +395,8 @@
         $scope.current = null;
         $scope.previous = null;
         $scope.next = null;
-        return $scope.optiontransactions = [];
+        $scope.optiontransactions = [];
+        return $scope.option_plans = [];
       };
       $scope.load_all = function() {
         $scope.reset_search_params();
@@ -416,6 +417,8 @@
           if (result.data.current) {
             return $scope.current = result.data.current;
           }
+        })["finally"](function() {
+          return $scope.loading = false;
         });
         return $http.get('/services/rest/optionplan').then(function(result) {
           return angular.forEach(result.data.results, function(item) {
@@ -429,18 +432,24 @@
           return $scope.securities.push(item);
         });
       });
-      $http.get('/services/rest/shareholders').then(function(result) {
-        return angular.forEach(result.data.results, function(item) {
-          if (item.user.userprofile.birthday) {
-            item.user.userprofile.birthday = new Date(item.user.userprofile.birthday);
+      $scope.load_shareholders = function(url) {
+        if (!url) {
+          url = '/services/rest/shareholders';
+          $scope.shareholders = [];
+        }
+        return $http.get(url).then(function(result) {
+          angular.forEach(result.data.results, function(item) {
+            if (item.user.userprofile.birthday) {
+              item.user.userprofile.birthday = new Date(item.user.userprofile.birthday);
+            }
+            return $scope.shareholders.push(item);
+          });
+          if (result.data.next) {
+            return $scope.load_shareholders(result.data.next);
           }
-          return $scope.shareholders.push(item);
         });
-      })["finally"]((function(_this) {
-        return function() {
-          return $scope.loading = false;
-        };
-      })(this));
+      };
+      $scope.load_shareholders();
       $scope.next_page = function() {
         if ($scope.next) {
           return $http.get($scope.next).then(function(result) {
@@ -547,14 +556,15 @@
               rejection: rejection
             }
           });
-          return $scope.newOptionPlan.board_approved_at = d;
+          if (date) {
+            return $scope.newOptionPlan.board_approved_at = date;
+          }
         });
       };
       $scope.add_option_transaction = function() {
         var date, p;
         if ($scope.newOptionTransaction.option_plan) {
           p = $scope.newOptionTransaction.option_plan;
-          $scope.newOptionTransaction.option_plan = $scope.newOptionTransaction.option_plan.url;
         }
         if ($scope.newOptionTransaction.bought_at) {
           date = $scope.newOptionTransaction.bought_at;
@@ -562,7 +572,7 @@
           $scope.newOptionTransaction.bought_at = date.toISOString().substring(0, 10);
         }
         return $scope.newOptionTransaction.$save().then(function(result) {
-          return $scope._load_all();
+          return $scope.load_all();
         }).then(function() {
           $scope.newOptionTransaction = new OptionTransaction();
           return $scope.show_add_option_transaction = false;
@@ -632,7 +642,7 @@
       };
       $scope.show_available_number_segments_for_new_option_transaction = function() {
         var op_pk, sh_pk, url;
-        if ($scope.newOptionTransaction.seller && $scope.newOptionTransaction.option_plan) {
+        if ($scope.newOptionTransaction.seller && $scope.newOptionTransaction.option_plan && $scope.newOptionTransaction.option_plan.security.track_numbers) {
           op_pk = $scope.newOptionTransaction.option_plan.pk.toString();
           sh_pk = $scope.newOptionTransaction.seller.pk.toString();
           url = '/services/rest/optionplan/' + op_pk + '/number_segments/' + sh_pk;
@@ -662,6 +672,20 @@
       };
     }
   ]);
+
+  app.directive('stringToNumber', function() {
+    return {
+      require: 'ngModel',
+      link: function(scope, element, attrs, ngModel) {
+        ngModel.$parsers.push(function(value) {
+          return '' + value;
+        });
+        ngModel.$formatters.push(function(value) {
+          return parseFloat(value);
+        });
+      }
+    };
+  });
 
 }).call(this);
 

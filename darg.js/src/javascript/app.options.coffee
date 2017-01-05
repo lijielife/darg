@@ -52,6 +52,7 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
         $scope.previous = null
         $scope.next = null
         $scope.optiontransactions = []
+        $scope.option_plans = []
         #$scope.search_params.query = null
 
     $scope.load_all = ->
@@ -70,6 +71,8 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
                 $scope.total=result.data.count
             if result.data.current
                 $scope.current=result.data.current
+        .finally ->
+            $scope.loading = false
 
         $http.get('/services/rest/optionplan').then (result) ->
             angular.forEach result.data.results, (item) ->
@@ -82,15 +85,22 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
         angular.forEach result.data.results, (item) ->
             $scope.securities.push item
 
-    # used inside the add transaction form
-    $http.get('/services/rest/shareholders').then (result) ->
-        angular.forEach result.data.results, (item) ->
-            if item.user.userprofile.birthday
-                item.user.userprofile.birthday = new Date(item.user.userprofile.birthday)
-            $scope.shareholders.push item
-    .finally =>
-        $scope.loading = false
+    $scope.load_shareholders = (url) ->
+        # load paginated shareholder objs
+        # used inside the add transaction form
+        if not url
+            url = '/services/rest/shareholders'
+            $scope.shareholders = []
 
+        $http.get(url).then (result) ->
+            angular.forEach result.data.results, (item) ->
+                if item.user.userprofile.birthday
+                    item.user.userprofile.birthday = new Date(item.user.userprofile.birthday)
+                $scope.shareholders.push item
+            if result.data.next
+                $scope.load_shareholders(result.data.next)
+
+    $scope.load_shareholders()
 
     # --- PAGINATION
     $scope.next_page = ->
@@ -181,13 +191,13 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
                 level: 'warning',
                 extra: { rejection: rejection },
             })
-            $scope.newOptionPlan.board_approved_at = d
+            if date
+                $scope.newOptionPlan.board_approved_at = date
 
     $scope.add_option_transaction = ->
         # replace optionplan obj by hyperlinked url
         if $scope.newOptionTransaction.option_plan
             p = $scope.newOptionTransaction.option_plan
-            $scope.newOptionTransaction.option_plan = $scope.newOptionTransaction.option_plan.url
         if $scope.newOptionTransaction.bought_at
             date = $scope.newOptionTransaction.bought_at
             date.setHours(date.getHours() - date.getTimezoneOffset() / 60)
@@ -195,7 +205,7 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
 
         # now save:
         $scope.newOptionTransaction.$save().then (result) ->
-            $scope._load_all()
+            $scope.load_all()
         .then ->
             # Reset our editor to a new blank post
             $scope.newOptionTransaction = new OptionTransaction()
@@ -253,7 +263,7 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
                 $scope.numberSegmentsAvailable = ''
 
     $scope.show_available_number_segments_for_new_option_transaction = ->
-        if $scope.newOptionTransaction.seller && $scope.newOptionTransaction.option_plan
+        if $scope.newOptionTransaction.seller && $scope.newOptionTransaction.option_plan && $scope.newOptionTransaction.option_plan.security.track_numbers
             op_pk = $scope.newOptionTransaction.option_plan.pk.toString()
             sh_pk = $scope.newOptionTransaction.seller.pk.toString()
             url = '/services/rest/optionplan/' + op_pk + '/number_segments/' + sh_pk
@@ -277,3 +287,15 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
         $scope.datepicker.opened = true
 
 ]
+
+app.directive 'stringToNumber', ->
+  {
+    require: 'ngModel'
+    link: (scope, element, attrs, ngModel) ->
+      ngModel.$parsers.push (value) ->
+        '' + value
+      ngModel.$formatters.push (value) ->
+        parseFloat value
+      return
+
+  }
