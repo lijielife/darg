@@ -25,7 +25,7 @@
       <select class="form-control" ng-model="newOptionPlan.security" ng-options="security as security.readable_title for security in securities" translate translate-attr-placeholder="Underlying Asset" ng-change="show_available_number_segments_for_new_option_plan();">
         <option value='' disabled>{% endverbatim %}{% trans "Security" %}{% verbatim %}</option>
       </select>
-      <input type="number" class="form-control" ng-model="newOptionPlan.exercise_price" translate translate-attr-placeholder="Exercise Price" ng-maxlength="10" step=".01">
+      <input type="number" class="form-control" ng-model="newOptionPlan.exercise_price" translate translate-attr-placeholder="Exercise Price" ng-maxlength="10" step=".01" string-to-number>
       <input type="number" class="form-control" ng-model="newOptionPlan.count" translate translate-attr-placeholder="Share Count" ng-maxlength="10">
         <input type="text" class="form-control" ng-model="newOptionPlan.number_segments" translate translate-attr-placeholder="Share IDs" ng-maxlength="255" ng-show="newOptionPlan.security.track_numbers" uib-popover="{{numberSegmentsAvailable}}" popover-placement="bottom">
       <input type="text" class="form-control" ng-model="newOptionPlan.comment" translate translate-attr-placeholder="Comment" ng-maxlength="255">
