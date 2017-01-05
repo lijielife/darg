@@ -76,7 +76,7 @@
             <td class="buyer">{{ optiontransaction.buyer.user.first_name }} {{ optiontransaction.buyer.user.last_name }}</td>
             <td class="text-right count">
               {{ optiontransaction.count }}
-              <span class="note" ng-show="optiontransaction.option_plan.security.track_numbers && optiontransaction.option_transaction.readable_number_segments">
+              <span class="note" ng-show="optiontransaction.option_plan.security.track_numbers && optiontransaction.readable_number_segments">
                 (#{{optiontransaction.readable_number_segments }})
               </span>
             </td>
