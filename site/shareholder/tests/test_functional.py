@@ -190,7 +190,6 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
             self.assertTrue(app.is_no_errors_displayed())
-            self.assertTrue(app.is_option_plan_displayed())
 
             op = OptionPlan.objects.latest('pk')
             self.assertEqual(op.exercise_price, Decimal('4.55'))
@@ -216,7 +215,6 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
             self.assertTrue(app.is_no_errors_displayed())
-            self.assertTrue(app.is_option_plan_displayed())
 
             app.click_open_transfer_option()
             app.enter_transfer_option_data(
@@ -231,6 +229,7 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
                 buyer=self.buyer, seller=self.seller
             ))
             self.assertTrue(app.is_option_date_equal('13.05.16'))
+            self.assertTrue(app.is_option_plan_displayed())
 
         except Exception, e:
             self._handle_exception(e)
