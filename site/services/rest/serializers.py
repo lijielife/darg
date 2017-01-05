@@ -1,5 +1,6 @@
 import datetime
 import logging
+from collections import OrderedDict
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -16,7 +17,7 @@ from services.rest.validators import DependedFieldsValidator
 from shareholder.models import (Company, Country, Operator, OptionPlan,
                                 OptionTransaction, Position, Security,
                                 Shareholder, UserProfile)
-from utils.formatters import string_list_to_json, inflate_segments
+from utils.formatters import inflate_segments, string_list_to_json
 from utils.hashers import random_hash
 from utils.math import substract_list
 from utils.user import make_username
@@ -735,8 +736,13 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
 
         initial_data = self.initial_data
 
-        option_plan = OptionPlan.objects.get(id=int(
-            initial_data.get('option_plan').split('/')[-1]))
+        op_serialized = initial_data.get('option_plan')
+        if isinstance(op_serialized, dict):
+            pk = op_serialized.get('pk')
+        else:
+            pk = int(op_serialized.split('/')[-1])
+
+        option_plan = OptionPlan.objects.get(id=pk)
         security = option_plan.security
 
         if not security.track_numbers:
@@ -803,17 +809,18 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
         kwargs = {}
         user = self.context.get("request").user
         company = user.operator_set.all()[0].company
-        option_plan = validated_data.get('option_plan')
+        option_plan = OptionPlan.objects.get(
+            pk=self.initial_data.get('option_plan').get('pk'))
 
         buyer = Shareholder.objects.get(
             company=company,
-            user__email=validated_data.get(
-                "buyer").get("user").get("email")
+            number=validated_data.get(
+                "buyer").get("number")
         )
         seller = Shareholder.objects.get(
             company=company,
-            user__email=validated_data.get(
-                "seller").get("user").get("email")
+            number=validated_data.get(
+                "seller").get("number")
         )
         kwargs.update({"seller": seller})
         kwargs.update({"buyer": buyer})
