@@ -238,31 +238,34 @@ class OptionsPage(BasePage):
 
     def is_transfer_option_shown(self, **kwargs):
         for table in self.driver.find_elements_by_class_name('table'):
-            for td in table.find_elements_by_tag_name('td'):
+            for tr in table.find_elements_by_class_name('optiontransaction'):
                 s = u"{} {}".format(
                     kwargs.get('buyer').user.first_name,
                     kwargs.get('buyer').user.last_name,
                 )
-                if s == td.text:
+                if s == tr.find_element_by_class_name('full-name').text:
                     return True
+                print s, '>', tr.find_element_by_class_name('full-name').text
+
         return False
 
     def is_transfer_option_with_segments_shown(self, **kwargs):
         buyer = kwargs.get('buyer')
         ot = buyer.option_buyer.latest('id')
         s1 = u"{} {}".format(buyer.user.first_name, buyer.user.last_name)
-        s2 = u"{} (#{})".format(ot.count,
-                                human_readable_segments(ot.number_segments))
         for table in self.driver.find_elements_by_class_name('table'):
-            tr = table.find_element_by_xpath(u'//tr[./td="{}"]'.format(s1))
-            buyer_td = tr.find_element_by_class_name('buyer')
-            count_td = tr.find_element_by_class_name('count')
-            if s1 == buyer_td.text and s2 == count_td.text:
-                return True
+            trs = table.find_elements_by_class_name("optiontransaction")
+            for tr in trs:
+                buyer_td = tr.find_element_by_class_name('buyer')
+                count_td = tr.find_element_by_class_name('count')
+                if (
+                    s1 == buyer_td.text and str(ot.count) in count_td.text and
+                    human_readable_segments(ot.number_segments)
+                    in count_td.text
+                ):
+                    return True
+                print s1, buyer_td.text, count_td.text
 
-        extra = {'s1': s1, 's2': s2}
-        logger.warning('option transaction not found in markup',
-                       extra=extra)
         return False
 
     def is_option_date_equal(self, date):
@@ -272,7 +275,7 @@ class OptionsPage(BasePage):
         date must be string
         """
         for table in self.driver.find_elements_by_class_name('table'):
-            for td in table.find_elements_by_tag_name('td'):
+            for td in table.find_elements_by_class_name('td'):
                 div = td.find_elements_by_class_name('bought-at')
                 if len(div) > 0 and div[0].text == date:
                     return True
@@ -330,19 +333,19 @@ class PositionPage(BasePage):
         self.driver.get('%s%s' % (live_server_url, '/positions/'))
 
     def click_confirm_position(self):
-        table = self.driver.find_element_by_tag_name('table')
-        time.sleep(1)  # FIXME
-        trs = table.find_elements_by_tag_name('tr')
+        table = self.driver.find_element_by_class_name('table')
+        time.sleep(2)  # FIXME
+        trs = table.find_elements_by_class_name('tr')
         row = trs[2]
-        td = row.find_elements_by_tag_name('td')[-1]
+        td = row.find_elements_by_class_name('td')[-1]
         td.find_elements_by_tag_name('a')[1].click()
 
     def click_delete_position(self):
-        table = self.driver.find_element_by_tag_name('table')
+        table = self.driver.find_element_by_class_name('table')
         time.sleep(1)  # FIXME
-        trs = table.find_elements_by_tag_name('tr')
+        trs = table.find_elements_by_class_name('tr')
         row = trs[2]
-        td = row.find_elements_by_tag_name('td')[-1]
+        td = row.find_elements_by_class_name('td')[-1]
         td.find_element_by_tag_name('a').click()
 
     def click_open_add_position_form(self):
@@ -483,16 +486,16 @@ class PositionPage(BasePage):
         """
         return list of data from position in single row of table
         """
-        table = self.driver.find_element_by_tag_name('table')
+        table = self.driver.find_element_by_class_name('table')
         time.sleep(1)  # FIXME
-        trs = table.find_elements_by_tag_name('tr')
+        trs = table.find_elements_by_class_name('tr')
         row = trs[2]
-        return [td.text for td in row.find_elements_by_tag_name('td')]
+        return [td.text for td in row.find_elements_by_class_name('td')]
 
     def get_position_row_count(self):
-        table = self.driver.find_element_by_tag_name('table')
+        table = self.driver.find_element_by_class_name('table')
         time.sleep(1)  # FIXME
-        trs = table.find_elements_by_tag_name('tr')
+        trs = table.find_elements_by_class_name('tr')
         return [tr.is_displayed() for tr in trs].count(True)
 
     def get_segment_from_tooltip(self):
@@ -514,11 +517,11 @@ class PositionPage(BasePage):
         return els[0].text.split(':')[1].strip()
 
     def count_draft_mode_items(self):
-        table = self.driver.find_element_by_tag_name('table')
+        table = self.driver.find_element_by_class_name('table')
         time.sleep(1)
-        trs = table.find_elements_by_tag_name('tr')
+        trs = table.find_elements_by_class_name('tr')
         row = trs[2]
-        return row.find_element_by_tag_name('td').text.count('Entwurf')
+        return row.find_element_by_class_name('td').text.count('Entwurf')
 
     def has_available_segments_tooltip(self):
         """

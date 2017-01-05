@@ -638,7 +638,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.refresh()
             # wait for table
             app.wait_until_visible(
-                (By.CSS_SELECTOR, '#positions table tr.panel'))
+                (By.CSS_SELECTOR, '#positions .table .position'))
             self.assertEqual(app.get_position_row_data()[0].split('\n')[0],
                              datetime.datetime.today().strftime('%-d.%m.%y'))
 
@@ -729,7 +729,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app = page.PositionPage(
                 self.selenium, self.live_server_url, self.operator.user)
             # wait for table
-            app.wait_until_visible((By.CSS_SELECTOR, '#positions table tr'))
+            app.wait_until_visible((By.CSS_SELECTOR, '#positions .table .tr'))
             app.click_open_add_position_form()
 
             # test cycle: w/ date, seller, sec
@@ -743,7 +743,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
 
             app.refresh()
             # wait for table
-            app.wait_until_visible((By.CSS_SELECTOR, '#positions table tr'))
+            app.wait_until_visible((By.CSS_SELECTOR, '#positions .table .tr'))
             app.click_open_add_position_form()
             # test w/ sec + seller
             self.assertFalse(app.has_available_segments_tooltip())
@@ -754,7 +754,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
 
             app.refresh()
             # wait for table
-            app.wait_until_visible((By.CSS_SELECTOR, '#positions table tr'))
+            app.wait_until_visible((By.CSS_SELECTOR, '#positions .table .tr'))
             app.click_open_add_position_form()
             # test no segs avail
             position.seller = self.seller2
@@ -786,7 +786,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app = page.PositionPage(
                 self.selenium, self.live_server_url, self.operator.user)
             # wait for table
-            app.wait_until_visible((By.CSS_SELECTOR, '#positions table tr'))
+            app.wait_until_visible((By.CSS_SELECTOR, '#positions .table .tr'))
             app.click_open_add_position_form()
             app.enter_new_position_data(position)
 
@@ -1010,7 +1010,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.refresh()
             # wait for table
             app.wait_until_visible(
-                (By.CSS_SELECTOR, '#positions table tr.panel'))
+                (By.CSS_SELECTOR, '#positions .table .position'))
             app.click_open_split_form()
             app.wait_until_visible((By.CLASS_NAME, 'alert-warning'))
             self.assertTrue(app.has_split_warning_for_numbered_shares())
@@ -1029,6 +1029,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
 
             app = page.PositionPage(
                 self.selenium, self.live_server_url, self.operator.user)
+            time.sleep(1)
             app.click_delete_position()
 
             # header, row, 2x split

@@ -53,7 +53,7 @@
       <!-- OPTIONS -->
 
       {% verbatim %}
-      <div class="tr" ng-repeat="option_transaction in option_plan.optiontransaction_set">
+      <div class="tr optiontransaction" ng-repeat="option_transaction in option_plan.optiontransaction_set">
         <div class="td flex-column bought-at-column">
           <span class="bought-at">{{ option_transaction.bought_at | date : 'd.MM.yy' }}</span>
           <span ng-show="option_transaction.is_draft" class="draft">
@@ -62,10 +62,10 @@
             {% verbatim %}
           </span>
         </div>
-        <div class="td td-width-2 full-name full-name-padding">
+        <div class="td td-width-2 full-name full-name-padding buyer">
           {{ option_transaction.buyer.user.first_name }} {{ option_transaction.buyer.user.last_name }}
         </div>
-        <div class="td text-right-flex count gray-circle">
+        <div class="td text-right-flex count gray-circle count">
           <span class="transform--center large">
             {{ option_transaction.count }}
           </span>

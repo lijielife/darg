@@ -44,7 +44,7 @@
       <div>
         {% verbatim %}
       <div ng-repeat="position in positions  | orderBy:'-bought_at' ">
-        <div class="tr" ng-show="position.is_split && !positions[$index-1].is_split">
+        <div class="tr split-start" ng-show="position.is_split && !positions[$index-1].is_split">
           <div class="td">{{ position.bought_at | date : 'd.MM.yy' }}</div>
           <div class="td">
             {% endverbatim %}{% trans "Grouped split transactions." %}{% verbatim %}
@@ -56,7 +56,7 @@
             </a>
           </div>
         </div>
-        <div class="tr" ng-hide="position.is_split && !show_split_data">
+        <div class="tr position" ng-hide="position.is_split && !show_split_data">
           <div class="td flex-column bought-at-column">
             <div>
               <span class="bought-at">{{ position.bought_at | date : 'd.MM.yy' }}</span>
@@ -91,7 +91,7 @@
             </div>
           </div>
         </div>
-        <div class="tr" ng-show="show_split_data && position.is_split && !positions[$index+1].is_split">
+        <div class="tr split-end" ng-show="show_split_data && position.is_split && !positions[$index+1].is_split">
           <div class="td">
             {% endverbatim %}{% trans "--- End of split transactions ---" %}{% verbatim %}
           </div>
