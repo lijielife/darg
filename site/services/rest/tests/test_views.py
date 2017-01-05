@@ -1365,6 +1365,7 @@ class SecurityTestCase(APITestCase):
         self.client.force_authenticate(user=operator.user)
 
         res = self.client.put(url, data=data)
+        self.assertIn('Vorzugsaktien', res.content)
         self.assertEqual(res.status_code, 200)
 
         security = Security.objects.get(id=security.id)
