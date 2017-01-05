@@ -2750,7 +2750,7 @@ html, body {
   color: #c0392b;
   background: none;
 }
-.core .container .btn-white, .core .container .btn-default {
+.core .container .btn-white {
   background-color: #fff !important;
   color: #337ab7 !important;
   border: 1px solid #337ab7 !important;
