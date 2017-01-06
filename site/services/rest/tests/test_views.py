@@ -1359,7 +1359,7 @@ class SecurityTestCase(APITestCase):
         data = SecuritySerializer(security, context={'request': request}).data
         # segments must be double quoted as they are rendered to json as plain
         # string and the quotes will disappear
-        data.update({'number_segments': '1,2,3,4,8-10'})
+        data.update({'number_segments': '"1,2,3,4,8-10"'})
         del data['face_value']  # mandatory, remove
 
         self.client.force_authenticate(user=operator.user)
@@ -1371,7 +1371,7 @@ class SecurityTestCase(APITestCase):
         security = Security.objects.get(id=security.id)
         self.assertEqual(security.number_segments, [u'1-4', u'8-10'])
 
-        data.update({'number_segments': '1,2,3,4,4,,8-10'})
+        data.update({'number_segments': '"1,2,3,4,4,,8-10"'})
 
         res = self.client.put(url, data=data)
 
