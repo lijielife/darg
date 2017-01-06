@@ -4,6 +4,7 @@ import datetime
 
 from django.core.urlresolvers import reverse
 from django.test import RequestFactory, TestCase
+from django.utils.translation import ugettext as _
 from rest_framework.exceptions import ValidationError
 
 from project.generators import (ComplexShareholderConstellationGenerator,
@@ -15,7 +16,8 @@ from services.rest.serializers import (AddCompanySerializer,
                                        OptionPlanSerializer,
                                        OptionTransactionSerializer,
                                        PositionSerializer,
-                                       ShareholderSerializer)
+                                       ShareholderSerializer,
+                                       UserProfileSerializer)
 from shareholder.models import OptionPlan, OptionTransaction
 from utils.formatters import human_readable_segments
 
@@ -295,3 +297,17 @@ class ShareholderSerializerTestCase(TestCase):
             serializer = ShareholderSerializer(
                 qs, many=True, context={'request': request})
             self.assertTrue(len(serializer.data) > 0)
+
+
+class UserProfileSerializerTestCase(TestCase):
+
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.user = UserGenerator().generate()
+        request = self.factory.get('services/rest/user')
+        self.serializer = UserProfileSerializer(self.user.userprofile,
+                                                context={'request': request})
+
+    def test_fields(self):
+        self.assertEqual(self.serializer.data.get('readable_legal_type'),
+                         _('Human Being'))

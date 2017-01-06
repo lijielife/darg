@@ -1,6 +1,5 @@
 import datetime
 import logging
-from collections import OrderedDict
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -118,7 +117,8 @@ class AddCompanySerializer(serializers.Serializer):
 
         user = validated_data.get("user")
 
-        # handle creation operation as an atomic transaction to not create an inconsistent database
+        # handle creation operation as an atomic transaction to not create an
+        # inconsistent database
         with transaction.atomic():
             company = Company.objects.create(
                 share_count=validated_data.get("count"),
@@ -165,16 +165,21 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
     """ serialize additional user data """
     # country = CountrySerializer(many=False)
     readable_language = serializers.SerializerMethodField()
+    readable_legal_type = serializers.SerializerMethodField()
     birthday = serializers.DateTimeField(
         required=False, allow_null=True)
 
     class Meta:
         model = UserProfile
         fields = ('street', 'city', 'province', 'postal_code', 'country',
-                  'birthday', 'company_name', 'language', 'readable_language')
+                  'birthday', 'company_name', 'language', 'readable_language',
+                  'readable_legal_type')
 
     def get_readable_language(self, obj):
         return obj.get_language_display()
+
+    def get_readable_legal_type(self, obj):
+        return obj.get_legal_type_display()
 
 
 class UserWithEmailOnlySerializer(serializers.HyperlinkedModelSerializer):

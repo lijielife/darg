@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-30 19:30+0000\n"
+"POT-Creation-Date: 2017-01-06 09:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -154,46 +154,21 @@ msgstr ""
 msgid "Change password"
 msgstr ""
 
-#: templates/menu.html:69
+#: templates/menu.html:68
+msgid "Security Settings"
+msgstr ""
+
+#: templates/menu.html:70
 msgid "Logout"
 msgstr ""
 
-#: templates/menu.html:75 templates/registration/login.html:22
+#: templates/menu.html:76 templates/two_factor/core/login.html:55
 msgid "Register"
 msgstr ""
 
-#: templates/menu.html:78 templates/registration/registration_form.html:26
+#: templates/menu.html:79 templates/registration/registration_form.html:26
+#: templates/two_factor/core/login.html:6
 msgid "Login"
-msgstr ""
-
-#: templates/registration/login.html:17
-msgid "Log in"
-msgstr ""
-
-#: templates/registration/login.html:21
-msgid "Not  a member?"
-msgstr ""
-
-#: templates/registration/login.html:25
-msgid "Password lost?"
-msgstr ""
-
-#: templates/registration/login.html:26
-msgid "Reset Password"
-msgstr ""
-
-#: templates/registration/login.html:29
-#: templates/registration/registration_form.html:29
-msgid "Do you know our "
-msgstr ""
-
-#: templates/registration/login.html:30
-#: templates/registration/registration_form.html:29
-msgid "Blog"
-msgstr ""
-
-#: templates/menu.html:68
-msgid "Security Settings"
 msgstr ""
 
 #: templates/registration/logout.html:10
@@ -523,6 +498,6 @@ msgstr ""
 msgid "Weblog index"
 msgstr ""
 
-#: utils/import_backends.py:180
+#: utils/import_backends.py:183
 msgid "Default OptionPlan for {}"
 msgstr ""

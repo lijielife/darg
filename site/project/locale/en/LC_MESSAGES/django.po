@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-30 19:30+0000\n"
+"POT-Creation-Date: 2017-01-06 09:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -162,7 +162,7 @@ msgstr ""
 msgid "Add Share Split"
 msgstr ""
 
-#: project/templates/_table_actions.html:20
+#: project/templates/_table_actions.html:14
 msgid "Sort"
 msgstr ""
 
@@ -202,19 +202,19 @@ msgstr ""
 
 #: project/templates/active_shareholder_captable.pdf.html:98
 #: project/templates/active_shareholder_captable.pdf.html:141
-#: project/templates/start.html:52
+#: project/templates/start.html:64
 msgid "Name"
 msgstr ""
 
 #: project/templates/active_shareholder_captable.pdf.html:99
 #: project/templates/active_shareholder_captable.pdf.html:142
-#: project/templates/start.html:53
+#: project/templates/start.html:65
 msgid "Email"
 msgstr ""
 
 #: project/templates/active_shareholder_captable.pdf.html:100
 #: project/templates/active_shareholder_captable.pdf.html:143
-#: project/templates/start.html:54
+#: project/templates/start.html:66
 msgid "Shareholder Number"
 msgstr ""
 
@@ -240,7 +240,7 @@ msgstr ""
 msgid "Gratis Aktienbuch-Muster"
 msgstr ""
 
-#: project/templates/index.html:36
+#: project/templates/index.html:36 project/tests/test_views.py:74
 msgid "My Dashboard"
 msgstr ""
 
@@ -373,85 +373,56 @@ msgstr ""
 msgid "Share Ownership"
 msgstr ""
 
-#: project/templates/start.html:55
+#: project/templates/start.html:67
 #, python-format
 msgid "Shares (Voting-%%%%)"
 msgstr ""
 
-#: project/templates/start.html:69
+#: project/templates/start.html:71
 msgid "Gafi Validation failed"
 msgstr ""
 
-#: project/templates/start.html:84
+#: project/templates/start.html:86
 msgid "Total Shares distributed (total shares registered with company)"
 msgstr ""
 
-#: project/templates/start.html:96
+#: project/templates/start.html:98
 msgid "No Shareholders yet."
 msgstr ""
 
-#: project/templates/start.html:101
+#: project/templates/start.html:104
 msgid "Option Holders"
 msgstr ""
 
-#: project/templates/start.html:102
+#: project/templates/start.html:105
 msgid "Option Holders note"
 msgstr ""
 
-#: project/templates/start.html:122
+#: project/templates/start.html:131
+msgid "No option holders yet."
+msgstr ""
+
+#: project/templates/start.html:137
 msgid "Download active Shareholders as"
 msgstr ""
 
-#: project/templates/start.html:123
+#: project/templates/start.html:138
 msgid "Download active Shareholders as PDF"
 msgstr ""
 
-#: project/templates/start.html:124
+#: project/templates/start.html:139
 msgid "PDF"
 msgstr ""
 
-#: project/templates/start.html:126
+#: project/templates/start.html:141
 msgid "Download active Shareholders as CSV"
 msgstr ""
 
-#: project/templates/start.html:127
-#: project/templates/start.html:59
-msgid "Gafi Validation failed"
-msgstr ""
-
-#: project/templates/start.html:74
-msgid "Option Holders"
-msgstr ""
-
-#: project/templates/start.html:89
-msgid "Total Shares distributed (total shares registered with company)"
-msgstr ""
-
-#: project/templates/start.html:101
-msgid "No Shareholders yet."
-msgstr ""
-
-#: project/templates/start.html:106
-msgid "Download active Shareholders as"
-msgstr ""
-
-#: project/templates/start.html:107
-msgid "Download active Shareholders as PDF"
-msgstr ""
-
-#: project/templates/start.html:108
-msgid "PDF"
-msgstr ""
-
-#: project/templates/start.html:110
-msgid "Download active Shareholders as CSV"
-msgstr ""
-
-#: project/templates/start.html:111
+#: project/templates/start.html:142
 msgid "CSV"
 msgstr ""
 
-#: project/tests/test_views.py:119 project/views.py:83
+#: project/tests/test_views.py:132 project/views.py:83
 msgid ""
 "You have already an existing user account. Please login or reset your "
 "password."

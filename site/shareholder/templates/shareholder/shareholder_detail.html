@@ -56,6 +56,12 @@
         {% verbatim %}<span editable-text="shareholder.user.email" onaftersave="edit_shareholder()">{{ shareholder.user.email || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
       </td>
     </tr>
+    <tr class="legal_type">
+      <td>{% trans "Shareholder Legal Type" %}:</td>
+      <td>
+        {% verbatim %}{{ shareholder.user.userprofile.readable_legal_type || '' }}{% endverbatim %}
+      </td>
+    </tr>
     <tr>
       <td>{% trans "Shareholder Company Name" %}:</td>
       <td>

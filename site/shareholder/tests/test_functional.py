@@ -35,6 +35,29 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
     def tearDown(self):
         Security.objects.all().delete()
 
+    def test_display(self):
+        """
+        test if all data is shown properly
+        """
+        try:
+
+            p = page.ShareholderDetailPage(
+                self.selenium, self.live_server_url, self.operator.user,
+                path=reverse(
+                    'shareholder',
+                    kwargs={'pk': self.buyer.id}
+                    )
+                )
+            # wait for 'link'
+            p.wait_until_visible(
+                (By.CSS_SELECTOR, 'tr.shareholder-number span.el-icon-pencil'))
+            self.assertIn(
+                self.buyer.user.userprofile.get_legal_type_display(),
+                p.get_field('legal_type'))
+
+        except Exception, e:
+            self._handle_exception(e)
+
     def test_edit_shareholder_number_53(self):
         """ means: create a option plan and move options for users """
         try:

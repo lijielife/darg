@@ -4,11 +4,12 @@
 import time
 import logging
 
+from django.contrib.auth.models import User
 from django.core.management import call_command
 from django.test import TestCase
 
 from project.generators import CompanyGenerator
-from shareholder.models import OptionTransaction
+from shareholder.models import OptionTransaction, Shareholder
 from utils.formatters import (deflate_segments, flatten_list, inflate_segments,
                               string_list_to_json)
 from utils.math import substract_list
@@ -78,6 +79,30 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
                          OptionTransaction.objects.filter(
                             option_plan__company=self.company).count()
                          )
+
+        # legal_type import cross check
+        content = '\n'.join(self.backend.file_content)
+        count = content.count('Jurist')
+        self.assertEqual(User.objects.filter(
+            userprofile__legal_type='C').count(), count)
+
+        # check shareholder #
+        for line in self.backend.file_content:
+            self.assertEqual(
+                Shareholder.objects.filter(number=line.split(',')[0]).count(),
+                1)
+
+    def test_get_or_create_user(self):
+        self.backend.company = CompanyGenerator().generate()
+        self.backend._get_or_create_user('1', 'first name', 'last_name',
+                                         'Natürliche Person')
+        user = User.objects.last()
+        self.assertEqual(user.userprofile.legal_type, 'H')
+
+        self.backend._get_or_create_user('1', 'first name', 'last_name',
+                                         'Juristische Person')
+        user = User.objects.last()
+        self.assertEqual(user.userprofile.legal_type, 'C')
 
 
 class UtilsTestCase(TestCase):

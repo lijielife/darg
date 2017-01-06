@@ -10,6 +10,7 @@ from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.core.mail import send_mail
 from django.core.validators import MinValueValidator
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Sum
 from django.db.models.signals import post_save
@@ -287,6 +288,12 @@ class Company(models.Model):
 
 class UserProfile(models.Model):
 
+    # legal types of a user
+    LEGAL_TYPES = (
+        ('H', _('Human Being')),
+        ('C', _('Corporate')),
+    )
+
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL)
     street = models.CharField(max_length=255, blank=True, null=True)
@@ -295,6 +302,9 @@ class UserProfile(models.Model):
     postal_code = models.CharField(max_length=255, blank=True, null=True)
     country = models.ForeignKey(Country, blank=True, null=True)
     language = language_fields.LanguageField(blank=True, null=True)
+    legal_type = models.CharField(
+        max_length=1, choices=LEGAL_TYPES, default='H',
+        help_text=_('legal type of the user'))
 
     company_name = models.CharField(max_length=255, blank=True, null=True)
     birthday = models.DateField(blank=True, null=True)
@@ -308,6 +318,17 @@ class UserProfile(models.Model):
 
     class Meta:
         verbose_name_plural = "UserProfile"
+
+    def clean(self, *args, **kwargs):
+        super(UserProfile, self).clean(*args, **kwargs)
+
+        if self.legal_type == 'C' and not self.company_name:
+            raise ValidationError(_('user with legal type company must have '
+                                    'company name set'))
+
+        if not self.legal_type == 'C' and self.company_name:
+            raise ValidationError(_('user company must have legal type set to '
+                                    'company'))
 
 
 class Shareholder(models.Model):

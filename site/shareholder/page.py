@@ -62,6 +62,12 @@ class ShareholderDetailPage(BasePage):
             '//tr[@class="birthday active"]/td/span')
         return bday.text
 
+    def get_field(self, cls):
+        """
+        returns string for class
+        """
+        return self.driver.find_element_by_class_name(cls).text
+
     def get_securities(self):
         """
         returns list of securities from page

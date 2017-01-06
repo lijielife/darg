@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-30 19:30+0000\n"
+"POT-Creation-Date: 2017-01-06 09:32+0000\n"
 "PO-Revision-Date: 2016-12-13 21:21+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -160,47 +160,22 @@ msgstr "Passwort zurücksetzen"
 msgid "Change password"
 msgstr "Passwort ändern"
 
-#: templates/menu.html:69
-msgid "Logout"
-msgstr "Logout"
-
-#: templates/menu.html:75 templates/registration/login.html:22
-msgid "Register"
-msgstr "Registrieren"
-
-#: templates/menu.html:78 templates/registration/registration_form.html:26
-msgid "Login"
-msgstr "Login"
-
-#: templates/registration/login.html:17
-msgid "Log in"
-msgstr "Login"
-
-#: templates/registration/login.html:21
-msgid "Not  a member?"
-msgstr "Noch nicht registriert?"
-
-#: templates/registration/login.html:25
-msgid "Password lost?"
-msgstr "Passwort vergessen?"
-
-#: templates/registration/login.html:26
-msgid "Reset Password"
-msgstr "Passwort zurücksetzen"
-
-#: templates/registration/login.html:29
-#: templates/registration/registration_form.html:29
-msgid "Do you know our "
-msgstr "Kennen Sie unseren"
-
-#: templates/registration/login.html:30
-#: templates/registration/registration_form.html:29
-msgid "Blog"
-msgstr "Blog"
-
 #: templates/menu.html:68
 msgid "Security Settings"
 msgstr "Sicherheitseinstellungen"
+
+#: templates/menu.html:70
+msgid "Logout"
+msgstr "Logout"
+
+#: templates/menu.html:76 templates/two_factor/core/login.html:55
+msgid "Register"
+msgstr "Registrieren"
+
+#: templates/menu.html:79 templates/registration/registration_form.html:26
+#: templates/two_factor/core/login.html:6
+msgid "Login"
+msgstr "Login"
 
 #: templates/registration/logout.html:10
 msgid "Logged Out"
@@ -561,9 +536,12 @@ msgstr "Links"
 msgid "Weblog index"
 msgstr "Blog Start"
 
-#: utils/import_backends.py:180
+#: utils/import_backends.py:183
 msgid "Default OptionPlan for {}"
 msgstr "Default Optionsplan für {}"
+
+#~ msgid "Log in"
+#~ msgstr "Login"
 
 #~ msgid "Other"
 #~ msgstr "Mehr"

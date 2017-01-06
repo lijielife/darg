@@ -2,18 +2,18 @@
 # -*- coding: utf-8 -*-
 
 import csv
-import logging
 import datetime
+import logging
 
 from django.contrib.auth.models import User
+from django.db import DataError
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
-from django.db import DataError
 
 from project.generators import (DEFAULT_TEST_DATA, CompanyShareholderGenerator,
                                 OperatorGenerator)
-from shareholder.models import (Company, Position, Security,
-                                Shareholder, OptionPlan, OptionTransaction)
+from shareholder.models import (Company, OptionPlan, OptionTransaction,
+                                Position, Security, Shareholder, UserProfile)
 
 SISWARE_CSV_HEADER = [
     u'Aktion\xe4rID', u'Aktion\xe4rsArt', u'Eintragungsart', u'Suchname',
@@ -65,6 +65,8 @@ class SisWareImportBackend(BaseImportBackend):
     assumes that the share register starts with the import
     """
 
+    file_content = []
+
     def _init_import(self, company_pk):
         """
         check and/or prepare data required for the import
@@ -102,7 +104,8 @@ class SisWareImportBackend(BaseImportBackend):
         if not [field for field in row if field != u'']:
             return 0
 
-        user = self._get_or_create_user(row[0], row[8]+' '+row[9], row[10])
+        user = self._get_or_create_user(
+            row[0], row[8]+' '+row[9], row[10], row[1])
         shareholder = self._get_or_create_shareholder(row[0], user)
         # plan shares
         if not row[27]:
@@ -190,7 +193,8 @@ class SisWareImportBackend(BaseImportBackend):
 
         return option
 
-    def _get_or_create_user(self, shareholder_id, first_name, last_name):
+    def _get_or_create_user(self, shareholder_id, first_name, last_name,
+                            legal_entity):
         """
         we have no email to identify duplicates and merge then. hence we are
         using the shareholder id to create new users for each shareholder id
@@ -206,6 +210,14 @@ class SisWareImportBackend(BaseImportBackend):
             print (u'create user failed for {} {}. please fix data & reimport.'
                    u'hint: check string length'.format(first_name, last_name))
             raise e
+
+        l = 'H' if 'Jurist' not in legal_entity else 'C'
+        if hasattr(user, 'userprofile'):
+            profile = user.userprofile
+            profile.legal_type = l
+            profile.save()
+        elif not hasattr(user, 'userprofile'):
+            UserProfile.objects.create(user=user, legal_type=l)
 
         return user
 
@@ -236,6 +248,7 @@ class SisWareImportBackend(BaseImportBackend):
                 row = [self.to_unicode(field) for field in row]
                 if row == SISWARE_CSV_HEADER:
                     continue
+                self.file_content.append(','.join(row))
                 self.row_count += self._import_row(row)
 
         self._finish_import()
