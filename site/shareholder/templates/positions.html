@@ -67,16 +67,22 @@
               {% verbatim %}
             </div>
           </div>
-          <div class="td td-width-2 full-name full-name-padding ">{{ position.buyer.user.first_name }} {{ position.buyer.user.last_name }}</div>
-          <div class="td margin-top--additional">
+          <div class="td td-width-2 buyer-name ">{{ position.buyer.user.first_name }} {{ position.buyer.user.last_name }}</div>
+          <div class="td margin-top-additional">
             {{ position.security.readable_title }}
-            <span class="note" ng-show="position.security.track_numbers && position.readable_number_segments">
-              (#{{ position.readable_number_segments }})
+          </div>
+          <div class="td text-right-flex count">
+            <span class=" medium">
+              {{ position.count }}
+              <span class="note" ng-show="position.security.track_numbers && position.readable_number_segments">
+                (#{{ position.readable_number_segments }})
+              </span>
             </span>
           </div>
-          <div class="td text-right-flex count gray-circle"><span class="transform--center medium">{{ position.count }}</span></div>
           <div class="td text-right-flex">{{ position.value }}</div>
-          <div class="td">{{ position.seller.user.first_name }} {{ position.seller.user.last_name }}</div>
+          <div class="td">
+            <span class="limit-max-height">{{ position.seller.user.first_name }} {{ position.seller.user.last_name }}</span>
+          </div>
           <div class="td">{{ position.comment }}</div>
           <div class="td flex-column">
             <div ng-show="position.is_draft">

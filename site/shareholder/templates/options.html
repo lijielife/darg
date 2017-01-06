@@ -62,18 +62,18 @@
             {% verbatim %}
           </span>
         </div>
-        <div class="td td-width-2 full-name full-name-padding">
+        <div class="td td-width-2 buyer-name">
           {{ option_transaction.buyer.user.first_name }} {{ option_transaction.buyer.user.last_name }}
         </div>
         <div class="td text-right-flex count gray-circle">
-          <span class="transform--center large">
+          <span class="transform-center large">
             {{ option_transaction.count }}
           </span>
           <span class="note" ng-show="option_plan.security.track_numbers && option_transaction.readable_number_segments">
             (#{{ option_transaction.readable_number_segments }})
           </span>
         </div>
-        <div class="td text-right-flex margin-top--additional">{{ option_plan.exercise_price }}</div>
+        <div class="td text-right-flex margin-top-additional">{{ option_plan.exercise_price }}</div>
         <div class="td td-width-2">
           {{ option_transaction.seller.user.first_name }} {{ option_transaction.seller.user.last_name }}
         </div>

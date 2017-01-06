@@ -3148,6 +3148,11 @@ nav.navbar .navbar-text {
   padding-top: 6px;
 }
 
+.limit-max-height {
+  max-height: 40px;
+  overflow: hidden;
+}
+
 .text-right-flex {
   -webkit-justify-content: flex-end;
   justify-content: flex-end;
@@ -3401,10 +3406,6 @@ div#optionplan .pdf_upload_preview {
 }
 
 @media only screen and (max-width: 960px) {
-  .table.table-small-font {
-    font-size: 0.7em;
-  }
-
   body.core .add-information-inline .date-field {
     min-width: 100%;
   }
@@ -3434,6 +3435,9 @@ div#optionplan .pdf_upload_preview {
     width: 56.25%;
   }
 
+  .table.table-small-font {
+    font-size: 0.7em;
+  }
   .table .tr .td {
     font-size: 0.9em;
     -webkit-align-items: baseline;
@@ -3675,7 +3679,7 @@ div#optionplan .pdf_upload_preview {
     padding-left: 0;
     font-weight: 300;
   }
-  .table .tr .full-name {
+  .table .tr .buyer-name {
     font-weight: 700;
     font-size: 1.1em;
   }
@@ -3683,7 +3687,7 @@ div#optionplan .pdf_upload_preview {
     -webkit-flex-basis: auto;
     flex-basis: auto;
   }
-  .table .tr .td.full-name-padding {
+  .table .tr .td.buyer-name {
     padding-left: 85px;
   }
   .table .tr .td .truncate {
@@ -3712,7 +3716,7 @@ div#optionplan .pdf_upload_preview {
   .table .tr .bought-at-column {
     position: absolute;
   }
-  .table .tr .margin-top--additional {
+  .table .tr .margin-top-additional {
     margin-top: 25px;
   }
   .table .tr .gray-circle {
@@ -3729,7 +3733,7 @@ div#optionplan .pdf_upload_preview {
     -webkit-transform: translateY(-50%);
     font-size: 10px;
   }
-  .table .tr .gray-circle .transform--center {
+  .table .tr .gray-circle .transform-center {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -3739,15 +3743,15 @@ div#optionplan .pdf_upload_preview {
     font-weight: 700;
     font-size: 1em;
   }
-  .table .tr .gray-circle .transform--center.large {
+  .table .tr .gray-circle .transform-center.large {
     font-weight: 700;
     font-size: 2em;
   }
-  .table .tr .gray-circle .transform--center.medium {
+  .table .tr .gray-circle .transform-center.medium {
     font-weight: 700;
     font-size: 1.2em;
   }
-  .table .tr .gray-circle .transform--center .shares-count {
+  .table .tr .gray-circle .transform-center .shares-count {
     font-size: 10px;
   }
   .table .tr .td {
@@ -3857,11 +3861,11 @@ div#optionplan .pdf_upload_preview {
   .table {
     position: relative;
   }
-  .table .tr .td.full-name-padding {
+  .table .tr .td.buyer-name {
     padding-left: 10px;
     padding-top: 5px;
   }
-  .table .tr .margin-top--additional {
+  .table .tr .margin-top-additional {
     margin-top: 0;
   }
   .table .tr .bought-at-column {
@@ -3906,7 +3910,7 @@ div#optionplan .pdf_upload_preview {
   .table .tr {
     font-size: 1em;
   }
-  .table .tr .full-name {
+  .table .tr .buyer-name {
     font-size: 0.75em;
   }
 

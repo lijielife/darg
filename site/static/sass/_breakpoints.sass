@@ -1,7 +1,5 @@
 
 @media only screen and (max-width: 960px)
-  .table.table-small-font
-    font-size: 0.7em
   body.core
     .add-information-inline
       .date-field
@@ -21,6 +19,8 @@
           .auto-suggestions
             width: +zen-grid-item-width(4.5)
   .table
+    &.table-small-font
+      font-size: 0.7em
     .tr
       .td
         font-size: 0.9em
@@ -193,12 +193,12 @@
         .note
           padding-left: 0
           font-weight: 300
-      .full-name
+      .buyer-name
         font-weight: 700
         font-size: 1.1em
       .td
         @include flex-basis(auto)
-        &.full-name-padding
+        &.buyer-name
           padding-left: 85px
         .truncate
           white-space: nowrap /* No break word */
@@ -219,10 +219,10 @@
         display: block
       .bought-at-column
         position: absolute
-      .margin-top--additional
+      .margin-top-additional
         margin-top: 25px
       .gray-circle
-        .transform--center
+        .transform-center
           &.large
             font-weight: 700
             font-size: 2em
@@ -334,10 +334,10 @@
   .table
     .tr
       .td
-        &.full-name-padding
+        &.buyer-name
           padding-left: 10px
           padding-top: 5px
-      .margin-top--additional
+      .margin-top-additional
         margin-top: 0
       .bought-at-column
         position: relative
@@ -366,7 +366,7 @@
       @include flex-wrap(wrap)
     .tr
       font-size: 1em
-      .full-name
+      .buyer-name
         font-size: 0.75em
   .main-screenshot
     .screenshot
