@@ -311,3 +311,4 @@ class UserProfileSerializerTestCase(TestCase):
     def test_fields(self):
         self.assertEqual(self.serializer.data.get('readable_legal_type'),
                          _('Human Being'))
+        self.assertEqual(self.serializer.data.get('legal_type'), 'H')

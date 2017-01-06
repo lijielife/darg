@@ -1109,16 +1109,30 @@
       $scope.countries = [];
       $scope.languages = [];
       $scope.errors = null;
+      $scope.legal_types = [
+        {
+          name: gettext('Human Being'),
+          value: 'H'
+        }, {
+          name: gettext('Corporate'),
+          value: 'C'
+        }
+      ];
       $http.get('/services/rest/shareholders/' + shareholder_id).then(function(result) {
+        var legal_type;
         if (result.data.user.userprofile.birthday !== null) {
           result.data.user.userprofile.birthday = new Date(result.data.user.userprofile.birthday);
         }
         $scope.shareholder = new Shareholder(result.data);
         if ($scope.shareholder.user.userprofile.country) {
-          return $http.get($scope.shareholder.user.userprofile.country).then(function(result1) {
+          $http.get($scope.shareholder.user.userprofile.country).then(function(result1) {
             return $scope.shareholder.user.userprofile.country = result1.data;
           });
         }
+        legal_type = $scope.legal_types.filter(function(obj) {
+          return obj.value === $scope.shareholder.user.userprofile.legal_type;
+        });
+        return $scope.shareholder.user.userprofile.legal_type = legal_type[0];
       });
       $http.get('/services/rest/country').then(function(result) {
         return $scope.countries = result.data.results;
@@ -1138,6 +1152,9 @@
         }
         if ($scope.shareholder.user.userprofile.language) {
           $scope.shareholder.user.userprofile.language = $scope.shareholder.user.userprofile.language.iso;
+        }
+        if ($scope.shareholder.user.userprofile.legal_type.value) {
+          $scope.shareholder.user.userprofile.legal_type = $scope.shareholder.user.userprofile.legal_type.value;
         }
         return $scope.shareholder.$update().then(function(result) {
           if (result.user.userprofile.birthday !== null) {

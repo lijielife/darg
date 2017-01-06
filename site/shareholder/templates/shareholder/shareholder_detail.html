@@ -59,7 +59,12 @@
     <tr class="legal_type">
       <td>{% trans "Shareholder Legal Type" %}:</td>
       <td>
-        {% verbatim %}{{ shareholder.user.userprofile.readable_legal_type || '' }}{% endverbatim %}
+        {% verbatim %}
+        <span editable-select="shareholder.user.userprofile.legal_type" onaftersave="edit_shareholder()" e-ng-options="l as l.name for l in legal_types">
+          {{ shareholder.user.userprofile.readable_legal_type || 'Aktionaersart' }}
+          <span class="el-icon-pencil"></span>
+        </span>
+        {% endverbatim %}
       </td>
     </tr>
     <tr>

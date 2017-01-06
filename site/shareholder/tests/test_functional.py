@@ -4,7 +4,6 @@ import datetime
 import time
 import unittest
 from decimal import Decimal
-import time
 
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -55,6 +54,15 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                 self.buyer.user.userprofile.get_legal_type_display(),
                 p.get_field('legal_type'))
 
+            profile = self.buyer.user.userprofile
+            profile.legal_type = 'C'
+            profile.save()
+            p.refresh()
+            p.wait_until_visible(
+                (By.CSS_SELECTOR, 'tr.shareholder-number span.el-icon-pencil'))
+            self.assertIn(profile.get_legal_type_display(),
+                          p.get_field('legal_type'))
+
         except Exception, e:
             self._handle_exception(e)
 
@@ -84,6 +92,36 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
 
         shareholder = Shareholder.objects.get(id=self.buyer.id)
         self.assertEqual(shareholder.number, str(99))
+
+    def test_edit_legal_type(self):
+        """ means: create a option plan and move options for users """
+        try:
+
+            self.assertEqual(self.buyer.user.userprofile.legal_type, 'H')
+
+            p = page.ShareholderDetailPage(
+                self.selenium, self.live_server_url, self.operator.user,
+                path=reverse(
+                    'shareholder',
+                    kwargs={'pk': self.buyer.id}
+                    )
+                )
+            # wait for 'link'
+            p.wait_until_visible(
+                (By.CSS_SELECTOR, 'tr.shareholder-number span.el-icon-pencil'))
+            p.click_to_edit("legal_type")
+            p.select_legal_type("legal_type", _('Corporate'))
+            p.save_edit("legal_type")
+            # wait for form to disappear
+            p.wait_until_invisible(
+                (By.CSS_SELECTOR, 'tr.shareholder-number form'))
+
+            time.sleep(2)
+            self.buyer.user.userprofile.refresh_from_db()
+            self.assertEqual(self.buyer.user.userprofile.legal_type, 'C')
+
+        except Exception, e:
+            self._handle_exception(e)
 
     def test_edit_birthday_76(self):
         """
