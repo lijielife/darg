@@ -723,7 +723,7 @@ class Security(models.Model):
 
     def __unicode__(self):
         return _(u"{} ({} CHF)").format(
-            self.get_title_display(), self.face_value)
+            self.get_title_display(), int(self.face_value))
 
     def count_in_segments(self, segments=None):
         """

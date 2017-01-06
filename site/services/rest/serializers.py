@@ -46,7 +46,8 @@ class SecuritySerializer(serializers.HyperlinkedModelSerializer,
 
     def get_readable_title(self, obj):
         if obj.face_value:
-            return obj.get_title_display() + u' ({})'.format(obj.face_value)
+            return obj.get_title_display() + u' ({} CHF)'.format(
+                int(obj.face_value))
         else:
             return obj.get_title_display()
 
