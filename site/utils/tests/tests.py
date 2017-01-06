@@ -9,7 +9,7 @@ from django.core.management import call_command
 from django.test import TestCase
 
 from project.generators import CompanyGenerator
-from shareholder.models import OptionTransaction, Shareholder
+from shareholder.models import OptionTransaction, Shareholder, Position
 from utils.formatters import (deflate_segments, flatten_list, inflate_segments,
                               string_list_to_json)
 from utils.math import substract_list
@@ -91,6 +91,15 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
             self.assertEqual(
                 Shareholder.objects.filter(number=line.split(',')[0]).count(),
                 1)
+
+        # check registration type
+        self.assertEqual(
+            Position.objects.filter(registration_type='1').count(), 1)
+        self.assertEqual(
+            Position.objects.filter(registration_type='2').count(),
+            self.backend.row_count - OptionTransaction.objects.filter(
+                option_plan__company=self.company).count() - 1
+            )
 
     def test_get_or_create_user(self):
         self.backend.company = CompanyGenerator().generate()

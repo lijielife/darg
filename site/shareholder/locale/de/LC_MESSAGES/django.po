@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-06 09:32+0000\n"
-"PO-Revision-Date: 2017-01-06 09:37+0000\n"
+"POT-Creation-Date: 2017-01-06 11:10+0000\n"
+"PO-Revision-Date: 2017-01-06 11:11+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Translated-Using: django-rosetta 0.7.12\n"
 
@@ -82,7 +82,7 @@ msgstr "Aktiensplit von {} für {} mit Verhältnis {}:{}. Ausgabe neuer Aktien."
 msgid "Human Being"
 msgstr "Natürliche Person"
 
-#: shareholder/models.py:294
+#: shareholder/models.py:294 shareholder/tests/test_functional.py:113
 msgid "Corporate"
 msgstr "Juristische Person"
 
@@ -118,7 +118,7 @@ msgstr "Land des Aktionärs fehlt."
 msgid "Shareholder address or address details missing."
 msgstr "Adresse oder Adressdetails des Aktionärs fehlt."
 
-#: shareholder/models.py:695 shareholder/page.py:115 shareholder/page.py:133
+#: shareholder/models.py:695 shareholder/page.py:121 shareholder/page.py:139
 msgid "Preferred Stock"
 msgstr "Vorzugsaktien"
 
@@ -134,8 +134,8 @@ msgstr "Namensaktien"
 msgid "Nominal value of this asset"
 msgstr "Nominalwert"
 
-#: shareholder/models.py:710 shareholder/models.py:762
-#: shareholder/models.py:801 shareholder/models.py:852
+#: shareholder/models.py:710 shareholder/models.py:767
+#: shareholder/models.py:809 shareholder/models.py:860
 msgid "JSON list of segments of ids for securities. can be 1, 2, 3, 4-10"
 msgstr "JSON Liste der IDs der Wertpapiere. Kann [1,2,3, u'5-9'] sein."
 
@@ -151,19 +151,32 @@ msgstr ""
 msgid "{} ({} CHF)"
 msgstr "{} ({} CHF)"
 
-#: shareholder/models.py:752
+#: shareholder/models.py:748
+#| msgid "%% Ownership"
+msgid "Personal ownership"
+msgstr "Eigenbestand"
+
+#: shareholder/models.py:749
+msgid "Personal representation"
+msgstr "Eigene Rechnung"
+
+#: shareholder/models.py:757
 msgid "Share Count transfered or created"
 msgstr "transferierte oder erstellte Aktienanzahl"
 
-#: shareholder/models.py:756
+#: shareholder/models.py:761
 msgid "Nominal value or payed price for the transaction"
 msgstr "Nominalwert (bei Kapitalerhöhung) oder Kaufpreis"
 
-#: shareholder/models.py:795
+#: shareholder/models.py:770
+msgid "Securities are purchase type (for myself, etc.)"
+msgstr "Wertpapiererwerb für ..."
+
+#: shareholder/models.py:803
 msgid "Number of shares approved"
 msgstr "Anzahl der genehmigten Aktien"
 
-#: shareholder/models.py:850
+#: shareholder/models.py:858
 msgid "id of the issued certificate"
 msgstr "Nummer des Zertifikates"
 
@@ -234,7 +247,6 @@ msgid "confirm"
 msgstr "Festschreiben"
 
 #: shareholder/templates/options.html:104
-#| msgid "No options yet."
 msgid "No option plans yet."
 msgstr "Kein Optionsplan vorhanden."
 
@@ -377,80 +389,79 @@ msgid "Shareholder Email"
 msgstr "Email"
 
 #: shareholder/templates/shareholder/shareholder_detail.html:60
-#| msgid "Shareholder Language"
 msgid "Shareholder Legal Type"
 msgstr "Rechtsfähigkeit / Aktionärsart"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:66
+#: shareholder/templates/shareholder/shareholder_detail.html:71
 msgid "Shareholder Company Name"
 msgstr "Name des Unternehmens"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:73
+#: shareholder/templates/shareholder/shareholder_detail.html:78
 msgid "Address"
 msgstr "Adresse"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:74
+#: shareholder/templates/shareholder/shareholder_detail.html:79
 msgid "Street"
 msgstr "Strasse"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:75
+#: shareholder/templates/shareholder/shareholder_detail.html:80
 msgid "Zip"
 msgstr "Postleitzahl"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:75
+#: shareholder/templates/shareholder/shareholder_detail.html:80
 msgid "City"
 msgstr "Stadt"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:76
+#: shareholder/templates/shareholder/shareholder_detail.html:81
 msgid "Province"
 msgstr "Region/ Profinz"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:77
+#: shareholder/templates/shareholder/shareholder_detail.html:82
 msgid "Country"
 msgstr "Land"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:97
+#: shareholder/templates/shareholder/shareholder_detail.html:102
 msgid "Shareholder Language"
 msgstr "Sprache"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:108
+#: shareholder/templates/shareholder/shareholder_detail.html:113
 msgid "Shareholder Birthday"
 msgstr "Geburstag"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:131
+#: shareholder/templates/shareholder/shareholder_detail.html:136
 msgid "Value of all shares according to last transaction"
 msgstr "Wert der Aktien basierend auf der letzten Transaktion"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:136
+#: shareholder/templates/shareholder/shareholder_detail.html:141
 msgid "Owned Stock"
 msgstr "Wertpapierbesitz"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:137
+#: shareholder/templates/shareholder/shareholder_detail.html:142
 msgid "Count Shares Total"
 msgstr "Anzahl Wertpapiere gesamt"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:138
+#: shareholder/templates/shareholder/shareholder_detail.html:143
 #, python-format
 msgid "%% Ownership"
 msgstr "%% Anteile"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:142
+#: shareholder/templates/shareholder/shareholder_detail.html:147
 msgid "security"
 msgstr "Wertpapier"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:143
+#: shareholder/templates/shareholder/shareholder_detail.html:148
 msgid "count"
 msgstr "Anzahl"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:144
+#: shareholder/templates/shareholder/shareholder_detail.html:149
 msgid "segments"
 msgstr "Aktiennummern"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:153
+#: shareholder/templates/shareholder/shareholder_detail.html:158
 msgid "Delete shareholder"
 msgstr "Gesellschafter löschen"
 
-#: shareholder/tests/test_functional.py:177
+#: shareholder/tests/test_functional.py:215
 msgid "This email is already taken by another user/shareholder."
 msgstr ""
 "Diese E-Mail wird bereits von einem anderen Nutzer/Gesellschafter verwendet."

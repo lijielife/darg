@@ -27,6 +27,12 @@ from utils.formatters import (deflate_segments, flatten_list,
 from utils.math import substract_list
 
 
+REGISTRATION_TYPES = [
+    ('1', _('Personal ownership')),
+    ('2', _('Personal representation')),
+]
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -756,11 +762,15 @@ class Position(models.Model):
         _('Nominal value or payed price for the transaction'),
         max_digits=16, decimal_places=4, blank=True,
         null=True)
-    is_split = models.BooleanField(default=False)
+    is_split = models.BooleanField(
+        _('Position is part of a split transaction'), default=False)
     is_draft = models.BooleanField(default=True)
     number_segments = JSONField(
         _('JSON list of segments of ids for securities. can be 1, 2, 3, 4-10'),
         default=list, blank=True, null=True)
+    registration_type = models.CharField(
+        _('Securities are purchase type (for myself, etc.)'), max_length=1,
+        choices=REGISTRATION_TYPES, blank=True, null=True)
     comment = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -851,6 +861,9 @@ class OptionTransaction(models.Model):
     number_segments = JSONField(
         _('JSON list of segments of ids for securities. can be 1, 2, 3, 4-10'),
         default=list, blank=True, null=True)
+    registration_type = models.CharField(
+        _('Securities are purchase type (for myself, etc.)'), max_length=1,
+        choices=REGISTRATION_TYPES, blank=True, null=True)
     is_draft = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
