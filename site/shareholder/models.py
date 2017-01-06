@@ -722,8 +722,11 @@ class Security(models.Model):
           'transaction with segments on enabling.'), default=False)
 
     def __unicode__(self):
-        return _(u"{} ({} CHF)").format(
-            self.get_title_display(), int(self.face_value))
+        if self.face_value:
+            return _(u"{} ({} CHF)").format(
+                self.get_title_display(), int(self.face_value))
+
+        return self.get_title_display()
 
     def count_in_segments(self, segments=None):
         """
