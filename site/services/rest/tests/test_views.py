@@ -989,6 +989,7 @@ class ShareholderTestCase(TestCase):
                     "birthday": "2016-01-27T00:00:00.000Z",
                     "company_name": "SomeCompany",
                     "language": "ab",
+                    "legal_type": 'H',
                 },
             },
             "number": "00333e",
