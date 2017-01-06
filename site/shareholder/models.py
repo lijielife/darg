@@ -10,6 +10,7 @@ from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.core.mail import send_mail
 from django.core.validators import MinValueValidator
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Sum
 from django.db.models.signals import post_save
@@ -19,10 +20,17 @@ from django_languages import fields as language_fields
 from rest_framework.authtoken.models import Token
 from sorl.thumbnail import get_thumbnail
 
+from shareholder.validators import ShareRegisterValidator
 from utils.formatters import (deflate_segments, flatten_list,
                               human_readable_segments, inflate_segments,
                               string_list_to_json)
 from utils.math import substract_list
+
+
+REGISTRATION_TYPES = [
+    ('1', _('Personal ownership')),
+    ('2', _('Personal representation')),
+]
 
 
 logger = logging.getLogger(__name__)
@@ -107,6 +115,13 @@ class Company(models.Model):
         return Position.objects.filter(
             buyer__company=self, seller__isnull=True).count()
 
+    def full_validate(self):
+        """
+        entry point for entire share register validation
+        """
+        validator = ShareRegisterValidator(self)
+        return validator.is_valid()
+
     def get_active_shareholders(self, date=None):
         """ returns list of all active shareholders """
         shareholder_list = []
@@ -139,7 +154,7 @@ class Company(models.Model):
             ):
                 logger.error('user sold more options then he got',
                              extra={'shareholder': sh})
-        return oh_list
+        return Shareholder.objects.filter(pk__in=[oh.pk for oh in oh_list])
 
     def get_all_option_plan_segments(self):
         """
@@ -151,7 +166,13 @@ class Company(models.Model):
         return flatten_list(segments)
 
     def get_company_shareholder(self):
-        return self.shareholder_set.earliest('id')
+        """
+        return company shareholder, raise ValueError if not existing
+        """
+        try:
+            return self.shareholder_set.earliest('id')
+        except Shareholder.DoesNotExist:
+            raise ValueError('Company Shareholder does not exist')
 
     def get_operators(self):
         return self.operator_set.all().distinct()
@@ -273,6 +294,12 @@ class Company(models.Model):
 
 class UserProfile(models.Model):
 
+    # legal types of a user
+    LEGAL_TYPES = (
+        ('H', _('Human Being')),
+        ('C', _('Corporate')),
+    )
+
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL)
     street = models.CharField(max_length=255, blank=True, null=True)
@@ -281,6 +308,9 @@ class UserProfile(models.Model):
     postal_code = models.CharField(max_length=255, blank=True, null=True)
     country = models.ForeignKey(Country, blank=True, null=True)
     language = language_fields.LanguageField(blank=True, null=True)
+    legal_type = models.CharField(
+        max_length=1, choices=LEGAL_TYPES, default='H',
+        help_text=_('legal type of the user'))
 
     company_name = models.CharField(max_length=255, blank=True, null=True)
     birthday = models.DateField(blank=True, null=True)
@@ -290,10 +320,21 @@ class UserProfile(models.Model):
 
     def __unicode__(self):
         return u"%s, %s %s" % (self.city, self.province,
-                              str(self.country))
+                               str(self.country))
 
     class Meta:
         verbose_name_plural = "UserProfile"
+
+    def clean(self, *args, **kwargs):
+        super(UserProfile, self).clean(*args, **kwargs)
+
+        if self.legal_type == 'C' and not self.company_name:
+            raise ValidationError(_('user with legal type company must have '
+                                    'company name set'))
+
+        if not self.legal_type == 'C' and self.company_name:
+            raise ValidationError(_('user company must have legal type set to '
+                                    'company'))
 
 
 class Shareholder(models.Model):
@@ -303,7 +344,8 @@ class Shareholder(models.Model):
     number = models.CharField(max_length=255)
 
     def __unicode__(self):
-        return u'{}'.format(self.id)
+        return u'{} {} (#{})'.format(
+            self.user.first_name, self.user.last_name, self.number)
 
     def can_view(self, user):
         """
@@ -333,10 +375,9 @@ class Shareholder(models.Model):
 
     def is_company_shareholder(self):
         """
-        returns bool if shareholder is ocmpany shareholder
+        returns bool if shareholder is company shareholder
         """
-        return Shareholder.objects.filter(
-            company=self.company).earliest('id').id == self.id
+        return self.company.shareholder_set.earliest('id').id == self.id
 
     def share_percent(self, date=None):
         """
@@ -370,7 +411,6 @@ class Shareholder(models.Model):
 
     def share_count(self, date=None, security=None):
         """ total count of shares for shareholder  """
-        date = date or datetime.datetime.now()
         qs_bought = self.buyer.all()
         qs_sold = self.seller.all()
 
@@ -660,6 +700,7 @@ class Security(models.Model):
     SECURITY_TITLES = (
         ('P', _('Preferred Stock')),
         ('C', _('Common Stock')),
+        ('R', _('Registered Shares')),
         # ('O', 'Option'),
         # ('W', 'Warrant'),
         # ('V', 'Convertible Instrument'),
@@ -667,7 +708,7 @@ class Security(models.Model):
     title = models.CharField(max_length=1, choices=SECURITY_TITLES)
     face_value = models.DecimalField(
         _('Nominal value of this asset'),
-        max_digits=16, decimal_places=8, blank=True,
+        max_digits=16, decimal_places=4, blank=True,
         null=True)
     company = models.ForeignKey(Company)
     count = models.PositiveIntegerField()
@@ -681,7 +722,8 @@ class Security(models.Model):
           'transaction with segments on enabling.'), default=False)
 
     def __unicode__(self):
-        return u"{} ({})".format(self.get_title_display(), self.company)
+        return _(u"{} ({} CHF)").format(
+            self.get_title_display(), self.face_value)
 
     def count_in_segments(self, segments=None):
         """
@@ -720,11 +762,15 @@ class Position(models.Model):
         _('Nominal value or payed price for the transaction'),
         max_digits=16, decimal_places=4, blank=True,
         null=True)
-    is_split = models.BooleanField(default=False)
+    is_split = models.BooleanField(
+        _('Position is part of a split transaction'), default=False)
     is_draft = models.BooleanField(default=True)
     number_segments = JSONField(
         _('JSON list of segments of ids for securities. can be 1, 2, 3, 4-10'),
         default=list, blank=True, null=True)
+    registration_type = models.CharField(
+        _('Securities are purchase type (for myself, etc.)'), max_length=1,
+        choices=REGISTRATION_TYPES, blank=True, null=True)
     comment = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -809,9 +855,15 @@ class OptionTransaction(models.Model):
     seller = models.ForeignKey('Shareholder', blank=True, null=True,
                                related_name="option_seller")
     vesting_months = models.PositiveIntegerField(blank=True, null=True)
+    certificate_id = models.CharField(
+        max_length=255, blank=True, null=True,
+        help_text=_('id of the issued certificate'))
     number_segments = JSONField(
         _('JSON list of segments of ids for securities. can be 1, 2, 3, 4-10'),
         default=list, blank=True, null=True)
+    registration_type = models.CharField(
+        _('Securities are purchase type (for myself, etc.)'), max_length=1,
+        choices=REGISTRATION_TYPES, blank=True, null=True)
     is_draft = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

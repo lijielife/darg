@@ -1,6 +1,10 @@
 {% extends "base_auth.html" %}
 {% load i18n %}
 
+{% block title %}
+  <TITLE>{% trans "Shareholder" %} {{ shareholder.number }} - Das Aktienregister</TITLE>
+{% endblock %}
+
 {% block ng_app %}js.darg.app.shareholder{% endblock %}
 
 {% block content %}
@@ -50,6 +54,17 @@
       <td>{% trans "Shareholder Email" %}:</td>
       <td>
         {% verbatim %}<span editable-text="shareholder.user.email" onaftersave="edit_shareholder()">{{ shareholder.user.email || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="legal_type">
+      <td>{% trans "Shareholder Legal Type" %}:</td>
+      <td>
+        {% verbatim %}
+        <span editable-select="shareholder.user.userprofile.legal_type" onaftersave="edit_shareholder()" e-ng-options="l as l.name for l in legal_types">
+          {{ shareholder.user.userprofile.readable_legal_type || 'Aktionaersart' }}
+          <span class="el-icon-pencil"></span>
+        </span>
+        {% endverbatim %}
       </td>
     </tr>
     <tr>

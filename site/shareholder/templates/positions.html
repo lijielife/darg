@@ -2,6 +2,10 @@
 {% load i18n %}
 {% load staticfiles %}
 
+{% block title %}
+  <TITLE>{% trans "Transactions Overview" %} - Das Aktienregister</TITLE>
+{% endblock %}
+
 {% block ng_app %}js.darg.app.positions{% endblock %}
 
 {% block content %}
@@ -28,27 +32,29 @@
     {% include "_split_shares_form.html" %}
   </div>
 
+  <!-- TABLE ACTIONS -->
+  {% include "_table_actions.html" %}
+
+  <!-- TABLE -->
   <div id="positions" ng-hide="!positions.length">
-    <div class="table-responsive">
-      <table class="table table-hover">
-      <caption></caption>
-      <thead>
-        <tr>
-          <th>{% trans "Buy Date" %}</th>
-          <th>{% trans "Buyer" %}</th>
-          <th>{% trans "Security" %}</th>
-          <th class="text-right">{% trans "Share Count" %}</th>
-          <th class="text-right">{% trans "Price" %}</th>
-          <th>{% trans "Seller" %}</th>
-          <th>{% trans "Comment" %}</th>
-          <th></th>
-      </thead
-      <tbody>
-      {% verbatim %}
-      <tbody ng-repeat="position in positions  | orderBy:'-bought_at' ">
-        <tr ng-show="position.is_split && !positions[$index-1].is_split">
-          <td>{{ position.bought_at | date : 'd.MM.yy' }}</td>
-          <td colspan="7">
+
+    <div class="table table-small-font">
+      <div class="tr th">
+        <div class="td">{% trans "Buy Date" %}</div>
+        <div class="td td-width-2">{% trans "Buyer" %}</div>
+        <div class="td">{% trans "Security" %}</div>
+        <div class="td text-right-flex">{% trans "Share Count" %}</div>
+        <div class="td text-right-flex">{% trans "Price" %}</div>
+        <div class="td">{% trans "Seller" %}</div>
+        <div class="td">{% trans "Comment" %}</div>
+        <div class="td"></div>
+      </div>
+      <div>
+        {% verbatim %}
+      <div ng-repeat="position in positions  | orderBy:'-bought_at' ">
+        <div class="tr split-start" ng-show="position.is_split && !positions[$index-1].is_split">
+          <div class="td">{{ position.bought_at | date : 'd.MM.yy' }}</div>
+          <div class="td">
             {% endverbatim %}{% trans "Grouped split transactions." %}{% verbatim %}
             <a ng-click="toggle_show_split_data()" class="btn-inline" ng-hide="show_split_data">
               {% endverbatim %}{% trans "Show" %}{% verbatim %}
@@ -56,29 +62,31 @@
             <a ng-click="toggle_show_split_data()" class="btn-inline" ng-show="show_split_data">
               {% endverbatim %}{% trans "Hide" %}{% verbatim %}
             </a>
-          </td>
-        </tr>
-        <tr class="panel" ng-hide="position.is_split && !show_split_data">
-          <td>
-            <div>{{ position.bought_at | date : 'd.MM.yy' }}</div>
+          </div>
+        </div>
+        <div class="tr position" ng-hide="position.is_split && !show_split_data">
+          <div class="td flex-column bought-at-column">
+            <div>
+              <span class="bought-at">{{ position.bought_at | date : 'd.MM.yy' }}</span>
+            </div>
             <div ng-show="position.is_draft" class="draft">
               {% endverbatim %}
               {% trans "Draft" %}
               {% verbatim %}
             </div>
-          </td>
-          <td>{{ position.buyer.user.first_name }} {{ position.buyer.user.last_name }}</td>
-          <td>
-            {{ position.security.readable_title }} 
+          </div>
+          <div class="td td-width-2 full-name full-name-padding ">{{ position.buyer.user.first_name }} {{ position.buyer.user.last_name }}</div>
+          <div class="td margin-top--additional">
+            {{ position.security.readable_title }}
             <span class="note" ng-show="position.security.track_numbers && position.readable_number_segments">
               (#{{ position.readable_number_segments }})
             </span>
-          </td>
-          <td class="text-right">{{ position.count }}</td>
-          <td class="text-right">{{ position.value }}</td>
-          <td>{{ position.seller.user.first_name }} {{ position.seller.user.last_name }}</td>
-          <td>{{ position.comment }}</td>
-          <td>
+          </div>
+          <div class="td text-right-flex count gray-circle"><span class="transform--center medium">{{ position.count }}</span></div>
+          <div class="td text-right-flex">{{ position.value }}</div>
+          <div class="td">{{ position.seller.user.first_name }} {{ position.seller.user.last_name }}</div>
+          <div class="td">{{ position.comment }}</div>
+          <div class="td flex-column">
             <div ng-show="position.is_draft">
               <a class="btn-inline" ng-click="delete_position(position)" href>
                 {% endverbatim %}{% trans "delete" %}{% verbatim %}
@@ -89,15 +97,16 @@
                 {% endverbatim %}{% trans "confirm" %}{% verbatim %}
               </a>
             </div>
-          </td>
-        </tr>
-        <tr ng-show="show_split_data && position.is_split && !positions[$index+1].is_split">
-          <td colspan="7">
+          </div>
+        </div>
+        <div class="tr split-end" ng-show="show_split_data && position.is_split && !positions[$index+1].is_split">
+          <div class="td">
             {% endverbatim %}{% trans "--- End of split transactions ---" %}{% verbatim %}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
     </div>
     <div class="panel" ng-show="!shareholders.length">
       <div class="clearfix">

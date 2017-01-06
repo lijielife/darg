@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-04 12:33+0000\n"
-"PO-Revision-Date: 2017-01-04 10:08+0000\n"
+"POT-Creation-Date: 2017-01-06 11:10+0000\n"
+"PO-Revision-Date: 2016-12-13 21:21+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -535,6 +535,10 @@ msgstr "Links"
 #: templates/zinnia/skeleton.html:74 templates/zinnia/skeleton.html:75
 msgid "Weblog index"
 msgstr "Blog Start"
+
+#: utils/import_backends.py:183
+msgid "Default OptionPlan for {}"
+msgstr "Default Optionsplan für {}"
 
 #~ msgid "Log in"
 #~ msgstr "Login"

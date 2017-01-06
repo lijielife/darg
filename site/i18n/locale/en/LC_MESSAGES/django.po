@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-04 12:33+0000\n"
+"POT-Creation-Date: 2017-01-06 11:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -496,4 +496,8 @@ msgstr ""
 
 #: templates/zinnia/skeleton.html:74 templates/zinnia/skeleton.html:75
 msgid "Weblog index"
+msgstr ""
+
+#: utils/import_backends.py:183
+msgid "Default OptionPlan for {}"
 msgstr ""

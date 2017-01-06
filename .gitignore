@@ -19,3 +19,4 @@ site/project/settings/local.py
 site/.sass-cache/
 site/chromedriver
 site/.noseids
+imports/*

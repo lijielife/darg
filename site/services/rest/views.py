@@ -5,10 +5,12 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from rest_framework import status, viewsets
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import detail_route, list_route
+from services.rest.pagination import SmallPagePagination
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import filters
 
 from services.rest.permissions import (SafeMethodsOnlyPermission,
                                        UserCanAddCompanyPermission,
@@ -37,9 +39,14 @@ class ShareholderViewSet(viewsets.ModelViewSet):
     """
     # FIXME filter by user perms
     serializer_class = ShareholderSerializer
+    pagination_class = SmallPagePagination
     permission_classes = [
         UserIsOperatorPermission,
     ]
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
+    search_fields = ('user__first_name', 'user__last_name', 'user__email',
+                     'number')
+    ordering_fields = ('user__last_name', 'user__email', 'number')
 
     def get_object(self):
         try:
@@ -49,7 +56,10 @@ class ShareholderViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        return Shareholder.objects.filter(company__operator__user=user)\
+        company = user.operator_set.first().company
+        return Shareholder.objects.filter(company=company)\
+            .select_related('company', 'user', 'user__userprofile') \
+            .prefetch_related('user__operator_set') \
             .distinct()
 
     @detail_route(methods=['get'])
@@ -68,6 +78,30 @@ class ShareholderViewSet(viewsets.ModelViewSet):
                     security.pk: shareholder.current_segments(**kwargs)
                 })
         return Response(data, status=status.HTTP_200_OK)
+
+    @list_route(methods=['get'])
+    def option_holder(self, request, pk=None):
+        """
+        returns the captable part for all option holders
+        """
+        company_pk = self.request.GET.get('company')
+
+        if company_pk:
+            company = Company.objects.get(pk=company_pk,
+                                          operator__user=self.request.user)
+        else:
+            company = self.request.user.operator_set.first().company
+
+        ohs = company.get_active_option_holders()
+        ohs = self.filter_queryset(ohs)
+        page = self.paginate_queryset(ohs)
+        if page is not None:
+            serializer = OptionHolderSerializer(
+                page, many=True, context={'request': request})
+            return self.get_paginated_response(serializer.data)
+        serializer = OptionHolderSerializer(
+            ohs, many=True, context={'request': request})
+        return Response(serializer.data)
 
 
 class OperatorViewSet(viewsets.ModelViewSet):
@@ -111,10 +145,15 @@ class CompanyViewSet(viewsets.ModelViewSet):
     """
     # FIXME filter by user perms
     queryset = Company.objects.all()
+    pagination_class = SmallPagePagination
     serializer_class = CompanySerializer
     permission_classes = [
         UserCanEditCompanyPermission,
     ]
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
+    search_fields = ('user__first_name', 'user__last_name', 'user__email',
+                     'number')
+    ordering_fields = ('user__last_name', 'user__email', 'number')
 
     def get_queryset(self):
         user = self.request.user
@@ -130,20 +169,6 @@ class CompanyViewSet(viewsets.ModelViewSet):
             obj,
             context={'request': request}).data,
             status=status.HTTP_201_CREATED)
-
-    @detail_route(methods=['get'])
-    def option_holder(self, request, pk=None):
-        """ returns the captable part for all option holders """
-        obj = self.get_object()
-        ohs = obj.get_active_option_holders()
-        page = self.paginate_queryset(ohs)
-        if page is not None:
-            serializer = OptionHolderSerializer(
-                page, many=True, context={'request': request})
-            return self.get_paginated_response(serializer.data)
-        serializer = OptionHolderSerializer(
-            ohs, many=True, context={'request': request})
-        return Response(serializer.data)
 
 
 # --- VIEWS
@@ -293,9 +318,18 @@ class InviteeUpdateView(APIView):
 class PositionViewSet(viewsets.ModelViewSet):
     """ API endpoint to get positions """
     serializer_class = PositionSerializer
+    pagination_class = SmallPagePagination
     permission_classes = [
         UserIsOperatorPermission,
     ]
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
+    search_fields = ('buyer__user__first_name', 'buyer__user__last_name',
+                     'buyer__user__email', 'seller__user__first_name',
+                     'seller__user__last_name', 'seller__user__email',
+                     'seller__number', 'buyer__number', 'bought_at', 'comment')
+    ordering_fields = ('buyer__user__last_name', 'buyer__user__email',
+                       'buyer__number', 'seller__user__last_name',
+                       'seller__user__email', 'seller__number')
 
     def get_queryset(self):
         user = self.request.user
@@ -377,14 +411,31 @@ class OptionPlanViewSet(viewsets.ModelViewSet):
 class OptionTransactionViewSet(viewsets.ModelViewSet):
     """ API endpoint to get options """
     serializer_class = OptionTransactionSerializer
+    pagination_class = SmallPagePagination
     permission_classes = [
         UserIsOperatorPermission
     ]
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
+    search_fields = ('buyer__user__first_name', 'buyer__user__last_name',
+                     'buyer__user__email', 'seller__user__first_name',
+                     'seller__user__last_name', 'seller__user__email',
+                     'seller__number', 'buyer__number', 'bought_at')
+    ordering_fields = ('buyer__user__last_name', 'buyer__user__email',
+                       'buyer__number', 'seller__user__last_name',
+                       'seller__user__email', 'seller__number')
+    ordering = ('option_plan__pk',)
 
     def get_queryset(self):
         user = self.request.user
-        return OptionTransaction.objects.filter(
+        qs = OptionTransaction.objects.filter(
             option_plan__company__operator__user=user)
+
+        # filter if option plan is given in query params
+        if self.request.query_params.get('optionplan_pk', None):
+            qs = qs.filter(
+                option_plan__pk=self.request.query_params.get('optionplan_pk'))
+
+        return qs
 
     @detail_route(
         methods=['post'], permission_classes=[UserIsOperatorPermission])
