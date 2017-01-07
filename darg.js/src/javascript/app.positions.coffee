@@ -266,5 +266,8 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
     $scope.open_datepicker = ->
         $scope.datepicker.opened = true
 
+    # --- LINK
+    $scope.goto_position = (position_id) ->
+        window.location = "/positions/"+position_id+"/"
 
 ]

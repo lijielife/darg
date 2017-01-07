@@ -8,17 +8,17 @@ from decimal import Decimal
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
-
 from selenium.webdriver.common.by import By
 
 from project.base import BaseSeleniumTestCase
 from project.generators import (ComplexOptionTransactionsWithSegmentsGenerator,
                                 ComplexPositionsWithSegmentsGenerator,
                                 OperatorGenerator, OptionPlanGenerator,
-                                PositionGenerator, ShareholderGenerator,
+                                OptionTransactionGenerator, PositionGenerator,
+                                ShareholderGenerator,
                                 TwoInitialSecuritiesGenerator)
 from shareholder import page
-from shareholder.models import Position, Security, Shareholder, OptionPlan
+from shareholder.models import OptionPlan, Position, Security, Shareholder
 
 
 # --- FUNCTIONAL TESTS
@@ -650,6 +650,28 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
         except Exception, e:
             self._handle_exception(e)
 
+    def test_click_detail(self):
+
+        # initial pos
+        OptionTransactionGenerator().generate(
+            seller=self.seller, buyer=self.buyer,
+            security=self.securities[0], registration_type='2')
+
+        try:
+
+            app = page.OptionsPage(
+                self.selenium, self.live_server_url, self.operator.user)
+            app.click_optiontransaction()
+
+            app.wait_until_visible((By.ID, "optiontransaction-detail"))
+            self.assertEqual(
+                app.wait_until_visible((By.CLASS_NAME, 'registration-type')) \
+                .find_elements_by_tag_name('td')[1].text,
+                _('Personal representation'))
+
+        except Exception, e:
+            self._handle_exception(e)
+
 
 class PositionFunctionalTestCase(BaseSeleniumTestCase):
     """
@@ -1122,6 +1144,28 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.click_confirm_position()
 
             self.assertEqual(app.count_draft_mode_items(), 0)
+
+        except Exception, e:
+            self._handle_exception(e)
+
+    def test_click_detail(self):
+
+        # initial pos
+        PositionGenerator().generate(
+            seller=self.seller, buyer=self.buyer,
+            security=self.securities[0], registration_type='2')
+
+        try:
+
+            app = page.PositionPage(
+                self.selenium, self.live_server_url, self.operator.user)
+            app.click_position()
+
+            app.wait_until_visible((By.ID, "position-detail"))
+            self.assertEqual(
+                app.wait_until_visible((By.CLASS_NAME, 'registration-type')) \
+                .find_elements_by_tag_name('td')[1].text,
+                _('Personal representation'))
 
         except Exception, e:
             self._handle_exception(e)

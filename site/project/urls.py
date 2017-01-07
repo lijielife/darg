@@ -10,9 +10,9 @@ from django.views.i18n import javascript_catalog
 from registration.backends.simple.views import RegistrationView
 from rest_framework import routers
 from rest_framework.authtoken import views
+from two_factor.admin import AdminSiteOTPRequired
 from two_factor.gateways.twilio.urls import urlpatterns as tf_twilio_urls
 from two_factor.urls import urlpatterns as tf_urls
-from two_factor.admin import AdminSiteOTPRequired
 from zinnia.sitemaps import (AuthorSitemap, CategorySitemap, EntrySitemap,
                              TagSitemap)
 
@@ -24,7 +24,8 @@ from services.rest.views import (AddCompanyView, AddShareSplit,
                                  OptionPlanViewSet, OptionTransactionViewSet,
                                  PositionViewSet, SecurityViewSet,
                                  ShareholderViewSet, UserViewSet)
-from shareholder.views import ShareholderView
+from shareholder.views import (OptionTransactionView, PositionView,
+                               ShareholderView)
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'shareholders', ShareholderViewSet, base_name="shareholders")
@@ -53,7 +54,11 @@ urlpatterns = [
     # web views
     url(r'^$', 'project.views.index', name='index'),  # landing page
     url(r'^start/$', 'project.views.start', name='start'),  # user home
+
     url(r'^positions/$', 'shareholder.views.positions', name='positions'),
+    url(r'^positions/(?P<pk>[0-9]+)/$',
+        PositionView.as_view(), name='position'),
+
     url(r'^shareholder/(?P<pk>[0-9]+)/$',
         ShareholderView.as_view(), name='shareholder'),
 
@@ -63,7 +68,11 @@ urlpatterns = [
         'project.views.captable_csv', name='captable_csv'),
     url(r'^company/(?P<company_id>[0-9]+)/download/pdf$',
         'project.views.captable_pdf', name='captable_pdf'),
+
     url(r'^options/$', 'shareholder.views.options', name='options'),
+    url(r'^options/(?P<pk>[0-9]+)/$',
+        OptionTransactionView.as_view(), name='optiontransaction'),
+
     url(r'^optionsplan/(?P<optionsplan_id>[0-9]+)/$',
         'shareholder.views.optionsplan', name='optionplan'),
     url(r'^optionsplan/(?P<optionsplan_id>[0-9]+)/download/pdf/$',

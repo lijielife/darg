@@ -166,6 +166,7 @@ class OptionTransactionSerializerTestCase(TestCase):
         res = serializer.create(serializer.validated_data)
         self.assertTrue(isinstance(res, OptionTransaction))
         self.assertEqual(res.number_segments, [1, u'3-4', u'6-9', 33])
+        self.assertEqual(res.registration_type, '2')
 
 
 class PositionSerializerTestCase(TestCase):
@@ -261,6 +262,7 @@ class PositionSerializerTestCase(TestCase):
         self.assertEqual(
             [1, u'3-4', u'6-9', 33],
             position.security.number_segments)
+        self.assertEqual(position.registration_type, '1')
 
 
 class ShareholderSerializerTestCase(TestCase):

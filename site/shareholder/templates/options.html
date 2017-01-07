@@ -35,7 +35,7 @@
   {% endverbatim %}{% include "_table_actions.html" %}{% verbatim %}
 
   <!-- TABLE -->
-  <div id="options" ng-hide="!optiontransactions.length" ng-repeat="optiontransaction in optiontransactions">
+  <div id="options" ng-hide="!optiontransactions.length" ng-repeat="optiontransaction in optiontransactions"  ng-click="goto_option(optiontransaction.pk)" ng-mouseover="">
     {% endverbatim %}
     <h2 ng-show="optiontransaction.option_plan.pk != optiontransactions[$index - 1].option_plan.pk">
       {% trans "Optionplan" %}: {% verbatim %}{{ optiontransaction.option_plan.title }}{% endverbatim %} {% trans "for" %} {% verbatim %}{{ optiontransaction.option_plan.security.readable_title }}{% endverbatim %}

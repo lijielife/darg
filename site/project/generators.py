@@ -254,6 +254,10 @@ class PositionGenerator(object):
         if seller:
             kwargs2.update({"seller": seller})
 
+        if kwargs.get('registration_type'):
+            kwargs2.update(
+                {'registration_type': kwargs.get('registration_type')})
+
         if kwargs.get('save') == False:
             return Position(**kwargs2)
 
@@ -312,6 +316,10 @@ class OptionTransactionGenerator(object):
 
         if kwargs.get('number_segments'):
             kwargs2.update({'number_segments': kwargs.get('number_segments')})
+
+        if kwargs.get('registration_type'):
+            kwargs2.update(
+                {'registration_type': kwargs.get('registration_type')})
 
         if kwargs.get('save', True):
             position = OptionTransaction.objects.create(**kwargs2)

@@ -327,6 +327,7 @@ class PositionTestCase(TestCase):
         self.assertEqual(position.value, 1)
         self.assertEqual(position.buyer, buyer)
         self.assertEqual(position.seller, seller)
+        self.assertEqual(position.registration_type, '2')
         self.assertEqual(
             position.bought_at.isoformat(), '2016-05-13')
 
@@ -533,7 +534,7 @@ class PositionTestCase(TestCase):
         }
 
         # call with perf check
-        with self.assertNumQueries(54):
+        with self.assertNumQueries(55):
             response = self.client.post(
                 u'/services/rest/position',
                 data,

@@ -786,6 +786,28 @@ class Position(models.Model):
             self.buyer
         )
 
+    def can_view(self, user):
+        """
+        permission method to check if user is permitted to view obj
+        """
+        if user == self.buyer.user or user == self.seller.user:
+            return True
+
+        # user is an operator
+        if self.buyer.company.operator_set.filter(user=user).exists():
+            return True
+
+        return False
+
+    def get_position_type(self):
+        if not self.seller:
+            return _('Capital Increase')
+        if self.is_split:
+            return _('Part of Split')
+        if self.seller.is_company_shareholder():
+            return _('Share issue')
+        return _('Regular Ownership change')
+
 
 def get_option_plan_upload_path(instance, filename):
     return os.path.join(
@@ -878,6 +900,19 @@ class OptionTransaction(models.Model):
             self.buyer,
             self.option_plan
         )
+
+    def can_view(self, user):
+        """
+        permission method to check if user is permitted to view obj
+        """
+        if user == self.buyer.user or (self.seller and user == self.seller.user):
+            return True
+
+        # user is an operator
+        if self.buyer.company.operator_set.filter(user=user).exists():
+            return True
+
+        return False
 
 
 # --------- SIGNALS ----------

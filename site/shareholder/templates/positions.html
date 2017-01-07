@@ -51,7 +51,7 @@
       </div>
       <div>
         {% verbatim %}
-      <div ng-repeat="position in positions  | orderBy:'-bought_at' ">
+      <div ng-repeat="position in positions  | orderBy:'-bought_at' "  ng-click="goto_position(position.pk)" ng-mouseover="" >
         <div class="tr split-start" ng-show="position.is_split && !positions[$index-1].is_split">
           <div class="td">{{ position.bought_at | date : 'd.MM.yy' }}</div>
           <div class="td">

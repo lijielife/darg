@@ -667,8 +667,11 @@
         startingDay: 1,
         showWeeks: false
       };
-      return $scope.open_datepicker = function() {
+      $scope.open_datepicker = function() {
         return $scope.datepicker.opened = true;
+      };
+      return $scope.goto_option = function(option_id) {
+        return window.location = "/options/" + option_id + "/";
       };
     }
   ]);
@@ -768,6 +771,30 @@
   app.run(function(editableOptions) {
     editableOptions.theme = 'bs3';
   });
+
+}).call(this);
+
+(function() {
+  var app;
+
+  app = angular.module('js.darg.app.optiontransaction', ['js.darg.api', 'xeditable', 'pascalprecht.translate', 'ui.bootstrap']);
+
+  app.config([
+    '$translateProvider', function($translateProvider) {
+      $translateProvider.translations('de', django.catalog);
+      $translateProvider.preferredLanguage('de');
+      return $translateProvider.useSanitizeValueStrategy('escaped');
+    }
+  ]);
+
+  app.controller('OptionTransactionController', [
+    '$scope', '$http', 'OptionTransaction', function($scope, $http, OptionTransaction) {
+      $scope.optiontransaction = true;
+      return $http.get('/services/rest/optiontransaction/' + optiontransaction_id).then(function(result) {
+        return $scope.optiontransaction = new OptionTransaction(result.data);
+      });
+    }
+  ]);
 
 }).call(this);
 
@@ -1082,9 +1109,37 @@
         startingDay: 1,
         showWeeks: false
       };
-      return $scope.open_datepicker = function() {
+      $scope.open_datepicker = function() {
         return $scope.datepicker.opened = true;
       };
+      return $scope.goto_position = function(position_id) {
+        return window.location = "/positions/" + position_id + "/";
+      };
+    }
+  ]);
+
+}).call(this);
+
+(function() {
+  var app;
+
+  app = angular.module('js.darg.app.position', ['js.darg.api', 'xeditable', 'pascalprecht.translate', 'ui.bootstrap']);
+
+  app.config([
+    '$translateProvider', function($translateProvider) {
+      $translateProvider.translations('de', django.catalog);
+      $translateProvider.preferredLanguage('de');
+      return $translateProvider.useSanitizeValueStrategy('escaped');
+    }
+  ]);
+
+  app.controller('PositionController', [
+    '$scope', '$http', 'Position', function($scope, $http, Position) {
+      $scope.position = true;
+      $scope.errors = null;
+      return $http.get('/services/rest/position/' + position_id).then(function(result) {
+        return $scope.position = new Position(result.data);
+      });
     }
   ]);
 

@@ -424,20 +424,32 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
     security = SecuritySerializer(many=False, required=True)
     bought_at = serializers.DateTimeField()  # e.g. 2015-06-02T23:00:00.000Z
     readable_number_segments = serializers.SerializerMethodField()
+    readable_registration_type = serializers.SerializerMethodField()
+    position_type = serializers.SerializerMethodField()
 
     class Meta:
         model = Position
+        validators = [DependedFieldsValidator(fields=('seller', 'buyer'))]
         fields = (
             'pk', 'buyer', 'seller', 'bought_at', 'count', 'value',
             'security', 'comment', 'is_split', 'is_draft', 'number_segments',
-            'readable_number_segments')
-        validators = [DependedFieldsValidator(fields=('seller', 'buyer'))]
+            'readable_number_segments', 'registration_type',
+            'readable_registration_type', 'position_type')
 
     def get_readable_number_segments(self, obj):
         """
         change json into human readble format
         """
         return str(obj.number_segments).translate(None, "'[]u{}")
+
+    def get_readable_registration_type(self, obj):
+        """
+        change make it readable
+        """
+        return obj.get_registration_type_display()
+
+    def get_position_type(self, obj):
+        return obj.get_position_type()
 
     def is_valid(self, raise_exception=False):
         """
@@ -549,7 +561,7 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
                 user__email=validated_data.get(
                     "seller").get("user").get("email")
             )
-            kwargs.update({"seller": seller})
+            kwargs.update({"seller": seller, 'registration_type': '2'})
 
         # capital increase
         else:
@@ -564,6 +576,7 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
                 security.save()
 
             company.save()
+            kwargs.update({'registration_type': '1'})
 
         kwargs.update({
             "buyer": buyer,
@@ -728,12 +741,14 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
     seller = ShareholderSerializer(many=False, required=True)
     bought_at = serializers.DateField()  # e.g. 2015-06-02T23:00:00.000Z
     readable_number_segments = serializers.SerializerMethodField()
+    readable_registration_type = serializers.SerializerMethodField()
     option_plan = OptionPlanSerializer()
 
     class Meta:
         model = OptionTransaction
         fields = ('pk', 'buyer', 'seller', 'bought_at', 'count', 'option_plan',
-                  'is_draft', 'number_segments', 'readable_number_segments')
+                  'is_draft', 'number_segments', 'readable_number_segments',
+                  'readable_registration_type', 'registration_type')
 
     def is_valid(self, raise_exception=False):
         """
@@ -837,6 +852,7 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
             "count": validated_data.get("count"),
             "option_plan": option_plan,
             "vesting_months": validated_data.get("vesting_months"),
+            "registration_type": '2',
         })
 
         # segments must be ordered, have no duplicates and must be list...
@@ -857,6 +873,12 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
         change json into human readble format
         """
         return str(obj.number_segments).translate(None, "'[]u{}")
+
+    def get_readable_registration_type(self, obj):
+        """
+        change make it readable
+        """
+        return obj.get_registration_type_display()
 
 
 class OptionHolderSerializer(serializers.HyperlinkedModelSerializer):

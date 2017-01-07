@@ -286,6 +286,10 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
     $scope.open_datepicker = ->
         $scope.datepicker.opened = true
 
+    # --- LINK
+    $scope.goto_option = (option_id) ->
+        window.location = "/options/"+option_id+"/"
+
 ]
 
 app.directive 'stringToNumber', ->

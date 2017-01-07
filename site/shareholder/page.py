@@ -213,6 +213,10 @@ class OptionsPage(BasePage):
         inputs[3].send_keys(DEFAULT_TEST_DATA.get('vesting_period'))
 
     # -- CLICKs
+    def click_optiontransaction(self):
+        row = self.wait_until_visible((By.CLASS_NAME, 'optiontransaction'))
+        row.click()
+
     def click_open_create_option_plan(self):
         time.sleep(2)
         el = self.driver.find_element_by_link_text(
@@ -359,6 +363,10 @@ class PositionPage(BasePage):
         row = trs[2]
         td = row.find_elements_by_class_name('td')[-1]
         td.find_element_by_tag_name('a').click()
+
+    def click_position(self):
+        row = self.wait_until_visible((By.CLASS_NAME, 'position'))
+        row.click()
 
     def click_open_add_position_form(self):
         btn = self.driver.find_element_by_class_name('add-position')
