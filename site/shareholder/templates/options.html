@@ -35,7 +35,7 @@
   {% endverbatim %}{% include "_table_actions.html" %}{% verbatim %}
 
   <!-- TABLE -->
-  <div id="options" ng-hide="!optiontransactions.length" ng-repeat="optiontransaction in optiontransactions"  ng-click="goto_option(optiontransaction.pk)" ng-mouseover="">
+  <div id="options" ng-hide="!optiontransactions.length" ng-repeat="optiontransaction in optiontransactions">
     {% endverbatim %}
     <h2 ng-show="optiontransaction.option_plan.pk != optiontransactions[$index - 1].option_plan.pk">
       {% trans "Optionplan" %}: {% verbatim %}{{ optiontransaction.option_plan.title }}{% endverbatim %} {% trans "for" %} {% verbatim %}{{ optiontransaction.option_plan.security.readable_title }}{% endverbatim %}
@@ -63,7 +63,7 @@
 
       {% verbatim %}
       <div class="tr optiontransaction">
-        <div class="td flex-column bought-at-column">
+        <div class="td flex-column bought-at-column" ng-click="goto_option(optiontransaction.pk)" ng-mouseover="">
           <span class="bought-at">{{ optiontransaction.bought_at | date : 'd.MM.yy' }}</span>
           <span ng-show="optiontransaction.is_draft" class="draft">
             {% endverbatim %}
@@ -71,10 +71,10 @@
             {% verbatim %}
           </span>
         </div>
-        <div class="td td-width-2 full-name full-name-padding buyer">
+        <div class="td td-width-2 full-name full-name-padding buyer" ng-click="goto_option(optiontransaction.pk)" ng-mouseover="">
           {{ optiontransaction.buyer.user.first_name }} {{ optiontransaction.buyer.user.last_name }}
         </div>
-        <div class="td text-right-flex count gray-circle count">
+        <div class="td text-right-flex count gray-circle count" ng-click="goto_option(optiontransaction.pk)" ng-mouseover="">
           <span class="transform--center large">
             {{ optiontransaction.count }}
           </span>
@@ -82,8 +82,8 @@
             (#{{ optiontransaction.readable_number_segments }})
           </span>
         </div>
-        <div class="td text-right-flex margin-top--additional">{{ optiontransaction.option_plan.exercise_price }}</div>
-        <div class="td td-width-2">
+        <div class="td text-right-flex margin-top--additional" ng-click="goto_option(optiontransaction.pk)" ng-mouseover="">{{ optiontransaction.option_plan.exercise_price }}</div>
+        <div class="td td-width-2" ng-click="goto_option(optiontransaction.pk)" ng-mouseover="">
           {{ optiontransaction.seller.user.first_name }} {{ optiontransaction.seller.user.last_name }}
         </div>
         <div class="td flex-column">

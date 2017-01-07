@@ -51,7 +51,7 @@
       </div>
       <div>
         {% verbatim %}
-      <div ng-repeat="position in positions  | orderBy:'-bought_at' "  ng-click="goto_position(position.pk)" ng-mouseover="" >
+      <div ng-repeat="position in positions  | orderBy:'-bought_at' " >
         <div class="tr split-start" ng-show="position.is_split && !positions[$index-1].is_split">
           <div class="td">{{ position.bought_at | date : 'd.MM.yy' }}</div>
           <div class="td">
@@ -65,7 +65,7 @@
           </div>
         </div>
         <div class="tr position" ng-hide="position.is_split && !show_split_data">
-          <div class="td flex-column bought-at-column">
+          <div class="td flex-column bought-at-column" ng-click="goto_position(position.pk)" ng-mouseover="">
             <div>
               <span class="bought-at">{{ position.bought_at | date : 'd.MM.yy' }}</span>
             </div>
@@ -75,17 +75,17 @@
               {% verbatim %}
             </div>
           </div>
-          <div class="td td-width-2 full-name full-name-padding ">{{ position.buyer.user.first_name }} {{ position.buyer.user.last_name }}</div>
-          <div class="td margin-top--additional">
+          <div class="td td-width-2 full-name full-name-padding " ng-click="goto_position(position.pk)" ng-mouseover="">{{ position.buyer.user.first_name }} {{ position.buyer.user.last_name }}</div>
+          <div class="td margin-top--additional" ng-click="goto_position(position.pk)" ng-mouseover="">
             {{ position.security.readable_title }}
             <span class="note" ng-show="position.security.track_numbers && position.readable_number_segments">
               (#{{ position.readable_number_segments }})
             </span>
           </div>
-          <div class="td text-right-flex count gray-circle"><span class="transform--center medium">{{ position.count }}</span></div>
-          <div class="td text-right-flex">{{ position.value }}</div>
-          <div class="td">{{ position.seller.user.first_name }} {{ position.seller.user.last_name }}</div>
-          <div class="td">{{ position.comment }}</div>
+          <div class="td text-right-flex count gray-circle" ng-click="goto_position(position.pk)" ng-mouseover=""><span class="transform--center medium">{{ position.count }}</span></div>
+          <div class="td text-right-flex" ng-click="goto_position(position.pk)" ng-mouseover="">{{ position.value }}</div>
+          <div class="td" ng-click="goto_position(position.pk)" ng-mouseover="">{{ position.seller.user.first_name }} {{ position.seller.user.last_name }}</div>
+          <div class="td" ng-click="goto_position(position.pk)" ng-mouseover="">{{ position.comment }}</div>
           <div class="td flex-column">
             <div ng-show="position.is_draft">
               <a class="btn-inline" ng-click="delete_position(position)" href>
