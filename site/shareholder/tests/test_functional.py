@@ -925,8 +925,9 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             position.count = 99999999991
             position.value = 99999199999
             app.enter_new_position_data(position)
+            self._screenshot()
             app.click_save_position()
-
+            self._screenshot()
             time.sleep(3)
             self.assertTrue(
                 self.selenium.find_element_by_xpath(
