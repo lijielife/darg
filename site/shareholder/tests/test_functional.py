@@ -947,7 +947,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.click_open_add_position_form()
             # enter data too large
             position.count = 99999999991
-            position.value = 99999199999
+            position.value = 99999599999
             app.enter_new_position_data(position)
             self._screenshot()
             app.click_save_position()
@@ -962,8 +962,8 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.refresh()
             app.click_open_add_position_form()
             # working data
-            position.count = 999999999
-            position.value = 11111111
+            position.count = 88888888
+            position.value = 22222222
             app.enter_new_position_data(position)
             app.click_save_position()
 
