@@ -103,15 +103,17 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
     def test_get_or_create_user(self):
         self.backend.company = CompanyGenerator().generate()
         self.backend._get_or_create_user('1', 'first name', 'last_name',
-                                         'Natürliche Person', '')
+                                         'Natürliche Person', '', '')
         user = User.objects.last()
         self.assertEqual(user.userprofile.legal_type, 'H')
 
         self.backend._get_or_create_user('1', 'first name', 'last_name',
-                                         'Juristische Person', 'Large Corp')
+                                         'Juristische Person', 'Large Corp',
+                                         'Management and IT')
         user = User.objects.last()
         self.assertEqual(user.userprofile.legal_type, 'C')
         self.assertEqual(user.userprofile.company_name, 'Large Corp')
+        self.assertEqual(user.userprofile.company_department, 'Management and IT')
 
     def test__init_import(self):
 

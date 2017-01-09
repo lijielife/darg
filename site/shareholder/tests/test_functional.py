@@ -93,6 +93,36 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
         shareholder = Shareholder.objects.get(id=self.buyer.id)
         self.assertEqual(shareholder.number, str(99))
 
+    def test_edit_company_department(self):
+        """
+        edit company department
+        """
+        try:
+
+            p = page.ShareholderDetailPage(
+                self.selenium, self.live_server_url, self.operator.user,
+                path=reverse(
+                    'shareholder',
+                    kwargs={'pk': self.buyer.id}
+                    )
+                )
+            # wait for 'link'
+            p.wait_until_visible(
+                (By.CSS_SELECTOR, 'tr.company-department span.el-icon-pencil'))
+            p.click_to_edit("company-department")
+            p.edit_shareholder_number('IT Security Dep.', "company-department")
+            p.save_edit("company-department")
+            # wait for form to disappear
+            p.wait_until_invisible(
+                (By.CSS_SELECTOR, 'tr.company-department form'))
+
+        except Exception, e:
+            self._handle_exception(e)
+
+        shareholder = Shareholder.objects.get(id=self.buyer.id)
+        self.assertEqual(shareholder.user.userprofile.company_department,
+                         'IT Security Dep.')
+
     def test_edit_legal_type(self):
         """ means: create a option plan and move options for users """
         try:
@@ -665,7 +695,7 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
 
             app.wait_until_visible((By.ID, "optiontransaction-detail"))
             self.assertEqual(
-                app.wait_until_visible((By.CLASS_NAME, 'registration-type')) \
+                app.wait_until_visible((By.CLASS_NAME, 'registration-type'))
                 .find_elements_by_tag_name('td')[1].text,
                 _('Personal representation'))
 
@@ -1163,7 +1193,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
 
             app.wait_until_visible((By.ID, "position-detail"))
             self.assertEqual(
-                app.wait_until_visible((By.CLASS_NAME, 'registration-type')) \
+                app.wait_until_visible((By.CLASS_NAME, 'registration-type'))
                 .find_elements_by_tag_name('td')[1].text,
                 _('Personal representation'))
 

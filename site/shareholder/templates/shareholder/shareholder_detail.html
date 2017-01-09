@@ -73,6 +73,12 @@
         {% verbatim %}<span editable-text="shareholder.user.userprofile.company_name" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.company_name || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
       </td>
     </tr>
+    <tr class="company-department">
+      <td>{% trans "Shareholder Company Department" %}:</td>
+      <td>
+        {% verbatim %}<span editable-text="shareholder.user.userprofile.company_department" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.company_department || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
+      </td>
+    </tr>
     <tr>
       <td>
         <strong>{% trans "Address" %}:</strong><br/>

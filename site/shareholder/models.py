@@ -313,6 +313,7 @@ class UserProfile(models.Model):
         help_text=_('legal type of the user'))
 
     company_name = models.CharField(max_length=255, blank=True, null=True)
+    company_department = models.CharField(max_length=255, blank=True, null=True)
     birthday = models.DateField(blank=True, null=True)
 
     ip = models.GenericIPAddressField(blank=True, null=True)

@@ -174,7 +174,7 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
         model = UserProfile
         fields = ('street', 'city', 'province', 'postal_code', 'country',
                   'birthday', 'company_name', 'language', 'readable_language',
-                  'readable_legal_type', 'legal_type')
+                  'readable_legal_type', 'legal_type', 'company_department')
 
     def get_readable_language(self, obj):
         return obj.get_language_display()
@@ -393,6 +393,8 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
             userprofile.postal_code = profile_kwargs.get('postal_code')
             userprofile.country = profile_kwargs.get('country')
             userprofile.company_name = profile_kwargs.get('company_name')
+            userprofile.company_department = profile_kwargs.get(
+                'company_department')
             userprofile.birthday = profile_kwargs.get('birthday')
             userprofile.language = profile_kwargs.get('language')
             userprofile.legal_type = profile_kwargs.get('legal_type')

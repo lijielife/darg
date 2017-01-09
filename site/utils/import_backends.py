@@ -10,11 +10,10 @@ from django.db import DataError
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
 
-from project.generators import (DEFAULT_TEST_DATA, CompanyShareholderGenerator,
-                                OperatorGenerator, _make_user)
-from shareholder.models import (Company, OptionPlan, OptionTransaction,
-                                Position, Security, Shareholder, UserProfile,
-                                REGISTRATION_TYPES)
+from project.generators import DEFAULT_TEST_DATA, OperatorGenerator, _make_user
+from shareholder.models import (REGISTRATION_TYPES, Company, OptionPlan,
+                                OptionTransaction, Position, Security,
+                                Shareholder, UserProfile)
 
 SISWARE_CSV_HEADER = [
     u'Aktion\xe4rID', u'Aktion\xe4rsArt', u'Eintragungsart', u'Suchname',
@@ -105,11 +104,13 @@ class SisWareImportBackend(BaseImportBackend):
         if not [field for field in row if field != u'']:
             return 0
 
+        # USER
         user = self._get_or_create_user(
             row[0], row[8]+' '+row[9], row[10], row[1],
-            company=row[4])
+            company=row[4], department=row[5])
+        # SHAREHOLDER
         shareholder = self._get_or_create_shareholder(row[0], user)
-        # plan shares
+        # POSITION
         if not row[27]:
             self._get_or_create_position(
                 bought_at=row[28], buyer=shareholder, count=row[26],
@@ -117,7 +118,7 @@ class SisWareImportBackend(BaseImportBackend):
                 face_value=float(row[25].replace(',', '.')),
                 registration_type=row[2]
             )
-        # options
+        # OPTION + PLAN
         else:
             self._get_or_create_option_transaction(
                 cert_id=row[27], bought_at=row[28], buyer=shareholder,
@@ -207,7 +208,7 @@ class SisWareImportBackend(BaseImportBackend):
         return option
 
     def _get_or_create_user(self, shareholder_id, first_name, last_name,
-                            legal_entity, company):
+                            legal_entity, company, department):
         """
         we have no email to identify duplicates and merge then. hence we are
         using the shareholder id to create new users for each shareholder id
@@ -229,6 +230,8 @@ class SisWareImportBackend(BaseImportBackend):
             profile = user.userprofile
             profile.legal_type = l
             profile.company_name = company
+            if department:
+                profile.company_department = department
             profile.save()
         elif not hasattr(user, 'userprofile'):
             UserProfile.objects.create(user=user, legal_type=l,
@@ -280,3 +283,4 @@ class SisWareImportBackend(BaseImportBackend):
 IMPORT_BACKENDS = [
     SisWareImportBackend,
 ]
+
