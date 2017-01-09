@@ -255,10 +255,7 @@ class OptionsPage(BasePage):
     def is_transfer_option_shown(self, **kwargs):
         for table in self.driver.find_elements_by_class_name('table'):
             for tr in table.find_elements_by_class_name('optiontransaction'):
-                s = u"{} {}".format(
-                    kwargs.get('buyer').user.first_name,
-                    kwargs.get('buyer').user.last_name,
-                )
+                s = kwargs.get('buyer').get_full_name()
                 if s == tr.find_element_by_class_name('full-name').text:
                     return True
                 print s, '>', tr.find_element_by_class_name('full-name').text
@@ -268,7 +265,7 @@ class OptionsPage(BasePage):
     def is_transfer_option_with_segments_shown(self, **kwargs):
         buyer = kwargs.get('buyer')
         ot = buyer.option_buyer.latest('id')
-        s1 = u"{} {}".format(buyer.user.first_name, buyer.user.last_name)
+        s1 = buyer.get_full_name()
         for table in self.driver.find_elements_by_class_name('table'):
             trs = table.find_elements_by_class_name("optiontransaction")
             for tr in trs:
@@ -405,10 +402,8 @@ class PositionPage(BasePage):
         self.enter_seller(position.seller)
 
         # buyer
-        name = u'{} {}'.format(position.buyer.user.first_name,
-                               position.buyer.user.last_name)
         select = Select(selects[1])
-        select.select_by_visible_text(name)
+        select.select_by_visible_text(position.buyer.get_full_name())
 
         self.enter_security(position.security, 'add-position-form')
         self.enter_bought_at(position.bought_at)
@@ -458,10 +453,8 @@ class PositionPage(BasePage):
         form = el.find_element_by_tag_name('form')
         selects = form.find_elements_by_tag_name('select')
 
-        name = u'{} {}'.format(seller.user.first_name,
-                               seller.user.last_name)
         select = Select(selects[0])
-        select.select_by_visible_text(name)
+        select.select_by_visible_text(seller.get_full_name())
 
     def enter_new_cap_data(self, position):
 

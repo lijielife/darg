@@ -187,8 +187,7 @@ class UserWithEmailOnlySerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name')
-        read_only_fields = ('first_name', 'last_name',)
+        fields = ('email',)
 
 
 class OperatorSerializer(serializers.HyperlinkedModelSerializer):
@@ -408,15 +407,7 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
         return obj.is_company_shareholder()  # adds one query per obj
 
     def get_full_name(self, obj):
-        if obj.user.userprofile.company_name:
-            # return first, last, company name
-            if obj.user.first_name or obj.user.last_name:
-                return u"{} {} ({})".format(
-                    obj.user.first_name, obj.user.last_name,
-                    obj.user.userprofile.company_name)
-            else:
-                return u"{}".format(obj.user.userprofile.company_name)
-        return u"{} {}".format(obj.user.first_name, obj.user.last_name)
+        return obj.get_full_name()
 
 
 class PositionSerializer(serializers.HyperlinkedModelSerializer,

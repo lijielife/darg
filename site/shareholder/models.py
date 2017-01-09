@@ -362,6 +362,18 @@ class Shareholder(models.Model):
 
         return False
 
+    def get_full_name(self):
+        if self.user.userprofile.company_name:
+            # return first, last, company name
+            if self.user.first_name or self.user.last_name:
+                return u"{} {} ({})".format(
+                    self.user.first_name, self.user.last_name,
+                    self.user.userprofile.company_name)
+            else:
+                return u"{}".format(self.user.userprofile.company_name)
+        return u"{} {}".format(self.user.first_name, self.user.last_name)
+
+
     def get_number_segments_display(self):
         """
         returns string for date=today and all securities showing number segments
