@@ -30,7 +30,7 @@
 
   <div id="positions" ng-hide="!positions.length">
 
-    <div class="table table-small-font">
+    <div class="table table-small-font table-centered-mobile">
       <div class="tr th">
         <div class="td">{% trans "Buy Date" %}</div>
         <div class="td td-width-2">{% trans "Buyer" %}</div>
@@ -57,9 +57,9 @@
           </div>
         </div>
         <div class="tr" ng-hide="position.is_split && !show_split_data">
-          <div class="td flex-column bought-at-column">
+          <div class="td flex-column">
             <div>
-              <span class="bought-at">{{ position.bought_at | date : 'd.MM.yy' }}</span>
+              <span class="bought-at order-1">{{ position.bought_at | date : 'd.MM.yy' }}</span>
             </div>
             <div ng-show="position.is_draft" class="draft">
               {% endverbatim %}
@@ -67,32 +67,39 @@
               {% verbatim %}
             </div>
           </div>
-          <div class="td td-width-2 buyer-name ">{{ position.buyer.user.first_name }} {{ position.buyer.user.last_name }}</div>
-          <div class="td margin-top-additional">
-            {{ position.security.readable_title }}
+          <div class="td td-width-2 order-2 buyer-name">{{ position.buyer.user.first_name }} {{ position.buyer.user.last_name }}</div>
+          <div class="td order-5 flex-column td-flex-inline">
+            <span class="custom-typeface-mobile">{{ position.count }}</span>
+            <span class="note" ng-show="position.security.track_numbers && position.readable_number_segments">
+              (#{{ position.readable_number_segments }})
+            </span>
+            <span class="custom-typeface-mobile">{{ position.security.readable_title }}</span>
           </div>
-          <div class="td text-right-flex count">
+          <div class="hidden-xs td text-right-flex count order-4 flex-column">
             <span class=" medium">
-              {{ position.count }}
+              <span class="">{{ position.count }}</span>
               <span class="note" ng-show="position.security.track_numbers && position.readable_number_segments">
                 (#{{ position.readable_number_segments }})
               </span>
             </span>
           </div>
-          <div class="td text-right-flex">{{ position.value }}</div>
-          <div class="td">
-            <span class="limit-max-height">{{ position.seller.user.first_name }} {{ position.seller.user.last_name }}</span>
+          <div class="td text-right-flex order-3 td-flex-inline td-border-right flex-column">
+            <b class="custom-typeface-mobile">{{ position.value }}</b>
+            <span class="custom-typeface-mobile meta-mobile-only">CHF</span>
           </div>
-          <div class="td">{{ position.comment }}</div>
-          <div class="td flex-column">
+          <div class="td hidden-xs">
+            <span class="limit-max-height ">{{ position.seller.user.first_name }} {{ position.seller.user.last_name }}</span>
+          </div>
+          <div class="td hidden-xs">{{ position.comment }}</div>
+          <div class="td flex-column order-6 flex-inline-mobile">
             <div ng-show="position.is_draft">
               <a class="btn-inline" ng-click="delete_position(position)" href>
-                {% endverbatim %}{% trans "delete" %}{% verbatim %}
+                {% endverbatim %}<i class="gray el-icon-remove-circle"></i>{% verbatim %}
               </a>
             </div>
             <div ng-show="position.is_draft">
               <a class="btn-inline" ng-click="confirm_position(position)" href>
-                {% endverbatim %}{% trans "confirm" %}{% verbatim %}
+                {% endverbatim %}<i class="el-icon-ok-circle"></i>{% verbatim %}
               </a>
             </div>
           </div>
