@@ -11,7 +11,7 @@ from django.utils.text import slugify
 from django.utils.translation import gettext as _
 
 from project.generators import (DEFAULT_TEST_DATA, CompanyShareholderGenerator,
-                                OperatorGenerator)
+                                OperatorGenerator, _make_user)
 from shareholder.models import (Company, OptionPlan, OptionTransaction,
                                 Position, Security, Shareholder, UserProfile,
                                 REGISTRATION_TYPES)
@@ -86,8 +86,8 @@ class SisWareImportBackend(BaseImportBackend):
         try:
             self.company_shareholder = self.company.get_company_shareholder()
         except ValueError:
-            self.company_shareholder = CompanyShareholderGenerator().generate(
-                company=self.company)
+            self.company_shareholder = Shareholder.objects.create(
+                company=self.company, number=0, user=_make_user())
 
         # and a matching operator?
         self.operator = self.company.operator_set.first()
@@ -106,7 +106,8 @@ class SisWareImportBackend(BaseImportBackend):
             return 0
 
         user = self._get_or_create_user(
-            row[0], row[8]+' '+row[9], row[10], row[1])
+            row[0], row[8]+' '+row[9], row[10], row[1],
+            company=row[4])
         shareholder = self._get_or_create_shareholder(row[0], user)
         # plan shares
         if not row[27]:
@@ -206,7 +207,7 @@ class SisWareImportBackend(BaseImportBackend):
         return option
 
     def _get_or_create_user(self, shareholder_id, first_name, last_name,
-                            legal_entity):
+                            legal_entity, company):
         """
         we have no email to identify duplicates and merge then. hence we are
         using the shareholder id to create new users for each shareholder id
@@ -227,9 +228,11 @@ class SisWareImportBackend(BaseImportBackend):
         if hasattr(user, 'userprofile'):
             profile = user.userprofile
             profile.legal_type = l
+            profile.company_name = company
             profile.save()
         elif not hasattr(user, 'userprofile'):
-            UserProfile.objects.create(user=user, legal_type=l)
+            UserProfile.objects.create(user=user, legal_type=l,
+                                       company_name=company)
 
         return user
 

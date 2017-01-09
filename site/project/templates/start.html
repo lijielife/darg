@@ -68,7 +68,7 @@
       </div>
       <div class="tr shareholder" ng-repeat="shareholder in shareholders" ng-click="goto_shareholder(shareholder.pk)" ng-mouseover="">
         <div class="td td-width-2 order-1 full-name">
-          <span class="el-icon-exclamation-sign" ng-hide="shareholder.validate_gafi.is_valid" data-toggle="tooltip" title="{% endverbatim %}{% trans "Gafi Validation failed" %}{% verbatim %}"></span><span class="truncate">{{ shareholder.user.first_name }} {{ shareholder.user.last_name }}</span></div>
+          <span class="el-icon-exclamation-sign" ng-hide="shareholder.validate_gafi.is_valid" data-toggle="tooltip" title="{% endverbatim %}{% trans "Gafi Validation failed" %}{% verbatim %}"></span><span class="truncate">{{ shareholder.full_name }}</span></div>
         <div class="td td-width-2 order-3 email"><span>{{ shareholder.user.email }}</span><a class="btn-inline"><span class="el-icon-eye-open"></span></a></div>
         <div class="td text-right-flex order-2 number">{{ shareholder.number }}</div>
         <div class="td text-right-flex order-4 gray-circle">
@@ -114,7 +114,7 @@
 	<!-- TABLE -->
     <div class="table">
       <div class="tr option-holders" ng-show="option_holders.length" ng-repeat="option_holder in option_holders  | orderBy:'-share_count'" ng-click="goto_shareholder(option_holder.pk)" ng-mouseover="">
-        <div class="td td-width-2 order-1 option-holders full-name">{{ option_holder.user.first_name }} {{ option_holder.user.last_name }}</div>
+        <div class="td td-width-2 order-1 option-holders full-name">{{ option_holder.full_name }}</div>
         <div class="td td-width-2 order-3 email">{{ option_holder.user.email }}<a class="btn-inline"><span class="el-icon-eye-open"></span></a></div>
         <div class="td text-right-flex number order-2">{{ option_holder.number }}</div>
         <div class="td text-right-flex share shareholders-count">

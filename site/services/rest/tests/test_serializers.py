@@ -300,6 +300,23 @@ class ShareholderSerializerTestCase(TestCase):
                 qs, many=True, context={'request': request})
             self.assertTrue(len(serializer.data) > 0)
 
+    def test_fields(self):
+        """
+        ensure all required fields are there
+        """
+        operator = OperatorGenerator().generate()
+        shs, security = ComplexShareholderConstellationGenerator().generate(
+            company=operator.company, shareholder_count=5)  # does +2shs
+        request = self.factory.get('/services/rest/shareholders')
+        request.user = operator.user
+
+        qs = operator.company.shareholder_set.all()
+        serializer = ShareholderSerializer(
+            qs, many=True, context={'request': request})
+        self.assertTrue(len(serializer.data) > 0)
+        # shortcut to merge user and company name
+        self.assertIsNotNone(serializer.data[0].get('full_name'))
+
 
 class UserProfileSerializerTestCase(TestCase):
 

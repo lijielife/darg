@@ -72,7 +72,7 @@
           </span>
         </div>
         <div class="td td-width-2 full-name full-name-padding buyer" ng-click="goto_option(optiontransaction.pk)" ng-mouseover="">
-          {{ optiontransaction.buyer.user.first_name }} {{ optiontransaction.buyer.user.last_name }}
+          {{ optiontransaction.buyer.full_name }}
         </div>
         <div class="td text-right-flex count gray-circle count" ng-click="goto_option(optiontransaction.pk)" ng-mouseover="">
           <span class="transform--center large">
@@ -84,7 +84,7 @@
         </div>
         <div class="td text-right-flex margin-top--additional" ng-click="goto_option(optiontransaction.pk)" ng-mouseover="">{{ optiontransaction.option_plan.exercise_price }}</div>
         <div class="td td-width-2" ng-click="goto_option(optiontransaction.pk)" ng-mouseover="">
-          {{ optiontransaction.seller.user.first_name }} {{ optiontransaction.seller.user.last_name }}
+          {{ optiontransaction.seller.user.full_name }}
         </div>
         <div class="td flex-column">
           <div ng-show="optiontransaction.is_draft">

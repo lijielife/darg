@@ -246,13 +246,6 @@ class OperatorSerializer(serializers.HyperlinkedModelSerializer):
         return Operator.objects.create(user=user, company=company)
 
 
-class UserWithEmailOnlySerializer(serializers.HyperlinkedModelSerializer):
-
-    class Meta:
-        model = User
-        fields = ('email',)
-
-
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     operator_set = OperatorSerializer(many=True, read_only=True)
     userprofile = UserProfileSerializer(
@@ -413,6 +406,14 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
         return obj.is_company_shareholder()  # adds one query per obj
 
     def get_full_name(self, obj):
+        if obj.user.userprofile.company_name:
+            # return first, last, company name
+            if obj.user.first_name or obj.user.last_name:
+                return u"{} {} ({})".format(
+                    obj.user.first_name, obj.user.last_name,
+                    obj.user.userprofile.company_name)
+            else:
+                return u"{}".format(obj.user.userprofile.company_name)
         return u"{} {}".format(obj.user.first_name, obj.user.last_name)
 
 
