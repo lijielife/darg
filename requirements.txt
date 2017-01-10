@@ -29,7 +29,6 @@ djrill
 diff-match-patch
 model_mommy
 twilio
-python-dateutil
 
 #-- zinnia reqs
 django-mptt>=0.8.5
