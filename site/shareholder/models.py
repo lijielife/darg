@@ -302,16 +302,24 @@ class UserProfile(models.Model):
 
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL)
+    title = models.CharField(max_length=255, blank=True, null=True)
+    salutation = models.CharField(max_length=255, blank=True, null=True)
+
     street = models.CharField(max_length=255, blank=True, null=True)
+    street2 = models.CharField(max_length=255, blank=True, null=True)
     city = models.CharField(max_length=255, blank=True, null=True)
     province = models.CharField(max_length=255, blank=True, null=True)
+    pobox = models.CharField(max_length=255, blank=True, null=True)
+    c_o = models.CharField(max_length=255, blank=True, null=True)
     postal_code = models.CharField(max_length=255, blank=True, null=True)
     country = models.ForeignKey(Country, blank=True, null=True)
     language = language_fields.LanguageField(blank=True, null=True)
+    nationality = models.ForeignKey(Country, blank=True, null=True,
+                                    related_name='nationality')
+
     legal_type = models.CharField(
         max_length=1, choices=LEGAL_TYPES, default='H',
         help_text=_('legal type of the user'))
-
     company_name = models.CharField(max_length=255, blank=True, null=True)
     company_department = models.CharField(max_length=255, blank=True, null=True)
     birthday = models.DateField(blank=True, null=True)

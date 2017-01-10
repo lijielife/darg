@@ -199,6 +199,7 @@ class OptionsPage(BasePage):
         if seller:
             select_input.extend([seller.user.email])
 
+        time.sleep(1)
         for key, select in enumerate(selects):
             select = Select(select)
             if key < len(select_input) and select_input[key] != '':

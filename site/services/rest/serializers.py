@@ -174,7 +174,9 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
         model = UserProfile
         fields = ('street', 'city', 'province', 'postal_code', 'country',
                   'birthday', 'company_name', 'language', 'readable_language',
-                  'readable_legal_type', 'legal_type', 'company_department')
+                  'readable_legal_type', 'legal_type', 'company_department',
+                  'title', 'salutation', 'street2', 'pobox', 'c_o',
+                  'nationality')
 
     def get_readable_language(self, obj):
         return obj.get_language_display()
@@ -387,16 +389,22 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
         else:
             userprofile = user.userprofile
             userprofile.street = profile_kwargs.get('street')
+            userprofile.street2 = profile_kwargs.get('street2')
             userprofile.city = profile_kwargs.get('city')
             userprofile.province = profile_kwargs.get('province')
             userprofile.postal_code = profile_kwargs.get('postal_code')
+            userprofile.pobox = profile_kwargs.get('pobox')
+            userprofile.c_o = profile_kwargs.get('c_o')
             userprofile.country = profile_kwargs.get('country')
+            userprofile.nationality = profile_kwargs.get('nationality')
             userprofile.company_name = profile_kwargs.get('company_name')
             userprofile.company_department = profile_kwargs.get(
                 'company_department')
             userprofile.birthday = profile_kwargs.get('birthday')
             userprofile.language = profile_kwargs.get('language')
             userprofile.legal_type = profile_kwargs.get('legal_type')
+            userprofile.title = profile_kwargs.get('title')
+            userprofile.salutation = profile_kwargs.get('salutation')
             userprofile.save()
 
         shareholder.number = validated_data['number']

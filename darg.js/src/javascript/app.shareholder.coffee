@@ -19,16 +19,24 @@ app.controller 'ShareholderController', ['$scope', '$http', 'Shareholder', ($sco
     ]
 
     $http.get('/services/rest/shareholders/' + shareholder_id).then (result) ->
+        # convert birthay to JS obj
         if result.data.user.userprofile.birthday != null
             result.data.user.userprofile.birthday = new Date(result.data.user.userprofile.birthday)
+
+        # create Shareholder JS obj
         $scope.shareholder = new Shareholder(result.data)
-        # fetch country hyperlinked obj
+
+        # fetch country/nationality hyperlinked obj
         if $scope.shareholder.user.userprofile.country
             $http.get($scope.shareholder.user.userprofile.country).then (result1) ->
                 $scope.shareholder.user.userprofile.country = result1.data
+        if $scope.shareholder.user.userprofile.nationality
+            $http.get($scope.shareholder.user.userprofile.nationality).then (result1) ->
+                $scope.shareholder.user.userprofile.nationality = result1.data
         # assign legal type obj
         legal_type = $scope.legal_types.filter (obj) ->
             return obj.value == $scope.shareholder.user.userprofile.legal_type
+
         $scope.shareholder.user.userprofile.legal_type = legal_type[0]
 
     $http.get('/services/rest/country').then (result) ->
@@ -49,6 +57,9 @@ app.controller 'ShareholderController', ['$scope', '$http', 'Shareholder', ($sco
         # replace country obj by hyperlink
         if $scope.shareholder.user.userprofile.country
             $scope.shareholder.user.userprofile.country = $scope.shareholder.user.userprofile.country.url
+        # replace nationality obj by hyperlink
+        if $scope.shareholder.user.userprofile.nationality
+            $scope.shareholder.user.userprofile.nationality = $scope.shareholder.user.userprofile.nationality.url
         # replace language obj by hyperlink
         if $scope.shareholder.user.userprofile.language
             $scope.shareholder.user.userprofile.language = $scope.shareholder.user.userprofile.language.iso
@@ -63,6 +74,9 @@ app.controller 'ShareholderController', ['$scope', '$http', 'Shareholder', ($sco
             if $scope.shareholder.user.userprofile.country
                 $http.get($scope.shareholder.user.userprofile.country).then (result1) ->
                     $scope.shareholder.user.userprofile.country = result1.data
+            if $scope.shareholder.user.userprofile.nationality
+                $http.get($scope.shareholder.user.userprofile.nationality).then (result1) ->
+                    $scope.shareholder.user.userprofile.nationality = result1.data
         .then ->
             # Reset our editor to a new blank post
             #$scope.company = new Company()

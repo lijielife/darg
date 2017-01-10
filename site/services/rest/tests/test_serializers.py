@@ -5,6 +5,7 @@ import datetime
 from django.core.urlresolvers import reverse
 from django.test import RequestFactory, TestCase
 from django.utils.translation import ugettext as _
+from dateutil.parser import parse
 from rest_framework.exceptions import ValidationError
 
 from project.generators import (ComplexShareholderConstellationGenerator,
@@ -18,7 +19,7 @@ from services.rest.serializers import (AddCompanySerializer,
                                        PositionSerializer,
                                        ShareholderSerializer,
                                        UserProfileSerializer)
-from shareholder.models import OptionPlan, OptionTransaction
+from shareholder.models import OptionPlan, OptionTransaction, Country
 from utils.formatters import human_readable_segments
 
 
@@ -307,15 +308,53 @@ class ShareholderSerializerTestCase(TestCase):
         operator = OperatorGenerator().generate()
         shs, security = ComplexShareholderConstellationGenerator().generate(
             company=operator.company, shareholder_count=5)  # does +2shs
+        profile = shs[0].user.userprofile
+        profile.language = 'de'
+        profile.country = Country.objects.first()
+        profile.birthday = datetime.datetime.now()
+        profile.street = 'some street'
+        profile.street2 = 'some street'
+        profile.city = 'some city'
+        profile.province = ' some province'
+        profile.postal_code = 'some postal code'
+        profile.company_name = 'company some'
+        profile.company_department = 'dome depa'
+        profile.salutation = 'some saluta'
+        profile.title = 'some title'
+        profile.pobox = '12345'
+        profile.c_o = 'ddd'
+        profile.nationality = Country.objects.last()
+        profile.save()
         request = self.factory.get('/services/rest/shareholders')
         request.user = operator.user
 
-        qs = operator.company.shareholder_set.all()
+        qs = operator.company.shareholder_set.filter(pk=shs[0].pk)
         serializer = ShareholderSerializer(
             qs, many=True, context={'request': request})
+
         self.assertTrue(len(serializer.data) > 0)
         # shortcut to merge user and company name
         self.assertIsNotNone(serializer.data[0].get('full_name'))
+        profile_data = serializer.data[0].get('user').get('userprofile')
+        profile = qs[0].user.userprofile
+        self.assertEqual(profile_data['title'], profile.title)
+        self.assertEqual(profile_data['salutation'], profile.salutation)
+        self.assertEqual(profile_data['street'], profile.street)
+        self.assertEqual(profile_data['street2'], profile.street2)
+        self.assertEqual(profile_data['pobox'], profile.pobox)
+        self.assertEqual(profile_data['c_o'], profile.c_o)
+        self.assertEqual(profile_data['country'][-2:], profile.country.iso_code)
+        self.assertEqual(profile_data['language'], profile.language)
+        self.assertEqual(profile_data['nationality'][-2:],
+                         profile.nationality.iso_code)
+        self.assertEqual(parse(profile_data['birthday']).date(),
+                         profile.birthday)
+        self.assertEqual(profile_data['postal_code'], profile.postal_code)
+        self.assertEqual(profile_data['city'], profile.city)
+
+        # assure none is empty
+        for k in profile_data.keys():
+            self.assertIsNotNone(profile_data[k])
 
 
 class UserProfileSerializerTestCase(TestCase):

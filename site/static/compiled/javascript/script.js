@@ -1184,6 +1184,11 @@
             return $scope.shareholder.user.userprofile.country = result1.data;
           });
         }
+        if ($scope.shareholder.user.userprofile.nationality) {
+          $http.get($scope.shareholder.user.userprofile.nationality).then(function(result1) {
+            return $scope.shareholder.user.userprofile.nationality = result1.data;
+          });
+        }
         legal_type = $scope.legal_types.filter(function(obj) {
           return obj.value === $scope.shareholder.user.userprofile.legal_type;
         });
@@ -1205,6 +1210,9 @@
         if ($scope.shareholder.user.userprofile.country) {
           $scope.shareholder.user.userprofile.country = $scope.shareholder.user.userprofile.country.url;
         }
+        if ($scope.shareholder.user.userprofile.nationality) {
+          $scope.shareholder.user.userprofile.nationality = $scope.shareholder.user.userprofile.nationality.url;
+        }
         if ($scope.shareholder.user.userprofile.language) {
           $scope.shareholder.user.userprofile.language = $scope.shareholder.user.userprofile.language.iso;
         }
@@ -1217,8 +1225,13 @@
           }
           $scope.shareholder = new Shareholder(result);
           if ($scope.shareholder.user.userprofile.country) {
-            return $http.get($scope.shareholder.user.userprofile.country).then(function(result1) {
+            $http.get($scope.shareholder.user.userprofile.country).then(function(result1) {
               return $scope.shareholder.user.userprofile.country = result1.data;
+            });
+          }
+          if ($scope.shareholder.user.userprofile.nationality) {
+            return $http.get($scope.shareholder.user.userprofile.nationality).then(function(result1) {
+              return $scope.shareholder.user.userprofile.nationality = result1.data;
             });
           }
         }).then(function() {

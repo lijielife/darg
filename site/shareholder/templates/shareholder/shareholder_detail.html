@@ -41,13 +41,29 @@
         {% verbatim %}<span editable-text="shareholder.number" onaftersave="edit_shareholder()">{{ shareholder.number || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
       </td>
     </tr>
-    <tr>
+    <tr class="title">
       <td>
-        {% trans "Shareholder Name" %}:
+        {% trans "Title" %}:
       </td>
       <td>
-        {% verbatim %}<span editable-text="shareholder.user.first_name" onaftersave="edit_shareholder()">{{ shareholder.user.first_name || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
-        {% verbatim %}<span editable-text="shareholder.user.last_name" onaftersave="edit_shareholder()">{{ shareholder.user.last_name || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
+        {% verbatim %}<span editable-text="shareholder.user.userprofile.title" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.title || 'Titel' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="salutation">
+      <td>
+        {% trans "Salutation" %}:
+      </td>
+      <td>
+        {% verbatim %}<span editable-text="shareholder.user.userprofile.salutation" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.salutation || 'Anrede' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="full-name">
+      <td>
+        {% trans "First Name, Last Name" %}:
+      </td>
+      <td>
+        {% verbatim %}<span editable-text="shareholder.user.first_name" onaftersave="edit_shareholder()">{{ shareholder.user.first_name || 'Vorname' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
+        {% verbatim %}<span editable-text="shareholder.user.last_name" onaftersave="edit_shareholder()">{{ shareholder.user.last_name || 'Nachname' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
       </td>
     </tr>
     <tr class="user-email">
@@ -83,14 +99,19 @@
       <td>
         <strong>{% trans "Address" %}:</strong><br/>
         {% trans "Street" %}<br/>
+        {% trans "Street2" %}<br/>
         {% trans "Zip" %} {% trans "City" %}<br/>
         {% trans "Province" %}<br/>
-        {% trans "Country" %}
+        {% trans "Country" %}<br/>
+        {% trans "P.O. Box" %}<br/>
+        {% trans "c/o" %}
       </td>
       <td>
         <br/>
         {% verbatim %}
         <span editable-text="shareholder.user.userprofile.street" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.street || 'Street' }} <span class="el-icon-pencil"></span></span>
+        <br/>
+        <span editable-text="shareholder.user.userprofile.street2" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.street2 || 'Street2' }} <span class="el-icon-pencil"></span></span>
         <br/>
         <span editable-text="shareholder.user.userprofile.postal_code" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.postal_code || 'PLZ' }} <span class="el-icon-pencil"></span></span>
         <span editable-text="shareholder.user.userprofile.city" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.city || 'City' }} <span class="el-icon-pencil"></span></span>
@@ -99,6 +120,22 @@
         <br/>
         <span editable-select="shareholder.user.userprofile.country" onaftersave="edit_shareholder()" e-ng-options="c as c.name for c in countries">
           {{ shareholder.user.userprofile.country.name || 'Country' }}
+          <span class="el-icon-pencil"></span>
+        </span>
+        <br/>
+        <span editable-text="shareholder.user.userprofile.pobox" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.pobox || 'P.O. Box' }} <span class="el-icon-pencil"></span></span>
+        <br/>
+        <span editable-text="shareholder.user.userprofile.c_o" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.c_o || 'c/o' }} <span class="el-icon-pencil"></span></span>
+        <br/>
+        {% endverbatim %}
+      </td>
+    </tr>
+    <tr>
+      <td>{% trans "Nationality" %}:</td>
+      <td>
+        {% verbatim %}
+        <span editable-select="shareholder.user.userprofile.nationality" onaftersave="edit_shareholder()" e-ng-options="c as c.name for c in countries">
+          {{ shareholder.user.userprofile.nationality.name || 'Nationality' }}
           <span class="el-icon-pencil"></span>
         </span>
         {% endverbatim %}

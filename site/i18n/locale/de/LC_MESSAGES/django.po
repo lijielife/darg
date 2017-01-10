@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-07 06:10+0000\n"
-"PO-Revision-Date: 2016-12-13 21:21+0000\n"
+"POT-Creation-Date: 2017-01-10 20:15+0000\n"
+"PO-Revision-Date: 2017-01-10 13:01+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -536,7 +536,11 @@ msgstr "Links"
 msgid "Weblog index"
 msgstr "Blog Start"
 
-#: utils/import_backends.py:192
+#: utils/geo.py:31
+msgid "German"
+msgstr "Deutsch"
+
+#: utils/import_backends.py:267
 msgid "Default OptionPlan for {}"
 msgstr "Default Optionsplan für {}"
 

@@ -57,7 +57,7 @@ class UserProfileAdmin(VersionAdmin):
 
 class CountryAdmin(VersionAdmin):
     list_display = ('iso_code',)
-    pass
+    search_fields = ['iso_code', 'name']
 
 
 class SecurityAdmin(VersionAdmin):
