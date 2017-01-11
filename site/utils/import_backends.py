@@ -182,7 +182,8 @@ class SisWareImportBackend(BaseImportBackend):
             city=row[16], country=row[17], language=row[20], birthday=row[19],
             c_o=row[18], nationality=row[22])
         # SHAREHOLDER
-        shareholder = self._get_or_create_shareholder(row[0], user)
+        shareholder = self._get_or_create_shareholder(row[0], user,
+                                                      mailing_type=row[21])
         # POSITION
         if not row[27]:
             self._get_or_create_position(
@@ -209,12 +210,19 @@ class SisWareImportBackend(BaseImportBackend):
         # FIXME update security.count
         logger.warning('import finishing not implemented')
 
-    def _get_or_create_shareholder(self, shareholder_number, user):
+    def _get_or_create_shareholder(self, shareholder_number, user,
+                                   mailing_type):
+        MAILING_TYPE_MAP = {
+            'Papier': '1',
+            'Unzustellbar': '0',
+        }
+        mailing_type = MAILING_TYPE_MAP[mailing_type]
         shareholder, c_ = Shareholder.objects.get_or_create(
             number=shareholder_number, company=self.company,
             defaults={'company': self.company,
                       'number': shareholder_number,
-                      'user': user
+                      'user': user,
+                      'mailing_type': mailing_type
                       }
         )
         return shareholder

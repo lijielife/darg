@@ -102,6 +102,13 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
         self.assertEqual(self.company.optionplan_set.count(), 3)
         self.assertEqual(self.company.security_set.count(), 3)
 
+        # maling_type
+        self.assertEqual(
+            self.company.shareholder_set.filter(
+                mailing_type__isnull=True).exists(), 1)  # corp sh
+        self.assertEqual(
+            self.company.shareholder_set.filter(mailing_type='0').count(), 1)
+
     def test_get_or_create_user(self):
         self.backend.company = CompanyGenerator().generate()
         kwargs = dict(shareholder_id='1', first_name='first name',
