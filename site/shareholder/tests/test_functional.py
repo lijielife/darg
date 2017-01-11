@@ -52,7 +52,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                 (By.CSS_SELECTOR, 'tr.shareholder-number span.el-icon-pencil'))
             self.assertIn(
                 self.buyer.user.userprofile.get_legal_type_display(),
-                p.get_field('legal_type'))
+                p.get_field('legal-type'))
 
             profile = self.buyer.user.userprofile
             profile.legal_type = 'C'
@@ -61,7 +61,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
             p.wait_until_visible(
                 (By.CSS_SELECTOR, 'tr.shareholder-number span.el-icon-pencil'))
             self.assertIn(profile.get_legal_type_display(),
-                          p.get_field('legal_type'))
+                          p.get_field('legal-type'))
 
         except Exception, e:
             self._handle_exception(e)
