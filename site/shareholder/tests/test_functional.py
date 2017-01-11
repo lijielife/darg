@@ -977,7 +977,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
         except Exception, e:
             self._handle_exception(e)
 
-    def test_add_error(self):
+    def test_add_error_no_value(self):
         """
         confirm form error handling
         """
@@ -1002,7 +1002,21 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
 
             self.assertFalse(app.is_no_errors_displayed())
 
-            app.refresh()
+        except Exception, e:
+            self._handle_exception(e)
+
+    def test_add_error_large_numbers(self):
+        """
+        confirm form error handling
+        """
+        position = PositionGenerator().generate(
+            save=False, seller=self.seller, buyer=self.buyer,
+            security=self.securities[1])
+
+        try:
+
+            app = page.PositionPage(
+                self.selenium, self.live_server_url, self.operator.user)
             app.click_open_add_position_form()
             # enter data too large
             position.count = 99999999991
@@ -1018,7 +1032,21 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
                 )
             # self.assertFalse(app.is_no_errors_displayed())
 
-            app.refresh()
+        except Exception, e:
+            self._handle_exception(e)
+
+    def test_add_error_matching_numbers(self):
+        """
+        confirm form error handling
+        """
+        position = PositionGenerator().generate(
+            save=False, seller=self.seller, buyer=self.buyer,
+            security=self.securities[1])
+
+        try:
+
+            app = page.PositionPage(
+                self.selenium, self.live_server_url, self.operator.user)
             app.click_open_add_position_form()
             # working data
             position.count = 88888888
