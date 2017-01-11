@@ -257,9 +257,9 @@ class OptionsPage(BasePage):
         for table in self.driver.find_elements_by_class_name('table'):
             for tr in table.find_elements_by_class_name('optiontransaction'):
                 s = kwargs.get('buyer').get_full_name()
-                if s == tr.find_element_by_class_name('full-name').text:
+                if s == tr.find_element_by_class_name('buyer-name').text:
                     return True
-                print s, '>', tr.find_element_by_class_name('full-name').text
+                print s, '>', tr.find_element_by_class_name('buyer-name').text
 
         return False
 
@@ -270,7 +270,7 @@ class OptionsPage(BasePage):
         for table in self.driver.find_elements_by_class_name('table'):
             trs = table.find_elements_by_class_name("optiontransaction")
             for tr in trs:
-                buyer_td = tr.find_element_by_class_name('buyer')
+                buyer_td = tr.find_element_by_class_name('buyer-name')
                 count_td = tr.find_element_by_class_name('count')
                 if (
                     s1 == buyer_td.text and str(ot.count) in count_td.text and
