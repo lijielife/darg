@@ -411,7 +411,8 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
             userprofile.save()
 
         shareholder.number = validated_data['number']
-        shareholder.mailing_type = validated_data['mailing_type']
+        if 'mailing_type' in validated_data.keys():
+            shareholder.mailing_type = validated_data['mailing_type']
         shareholder.save()
         return shareholder
 
