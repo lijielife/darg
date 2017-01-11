@@ -18,6 +18,12 @@ app.controller 'ShareholderController', ['$scope', '$http', 'Shareholder', ($sco
         {name: gettext('Corporate'), value: 'C'},
     ]
 
+    $scope.mailing_types = [
+        {name: gettext('Not deliverable'), value: '0'},
+        {name: gettext('Postal Mail'), value: '1'},
+        {name: gettext('via Email'), value: '2'},
+    ]
+
     $http.get('/services/rest/shareholders/' + shareholder_id).then (result) ->
         # convert birthay to JS obj
         if result.data.user.userprofile.birthday != null
@@ -36,8 +42,11 @@ app.controller 'ShareholderController', ['$scope', '$http', 'Shareholder', ($sco
         # assign legal type obj
         legal_type = $scope.legal_types.filter (obj) ->
             return obj.value == $scope.shareholder.user.userprofile.legal_type
-
         $scope.shareholder.user.userprofile.legal_type = legal_type[0]
+        # assign mailing type obj
+        mailing_type = $scope.mailing_types.filter (obj) ->
+            return obj.value == $scope.shareholder.mailing_type
+        $scope.shareholder.mailing_type = mailing_type[0]
 
     $http.get('/services/rest/country').then (result) ->
             $scope.countries = result.data.results
@@ -66,6 +75,9 @@ app.controller 'ShareholderController', ['$scope', '$http', 'Shareholder', ($sco
         # replace legal type obj by str
         if $scope.shareholder.user.userprofile.legal_type.value
             $scope.shareholder.user.userprofile.legal_type = $scope.shareholder.user.userprofile.legal_type.value
+        # replace mailing type obj by str
+        if $scope.shareholder.mailing_type.value
+            $scope.shareholder.mailing_type = $scope.shareholder.mailing_type.value
         # --- SAVE
         $scope.shareholder.$update().then (result) ->
             if result.user.userprofile.birthday != null

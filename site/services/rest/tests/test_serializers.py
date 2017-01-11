@@ -351,6 +351,7 @@ class ShareholderSerializerTestCase(TestCase):
                          profile.birthday)
         self.assertEqual(profile_data['postal_code'], profile.postal_code)
         self.assertEqual(profile_data['city'], profile.city)
+        self.assertEqual(serializer.data[0]['mailing_type'], qs[0].mailing_type)
 
         # assure none is empty
         for k in profile_data.keys():

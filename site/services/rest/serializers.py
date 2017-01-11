@@ -288,6 +288,7 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
     company = CompanySerializer(many=False,  read_only=True)
     is_company = serializers.SerializerMethodField()
     full_name = serializers.SerializerMethodField()
+    readable_mailing_type = serializers.SerializerMethodField()
 
     class Meta:
         model = Shareholder
@@ -299,7 +300,9 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
             'share_value',
             'validate_gafi',
             'is_company',
-            'full_name'
+            'full_name',
+            'mailing_type',
+            'readable_mailing_type',
         )
 
     def create(self, validated_data):
@@ -408,6 +411,7 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
             userprofile.save()
 
         shareholder.number = validated_data['number']
+        shareholder.mailing_type = validated_data['mailing_type']
         shareholder.save()
         return shareholder
 
@@ -416,6 +420,12 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_full_name(self, obj):
         return obj.get_full_name()
+
+    def get_readable_mailing_type(self, obj):
+        """
+        change make it readable
+        """
+        return obj.get_mailing_type_display()
 
 
 class PositionSerializer(serializers.HyperlinkedModelSerializer,
