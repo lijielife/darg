@@ -198,12 +198,19 @@
   <div class="table-responsive">
     <table class="stock table table-striped">
     <thead><tr>
-    <th>{% trans "security" %}</th>
+      <th>{% trans "security" %}</th>
+      <th>{% trans "cusip" %}</th>
       <th>{% trans "count" %}</th>
       <th>{% trans "segments" %}</th>
-    </tr></thead>
+    </tr>
+  </thead>
   {% for security in securities %}
-      <tr class="security"><td>{{ security.get_title_display }}</td><td>{{ security.count }}</td>{% if security.segments %}<td>{{ security.segments }}</td>{% else %}<td></td>{% endif %}</tr>
+    <tr class="security">
+      <td>{{ security }}</td>
+      <td>{% if security.cusip %}{{ security.cusip }}{% endif %}</td>
+	  <td>{{ security.count }}</td>
+	  {% if security.segments %}<td>{{ security.segments }}</td>{% else %}<td></td>{% endif %}
+	</tr>
   {% endfor %}
   </table>
   </div>

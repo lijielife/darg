@@ -744,6 +744,9 @@ class Security(models.Model):
     number_segments = JSONField(
         _('JSON list of segments of ids for securities. can be 1, 2, 3, 4-10'),
         default=list)
+    cusip = models.CharField(
+        _('public security id aka Valor, WKN, CUSIP: http://bit.ly/2ieXwuK'),
+        max_length=255, blank=True, null=True)
 
     # settings
     track_numbers = models.BooleanField(

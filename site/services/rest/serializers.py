@@ -42,7 +42,7 @@ class SecuritySerializer(serializers.HyperlinkedModelSerializer,
         model = Security
         fields = ('pk', 'readable_title', 'title', 'url', 'count',
                   'track_numbers', 'readable_number_segments',
-                  'number_segments', 'face_value')
+                  'number_segments', 'face_value', 'cusip')
 
     def get_readable_title(self, obj):
         if obj.face_value:

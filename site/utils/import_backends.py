@@ -184,6 +184,10 @@ class SisWareImportBackend(BaseImportBackend):
         # SHAREHOLDER
         shareholder = self._get_or_create_shareholder(row[0], user,
                                                       mailing_type=row[21])
+        # SECURITY
+        self._get_or_create_security(
+            face_value=float(row[25].replace(',', '.')), cusip=row[24])
+
         # POSITION
         if not row[27]:
             self._get_or_create_position(
@@ -227,11 +231,15 @@ class SisWareImportBackend(BaseImportBackend):
         )
         return shareholder
 
-    def _get_or_create_security(self, face_value):
+    def _get_or_create_security(self, face_value, cusip=None):
+
+        kwargs = {'count': 1}
+        if cusip:
+            kwargs.update({'cusip': cusip})
 
         security, c_ = Security.objects.get_or_create(
             title='R', face_value=face_value,
-            company=self.company, count=1)  # count=1 intermediary
+            company=self.company, defaults=kwargs)  # count=1 intermediary
 
         return security
 
