@@ -53,7 +53,7 @@ class ShareholderDetailPage(BasePage):
         el.clear()
         el.send_keys(str(value))
 
-    def select_legal_type(self, class_name, legal_type):
+    def select_type(self, class_name, legal_type):
         row = self.driver.find_element_by_class_name(class_name)
         select = row.find_element_by_tag_name('select')
         select = Select(select)
