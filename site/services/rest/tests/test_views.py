@@ -976,6 +976,7 @@ class ShareholderTestCase(TestCase):
 
         data = {
             "pk": shareholder.user.pk,
+            "mailing_type": '2',
             "user": {
                 "first_name": "Mutter1Editable",
                 "last_name": "KutterEditable",
@@ -1036,6 +1037,7 @@ class ShareholderTestCase(TestCase):
         self.assertEqual(response.data.get('number'), "00333e")
         self.assertEqual(s.user.first_name, "Mutter1Editable")
         self.assertEqual(s.user.userprofile.language, "ab")
+        self.assertEqual(s.mailing_type, u'2')
 
         userprofile = s.user.userprofile
         for k, v in data['user']['userprofile'].iteritems():

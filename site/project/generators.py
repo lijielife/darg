@@ -166,11 +166,13 @@ class ShareholderGenerator(object):
         number = kwargs.get('number') or random.choice(words)+"234543"
         user = kwargs.get('user') or _make_user()
         company = kwargs.get('company') or CompanyGenerator().generate()
+        mailing_type = kwargs.get('mailing_type') or 1
 
         shareholder = Shareholder.objects.create(
             user=user,
             number=number,
             company=company,
+            mailing_type=mailing_type
         )
 
         return shareholder

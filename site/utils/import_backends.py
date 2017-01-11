@@ -182,7 +182,12 @@ class SisWareImportBackend(BaseImportBackend):
             city=row[16], country=row[17], language=row[20], birthday=row[19],
             c_o=row[18], nationality=row[22])
         # SHAREHOLDER
-        shareholder = self._get_or_create_shareholder(row[0], user)
+        shareholder = self._get_or_create_shareholder(row[0], user,
+                                                      mailing_type=row[21])
+        # SECURITY
+        self._get_or_create_security(
+            face_value=float(row[25].replace(',', '.')), cusip=row[24])
+
         # POSITION
         if not row[27]:
             self._get_or_create_position(
@@ -209,21 +214,32 @@ class SisWareImportBackend(BaseImportBackend):
         # FIXME update security.count
         logger.warning('import finishing not implemented')
 
-    def _get_or_create_shareholder(self, shareholder_number, user):
+    def _get_or_create_shareholder(self, shareholder_number, user,
+                                   mailing_type):
+        MAILING_TYPE_MAP = {
+            'Papier': '1',
+            'Unzustellbar': '0',
+        }
+        mailing_type = MAILING_TYPE_MAP[mailing_type]
         shareholder, c_ = Shareholder.objects.get_or_create(
             number=shareholder_number, company=self.company,
             defaults={'company': self.company,
                       'number': shareholder_number,
-                      'user': user
+                      'user': user,
+                      'mailing_type': mailing_type
                       }
         )
         return shareholder
 
-    def _get_or_create_security(self, face_value):
+    def _get_or_create_security(self, face_value, cusip=None):
+
+        kwargs = {'count': 1}
+        if cusip:
+            kwargs.update({'cusip': cusip})
 
         security, c_ = Security.objects.get_or_create(
             title='R', face_value=face_value,
-            company=self.company, count=1)  # count=1 intermediary
+            company=self.company, defaults=kwargs)  # count=1 intermediary
 
         return security
 

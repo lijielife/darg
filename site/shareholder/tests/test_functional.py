@@ -52,7 +52,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                 (By.CSS_SELECTOR, 'tr.shareholder-number span.el-icon-pencil'))
             self.assertIn(
                 self.buyer.user.userprofile.get_legal_type_display(),
-                p.get_field('legal_type'))
+                p.get_field('legal-type'))
 
             profile = self.buyer.user.userprofile
             profile.legal_type = 'C'
@@ -61,7 +61,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
             p.wait_until_visible(
                 (By.CSS_SELECTOR, 'tr.shareholder-number span.el-icon-pencil'))
             self.assertIn(profile.get_legal_type_display(),
-                          p.get_field('legal_type'))
+                          p.get_field('legal-type'))
 
         except Exception, e:
             self._handle_exception(e)
@@ -138,17 +138,45 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                 )
             # wait for 'link'
             p.wait_until_visible(
-                (By.CSS_SELECTOR, 'tr.shareholder-number span.el-icon-pencil'))
-            p.click_to_edit("legal_type")
-            p.select_legal_type("legal_type", _('Corporate'))
-            p.save_edit("legal_type")
+                (By.CSS_SELECTOR, '.legal-type span.el-icon-pencil'))
+            p.click_to_edit("legal-type")
+            p.select_type("legal-type", _('Corporate'))
+            p.save_edit("legal-type")
             # wait for form to disappear
             p.wait_until_invisible(
-                (By.CSS_SELECTOR, 'tr.shareholder-number form'))
+                (By.CSS_SELECTOR, '.legal-type form'))
 
-            time.sleep(2)
             self.buyer.user.userprofile.refresh_from_db()
             self.assertEqual(self.buyer.user.userprofile.legal_type, 'C')
+
+        except Exception, e:
+            self._handle_exception(e)
+
+    def test_edit_mailing_type(self):
+        """ edit mailing type for user """
+        try:
+
+            self.assertEqual(self.buyer.mailing_type, 1)
+
+            p = page.ShareholderDetailPage(
+                self.selenium, self.live_server_url, self.operator.user,
+                path=reverse(
+                    'shareholder',
+                    kwargs={'pk': self.buyer.id}
+                    )
+                )
+            # wait for 'link'
+            p.wait_until_visible(
+                (By.CSS_SELECTOR, '.mailing-type span.el-icon-pencil'))
+            p.click_to_edit("mailing-type")
+            p.select_type("mailing-type", _('via Email'))
+            p.save_edit("mailing-type")
+            # wait for form to disappear
+            p.wait_until_invisible(
+                (By.CSS_SELECTOR, '.mailing-type form'))
+
+            self.buyer.refresh_from_db()
+            self.assertEqual(self.buyer.mailing_type, '2')
 
         except Exception, e:
             self._handle_exception(e)

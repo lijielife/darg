@@ -72,7 +72,7 @@
         {% verbatim %}<span editable-text="shareholder.user.email" onaftersave="edit_shareholder()">{{ shareholder.user.email || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
       </td>
     </tr>
-    <tr class="legal_type">
+    <tr class="legal-type">
       <td>{% trans "Shareholder Legal Type" %}:</td>
       <td>
         {% verbatim %}
@@ -93,6 +93,17 @@
       <td>{% trans "Shareholder Company Department" %}:</td>
       <td>
         {% verbatim %}<span editable-text="shareholder.user.userprofile.company_department" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.company_department || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="mailing-type">
+      <td>{% trans "Mailing Type" %}:</td>
+      <td>
+        {% verbatim %}
+        <span editable-select="shareholder.mailing_type" onaftersave="edit_shareholder()" e-ng-options="l as l.name for l in mailing_types">
+          {{ shareholder.readable_mailing_type || 'Versandart' }}
+          <span class="el-icon-pencil"></span>
+        </span>
+        {% endverbatim %}
       </td>
     </tr>
     <tr>
@@ -187,12 +198,19 @@
   <div class="table-responsive">
     <table class="stock table table-striped">
     <thead><tr>
-    <th>{% trans "security" %}</th>
+      <th>{% trans "security" %}</th>
+      <th>{% trans "cusip" %}</th>
       <th>{% trans "count" %}</th>
       <th>{% trans "segments" %}</th>
-    </tr></thead>
+    </tr>
+  </thead>
   {% for security in securities %}
-      <tr class="security"><td>{{ security.get_title_display }}</td><td>{{ security.count }}</td>{% if security.segments %}<td>{{ security.segments }}</td>{% else %}<td></td>{% endif %}</tr>
+    <tr class="security">
+      <td>{{ security }}</td>
+      <td>{% if security.cusip %}{{ security.cusip }}{% endif %}</td>
+	  <td>{{ security.count }}</td>
+	  {% if security.segments %}<td>{{ security.segments }}</td>{% else %}<td></td>{% endif %}
+	</tr>
   {% endfor %}
   </table>
   </div>

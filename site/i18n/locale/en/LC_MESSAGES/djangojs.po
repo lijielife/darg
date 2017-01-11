@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-06 10:04+0000\n"
+"POT-Creation-Date: 2017-01-11 08:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,15 +24,15 @@ msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:4
 #: static/compiled/javascript/i18n_noop.js:23
-#: static/compiled/javascript/script.js:1238
-#: static/compiled/javascript/script.js:1260
+#: static/compiled/javascript/script.js:1330
+#: static/compiled/javascript/script.js:1352
 msgid "Last Name"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:5
 #: static/compiled/javascript/i18n_noop.js:24
-#: static/compiled/javascript/script.js:1235
-#: static/compiled/javascript/script.js:1257
+#: static/compiled/javascript/script.js:1327
+#: static/compiled/javascript/script.js:1349
 msgid "Shareholder Number"
 msgstr ""
 
@@ -195,26 +195,38 @@ msgstr ""
 msgid "No security segments available for option plan on selected date or now."
 msgstr ""
 
-#: static/compiled/javascript/script.js:1068
+#: static/compiled/javascript/script.js:1095
 msgid ""
 "Available security segments from this shareholder on selected date or now: "
 msgstr ""
 
-#: static/compiled/javascript/script.js:1070
+#: static/compiled/javascript/script.js:1097
 msgid ""
 "Available security segments from this shareholder on selected date or now: "
 "None"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1114
+#: static/compiled/javascript/script.js:1169
 msgid "Human Being"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1117
+#: static/compiled/javascript/script.js:1172
 msgid "Corporate"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1232
-#: static/compiled/javascript/script.js:1254
+#: static/compiled/javascript/script.js:1178
+msgid "Not deliverable"
+msgstr ""
+
+#: static/compiled/javascript/script.js:1181
+msgid "Postal Mail"
+msgstr ""
+
+#: static/compiled/javascript/script.js:1184
+msgid "via Email"
+msgstr ""
+
+#: static/compiled/javascript/script.js:1324
+#: static/compiled/javascript/script.js:1346
 msgid "Email"
 msgstr ""

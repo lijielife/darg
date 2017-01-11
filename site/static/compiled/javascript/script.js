@@ -1173,8 +1173,20 @@
           value: 'C'
         }
       ];
+      $scope.mailing_types = [
+        {
+          name: gettext('Not deliverable'),
+          value: '0'
+        }, {
+          name: gettext('Postal Mail'),
+          value: '1'
+        }, {
+          name: gettext('via Email'),
+          value: '2'
+        }
+      ];
       $http.get('/services/rest/shareholders/' + shareholder_id).then(function(result) {
-        var legal_type;
+        var legal_type, mailing_type;
         if (result.data.user.userprofile.birthday !== null) {
           result.data.user.userprofile.birthday = new Date(result.data.user.userprofile.birthday);
         }
@@ -1192,7 +1204,11 @@
         legal_type = $scope.legal_types.filter(function(obj) {
           return obj.value === $scope.shareholder.user.userprofile.legal_type;
         });
-        return $scope.shareholder.user.userprofile.legal_type = legal_type[0];
+        $scope.shareholder.user.userprofile.legal_type = legal_type[0];
+        mailing_type = $scope.mailing_types.filter(function(obj) {
+          return obj.value === $scope.shareholder.mailing_type;
+        });
+        return $scope.shareholder.mailing_type = mailing_type[0];
       });
       $http.get('/services/rest/country').then(function(result) {
         return $scope.countries = result.data.results;
@@ -1218,6 +1234,9 @@
         }
         if ($scope.shareholder.user.userprofile.legal_type.value) {
           $scope.shareholder.user.userprofile.legal_type = $scope.shareholder.user.userprofile.legal_type.value;
+        }
+        if ($scope.shareholder.mailing_type) {
+          $scope.shareholder.mailing_type = $scope.shareholder.mailing_type.value;
         }
         return $scope.shareholder.$update().then(function(result) {
           if (result.user.userprofile.birthday !== null) {

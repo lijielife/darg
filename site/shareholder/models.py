@@ -348,9 +348,18 @@ class UserProfile(models.Model):
 
 class Shareholder(models.Model):
 
+    MAILING_TYPES = [
+        ('0', _('Not deliverable')),
+        ('1', _('Postal Mail')),
+        ('2', _('via Email')),
+    ]
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     company = models.ForeignKey('Company', verbose_name="Shareholders Company")
     number = models.CharField(max_length=255)
+    mailing_type = models.CharField(
+        _('how should the shareholder be approached by the corp'), max_length=1,
+        choices=MAILING_TYPES, blank=True, null=True)
 
     def __unicode__(self):
         return u'{} {} (#{})'.format(
@@ -380,7 +389,6 @@ class Shareholder(models.Model):
             else:
                 return u"{}".format(self.user.userprofile.company_name)
         return u"{} {}".format(self.user.first_name, self.user.last_name)
-
 
     def get_number_segments_display(self):
         """
@@ -736,6 +744,9 @@ class Security(models.Model):
     number_segments = JSONField(
         _('JSON list of segments of ids for securities. can be 1, 2, 3, 4-10'),
         default=list)
+    cusip = models.CharField(
+        _('public security id aka Valor, WKN, CUSIP: http://bit.ly/2ieXwuK'),
+        max_length=255, blank=True, null=True)
 
     # settings
     track_numbers = models.BooleanField(
@@ -926,7 +937,10 @@ class OptionTransaction(models.Model):
         """
         permission method to check if user is permitted to view obj
         """
-        if user == self.buyer.user or (self.seller and user == self.seller.user):
+        if (
+                user == self.buyer.user or
+                (self.seller and user == self.seller.user)
+        ):
             return True
 
         # user is an operator

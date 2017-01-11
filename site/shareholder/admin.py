@@ -52,7 +52,9 @@ class PositionAdmin(VersionAdmin):
 
 class UserProfileAdmin(VersionAdmin):
     list_display = ('pk',)
-    pass
+    search_fields = [
+        'user__first_name', 'user__email', 'user__last_name'
+    ]
 
 
 class CountryAdmin(VersionAdmin):
