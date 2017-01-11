@@ -206,10 +206,10 @@
   </thead>
   {% for security in securities %}
     <tr class="security">
-      <td>{{ security }}</td>
-      <td>{% if security.cusip %}{{ security.cusip }}{% endif %}</td>
-	  <td>{{ security.count }}</td>
-	  {% if security.segments %}<td>{{ security.segments }}</td>{% else %}<td></td>{% endif %}
+      <td class="name">{{ security }}</td>
+      <td class="cusip">{% if security.cusip %}{{ security.cusip }}{% endif %}</td>
+	  <td class="count">{{ security.count }}</td>
+	  {% if security.segments %}<td class="number-segments">{{ security.segments }}</td>{% else %}<td></td>{% endif %}
 	</tr>
   {% endfor %}
   </table>

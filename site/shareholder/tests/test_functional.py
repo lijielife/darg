@@ -50,6 +50,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
             # wait for 'link'
             p.wait_until_visible(
                 (By.CSS_SELECTOR, 'tr.shareholder-number span.el-icon-pencil'))
+            time.sleep(1)
             self.assertIn(
                 self.buyer.user.userprofile.get_legal_type_display(),
                 p.get_field('legal-type'))

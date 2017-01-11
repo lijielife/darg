@@ -53,7 +53,7 @@ class ShareholderDetailPage(BasePage):
         el.clear()
         el.send_keys(str(value))
 
-    def select_type(self, class_name, legal_type):
+    def select_legal_type(self, class_name, legal_type):
         row = self.driver.find_element_by_class_name(class_name)
         select = row.find_element_by_tag_name('select')
         select = Select(select)
@@ -82,8 +82,15 @@ class ShareholderDetailPage(BasePage):
         t = self.driver.find_element_by_xpath(
             '//table[contains(@class, "stock")]')
         for tr in t.find_elements_by_class_name('security'):
-            tds = tr.find_elements_by_tag_name('td')
-            secs.extend([tds[1].text, tds[2].text])
+            if tr.find_elements_by_class_name('number-segments'):
+                segments = tr.find_element_by_class_name(
+                               'number-segments').text
+            else:
+                segments = u''
+            secs.extend([
+                tr.find_element_by_class_name('count').text,
+                segments
+                ])
 
         return secs
 
