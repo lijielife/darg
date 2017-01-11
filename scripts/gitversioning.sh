@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ ! -d "scripts" ]; then
+  echo 'this script must be executed from project root'
+fi
+
 #get highest tag number
 VERSION=`git describe --abbrev=0 --tags`
 

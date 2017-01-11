@@ -9,3 +9,4 @@ mock
 nose-progressive
 pdbpp
 nose-enhanced-descriptions
+isort

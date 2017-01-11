@@ -13,13 +13,31 @@ app.controller 'ShareholderController', ['$scope', '$http', 'Shareholder', ($sco
     $scope.languages = []
     $scope.errors = null
 
+    $scope.legal_types = [
+        {name: gettext('Human Being'), value: 'H'},
+        {name: gettext('Corporate'), value: 'C'},
+    ]
+
     $http.get('/services/rest/shareholders/' + shareholder_id).then (result) ->
+        # convert birthay to JS obj
         if result.data.user.userprofile.birthday != null
             result.data.user.userprofile.birthday = new Date(result.data.user.userprofile.birthday)
+
+        # create Shareholder JS obj
         $scope.shareholder = new Shareholder(result.data)
+
+        # fetch country/nationality hyperlinked obj
         if $scope.shareholder.user.userprofile.country
             $http.get($scope.shareholder.user.userprofile.country).then (result1) ->
                 $scope.shareholder.user.userprofile.country = result1.data
+        if $scope.shareholder.user.userprofile.nationality
+            $http.get($scope.shareholder.user.userprofile.nationality).then (result1) ->
+                $scope.shareholder.user.userprofile.nationality = result1.data
+        # assign legal type obj
+        legal_type = $scope.legal_types.filter (obj) ->
+            return obj.value == $scope.shareholder.user.userprofile.legal_type
+
+        $scope.shareholder.user.userprofile.legal_type = legal_type[0]
 
     $http.get('/services/rest/country').then (result) ->
             $scope.countries = result.data.results
@@ -30,15 +48,25 @@ app.controller 'ShareholderController', ['$scope', '$http', 'Shareholder', ($sco
     # ATTENTION: django eats a url, angular eats an object.
     # hence needs conversion
     $scope.edit_shareholder = () ->
+        # change birthday to rest format
         if $scope.shareholder.user.userprofile.birthday
             # http://stackoverflow.com/questions/1486476/json-stringify-changes-time-of-date-because-of-utc
             date = $scope.shareholder.user.userprofile.birthday
             date.setHours(date.getHours() - date.getTimezoneOffset() / 60)
             $scope.shareholder.user.userprofile.birthday = date
+        # replace country obj by hyperlink
         if $scope.shareholder.user.userprofile.country
             $scope.shareholder.user.userprofile.country = $scope.shareholder.user.userprofile.country.url
+        # replace nationality obj by hyperlink
+        if $scope.shareholder.user.userprofile.nationality
+            $scope.shareholder.user.userprofile.nationality = $scope.shareholder.user.userprofile.nationality.url
+        # replace language obj by hyperlink
         if $scope.shareholder.user.userprofile.language
             $scope.shareholder.user.userprofile.language = $scope.shareholder.user.userprofile.language.iso
+        # replace legal type obj by str
+        if $scope.shareholder.user.userprofile.legal_type.value
+            $scope.shareholder.user.userprofile.legal_type = $scope.shareholder.user.userprofile.legal_type.value
+        # --- SAVE
         $scope.shareholder.$update().then (result) ->
             if result.user.userprofile.birthday != null
                 result.user.userprofile.birthday = new Date(result.user.userprofile.birthday)
@@ -46,6 +74,9 @@ app.controller 'ShareholderController', ['$scope', '$http', 'Shareholder', ($sco
             if $scope.shareholder.user.userprofile.country
                 $http.get($scope.shareholder.user.userprofile.country).then (result1) ->
                     $scope.shareholder.user.userprofile.country = result1.data
+            if $scope.shareholder.user.userprofile.nationality
+                $http.get($scope.shareholder.user.userprofile.nationality).then (result1) ->
+                    $scope.shareholder.user.userprofile.nationality = result1.data
         .then ->
             # Reset our editor to a new blank post
             #$scope.company = new Company()

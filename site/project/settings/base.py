@@ -30,7 +30,7 @@ def get_env_variable(var_name, fail_on_error=True):
     return env_var
 
 
-VERSION = '0.3.93'
+VERSION = '0.3.100'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
@@ -47,10 +47,6 @@ SITE_ID = 1
 
 ALLOWED_HOSTS = [
     'www.das-aktienregister.ch',
-    'app.das-aktienregister.ch',
-    'www.dasaktienregister.ch',
-    'dasaktienregister.ch',
-    'das-aktienregister.ch',
     ]
 
 # Application definition
@@ -81,6 +77,12 @@ INSTALLED_APPS = (
     'django_celery_results',
     'django_celery_beat',
 
+    # OTP
+    'django_otp',
+    'django_otp.plugins.otp_static',
+    'django_otp.plugins.otp_totp',
+    'two_factor',
+
     # -- zinnia
     'django_comments',
     'mptt',
@@ -102,6 +104,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',
+    'two_factor.middleware.threadlocals.ThreadLocals',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -259,7 +263,16 @@ REGISTRATION_OPEN = True        # If True, users can register
 ACCOUNT_ACTIVATION_DAYS = 7     # One-week activation window; you may, of cour
 REGISTRATION_AUTO_LOGIN = True  # If True, the user will be automatically logg
 LOGIN_REDIRECT_URL = '/start/'  # The page you want users to arrive at after t
-LOGIN_URL = '/accounts/login/'  # The page users are directed to if they are n
+LOGIN_URL = 'two_factor:login'  # The page users are directed to if they are n
+
+# --- TWO FACTOR AUTH
+TWO_FACTOR_PATCH_ADMIN = True
+TWO_FACTOR_CALL_GATEWAY = 'two_factor.gateways.twilio.gateway.Twilio'
+TWO_FACTOR_SMS_GATEWAY = 'two_factor.gateways.twilio.gateway.Twilio'
+PHONENUMBER_DEFAULT_REGION = '+41'
+TWILIO_ACCOUNT_SID = ''
+TWILIO_AUTH_TOKEN = ''
+TWILIO_CALLER_ID = ''
 
 # --- REST
 REST_FRAMEWORK = {

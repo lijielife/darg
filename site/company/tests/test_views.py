@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from django.test import TestCase, Client
+from django.test import TestCase, Client, override_settings
 from django.core.urlresolvers import reverse
 from django.utils.translation import gettext as _
 
@@ -17,6 +17,7 @@ class CompanyAdminDetailViewTestCase(TestCase):
         self.company = CompanyGenerator().generate()
         self.user = UserGenerator().generate()
 
+    @override_settings(DEBUG=True)
     def test_view(self):
 
         self.user.is_superuser = True

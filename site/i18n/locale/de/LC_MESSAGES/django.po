@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-24 05:37+0000\n"
-"PO-Revision-Date: 2016-11-30 20:37+0000\n"
+"POT-Creation-Date: 2017-01-10 20:15+0000\n"
+"PO-Revision-Date: 2017-01-10 13:01+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Translated-Using: django-rosetta 0.7.12\n"
 
@@ -73,7 +73,7 @@ msgstr "Land des Unternehmenssitzes"
 msgid "Securities"
 msgstr "Aktienart"
 
-#: company/templates/company.html:128 company/tests/test_views.py:53
+#: company/templates/company.html:128 company/tests/test_views.py:54
 msgid "tracking security numbers for owners enabled. segments:"
 msgstr "Nummerierte Aktiensegmente:"
 
@@ -137,70 +137,45 @@ msgstr "Transaktionen"
 msgid "Options"
 msgstr "Optionen"
 
-#: templates/menu.html:43
-msgid "Other"
-msgstr "Mehr"
+#: templates/menu.html:46
+msgid "Logged in as"
+msgstr "Eingeloggt als "
 
-#: templates/menu.html:47
+#: templates/menu.html:57
 msgid "Admin"
 msgstr "Admin"
 
-#: templates/menu.html:50
+#: templates/menu.html:60
 msgid "I18N"
 msgstr "I18N"
 
-#: templates/menu.html:54 templates/registration/password_reset_form.html:4
+#: templates/menu.html:64 templates/registration/password_reset_form.html:4
 #: templates/registration/password_reset_form.html:14
 #: templates/registration/password_reset_form.html:33
 msgid "Reset password"
 msgstr "Passwort zurücksetzen"
 
-#: templates/menu.html:55 templates/registration/password_change_form.html:4
+#: templates/menu.html:65 templates/registration/password_change_form.html:4
 #: templates/registration/password_change_form.html:12
 msgid "Change password"
 msgstr "Passwort ändern"
 
-#: templates/menu.html:62
-msgid "Logged in as"
-msgstr "Eingeloggt als "
+#: templates/menu.html:68
+msgid "Security Settings"
+msgstr "Sicherheitseinstellungen"
 
-#: templates/menu.html:64
+#: templates/menu.html:70
 msgid "Logout"
 msgstr "Logout"
 
-#: templates/menu.html:68 templates/registration/login.html:22
+#: templates/menu.html:76 templates/two_factor/core/login.html:55
 msgid "Register"
 msgstr "Registrieren"
 
-#: templates/menu.html:71 templates/registration/registration_form.html:21
+#: templates/menu.html:79 templates/registration/registration_form.html:26
+#: templates/two_factor/core/login.html:6
 msgid "Login"
 msgstr "Login"
-
-#: templates/registration/login.html:17
-msgid "Log in"
-msgstr "Login"
-
-#: templates/registration/login.html:21
-msgid "Not  a member?"
-msgstr "Noch nicht registriert?"
-
-#: templates/registration/login.html:25
-msgid "Password lost?"
-msgstr "Passwort vergessen?"
-
-#: templates/registration/login.html:26
-msgid "Reset Password"
-msgstr "Passwort zurücksetzen"
-
-#: templates/registration/login.html:29
-#: templates/registration/registration_form.html:24
-msgid "Do you know our "
-msgstr "Kennen Sie unseren"
-
-#: templates/registration/login.html:30
-#: templates/registration/registration_form.html:24
-msgid "Blog"
-msgstr "Blog"
 
 #: templates/registration/logout.html:10
 msgid "Logged Out"
@@ -256,8 +231,8 @@ msgid ""
 "The password reset link was invalid, possibly because it has already been "
 "used.  Please request a new password reset."
 msgstr ""
-"Der Link zum Passwort-zurücksetzen ist nicht gültig. Wahrscheinlich wurde er"
-" bereits benutzt. Bitte fragen Sie diesen erneut an."
+"Der Link zum Passwort-zurücksetzen ist nicht gültig. Wahrscheinlich wurde er "
+"bereits benutzt. Bitte fragen Sie diesen erneut an."
 
 #: templates/registration/password_reset_done.html:4
 #: templates/registration/password_reset_done.html:14
@@ -267,12 +242,14 @@ msgstr "Passwort zurücksetzen"
 #: templates/registration/password_reset_done.html:17
 msgid ""
 "\n"
-"    We have sent you an email with a link to reset your password.  Please check\n"
+"    We have sent you an email with a link to reset your password.  Please "
+"check\n"
 "    your email and click the link to continue.\n"
 "    "
 msgstr ""
 "\n"
-"Wir haben Ihnen eine Email mit einem Link zum Zurücksetzen Ihres Passwortes gesendet. Bitte öffnen Sie Ihre Email und klicken Sie diesen Link."
+"Wir haben Ihnen eine Email mit einem Link zum Zurücksetzen Ihres Passwortes "
+"gesendet. Bitte öffnen Sie Ihre Email und klicken Sie diesen Link."
 
 #: templates/registration/password_reset_email.html:3
 msgid "Greetings"
@@ -283,20 +260,25 @@ msgstr "Mit besten Grüssen"
 msgid ""
 "\n"
 "You are receiving this email because you (or someone pretending to be you)\n"
-"requested that your password be reset on the %(domain)s site.  If you do not\n"
+"requested that your password be reset on the %(domain)s site.  If you do "
+"not\n"
 "wish to reset your password, please ignore this message.\n"
 msgstr ""
 "\n"
-"Sie erhalten diese Email da Sie (oder jemand der vorgibt Sie zu sein) das Zurücksetzen des Passworts auf der Seite %(domain)s angefragt haben. Falls Sie dies nicht waren, ignorieren Sie bitte diese Email.\n"
+"Sie erhalten diese Email da Sie (oder jemand der vorgibt Sie zu sein) das "
+"Zurücksetzen des Passworts auf der Seite %(domain)s angefragt haben. Falls "
+"Sie dies nicht waren, ignorieren Sie bitte diese Email.\n"
 
 #: templates/registration/password_reset_email.html:11
 msgid ""
 "\n"
-"To reset your password, please click the following link, or copy and paste it\n"
+"To reset your password, please click the following link, or copy and paste "
+"it\n"
 "into your web browser:\n"
 msgstr ""
 "\n"
-"Um ihr Passwort zurückzusetzen, klicken Sie bitte den folgenden Link oder kopieren Sie diesen in die Adress-Leiste Ihres Browsers:\n"
+"Um ihr Passwort zurückzusetzen, klicken Sie bitte den folgenden Link oder "
+"kopieren Sie diesen in die Adress-Leiste Ihres Browsers:\n"
 
 #: templates/registration/password_reset_email.html:18
 msgid "Your username, in case you've forgotten:"
@@ -313,11 +295,14 @@ msgstr "Team"
 #: templates/registration/password_reset_form.html:17
 msgid ""
 "\n"
-"    Forgot your password?  Enter your email in the form below and we'll send you instructions for creating a new one.\n"
+"    Forgot your password?  Enter your email in the form below and we'll send "
+"you instructions for creating a new one.\n"
 "    "
 msgstr ""
 "\n"
-"Sie haben Ihr Passwort vergessen? Geben Sie Ihre Email in das Formular unten ein. Wir senden Ihnen genauere Instruktionen für die Erstellung eines neuen zu."
+"Sie haben Ihr Passwort vergessen? Geben Sie Ihre Email in das Formular unten "
+"ein. Wir senden Ihnen genauere Instruktionen für die Erstellung eines neuen "
+"zu."
 
 #: templates/registration/registration_complete.html:11
 msgid "Registration Complete"
@@ -327,17 +312,140 @@ msgstr "Registrierung vollständig"
 msgid "You are now registered. Start here:"
 msgstr "Sie sind jetzt registriert. Starten Sie hier:"
 
-#: templates/registration/registration_form.html:12
+#: templates/registration/registration_form.html:11
 msgid "Register Here"
 msgstr "Erstellen Sie Ihr Online-Aktienbuch:"
 
-#: templates/registration/registration_form.html:16
+#: templates/registration/registration_form.html:21
 msgid "Sign up now"
 msgstr "Jetzt registrieren"
 
-#: templates/registration/registration_form.html:20
+#: templates/registration/registration_form.html:25
 msgid "Already registered?"
 msgstr "Bereits registriert?"
+
+#: templates/registration/registration_form.html:29
+#: templates/two_factor/core/login.html:62
+msgid "Do you know our "
+msgstr "Kennen Sie unseren"
+
+#: templates/registration/registration_form.html:29
+#: templates/two_factor/core/login.html:63
+msgid "Blog"
+msgstr "Blog"
+
+#: templates/two_factor/core/backup_tokens.html:6
+msgid "Backup Tokens"
+msgstr "Backup-Token"
+
+#: templates/two_factor/core/backup_tokens.html:7
+msgid ""
+"Backup tokens can be used when your primary and backup\n"
+"      phone numbers aren't available. The backup tokens below can be used\n"
+"      for login verification. If you've used up all your backup tokens, you\n"
+"      can generate a new set of backup tokens. Only the backup tokens shown\n"
+"      below will be valid."
+msgstr ""
+"Backup-Token können verwendet werden wenn sowohl die erste und zweite "
+"registrierte Telefonnummer nicht zur Verfügung stehen. Diese Token können "
+"verwendet werden, um sich anzumelden. Wenn Sie alle Token verwendet haben, "
+"können Sie entsprechend neue generieren. Nur die unten angezeigten Token "
+"sind valide."
+
+#: templates/two_factor/core/backup_tokens.html:19
+msgid "Print these tokens and keep them somewhere safe."
+msgstr "Drucken Sie diese Token aus und verwahren Sie diese sicher."
+
+#: templates/two_factor/core/backup_tokens.html:21
+msgid "You don't have any backup codes yet."
+msgstr "Sie haben noch keine Backup-Token"
+
+#: templates/two_factor/core/backup_tokens.html:26
+msgid "Back to Account Security"
+msgstr "Zurück zu Sicherheitseinstellungen"
+
+#: templates/two_factor/core/backup_tokens.html:27
+msgid "Generate Tokens"
+msgstr "Token erstellen"
+
+#: templates/two_factor/core/login.html:9
+msgid "Enter your credentials."
+msgstr "Bitte geben Sie Ihre Zugangsdaten ein"
+
+#: templates/two_factor/core/login.html:12
+msgid ""
+"We are calling your phone right now, please enter the\n"
+"        digits you hear."
+msgstr ""
+"Wir rufen Sie gerade an. Bitte geben Sie die Zahlenkombination ein, welche "
+"Ihnen am Telefon angesagt wird."
+
+#: templates/two_factor/core/login.html:15
+msgid ""
+"We sent you a text message, please enter the tokens we\n"
+"        sent."
+msgstr ""
+"Wir haben Ihnen eine Text-Nachricht gesendet. Bitte geben Sie den "
+"zugesendeten Token ein."
+
+#: templates/two_factor/core/login.html:18
+msgid ""
+"Please enter the tokens generated by your token\n"
+"        generator."
+msgstr ""
+"Bitte geben Sie den Token ein, welchen Ihr Token-Generator (Google "
+"Authenticator) erzeugt hat."
+
+#: templates/two_factor/core/login.html:22
+msgid ""
+"Use this form for entering backup tokens for logging in.\n"
+"      These tokens have been generated for you to print and keep safe. "
+"Please\n"
+"      enter one of these backup tokens to login to your account."
+msgstr ""
+"Verwenden Sie dieses Formular um Backup-Token für das Login einzugeben. "
+"Diese Token wurden von Ihnen vorab generiert und ausgedruckt. Bitte geben "
+"Sie jetzt einen dieser Backup-Token ein, um sich in Ihr Konto einzuloggen."
+
+#: templates/two_factor/core/login.html:34
+msgid "Or, alternatively, use one of your backup phones:"
+msgstr "Oder verwenden Sie alternativ eine Ihrer Backup-Telefonnummern:"
+
+#: templates/two_factor/core/login.html:44
+msgid "As a last resort, you can use a backup token:"
+msgstr "Als letzte Sicherheit können Sie Backup-Token verwenden:"
+
+#: templates/two_factor/core/login.html:47
+msgid "Use Backup Token"
+msgstr "Verwenden Sie die Backup-Token"
+
+#: templates/two_factor/core/login.html:54
+msgid "Not  a member?"
+msgstr "Noch nicht registriert?"
+
+#: templates/two_factor/core/login.html:58
+msgid "Password lost?"
+msgstr "Passwort vergessen?"
+
+#: templates/two_factor/core/login.html:59
+msgid "Reset Password"
+msgstr "Passwort zurücksetzen"
+
+#: templates/two_factor/profile/disable.html:6
+msgid "Disable Two-factor Authentication"
+msgstr "Zwei-Faktor-Authentifizierung deaktivieren"
+
+#: templates/two_factor/profile/disable.html:7
+msgid ""
+"You are about to disable two-factor authentication. This\n"
+"    compromises your account security, are you sure?"
+msgstr ""
+"Sie wollen die Zwei-Faktor-Authentifizierung deaktivieren. Dies wird die "
+"Sicherheit Ihrer Daten reduzieren. Sind Sie sicher?"
+
+#: templates/two_factor/profile/disable.html:15
+msgid "Disable"
+msgstr "Deaktivieren"
 
 #: templates/zinnia/base.html:10
 msgid "RSS feed of latest entries"
@@ -427,6 +535,20 @@ msgstr "Links"
 #: templates/zinnia/skeleton.html:74 templates/zinnia/skeleton.html:75
 msgid "Weblog index"
 msgstr "Blog Start"
+
+#: utils/geo.py:31
+msgid "German"
+msgstr "Deutsch"
+
+#: utils/import_backends.py:267
+msgid "Default OptionPlan for {}"
+msgstr "Default Optionsplan für {}"
+
+#~ msgid "Log in"
+#~ msgstr "Login"
+
+#~ msgid "Other"
+#~ msgstr "Mehr"
 
 #~ msgid "Change Log"
 #~ msgstr "Änderungslog"

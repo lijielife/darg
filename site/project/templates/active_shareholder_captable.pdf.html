@@ -111,7 +111,7 @@
     <table>
       <tr class="panel {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
         <td>
-          {{ shareholder.user.first_name }} {{ shareholder.user.last_name }}
+          {{ shareholder.user.first_name }} {{ shareholder.user.last_name }} {{shareholder.user.userprofile.company_name }}
         </td>
         <td>
           {{ shareholder.user.email }}
@@ -150,7 +150,7 @@
     <table>
       <tr class="panel">
         <td>
-          {{ shareholder.user.first_name }} {{ shareholder.user.last_name }}
+          {{ shareholder.user.first_name }} {{ shareholder.user.last_name }} {{shareholder.user.userprofile.company_name }}
         </td>
         <td>
           {{ shareholder.user.email }}

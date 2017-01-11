@@ -1,33 +1,31 @@
-from django.conf.urls import include, url, patterns
-from django.contrib import admin
-from django.views.i18n import javascript_catalog
-from django.views.generic import TemplateView
 from django.conf import settings
+from django.conf.urls import include, patterns, url
 from django.conf.urls.static import static
-from django.contrib.flatpages.views import flatpage
+from django.contrib import admin
 from django.contrib.flatpages.sitemaps import FlatPageSitemap
-
-from zinnia.sitemaps import TagSitemap
-from zinnia.sitemaps import EntrySitemap
-from zinnia.sitemaps import CategorySitemap
-from zinnia.sitemaps import AuthorSitemap
-
+from django.contrib.flatpages.views import flatpage
+from django.views.generic import TemplateView
+from django.views.generic.base import RedirectView
+from django.views.i18n import javascript_catalog
+from registration.backends.simple.views import RegistrationView
 from rest_framework import routers
 from rest_framework.authtoken import views
-
-from registration.backends.simple.views import RegistrationView
+from two_factor.admin import AdminSiteOTPRequired
+from two_factor.gateways.twilio.urls import urlpatterns as tf_twilio_urls
+from two_factor.urls import urlpatterns as tf_urls
+from zinnia.sitemaps import (AuthorSitemap, CategorySitemap, EntrySitemap,
+                             TagSitemap)
 
 from project.forms import RegistrationForm
-
-from services.rest.views import (
-    ShareholderViewSet, CompanyViewSet, UserViewSet,
-    PositionViewSet,
-    InviteeUpdateView, AddCompanyView, CountryViewSet, OptionPlanViewSet,
-    SecurityViewSet, OptionTransactionViewSet, OperatorViewSet, AddShareSplit,
-    LanguageView, AvailableOptionSegmentsView
-)
-
-from shareholder.views import ShareholderView
+from services.rest.views import (AddCompanyView, AddShareSplit,
+                                 AvailableOptionSegmentsView, CompanyViewSet,
+                                 CountryViewSet, InviteeUpdateView,
+                                 LanguageView, OperatorViewSet,
+                                 OptionPlanViewSet, OptionTransactionViewSet,
+                                 PositionViewSet, SecurityViewSet,
+                                 ShareholderViewSet, UserViewSet)
+from shareholder.views import (OptionTransactionView, PositionView,
+                               ShareholderView)
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'shareholders', ShareholderViewSet, base_name="shareholders")
@@ -56,7 +54,11 @@ urlpatterns = [
     # web views
     url(r'^$', 'project.views.index', name='index'),  # landing page
     url(r'^start/$', 'project.views.start', name='start'),  # user home
+
     url(r'^positions/$', 'shareholder.views.positions', name='positions'),
+    url(r'^positions/(?P<pk>[0-9]+)/$',
+        PositionView.as_view(), name='position'),
+
     url(r'^shareholder/(?P<pk>[0-9]+)/$',
         ShareholderView.as_view(), name='shareholder'),
 
@@ -66,7 +68,11 @@ urlpatterns = [
         'project.views.captable_csv', name='captable_csv'),
     url(r'^company/(?P<company_id>[0-9]+)/download/pdf$',
         'project.views.captable_pdf', name='captable_pdf'),
+
     url(r'^options/$', 'shareholder.views.options', name='options'),
+    url(r'^options/(?P<pk>[0-9]+)/$',
+        OptionTransactionView.as_view(), name='optiontransaction'),
+
     url(r'^optionsplan/(?P<optionsplan_id>[0-9]+)/$',
         'shareholder.views.optionsplan', name='optionplan'),
     url(r'^optionsplan/(?P<optionsplan_id>[0-9]+)/download/pdf/$',
@@ -76,10 +82,16 @@ urlpatterns = [
         'shareholder.views.optionsplan_download_img',
         name='optionplan_download_img'),
 
-    # auth
+    # --- auth
+    # disable dj registration login
+    url(r'^accounts/login/$', RedirectView.as_view(url='/account/login/'),
+        name='auth_login'),
     url(r'^accounts/register/$', RegistrationView.as_view(
         form_class=RegistrationForm), name='registration_register'),
     url(r'^accounts/', include('registration.backends.simple.urls')),
+    url(r'^accounts/login/$', RedirectView.as_view(url='/account/login/'),
+        name='auth_login'),
+    url(r'', include(tf_urls + tf_twilio_urls, 'two_factor')),  # two factorauth
     url(r'^instapage/', 'project.views.instapage', name='instapage'),
 
     # rest api
@@ -109,6 +121,8 @@ urlpatterns = [
 ]
 
 # admin
+if not settings.DEBUG:
+    admin.site.__class__ = AdminSiteOTPRequired
 admin.autodiscover()
 admin_url = settings.DEBUG and r'^admin/' or r'^__adm/'
 urlpatterns += patterns(
