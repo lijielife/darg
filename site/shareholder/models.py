@@ -13,19 +13,23 @@ from django.contrib.sites.models import Site
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.core.validators import MinValueValidator
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Sum
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.loader import select_template
 from django.utils.formats import date_format
+from django.utils.module_loading import import_string
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _, activate as activate_lang
 from django_languages import fields as language_fields
 from rest_framework.authtoken.models import Token
 from sorl.thumbnail import get_thumbnail
 from dateutil.relativedelta import relativedelta
+from djstripe.models import Customer as DjStripeCustomer
 
+from shareholder.validators import ShareRegisterValidator
 from utils.formatters import (deflate_segments, flatten_list,
                               human_readable_segments, inflate_segments,
                               string_list_to_json)
@@ -34,6 +38,12 @@ from utils.pdf import render_pdf
 
 from .mixins import AddressModelMixin
 from .validators import validate_remote_email_id
+
+
+REGISTRATION_TYPES = [
+    ('1', _('Personal ownership')),
+    ('2', _('Personal representation')),
+]
 
 
 logger = logging.getLogger(__name__)
@@ -129,6 +139,13 @@ class Company(AddressModelMixin, models.Model):
         return Position.objects.filter(
             buyer__company=self, seller__isnull=True).count()
 
+    def full_validate(self):
+        """
+        entry point for entire share register validation
+        """
+        validator = ShareRegisterValidator(self)
+        return validator.is_valid()
+
     def get_active_shareholders(self, date=None):
         """ returns list of all active shareholders """
         shareholder_list = []
@@ -161,7 +178,7 @@ class Company(AddressModelMixin, models.Model):
             ):
                 logger.error('user sold more options then he got',
                              extra={'shareholder': sh})
-        return oh_list
+        return Shareholder.objects.filter(pk__in=[oh.pk for oh in oh_list])
 
     def get_all_option_plan_segments(self):
         """
@@ -173,7 +190,13 @@ class Company(AddressModelMixin, models.Model):
         return flatten_list(segments)
 
     def get_company_shareholder(self):
-        return self.shareholder_set.earliest('id')
+        """
+        return company shareholder, raise ValueError if not existing
+        """
+        try:
+            return self.shareholder_set.earliest('id')
+        except Shareholder.DoesNotExist:
+            raise ValueError('Company Shareholder does not exist')
 
     def get_operators(self):
         return self.operator_set.all().distinct()
@@ -302,25 +325,104 @@ class Company(AddressModelMixin, models.Model):
 
         self.save()
 
+    def has_feature_enabled(self, feature_name):
+        """
+        checks if `feature_name` is available in current subscription
+        """
+
+        customer = self.get_customer()
+        if not customer.has_active_subscription():
+            return False
+
+        feature_list = settings.PLAN_FEATURES.get(
+            self.get_current_subscription_plan, [])
+
+        return feature_name.lower() in feature_list
+
+    def get_current_subscription_plan(self):
+        """
+        return plan name of current subscription (if available)
+        """
+        customer = self.get_customer()
+        if customer.has_active_subscription():
+            return customer.current_subscription.plan
+
+    def get_customer(self):
+        """
+        returns djstripe.Customer object
+        """
+        customer, created = DjStripeCustomer.objects.get_or_create(
+            subscriber=self)
+        return customer
+
+    def validate_plan(self, plan_name, include_errors=True):
+        """
+        run all validators for company to check if given plan can be subscribed
+        if `include_errors` is True, a tuple is returned (bool, error_list)
+        """
+        validators = settings.PLAN_VALIDATORS.get(plan_name, [])
+        errors = []
+        for validator in validators:
+            validator_class = import_string(validator)
+            try:
+                validator_class(self)(plan_name)
+            except ValidationError as ex:
+                errors.append(ex)
+
+        result = bool(not errors)
+
+        if not include_errors:
+            return result
+
+        return (result, errors)
+
+    def can_subscribe_plan(self, plan_name):
+        """
+        check if company can subscribe to given plan
+        """
+        return self.validate_plan(plan_name, include_errors=False)
+
 
 class UserProfile(AddressModelMixin, models.Model):
+
+    # legal types of a user
+    LEGAL_TYPES = (
+        ('H', _('Human Being')),
+        ('C', _('Corporate')),
+    )
 
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL)
 
     language = language_fields.LanguageField(blank=True, null=True)
+    legal_type = models.CharField(
+        max_length=1, choices=LEGAL_TYPES, default='H',
+        help_text=_('legal type of the user'))
 
     company_name = models.CharField(max_length=255, blank=True, null=True)
+    company_department = models.CharField(max_length=255, blank=True, null=True)
     birthday = models.DateField(blank=True, null=True)
 
     ip = models.GenericIPAddressField(blank=True, null=True)
     tnc_accepted = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return u"%s, %s %s" % (self.city, self.province, self.country)
+        return u"%s, %s %s" % (self.city, self.province,
+                               str(self.country))
 
     class Meta:
         verbose_name_plural = "UserProfile"
+
+    def clean(self, *args, **kwargs):
+        super(UserProfile, self).clean(*args, **kwargs)
+
+        if self.legal_type == 'C' and not self.company_name:
+            raise ValidationError(_('user with legal type company must have '
+                                    'company name set'))
+
+        if not self.legal_type == 'C' and self.company_name:
+            raise ValidationError(_('user company must have legal type set to '
+                                    'company'))
 
 
 class Shareholder(models.Model):
@@ -330,7 +432,8 @@ class Shareholder(models.Model):
     number = models.CharField(max_length=255)
 
     def __unicode__(self):
-        return u'{}'.format(self.id)
+        return u'{} {} (#{})'.format(
+            self.user.first_name, self.user.last_name, self.number)
 
     def can_view(self, user):
         """
@@ -362,8 +465,7 @@ class Shareholder(models.Model):
         """
         returns bool if shareholder is company shareholder
         """
-        return Shareholder.objects.filter(
-            company=self.company).earliest('id').id == self.id
+        return self.company.shareholder_set.earliest('id').id == self.id
 
     def share_percent(self, date=None):
         """
@@ -397,7 +499,6 @@ class Shareholder(models.Model):
 
     def share_count(self, date=None, security=None):
         """ total count of shares for shareholder  """
-        date = date or datetime.datetime.now()
         qs_bought = self.buyer.all()
         qs_sold = self.seller.all()
 
@@ -695,6 +796,7 @@ class Security(models.Model):
     SECURITY_TITLES = (
         ('P', _('Preferred Stock')),
         ('C', _('Common Stock')),
+        ('R', _('Registered Shares')),
         # ('O', 'Option'),
         # ('W', 'Warrant'),
         # ('V', 'Convertible Instrument'),
@@ -702,7 +804,7 @@ class Security(models.Model):
     title = models.CharField(max_length=1, choices=SECURITY_TITLES)
     face_value = models.DecimalField(
         _('Nominal value of this asset'),
-        max_digits=16, decimal_places=8, blank=True,
+        max_digits=16, decimal_places=4, blank=True,
         null=True)
     company = models.ForeignKey(Company)
     count = models.PositiveIntegerField()
@@ -716,7 +818,11 @@ class Security(models.Model):
           'transaction with segments on enabling.'), default=False)
 
     def __unicode__(self):
-        return u"{} ({})".format(self.get_title_display(), self.company)
+        if self.face_value:
+            return _(u"{} ({} CHF)").format(
+                self.get_title_display(), int(self.face_value))
+
+        return self.get_title_display()
 
     def count_in_segments(self, segments=None):
         """
@@ -755,11 +861,15 @@ class Position(models.Model):
         _('Nominal value or payed price for the transaction'),
         max_digits=16, decimal_places=4, blank=True,
         null=True)
-    is_split = models.BooleanField(default=False)
+    is_split = models.BooleanField(
+        _('Position is part of a split transaction'), default=False)
     is_draft = models.BooleanField(default=True)
     number_segments = JSONField(
         _('JSON list of segments of ids for securities. can be 1, 2, 3, 4-10'),
         default=list, blank=True, null=True)
+    registration_type = models.CharField(
+        _('Securities are purchase type (for myself, etc.)'), max_length=1,
+        choices=REGISTRATION_TYPES, blank=True, null=True)
     comment = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -771,6 +881,28 @@ class Position(models.Model):
             self.value,
             self.buyer
         )
+
+    def can_view(self, user):
+        """
+        permission method to check if user is permitted to view obj
+        """
+        if user == self.buyer.user or user == self.seller.user:
+            return True
+
+        # user is an operator
+        if self.buyer.company.operator_set.filter(user=user).exists():
+            return True
+
+        return False
+
+    def get_position_type(self):
+        if not self.seller:
+            return _('Capital Increase')
+        if self.is_split:
+            return _('Part of Split')
+        if self.seller.is_company_shareholder():
+            return _('Share issue')
+        return _('Regular Ownership change')
 
 
 def get_option_plan_upload_path(instance, filename):
@@ -844,9 +976,15 @@ class OptionTransaction(models.Model):
     seller = models.ForeignKey('Shareholder', blank=True, null=True,
                                related_name="option_seller")
     vesting_months = models.PositiveIntegerField(blank=True, null=True)
+    certificate_id = models.CharField(
+        max_length=255, blank=True, null=True,
+        help_text=_('id of the issued certificate'))
     number_segments = JSONField(
         _('JSON list of segments of ids for securities. can be 1, 2, 3, 4-10'),
         default=list, blank=True, null=True)
+    registration_type = models.CharField(
+        _('Securities are purchase type (for myself, etc.)'), max_length=1,
+        choices=REGISTRATION_TYPES, blank=True, null=True)
     is_draft = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -858,6 +996,19 @@ class OptionTransaction(models.Model):
             self.buyer,
             self.option_plan
         )
+
+    def can_view(self, user):
+        """
+        permission method to check if user is permitted to view obj
+        """
+        if user == self.buyer.user or (self.seller and user == self.seller.user):
+            return True
+
+        # user is an operator
+        if self.buyer.company.operator_set.filter(user=user).exists():
+            return True
+
+        return False
 
 
 class ShareholderStatementReport(models.Model):

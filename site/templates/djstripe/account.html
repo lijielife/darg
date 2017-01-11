@@ -98,7 +98,7 @@
                   <strong>{% trans "Your plan" %}</strong>
                 {% else %}
                   <a href="{% url 'djstripe:confirm' company_id=customer.subscriber_id plan=plan.plan %}"
-                     class="btn btn-primary">
+                     class="btn btn-primary"{% if plan.unsubscribable %} disabled="disabled"{% endif %}>
                     {% trans "Subscribe" %}
                   </a>
                 {% endif %}

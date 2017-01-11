@@ -11,6 +11,7 @@
 
 @import settings
 @import flatpages
+@import registration
 @import scrollpane
 @import animate
 @import datepicker
@@ -19,6 +20,10 @@
 // custom
 @import blockquote
 @import chromescreenshot
+@import two_factor_auth
+@import payment
+
+// --- GLOBAL
 
 @font-face
   font-family: "QuickSandLight"
@@ -67,7 +72,7 @@ html, body
       margin: 0em
       text-decoration: underline
 
-  input
+  input[type="text"]
     display: inline-block
     // background-color: transparent // see #50 and
     // http://stackoverflow.com/questions/18967852/input-type-date-in-ios-7
@@ -84,14 +89,24 @@ html, body
 
   form
     margin-bottom: 3em
+    select
+      box-shadow: unset
+    input
+      line-height: normal
+      border: 1px solid #e0e0e0
+      border-radius: 4px
+      padding: 10px 15px
+      &:focus
+        box-shadow: unset
+        border-color: #337ab7
 
   p
     margin: 0 0 10px
+    line-height: 1.5em
 
   label
     text-decoration: none
     cursor: pointer
-    font-size: 1.5em
     padding: 0.1em
     background-color: transparent
 
@@ -135,15 +150,17 @@ html, body
 
   strong
     font-weight: bold
-
+  .el-icon-exclamation-sign
+    display: inline-block
   .explaination
     margin: 1em 0 2em
     line-height: 1.5em
 
   .note
     font-style: italic
-    padding-top: 10px
     font-size: 0.8em
+    line-height: 1.3
+    padding-left: 5px
 
   .footer
     +zen-new-row()
@@ -151,6 +168,15 @@ html, body
     height: 3em
     margin-top: 4em
     padding-left: 0em
+  .form-align-center
+    margin: 0 auto
+    max-width: 250px
+
+  .align-center
+    margin: 0 auto
+
+  .text-center
+    text-align: center
 
   .centered
     +zen-new-row()
@@ -187,7 +213,7 @@ html, body
       margin-right: 1em
 
   // highlight the recommended button amongst buttons
-  .btn-focus
+  .btn-focus, .btn-info
     border: 1px solid $color-focus
     background-color: $color-blue
     color: $color-white
@@ -234,32 +260,56 @@ html, body
     width: 100%
     img
       margin-left: 20%
-
   .orange
     color: #b7a533 !important
+  .alert-info
+    line-height: 1.3
+    //xeditable
+  .editable-buttons
+    vertical-align: initial
+
+  // angular ng-click a tags without href have no pointer. fix.
+  [ng-click], [data-ng-click], [x-ng-click]
+    cursor: pointer
 
 // --- HEADER
+.collapse-expanded
+  .navbar-username
+    color: $color-dark-gray
+    display: block
+    line-height: 13px
+    position: relative
 .navbar-custom
   background: transparent
-  border: 0 !important
+  border: 0
   .navbar-collapse.collapse.in
     padding-bottom: 10px
   .navbar-toggle
-    border: 0 !important
-    outline: none !important
+    border: 0
+    outline: none
     margin-right: 0
     padding: 4px
-    background: transparent !important
-    &:focus
-      background: transparent !important
+    background: transparent
     &:hover
-      background: transparent !important
+      background: transparent
+    &:focus
+      background: transparent
     .icon-bar
       background-color: $color-white
   .navbar-nav
-    padding: 0 !important
-
-
+    padding: 0 !important //ovveride core ul
+.limit-letters
+  max-width: 100px
+  overflow: hidden
+  text-overflow: ellipsis
+  display: inline-block
+.navbar-default
+  .navbar-nav
+    .open
+      a
+        background: transparent
+        &:hover, &:focus
+          background: transparent
 nav.navbar
   a:not(.navbar-brand)
     color: $color-link
@@ -271,25 +321,81 @@ nav.navbar
     margin-top: 18px
 
 // --- AUTH Views
-div#auth
-  input, button
+.core
+  .container
+    .form
+      margin-bottom: 1.5em
+      margin-top: .5em
+      .errorlist
+        padding: 0
+        margin: 10px 0
+        color: #a94442
+        background-color: #f2dede
+        font-weight: 500
+        border-radius: 4px
+        li
+          list-style: none
+          padding: 5px 0 5px 25px
+          position: relative
+          // Add circle near error
+          &:after
+            content: ""
+            position: absolute
+            width: 7px
+            height: 7px
+            background: #a94442
+            border-radius: 100%
+            left: 5px
+            top: 50%
+            transform: translateY(-50%)
+.password-reset-container, .password-change-container
+  +zen-new-row()
+  +zen-grid-item(6,2)
+.tos
+  label
+    float: right
+    width: 90%
+  #id_tos
+    width: initial
+    float: left
+
+.form
+  .form-control
+    box-shadow: unset
+  input
     display: block
-    background-color: transparent
-    font-size: 1.5em
-    border: 1px solid #666666
-    padding: 0.1em
-    padding-left: 0.3em
-    padding-right: 0.3em
-    margin: 0.3em 0.3em 0.3em 0em
-  .registration-form
-    +zen-grid-item(4, 1)
-    .helptext
-      display: none
-  .registration-teaser
-    +zen-grid-item(3, 5)
-    img
-      width: 27em
-      margin-top: 6em
+    width: 100%
+  label
+    font-size: 1em
+    margin-bottom: 0.5em
+
+.registration-form
+  +zen-grid-item(3, 1)
+  .helptext
+    display: none
+.registration-teaser
+  +zen-grid-item(3, 5)
+  img
+    max-width: 100%
+    margin-top: 6em
+
+.btn-submit
+  background-color: #337ab7
+  color: #fff
+  border: 0
+  outline: none
+  padding: 10px 15px
+  border-radius: 4px
+  margin: 0 auto
+  width: 100%
+  margin-top: 1.3em
+  transition: linear 0.15s
+  &:hover
+    background-color: #265d8c
+    color: #fff
+.reset-password-comment
+  margin-bottom: 25px
+  line-height: 1.3
 
 // ------- view spec
 // --- index
@@ -435,37 +541,89 @@ div#auth
     .currency
       font-size: 0.8em
       padding-top: 6px
-// -- login
-#auth
-  .comment
-    margin-top: 5em
-  input
-    display: block
+
+// -- responsive table
+
+.text-right-flex
+  @include justify-content(flex-end) //make text right aligned
+.totals
+  border-top: 2px solid $color-gray-lighten
+.table
+  @include display-flex(flex)
+  @include flex-flow(column)
+  @include justify-content(space-between)
+  font-size: 1rem
+  line-height: 1.5
+.th
+  display: none
+.tr
+  &.totals
+    border-bottom: 0
+  border-bottom: 1px solid $color-gray-lighten
+  width: 100%
+  background-color: $color-white
+  &:not(.th)
+    @include display-flex(flex)
+    @include flex-flow(column)
+  @include transition(all 0.15s linear)
+  .el-icon-eye-open
+    opacity: 0
+    @include transition(opacity 0.15s linear)
+  &:hover
+    &:not(.th)
+      background: $color-gray-lighten
+    .el-icon-eye-open
+      opacity: 1
+.td
+  &.flex-column
+    @include flex-flow(column)
+  &.text-right-flex
+    @include justify-content(flex-start) //reset right aligned to left mobile view
+  &:hover
+    cursor: pointer
+  @include display-flex(flex)
+  @include flex-flow(row)
+  @include flex-grow(1)
+  @include flex-basis(0)
+  @include align-items(baseline)
+  word-wrap: break-word
+  padding: 0.8em
+  font-size: 0.9em
+  [class*='el-icon-']
+    padding: 0 5px
+.td-width-1
+  @include flex-grow(1)
+  word-break: normal
+.td-width-2
+  @include flex-grow(2)
+  word-break: normal
+.td-width-3
+  &.no-before
+    &:before
+      width: 0
+  @include flex-grow(3)
+.td-width-10
+  @include flex-grow(10)
+  &:before
+    width: 0
 
 // --  start
 div #add_shareholder
   margin-bottom: 1em
-
+div #add_company
+  +zen-new-row()
+  +zen-grid-item(8,1)
 div #add_company p
   line-height: 1.5em
-
-div #shareholder_list table a
-  padding: 0em
-  padding-left: 1em
-  visibility: hidden
-  margin: 0em
-
-div #shareholder_list table tr:hover a
-  visibility: visible
-
-div #shareholder_list table tr td.summary
-  border-top: 1px solid black
-
 div.captable_context_actions
   text-align: right
-
-tr.option-holders-heading td
-  background-color: #f5f5f5
+.table .option-holders-heading
+  background: $color-gray-lighten
+div.table-actions
+  margin: 4em 0 1em
+  ul.pagination
+    margin: 0px
+    padding: 0px
 
 // -- positions
 
@@ -476,7 +634,9 @@ div#optionplan
 
 // -- company
 #company
-  div.form
+  .add-operator-comment
+    line-height: 1.3
+  form
     margin-bottom: 1em
   h2
     a
@@ -485,7 +645,8 @@ div#optionplan
 // -- shareholder detail
 .alert-gafi
   line-height: initial
-
+.shareholder-table__font-size-small
+  font-size: 14px
 // -- blog
 .blog
   .lead

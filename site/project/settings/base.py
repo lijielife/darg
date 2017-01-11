@@ -32,7 +32,7 @@ def get_env_variable(var_name, fail_on_error=True):
     return env_var
 
 
-VERSION = '0.3.65'
+VERSION = '0.3.100'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
@@ -84,6 +84,12 @@ INSTALLED_APPS = (
     'django_celery_beat',
     'djstripe',
 
+    # OTP
+    'django_otp',
+    'django_otp.plugins.otp_static',
+    'django_otp.plugins.otp_totp',
+    'two_factor',
+
     # -- zinnia
     'django_comments',
     'mptt',
@@ -106,6 +112,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',
+    'two_factor.middleware.threadlocals.ThreadLocals',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -263,7 +271,16 @@ REGISTRATION_OPEN = True        # If True, users can register
 ACCOUNT_ACTIVATION_DAYS = 7     # One-week activation window; you may, of cour
 REGISTRATION_AUTO_LOGIN = True  # If True, the user will be automatically logg
 LOGIN_REDIRECT_URL = '/start/'  # The page you want users to arrive at after t
-LOGIN_URL = '/accounts/login/'  # The page users are directed to if they are n
+LOGIN_URL = 'two_factor:login'  # The page users are directed to if they are n
+
+# --- TWO FACTOR AUTH
+TWO_FACTOR_PATCH_ADMIN = True
+TWO_FACTOR_CALL_GATEWAY = 'two_factor.gateways.twilio.gateway.Twilio'
+TWO_FACTOR_SMS_GATEWAY = 'two_factor.gateways.twilio.gateway.Twilio'
+PHONENUMBER_DEFAULT_REGION = '+41'
+TWILIO_ACCOUNT_SID = ''
+TWILIO_AUTH_TOKEN = ''
+TWILIO_CALLER_ID = ''
 
 # --- REST
 REST_FRAMEWORK = {
@@ -451,11 +468,111 @@ PAYMENT_PER_SHAREHOLDER = {
     'enterprise': 9  # 0.09
 }
 
-from utils.payment import stripe_subscriber_request_callback
+from utils.payment import stripe_subscriber_request_callback  # noqa
 DJSTRIPE_SUBSCRIBER_MODEL_REQUEST_CALLBACK = stripe_subscriber_request_callback
+
+# all available subscription features
+ORDERED_FEATURES = [
+    'shareholder_count',
+    'position_count',
+    'option_count',
+    'security_count',
+    'shares',
+    'gafi',
+    'revision',
+    'shareholder_statements',
+    'numbered_shares',
+    'email_support',
+    'shareholder_admin_pro',
+    'premium_support',
+    'custom_export_import'
+]
+SUBSCRIPTION_FEATURES = {
+    'shareholder_count': {'title': _('Shareholders'), 'core': True},
+    'position_count': {'title': _('Positions'), 'core': True},
+    'option_count': {'title': _('Options'), 'core': True},
+    'security_count': {'title': _('Securities'), 'core': True},
+    'shares': {
+        'title': _(u'Aktienausgabe, Aktienkauf, -verkauf, '
+                   u'Kapitalerhöhung, Aktiensplit')
+    },
+    'gafi': {'title': _('GAFI Validierung')},
+    'revision': {'title': _('Revisionssicherheit')},
+    'shareholder_statements': {
+        'title': _('Depotauszug Email & Brief'),
+        'annotation': _('Es entstehen weitere Kosten bei Briefversand '
+                        'pro versendetem Brief.')
+    },
+    'numbered_shares': {'title': _('Nummerierte Aktien')},
+    'email_support': {'title': _('Email Support')},
+    'shareholder_admin_pro': {'title': _(u'Profi-Verwaltung Aktionäre')},
+    'premium_support': {'title': _('Premium-Support 24/7')},
+    'custom_export_import': {'title': _('Custom Export/Import')}
+}
+# features per plan
+PLAN_FEATURES = {
+    'startup': [
+        'shareholder_count',
+        'position_count',
+        'option_count',
+        'security_count',
+        'shares',
+        'gafi',
+        'revision'
+    ],
+    'professional': [
+        'shareholder_count',
+        'position_count',
+        'option_count',
+        'security_count',
+        'shares',
+        'gafi',
+        'revision',
+        'shareholder_statements',
+        'numbered_shares',
+        'email_support'
+    ],
+    'enterprise': [
+        'shareholder_count',
+        'position_count',
+        'option_count',
+        'security_count',
+        'shares',
+        'gafi',
+        'revision',
+        'shareholder_statements',
+        'numbered_shares',
+        'email_support',
+        'shareholder_admin_pro',
+        'premium_support',
+        'custom_export_import'
+    ]
+}
+PLAN_FEATURE_CONFIG = {
+    'startup': {
+        'shareholder_count': 20,
+        'security_count': 1
+    },
+    'professional': {
+        'security_price': 1500  # 15.00 CHF per month
+    },
+    'enterprise': {
+        'security_price': 1500  # 15.00 CHF per month
+    }
+}
+# validators for features (downgrade check)
+PLAN_VALIDATORS = {
+    'startup': [
+        'company.validators.features.ShareholderCountValidator',
+        'company.validators.features.SecurityCountValidator'
+    ],
+    'professional': [],
+    'enterprise': []
+}
 
 
 try:
     from project.settings.local import *  # noqa
 except ImportError:
-    print "no local conf"
+    # print "no local conf"
+    pass

@@ -8,16 +8,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-12 16:16+0000\n"
-"PO-Revision-Date: 2016-08-10 10:18+0000\n"
+"POT-Creation-Date: 2017-01-06 10:04+0000\n"
+"PO-Revision-Date: 2017-01-06 10:05+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Translated-Using: django-rosetta 0.7.11\n"
+"X-Translated-Using: django-rosetta 0.7.12\n"
 
 #: static/compiled/javascript/i18n_noop.js:3
 #: static/compiled/javascript/i18n_noop.js:22
@@ -26,11 +26,15 @@ msgstr "Vorname"
 
 #: static/compiled/javascript/i18n_noop.js:4
 #: static/compiled/javascript/i18n_noop.js:23
+#: static/compiled/javascript/script.js:1238
+#: static/compiled/javascript/script.js:1260
 msgid "Last Name"
 msgstr "Nachname"
 
 #: static/compiled/javascript/i18n_noop.js:5
 #: static/compiled/javascript/i18n_noop.js:24
+#: static/compiled/javascript/script.js:1235
+#: static/compiled/javascript/script.js:1257
 msgid "Shareholder Number"
 msgstr "Gesellschafter Nummer"
 
@@ -179,34 +183,48 @@ msgstr "Ungültige Aktiennummern. Format: 1,2,3,4-7"
 msgid "number_segments"
 msgstr "Aktiennummern"
 
-#: static/compiled/javascript/script.js:498
-#: static/compiled/javascript/script.js:519
+#: static/compiled/javascript/script.js:633
+#: static/compiled/javascript/script.js:654
 msgid "Available security segments for option plan on selected date or now: "
 msgstr ""
 "Verfügbare Aktiennummern für Optionen vom Verkäufer zum ausgewählten Datum "
 "oder heute: "
 
-#: static/compiled/javascript/script.js:500
+#: static/compiled/javascript/script.js:635
 msgid ""
 "Available security segments for option plan on selected date or now: None"
 msgstr "Aktionär hält aktuell keine Optionen."
 
-#: static/compiled/javascript/script.js:521
-msgid "No security segments available for option plan on selected date or now."
+#: static/compiled/javascript/script.js:656
+msgid ""
+"No security segments available for option plan on selected date or now."
 msgstr ""
 "Es sind aktuell keine Aktiennummern für den Optionsplan am ausgewählten "
 "Datum verfügbar."
 
-#: static/compiled/javascript/script.js:775
+#: static/compiled/javascript/script.js:1068
 msgid ""
 "Available security segments from this shareholder on selected date or now: "
 msgstr "Verfügbare Aktiennummern vom Verkäufer zum ausgewählten Datum: "
 
-#: static/compiled/javascript/script.js:777
+#: static/compiled/javascript/script.js:1070
 msgid ""
 "Available security segments from this shareholder on selected date or now: "
 "None"
 msgstr "Aktionär hält aktuell keine Aktien."
+
+#: static/compiled/javascript/script.js:1114
+msgid "Human Being"
+msgstr "Natürliche Person"
+
+#: static/compiled/javascript/script.js:1117
+msgid "Corporate"
+msgstr "Juristische Person"
+
+#: static/compiled/javascript/script.js:1232
+#: static/compiled/javascript/script.js:1254
+msgid "Email"
+msgstr "Email"
 
 #~ msgid "Available %s"
 #~ msgstr "Verfügbar %s"

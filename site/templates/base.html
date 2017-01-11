@@ -24,7 +24,7 @@
   {% block inline_styles %}{% endblock %}
 
 </head>
-<body ng-app="{% block ng_app %}js.darg.app.base{% endblock %}" {% block ng_cloak %}ng-cloak{% endblock %} class="core">
+<body ng-app="{% block ng_app %}js.darg.app.base{% endblock %}" {% block ng_cloak %}ng-cloak{% endblock %} class="core {% block body_class %}{% endblock body_class %}">
 
 
 

@@ -15,6 +15,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.ui import Select
 
 
 # from element import BasePageElement (save all locators here)
@@ -39,25 +40,37 @@ class BasePage(object):
         time.sleep(3)  # FIXME
 
         if kwargs.get('cls'):
-            el = self.driver.find_element_by_class_name(
+            els = self.driver.find_elements_by_class_name(
                 kwargs.get('cls')
             )
         if kwargs.get('id'):
-            el = self.driver.find_element_by_id(
+            els = self.driver.find_elements_by_id(
                 kwargs.get('id')
             )
+        if not len(els):
+            return False
 
-        return el.is_displayed()
+        for el in els:
+            if el.is_displayed():
+                return True
+
+        return False
 
     def login(self, username, password):
         """ log the user in """
-        self.driver.get('%s%s' % (self.live_server_url, '/accounts/login/'))
+        try:
+            self.driver.get('%s%s' % (self.live_server_url, '/account/login/'))
+        # randomly failes with TimeoutException
+        except:
+            time.sleep(5)
+            self.driver.get('%s%s' % (self.live_server_url, '/account/login/'))
+
         self.driver.find_element_by_xpath(
-            '//*[@id="id_username"]').send_keys(username)
+            '//*[@id="id_auth-username"]').send_keys(username)
         self.driver.find_element_by_xpath(
-            '//*[@id="id_password"]').send_keys(password)
+            '//*[@id="id_auth-password"]').send_keys(password)
         self.driver.find_element_by_xpath(
-            '//*[@id="auth"]/form/button').click()
+            '//button[contains(@class, "btn-primary")]').click()
         time.sleep(1)  # wait for page reload  # FIXME
         page_heading = self.driver.find_element_by_tag_name(
             'h1').get_attribute('innerHTML')
@@ -148,7 +161,8 @@ class BasePage(object):
                 el2 = td.find_elements_by_tag_name('span')
                 if (
                     el2 and el2[0].get_attribute('innerHTML') ==
-                    datetime.strftime(date, '%d')
+                    datetime.strftime(date, '%d') and
+                    'text-muted' not in el2[0].get_attribute('class')
                 ):
                     el2[0].click()
                     return
@@ -164,11 +178,7 @@ class BasePage(object):
 
     def is_no_errors_displayed(self):
         """ MUST not find it, hence exception is True :) """
-        try:
-            self._is_element_displayed(cls='alert-danger')
-            return False
-        except:
-            return True
+        return not self._is_element_displayed(cls='alert-danger')
 
     def scroll_to(self, Y=None, element=None):
         """
@@ -291,6 +301,15 @@ class StartPage(BasePage):
         inputs[2].send_keys(kwargs.get('count', DEFAULT_TEST_DATA.get('count')))
         inputs[3].send_keys(kwargs.get('value', DEFAULT_TEST_DATA.get('value')))
 
+    def enter_search_term(self, term=None):
+        el = self.driver.find_element_by_class_name('search-input')
+        el.send_keys(term or 'some term')
+
+    def sort_table_by_number(self):
+        selects = self.driver.find_elements_by_tag_name('select')
+        select = Select(selects[0])
+        select.select_by_visible_text('Gesellschafter Nummer')
+
     # -- CLICKs
     def click_save_add_company(self):
         el = self.driver.find_element_by_id('add_company')
@@ -303,31 +322,43 @@ class StartPage(BasePage):
             "Aktionär hinzufügen")
         el.click()
 
+    def click_paginate_next(self):
+        btn = self.driver.find_element_by_class_name('paginate-next')
+        btn.click()
+
     def click_save_add_shareholder(self):
         el = self.driver.find_element_by_id('add_shareholder')
         div = el.find_elements_by_class_name('form-group')[1]
         button = div.find_elements_by_tag_name('button')[1]
         button.click()
 
+    def click_search(self):
+        el = self.driver.find_element_by_class_name('search-btn')
+        el.click()
+
     # --- GET
     def get_row_by_shareholder(self, shareholder):
         return self.driver.find_element_by_xpath(
-            '//tr[./td="{}" and contains(@class, "option-holders")]'.format(
+            '//div[./div="{}" and contains(@class, "tr")]'.format(
                 shareholder.user.email))
 
     def get_total_share_count(self):
-        tds = self.driver.find_elements_by_xpath('//tr[@class="totals"]//td')
+        tds = self.driver.find_elements_by_xpath(
+            '//div[contains(@class, "totals")]//div[contains(@class, "td")]')
         td = tds[-1]
         return int(td.text.split('(')[0].rstrip())
 
     def get_company_share_count(self):
-        tds = self.driver.find_elements_by_xpath('//tr[@class="totals"]//td')
+        tds = self.driver.find_elements_by_xpath(
+            '//div[contains(@class, "totals")]/div[contains(@class, "td")]')
         td = tds[-1]
         return int(td.text.split('(')[1][:-1].rstrip())
 
     # --- CHECKS
-    def has_shareholder_count(self, count):
-        return len(self.driver.find_elements_by_tag_name('tr')) == count
+    def has_shareholder_count(self):
+        return len(self.driver.find_elements_by_xpath(
+            '//div[contains(@class, "tr") and contains(@class, "shareholder")]'
+        ))
 
     def is_add_company_form_displayed(self):
         el = self.driver.find_element_by_id('add_company')

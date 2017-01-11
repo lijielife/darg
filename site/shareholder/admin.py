@@ -23,6 +23,7 @@ class ShareholderAdmin(VersionAdmin):
 
     list_display = ('user_name', 'company', 'number')
     search_fields = ['user__email', 'user__first_name', 'user__last_name']
+    list_filter = ('company',)
 
     def get_urls(self):
 
@@ -154,7 +155,9 @@ class CountryAdmin(VersionAdmin):
 
 
 class SecurityAdmin(VersionAdmin):
-    list_display = ('title', 'company')
+
+    list_display = ('title', 'company', 'face_value')
+    list_filter = ('company',)
 
 
 class OptionTransactionAdmin(VersionAdmin):
@@ -163,6 +166,7 @@ class OptionTransactionAdmin(VersionAdmin):
 
 class OptionPlanAdmin(VersionAdmin):
     list_display = ('title',)
+    list_filter = ('company',)
 
 
 class ShareholderStatementReportAdmin(admin.ModelAdmin):

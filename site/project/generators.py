@@ -9,7 +9,7 @@ import random
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as __
-from model_mommy import generators
+from model_mommy import random_gen
 
 from shareholder.models import (Company, Country, Operator, OptionPlan,
                                 OptionTransaction, Position, Security,
@@ -229,8 +229,13 @@ class PositionGenerator(object):
 
         buyer = kwargs.get('buyer') or ShareholderGenerator().generate(
             company=company)
-        seller = kwargs.get('seller', ShareholderGenerator().generate(
-            company=company))
+
+        # seller only if not sent as kwarg
+        if 'seller' not in kwargs.keys():
+            seller = ShareholderGenerator().generate(company=company)
+        else:
+            seller = kwargs.get('seller')
+
         count = kwargs.get('count') or 3
         value = kwargs.get('value') or 2
         security = kwargs.get('security') or SecurityGenerator().generate(
@@ -243,11 +248,15 @@ class PositionGenerator(object):
             "count": count,
             "value": value,
             "security": security,
-            "comment": kwargs.get('comment') or generators.gen_string(55),
+            "comment": kwargs.get('comment') or random_gen.gen_string(55),
             "number_segments": kwargs.get('number_segments', [])
         }
         if seller:
             kwargs2.update({"seller": seller})
+
+        if kwargs.get('registration_type'):
+            kwargs2.update(
+                {'registration_type': kwargs.get('registration_type')})
 
         if kwargs.get('save') == False:
             return Position(**kwargs2)
@@ -308,6 +317,10 @@ class OptionTransactionGenerator(object):
         if kwargs.get('number_segments'):
             kwargs2.update({'number_segments': kwargs.get('number_segments')})
 
+        if kwargs.get('registration_type'):
+            kwargs2.update(
+                {'registration_type': kwargs.get('registration_type')})
+
         if kwargs.get('save', True):
             position = OptionTransaction.objects.create(**kwargs2)
         else:
@@ -334,6 +347,7 @@ class ComplexShareholderConstellationGenerator(object):
     def generate(self, **kwargs):
 
         company = kwargs.get('company') or CompanyGenerator().generate()
+        shareholder_count = kwargs.get('shareholder_count', 10)
 
         # intial securities
         s1, s2 = TwoInitialSecuritiesGenerator().generate(company=company)
@@ -349,7 +363,7 @@ class ComplexShareholderConstellationGenerator(object):
         # random shareholder generation
         shareholders = [cs]
         # initial share seeding
-        for i in range(0, 10):
+        for i in range(0, shareholder_count):
             shareholders.append(PositionGenerator().generate(
                 company=company, security=s1, seller=cs).buyer)
 

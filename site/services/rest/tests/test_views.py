@@ -1,5 +1,4 @@
 # coding=utf-8
-import time
 import datetime
 import logging
 
@@ -10,14 +9,15 @@ from django.test import RequestFactory, TestCase
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
-from project.generators import (CompanyGenerator, CompanyShareholderGenerator,
+from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
+                                CompanyShareholderGenerator,
                                 ComplexOptionTransactionsWithSegmentsGenerator,
                                 ComplexPositionsWithSegmentsGenerator,
+                                ComplexShareholderConstellationGenerator,
                                 OperatorGenerator, OptionTransactionGenerator,
                                 PositionGenerator, SecurityGenerator,
                                 ShareholderGenerator,
-                                TwoInitialSecuritiesGenerator, UserGenerator,
-                                DEFAULT_TEST_DATA)
+                                TwoInitialSecuritiesGenerator, UserGenerator)
 from services.rest.serializers import SecuritySerializer
 from shareholder.models import (Operator, OptionTransaction, Position,
                                 Security, Shareholder)
@@ -116,32 +116,6 @@ class CompanyViewSetTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.site = Site.objects.get_current()
-
-    def test_get_option_holders(self):
-        op = OperatorGenerator().generate()
-        opts = []
-        for x in range(0, 10):
-            opts.append(
-                OptionTransactionGenerator().generate(company=op.company))
-
-        self.client.force_authenticate(user=op.user)
-        res = self.client.get(reverse(
-            'company-option-holder', kwargs={'pk': op.company.pk}))
-
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(len(res.data['results']), 10)
-
-        # sell one persions options and check again
-        ot = opts[0]
-        OptionTransactionGenerator().generate(
-            company=ot.option_plan.company, seller=ot.buyer, count=ot.count,
-            price=1, buyer=opts[1].buyer)
-
-        res = self.client.get(reverse(
-            'company-option-holder', kwargs={'pk': ot.option_plan.company.pk}))
-
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(len(res.data['results']), 9)
 
 
 class OperatorTestCase(TestCase):
@@ -353,6 +327,7 @@ class PositionTestCase(TestCase):
         self.assertEqual(position.value, 1)
         self.assertEqual(position.buyer, buyer)
         self.assertEqual(position.seller, seller)
+        self.assertEqual(position.registration_type, '2')
         self.assertEqual(
             position.bought_at.isoformat(), '2016-05-13')
 
@@ -558,27 +533,17 @@ class PositionTestCase(TestCase):
             "comment": "Large Transaction"
         }
 
-        logger.info('firing api call...')
-        t0 = time.clock()
-        response = self.client.post(
-            u'/services/rest/position',
-            data,
-            **{u'HTTP_AUTHORIZATION': u'Token {}'.format(
-                user.auth_token.key), u'format': u'json'})
-        t1 = time.clock()
-        delta = t1 - t0
-
-        logger.info('api call done. evaluating result...')
+        # call with perf check
+        with self.assertNumQueries(55):
+            response = self.client.post(
+                u'/services/rest/position',
+                data,
+                **{u'HTTP_AUTHORIZATION': u'Token {}'.format(
+                    user.auth_token.key), u'format': u'json'})
 
         self.assertEqual(response.status_code, 201)
         self.assertTrue('Large Transaction' in response.content)
         self.assertEqual(response.data['number_segments'], [u'1-1000000'])
-        if delta > 4:
-            logger.error(
-                'BUILD performance error: '
-                'test_add_position_with_number_segment_performance',
-                extra={'delta': delta})
-        self.assertLess(delta, 6)
 
         position = Position.objects.latest('id')
         self.assertEqual(position.count, 1000000)
@@ -746,6 +711,72 @@ class PositionTestCase(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertTrue(len(response.data), 3)
+
+    def test_search(self):
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        position = PositionGenerator().generate(company=operator.company)
+
+        self.client.force_login(user)
+
+        query = position.buyer.user.first_name
+        res = self.client.get(
+            '/services/rest/position?search={}'.format(query))
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['count'], 1)
+
+    def test_ordering(self):
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        cs = CompanyShareholderGenerator().generate(company=operator.company)
+        s1 = ShareholderGenerator().generate(company=operator.company)
+        s2 = ShareholderGenerator().generate(company=operator.company)
+        PositionGenerator().generate(company=operator.company, seller=cs,
+                                     buyer=s1)
+        PositionGenerator().generate(company=operator.company, seller=cs,
+                                     buyer=s2)
+
+        self.client.force_login(user)
+
+        res = self.client.get(
+            '/services/rest/position?ordering=buyer__user__last_name')
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['count'], 3)
+        last_names = [s.get('buyer')['user']['last_name']
+                      for s in res.data['results']]
+        self.assertEqual(last_names,
+                         sorted(last_names, key=lambda s: s.lower()))
+
+        res = self.client.get(
+            '/services/rest/position?ordering=-buyer__number')
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['count'], 3)
+        numbers = [s.get('buyer')['number'] for s in res.data['results']]
+        self.assertEqual(numbers, sorted(numbers, key=lambda s: s.lower(),
+                         reverse=True))
+
+    def test_pagination(self):
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        cs = CompanyShareholderGenerator().generate(company=operator.company)
+        s1 = ShareholderGenerator().generate(company=operator.company)
+        s2 = ShareholderGenerator().generate(company=operator.company)
+        PositionGenerator().generate(company=operator.company, seller=cs,
+                                     buyer=s1)
+        PositionGenerator().generate(company=operator.company, seller=cs,
+                                     buyer=s2)
+
+        self.client.force_login(user)
+
+        res = self.client.get('/services/rest/position')
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['count'], 3)
+        self.assertEqual(res.data['current'], 1)
+        self.assertEqual(len(res.data['results']), 3)
 
 
 class ShareholderTestCase(TestCase):
@@ -959,6 +990,7 @@ class ShareholderTestCase(TestCase):
                     "birthday": "2016-01-27T00:00:00.000Z",
                     "company_name": "SomeCompany",
                     "language": "ab",
+                    "legal_type": 'H',
                 },
             },
             "number": "00333e",
@@ -1027,6 +1059,131 @@ class ShareholderTestCase(TestCase):
 
         self.assertEqual(res.data[security.pk], [u'1000-1200', 1666])
 
+    def test_get_list(self):
+        """
+        check list for performance and content
+        """
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        ComplexShareholderConstellationGenerator().generate(
+            company=operator.company, shareholder_count=100)
+
+        self.client.force_login(user)
+
+        res = self.client.get('/services/rest/shareholders')
+
+        self.assertEqual(res.status_code, 200)
+        # must have current page in meta payload
+        self.assertIn('current', res.data.keys())
+        # must have pagination
+        self.assertEqual(len(res.data['results']), 20)
+
+    def test_search(self):
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        ComplexShareholderConstellationGenerator().generate(
+            company=operator.company, shareholder_count=10)
+
+        self.client.force_login(user)
+
+        query = operator.company.shareholder_set.first().user.first_name
+        res = self.client.get(
+            '/services/rest/shareholders?search={}'.format(query))
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['count'], 1)
+
+    def test_ordering(self):
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        ComplexShareholderConstellationGenerator().generate(
+            company=operator.company, shareholder_count=10)
+
+        self.client.force_login(user)
+
+        res = self.client.get(
+            '/services/rest/shareholders?ordering=user__last_name')
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['count'], 13)
+        last_names = [s.get('user')['last_name'] for s in res.data['results']]
+        self.assertEqual(last_names,
+                         sorted(last_names, key=lambda s: s.lower()))
+
+        res = self.client.get(
+            '/services/rest/shareholders?ordering=-number')
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['count'], 13)
+        numbers = [s.get('number') for s in res.data['results']]
+        self.assertEqual(numbers, sorted(numbers, key=lambda s: s.lower(),
+                         reverse=True))
+
+    def test_pagination(self):
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        ComplexShareholderConstellationGenerator().generate(
+            company=operator.company, shareholder_count=30)
+
+        self.client.force_login(user)
+
+        res = self.client.get(
+            '/services/rest/shareholders')
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['current'], 1)
+        self.assertEqual(len(res.data['results']), 20)
+
+        res = self.client.get(res.data['next'])
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['current'], 2)
+        self.assertEqual(len(res.data['results']), 13)
+
+    def test_get_option_holders(self):
+        op = OperatorGenerator().generate()
+        opts = []
+        for x in range(0, 10):
+            opts.append(
+                OptionTransactionGenerator().generate(company=op.company))
+
+        self.client.force_authenticate(user=op.user)
+        res = self.client.get(reverse(
+            'shareholders-option-holder'), {'company': op.company.pk})
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.data['results']), 10)
+
+        # sell one persons options and check again
+        ot = opts[0]
+        OptionTransactionGenerator().generate(
+            company=ot.option_plan.company, seller=ot.buyer, count=ot.count,
+            price=1, buyer=opts[1].buyer)
+
+        res = self.client.get(reverse(
+            'shareholders-option-holder'), {'company': op.company.pk})
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.data['results']), 9)
+
+    def test_get_option_holders_search(self):
+        op = OperatorGenerator().generate()
+        opts = []
+        for x in range(0, 10):
+            opts.append(
+                OptionTransactionGenerator().generate(company=op.company))
+
+        self.client.force_authenticate(user=op.user)
+        query = opts[0].buyer.user.first_name
+        res = self.client.get(
+            reverse('shareholders-option-holder'), {
+                'company': op.company.pk,
+                'search': query})
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.data['results']), 1)
+        self.assertEqual(res.data['results'][0]['user']['first_name'], query)
+
 
 class OptionTransactionTestCase(APITestCase):
 
@@ -1060,7 +1217,8 @@ class OptionTransactionTestCase(APITestCase):
         optiontransaction = OptionTransactionGenerator().generate(
             company=operator.company)
 
-        logged_in = self.client.login(username=user.username, password=DEFAULT_TEST_DATA['password'])
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(logged_in)
 
         res = self.client.delete(
@@ -1121,6 +1279,71 @@ class OptionTransactionTestCase(APITestCase):
         self.assertFalse(
             OptionTransaction.objects.get(id=optiontransaction.id).is_draft)
 
+    def test_search(self):
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        seller = ShareholderGenerator().generate(company=operator.company)
+        optiontransaction = OptionTransactionGenerator().generate(
+            seller=seller)
+
+        self.client.force_login(user)
+
+        query = optiontransaction.buyer.user.first_name
+        res = self.client.get(
+            '/services/rest/optiontransaction?search={}'.format(query))
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['count'], 1)
+
+    def test_ordering(self):
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        seller = ShareholderGenerator().generate(company=operator.company)
+        OptionTransactionGenerator().generate(
+            seller=seller)
+        OptionTransactionGenerator().generate(
+            seller=seller)
+
+        self.client.force_login(user)
+
+        res = self.client.get(
+            '/services/rest/optiontransaction?ordering=seller__user__last_name')
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['count'], 2)
+        last_names = [s.get('seller')['user']['last_name']
+                      for s in res.data['results']]
+        self.assertEqual(last_names,
+                         sorted(last_names, key=lambda s: s.lower()))
+
+        res = self.client.get(
+            '/services/rest/optiontransaction?ordering=-seller__number')
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['count'], 2)
+        numbers = [s.get('seller')['number'] for s in res.data['results']]
+        self.assertEqual(numbers, sorted(numbers, key=lambda s: s.lower(),
+                         reverse=True))
+
+    def test_pagination(self):
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        seller = ShareholderGenerator().generate(company=operator.company)
+        OptionTransactionGenerator().generate(
+            seller=seller)
+        OptionTransactionGenerator().generate(
+            seller=seller)
+
+        self.client.force_login(user)
+
+        res = self.client.get(
+            '/services/rest/optiontransaction')
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['count'], 2)
+        self.assertEqual(res.data['current'], 1)
+        self.assertEqual(len(res.data['results']), 2)
+
 
 class SecurityTestCase(APITestCase):
 
@@ -1136,16 +1359,21 @@ class SecurityTestCase(APITestCase):
         request = self.factory.get(url)
 
         data = SecuritySerializer(security, context={'request': request}).data
-        data.update({'number_segments': '1,2,3,4,8-10'})
+        # segments must be double quoted as they are rendered to json as plain
+        # string and the quotes will disappear
+        data.update({'number_segments': '"1,2,3,4,8-10"'})
+        del data['face_value']  # mandatory, remove
 
         self.client.force_authenticate(user=operator.user)
 
         res = self.client.put(url, data=data)
+        self.assertIn('Vorzugsaktien', res.content)
+        self.assertEqual(res.status_code, 200)
 
         security = Security.objects.get(id=security.id)
         self.assertEqual(security.number_segments, [u'1-4', u'8-10'])
 
-        data.update({'number_segments': '1,2,3,4,4,,8-10'})
+        data.update({'number_segments': '"1,2,3,4,4,,8-10"'})
 
         res = self.client.put(url, data=data)
 

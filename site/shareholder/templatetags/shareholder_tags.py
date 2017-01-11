@@ -2,6 +2,7 @@
 from django import template
 from django.conf import settings
 from django.utils.timezone import now
+from django.utils.translation import ugettext_lazy as _
 
 
 register = template.Library()
@@ -84,3 +85,77 @@ def get_invoice_currency(invoice):
     item_currencies = invoice.items.all().values_list('currency', flat=True)
     if len(set(item_currencies)) == 1:
         return item_currencies[0].upper()
+
+
+@register.filter
+def has_shareholderstatement_reports(user):
+    """
+    checks if user is operator for company(s) and if any reports are available
+    """
+    from shareholder.models import ShareholderStatementReport
+    company_ids = user.operator_set.values_list('company_id', flat=True)
+    # TODO: check company subscription
+    qs = ShareholderStatementReport.objects.filter(company__in=company_ids)
+    return bool(qs.count())
+
+
+@register.assignment_tag
+def get_plan_features(plan_name):
+    """
+    get all features for plan
+    dictionary with 'core' and 'features' keys
+    """
+    features = dict(core=[], features=[])
+    plan_features = settings.PLAN_FEATURES.get(plan_name, [])
+    plan_features_config = settings.PLAN_FEATURE_CONFIG.get(plan_name, {})
+    annotations = 0
+    for name in settings.ORDERED_FEATURES:
+        feature = settings.SUBSCRIPTION_FEATURES.get(name)
+        if feature.get('core'):
+            key = 'core'
+            config = plan_features_config.get(name, {})
+            if name is 'security_count':
+                if config:
+                    title = u'{} {}'.format(
+                        config,
+                        config == 1 and _('Security') or _('Securities')
+                    )
+                elif 'security_price' in plan_features_config.keys():
+                    security_price = plan_features_config.get('security_price')
+                    title = _('More securities: CHF +{amount} / M.').format(
+                        **dict(amount=security_price / 100)
+                    )
+                else:
+                    title = feature['title']
+                feature['title'] = title
+            else:
+                feature['highlight'] = config or _('Unlimited')
+        else:
+            key = 'features'
+        if feature.get('annotation'):
+            annotations += 1
+            feature['annotation_marker'] = '*' * annotations
+
+        feature['exclude'] = name not in plan_features
+
+        features[key].append(feature)
+
+    return features
+
+
+@register.assignment_tag
+def get_plans_annotations():
+    """
+    return all annotations for subscription plans
+    """
+    annotations = []
+    annotation_count = 0
+    for feature_name, feature in settings.SUBSCRIPTION_FEATURES.items():
+        if feature.get('annotation'):
+            annotation_count += 1
+            annotation = dict(
+                title=feature.get('annotation'),
+                marker='*' * annotation_count
+            )
+            annotations.append(annotation)
+    return annotations

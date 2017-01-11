@@ -1,0 +1,9 @@
+{% load trans from i18n %}
+{% load shareholder_tags %}
+<p>
+  {% trans "Kündigung oder Änderung eines Paketes ist jederzeit möglich. Daten können bequem per CSV-Download gesichert werden. Nach Kündigung des Abos werden alle Daten unwiederbringlich gelöscht." %}
+</p>
+{% get_plans_annotations as annotations %}
+{% for annotation in annotations %}
+  <p>{{ annotation.marker }}) {{ annotation.title }}</p>
+{% endfor %}

@@ -13,7 +13,8 @@ from django.views.generic import ListView, DetailView
 from sendfile import sendfile
 
 from shareholder.models import (Shareholder, OptionPlan, ShareholderStatement,
-                                ShareholderStatementReport)
+                                ShareholderStatementReport, Position,
+                                OptionTransaction)
 from project.permissions import OperatorPermissionRequiredMixin
 from utils.formatters import human_readable_segments
 
@@ -32,6 +33,22 @@ def options(request):
     template = loader.get_template('options.html')
     context = RequestContext(request, {})
     return HttpResponse(template.render(context))
+
+
+class OptionTransactionView(OperatorPermissionRequiredMixin, DetailView):
+    """
+    shows details for one shareholder
+    """
+    model = OptionTransaction
+    context_object_name = 'optiontransaction'
+
+
+class PositionView(OperatorPermissionRequiredMixin, DetailView):
+    """
+    shows details for one shareholder
+    """
+    model = Position
+    context_object_name = 'position'
 
 
 class ShareholderView(OperatorPermissionRequiredMixin, DetailView):
@@ -139,8 +156,10 @@ class StatementReportListView(ListView):
     def get_queryset(self):
         company_ids = self.request.user.operator_set.values_list(
             'company_id', flat=True)
+        # TODO: check for company subscription
         qs = ShareholderStatementReport.objects.filter(company__in=company_ids)
         return qs.order_by('company__name')
+
 
 statement_report_list = login_required(StatementReportListView.as_view())
 
@@ -152,7 +171,9 @@ class StatementReportDetailView(DetailView):
     def get_queryset(self):
         company_ids = self.request.user.operator_set.values_list(
             'company_id', flat=True)
+        # TODO: check for company subscription
         qs = ShareholderStatementReport.objects.filter(company__in=company_ids)
         return qs
+
 
 statement_report_detail = login_required(StatementReportDetailView.as_view())

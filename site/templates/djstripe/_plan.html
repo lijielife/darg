@@ -14,4 +14,30 @@
     {% endif %}
   </p>
 </div>
-<div><strong>TODO:</strong> FEATURES</div>
+{% get_plan_features plan.plan as plan_features %}
+{% if plan_features.core %}
+  <hr>
+  <div class="core-features">
+    <ul>
+      {% for feature in plan_features.core %}
+        <li>
+          {% if feature.highlight %}<strong>{{ feature.highlight }}</strong>{% endif %}
+          {{ feature.title }}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+{% if plan_features.features %}
+  <hr>
+  <div class="features">
+    <ul>
+      {% for feature in plan_features.features %}
+        <li{% if feature.exclude %} class="excluded"{% endif %}>
+          {{ feature.title }}
+          {% if feature.annotation %}{{ feature.annotation_marker }}{% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}

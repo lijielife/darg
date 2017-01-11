@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-31 01:24+0000\n"
-"PO-Revision-Date: 2016-08-30 06:42+0000\n"
+"POT-Creation-Date: 2017-01-07 06:10+0000\n"
+"PO-Revision-Date: 2017-01-06 09:33+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -17,7 +17,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Translated-Using: django-rosetta 0.7.11\n"
+"X-Translated-Using: django-rosetta 0.7.12\n"
+
+#: project/forms.py:23
+msgid ""
+"I have read and agree to the <a href=\"http://www1.das-aktienregister.ch/agb"
+"\" alt=\"Darg Terms of Service\" target=\"_blank\" class=\"link tos\">Terms "
+"of Service</a>"
+msgstr ""
+"Ich habe die <a href=\"http://www1.das-aktienregister.ch/agb\" alt="
+"\"Nutzungsbedingungen Das-Aktienregister.ch\" target=\"_blank\" class=\"link "
+"tos\">Nutzungsbedingungen</a> und <a href=\"/impressum/#datenschutz\" alt="
+"\"Nutzungsbedingungen Das-Aktienregister.ch\" target=\"_blank\" class=\"link "
+"tos\">Datenschutzerklärung</a> gelesen und stimme zu."
 
 #: project/tasks.py:18
 msgid "Welcome to Das Aktienregister - Your new password"
@@ -41,7 +53,7 @@ msgstr "Aktienart"
 
 #: project/templates/_add_capital_form.html:33
 #: project/templates/_add_option_plan_form.html:34
-#: project/templates/_add_option_transaction_form.html:38
+#: project/templates/_add_option_transaction_form.html:37
 #: project/templates/_add_position_form.html:46
 #: project/templates/_add_shareholder_form.html:15
 #: project/templates/_split_shares_form.html:36
@@ -101,25 +113,21 @@ msgstr ""
 msgid "Please enter your Option data:"
 msgstr "Bitte geben Sie die Daten für die Option an:"
 
-#: project/templates/_add_option_transaction_form.html:8
-msgid "Buying Date"
-msgstr "Kaufdatum"
-
-#: project/templates/_add_option_transaction_form.html:25
+#: project/templates/_add_option_transaction_form.html:24
 #: project/templates/_add_position_form.html:33
 msgid "Buyer"
 msgstr "Käufer"
 
-#: project/templates/_add_option_transaction_form.html:28
+#: project/templates/_add_option_transaction_form.html:27
 msgid "Option Plan"
 msgstr "Optionsplan"
 
-#: project/templates/_add_option_transaction_form.html:32
+#: project/templates/_add_option_transaction_form.html:31
 #: project/templates/_add_position_form.html:29
 msgid "Seller"
 msgstr "Verkäufer"
 
-#: project/templates/_add_option_transaction_form.html:39
+#: project/templates/_add_option_transaction_form.html:38
 msgid "Add Option"
 msgstr "Option hinzufügen"
 
@@ -140,7 +148,7 @@ msgid "Please enter your shareholder data:"
 msgstr "Bitte geben Sie die Aktionärsdaten ein:"
 
 #: project/templates/_add_shareholder_form.html:16
-#: project/templates/start.html:36
+#: project/templates/start.html:40
 msgid "Add Shareholder"
 msgstr "Aktionär hinzufügen"
 
@@ -175,13 +183,17 @@ msgstr ""
 msgid "Add Share Split"
 msgstr "Aktiensplit hinzufügen"
 
+#: project/templates/_table_actions.html:14
+msgid "Sort"
+msgstr "Sortierung"
+
 #: project/templates/active_shareholder_captable.pdf.html:66
-#: project/templates/start.html:25
+#: project/templates/start.html:29
 msgid "Your Shareholders for"
 msgstr "Ihre Aktionärsliste für"
 
 #: project/templates/active_shareholder_captable.pdf.html:80
-#: project/templates/index.html:14
+#: project/templates/index.html:24
 msgid "Das Aktienregister"
 msgstr "Das Aktienregister"
 
@@ -211,19 +223,19 @@ msgstr "Gründungsdatum"
 
 #: project/templates/active_shareholder_captable.pdf.html:98
 #: project/templates/active_shareholder_captable.pdf.html:141
-#: project/templates/start.html:55
+#: project/templates/start.html:64
 msgid "Name"
 msgstr "Name"
 
 #: project/templates/active_shareholder_captable.pdf.html:99
 #: project/templates/active_shareholder_captable.pdf.html:142
-#: project/templates/start.html:56
+#: project/templates/start.html:65
 msgid "Email"
 msgstr "Email"
 
 #: project/templates/active_shareholder_captable.pdf.html:100
 #: project/templates/active_shareholder_captable.pdf.html:143
-#: project/templates/start.html:57
+#: project/templates/start.html:66
 msgid "Shareholder Number"
 msgstr "Aktieninhabernummer"
 
@@ -245,71 +257,75 @@ msgstr "Optionen"
 msgid "Optionen (%%)"
 msgstr "Optionen (%%)"
 
-#: project/templates/index.html:19
+#: project/templates/index.html:32
 msgid "Gratis Aktienbuch-Muster"
 msgstr "Gratis Aktienbuch-Muster"
 
-#: project/templates/index.html:21
+#: project/templates/index.html:36 project/tests/test_views.py:74
+msgid "My Dashboard"
+msgstr "Mein Dashboard"
+
+#: project/templates/index.html:40
 msgid "Login"
 msgstr "Login"
 
-#: project/templates/index.html:22
+#: project/templates/index.html:44
 msgid "prices and plans"
 msgstr "Preise und Pakete"
 
-#: project/templates/index.html:23
+#: project/templates/index.html:47
 msgid "Blog"
 msgstr "Blog"
 
-#: project/templates/index.html:25 project/templates/index.html:26
-#: project/templates/index.html:34 project/templates/index.html:35
-#: project/templates/index.html:62 project/templates/index.html:63
+#: project/templates/index.html:50 project/templates/index.html:61
+#: project/templates/index.html:62 project/templates/index.html:89
+#: project/templates/index.html:90
 msgid "Try for free"
 msgstr "Kostenlos testen"
 
-#: project/templates/index.html:32
+#: project/templates/index.html:59
 msgid "Das Online-Aktienbuch"
 msgstr "Das Online-Aktienbuch"
 
-#: project/templates/index.html:33
+#: project/templates/index.html:60
 msgid "Mit Sicherheit gesetzeskonform durch automatische Validierung."
 msgstr "Mit Sicherheit gesetzeskonform durch automatische Validierung."
 
-#: project/templates/index.html:48
+#: project/templates/index.html:75
 msgid "Jetzt ab"
 msgstr "Jetzt ab"
 
-#: project/templates/index.html:49
+#: project/templates/index.html:76
 msgid "4,99"
 msgstr "4,99"
 
-#: project/templates/index.html:50
+#: project/templates/index.html:77
 msgid "CHF/mtl."
 msgstr "CHF/mtl."
 
-#: project/templates/index.html:56
+#: project/templates/index.html:83
 msgid "Eingabe alle Daten mit maximaler Effizienz."
 msgstr "☑ Maximale Effizienz bei der Dateneingabe"
 
-#: project/templates/index.html:57
+#: project/templates/index.html:84
 msgid "Revisionssichere Ablage."
 msgstr "☑ Revisionssichere Ablage"
 
-#: project/templates/index.html:58
+#: project/templates/index.html:85
 msgid "Automatische Validierung der Daten."
 msgstr ""
 "☑ Automatische Validierung der Daten auf Vollständigkeit und "
 "Gesetzeskonformität (inkl. GAFI-FATF)"
 
-#: project/templates/index.html:59
+#: project/templates/index.html:86
 msgid "10 Jahre Datengarantie."
 msgstr "☑ 10 Jahre Datengarantie"
 
-#: project/templates/index.html:60
+#: project/templates/index.html:87
 msgid "Aktienbuch als PDF herunterladen."
 msgstr "☑ Aktienbuch als PDF herunterladen"
 
-#: project/templates/index.html:71
+#: project/templates/index.html:98
 msgid ""
 "Die Automatische Validierung verhindert Fehler und sichert maximale "
 "Gesetzeskonformitaet. Das Online-Aktienbuch macht die Pflege schnell und "
@@ -322,41 +338,43 @@ msgstr ""
 "<strong>PLUS: der rechtlichen Verantwortung des Verwaltungsrates ist Sorge "
 "getragen.</strong>"
 
-#: project/templates/index.html:80
+#: project/templates/index.html:107
 msgid "Do you know our Blog?"
 msgstr "Kennen Sie unser Blog?"
 
-#: project/templates/index.html:85 project/templates/index.html:86
+#: project/templates/index.html:112 project/templates/index.html:113
 msgid "Read our Blog"
 msgstr "Blog jetzt lesen"
 
-#: project/templates/index.html:93
+#: project/templates/index.html:120
 msgid "Subscribe to our newsletter!"
-msgstr "Abonnieren Sie unseren Newsletter!"
+msgstr "Email-Verteiler für Verwaltungsräte und Geschäftsleitung!"
 
-#: project/templates/index.html:94
+#: project/templates/index.html:121
 msgid "Stay up to date about our work and latest share register industry news"
 msgstr ""
-"Bleiben Sie auf dem neuesten Stand über unsere Arbeit und aktuelle "
-"Entwickungen der Branche."
+"Bleiben Sie auf dem neuesten Stand über unsere Arbeit, Bereitstellung neuer "
+"Funktionen des Online-Aktienbuches/-registers und Verbesserung der "
+"Aktienbuch-Vorlagen. Diese Email wird nicht öfter als alle 2-3 Monate "
+"versendet."
 
-#: project/templates/index.html:101
+#: project/templates/index.html:128
 msgid "Geben Sie Ihre Email-Adresse ein"
 msgstr "Geben Sie Ihre Email-Adresse ein"
 
-#: project/templates/index.html:130 project/templates/index.html:131
+#: project/templates/index.html:157 project/templates/index.html:158
 msgid "Read our blog"
 msgstr "Lesen Sie unser Blog"
 
-#: project/templates/index.html:135 project/templates/index.html:136
+#: project/templates/index.html:162 project/templates/index.html:163
 msgid "Service Status"
 msgstr "Service Status"
 
-#: project/templates/index.html:140 project/templates/index.html:141
+#: project/templates/index.html:167 project/templates/index.html:168
 msgid "AGB"
 msgstr "AGB"
 
-#: project/templates/index.html:145 project/templates/index.html:146
+#: project/templates/index.html:172 project/templates/index.html:173
 msgid "A service provided by KKD Komm. GmbH"
 msgstr "A service provided by KKD Komm. GmbH"
 
@@ -376,63 +394,101 @@ msgstr "Aktion"
 msgid "No Log Entries yet."
 msgstr "Noch keine Einträge"
 
-#: project/templates/start.html:46
+#: project/templates/start.html:6
+msgid "Captable"
+msgstr "Übersicht Aktienbuch"
+
+#: project/templates/start.html:50
 msgid "Shareholderr added. record share transfers here"
 msgstr ""
 "Aktionär hinzugefügt. Verwenden Sie <a href=\"/positions/\" title=\"Aktien "
 "übertragen\" class=\"btn-inline\">Transaktionen</a> um seinen Aktienstand "
 "einzutragen."
 
-#: project/templates/start.html:58
+#: project/templates/start.html:54
+msgid "Share Ownership"
+msgstr "Aktienbesitz"
+
+#: project/templates/start.html:67
 #, python-format
 msgid "Shares (Voting-%%%%)"
 msgstr "Aktien (%Stimmrechte)"
 
-#: project/templates/start.html:62
+#: project/templates/start.html:71
 msgid "Gafi Validation failed"
 msgstr "GAFI-FATF Validierung fehlgeschlagen"
 
-#: project/templates/start.html:80
-msgid "Option Holders"
-msgstr ""
-"Optionsinhaber <span class=\"note\">(zugrundeliegende Aktien werden "
-"ebenfalls unter obenstehendem Unternehmen geführt)</span>"
-
-#: project/templates/start.html:96
+#: project/templates/start.html:86
 msgid "Total Shares distributed (total shares registered with company)"
 msgstr "Zahl Aktien lt. Tabelle (Zahl Aktien lt. Unternehmensdaten)"
 
-#: project/templates/start.html:107
+#: project/templates/start.html:98
 msgid "No Shareholders yet."
 msgstr "Noch keine Gesellschafter"
 
-#: project/templates/start.html:112
+#: project/templates/start.html:104
+msgid "Option Holders"
+msgstr "Optionsinhaber/Zertifikate"
+
+#: project/templates/start.html:105
+msgid "Option Holders note"
+msgstr "Zugrundeliegende Aktien werden sind bei der AG hinterlegt."
+
+#: project/templates/start.html:131
+msgid "No option holders yet."
+msgstr "Keine Optionsinhaber gefunden."
+
+#: project/templates/start.html:137
 msgid "Download active Shareholders as"
 msgstr "Download Liste der aktiven Aktionäre als"
 
-#: project/templates/start.html:113
+#: project/templates/start.html:138
 msgid "Download active Shareholders as PDF"
 msgstr "Download Liste der aktiven Aktionäre als PDF"
 
-#: project/templates/start.html:114
+#: project/templates/start.html:139
 msgid "PDF"
 msgstr "PDF"
 
-#: project/templates/start.html:116
+#: project/templates/start.html:141
 msgid "Download active Shareholders as CSV"
 msgstr "Download Liste der aktiven Aktionäre als CSV"
 
-#: project/templates/start.html:117
+#: project/templates/start.html:142
 msgid "CSV"
 msgstr "CSV"
 
-#: project/tests/test_views.py:109 project/views.py:83
+#: project/tests/test_views.py:132 project/views.py:83
 msgid ""
 "You have already an existing user account. Please login or reset your "
 "password."
 msgstr ""
 "Sie haben bereits ein Nutzerkonto. Bitte loggen Sie sich ein oder setzen Sie "
 "Ihr Passwort zurück."
+
+#. Translators: should be a language supported by Twilio,
+#. see http://bit.ly/187I5cr
+#: project/tfa.py:10
+#, python-format
+msgid "Hi, this is %(site_name)s calling. Press any key to continue."
+msgstr ""
+"Hallo, das ist ein Anruf von %(site_name)s. Drücken Sie eine Taste für die "
+"Ansage der Zahlen für den Token."
+
+#. Translators: should be a language supported by Twilio,
+#. see http://bit.ly/187I5cr
+#: project/tfa.py:15
+#, python-format
+msgid "Your token is %(token)s. Repeat: %(token)s. Good bye."
+msgstr ""
+"Ihr Token ist %(token)s ., Ich wiederhole noch einmal: Ihr Token ist "
+"%(token)s  ., Vielen Dank und Auf Wiedersehen."
+
+#. Translators: should be a language supported by Twilio,
+#. see http://bit.ly/187I5cr
+#: project/tfa.py:19
+msgid "You didn't press any keys. Good bye."
+msgstr "Sie haben keine Taste gedrückt. Auf Wiedersehen."
 
 #: project/views.py:135
 msgid "shareholder number"
@@ -473,6 +529,9 @@ msgstr "Aktiennummern"
 #: project/views.py:161
 msgid "None"
 msgstr "Keine"
+
+#~ msgid "Buying Date"
+#~ msgstr "Kaufdatum"
 
 #~ msgid "Founding Date:"
 #~ msgstr "Gründungsdatum"
@@ -530,9 +589,6 @@ msgstr "Keine"
 
 #~ msgid "Price"
 #~ msgstr "Preis"
-
-#~ msgid "No Postions yet."
-#~ msgstr "Noch keine Transaktionen."
 
 #~ msgid "GAFI Standard compliant"
 #~ msgstr ""

@@ -46,7 +46,16 @@ def company(request, company_id):
 
 class AccountView(CompanyOperatorPermissionRequiredViewMixin,
                   PaymentViewCompanyObjectMixin, DjStripeAccountView):
-    pass
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(AccountView, self).get_context_data(*args, **kwargs)
+        customer, plans = context.get('customer'), context.get('plans', [])
+        for plan in plans:
+            is_subscribable = customer.subscriber.can_subscribe_plan(
+                plan.get('plan'))
+            if not is_subscribable:
+                plan.update(dict(unsubscribable=True))
+        return context
 
 
 class ChangeCardView(CompanyOperatorPermissionRequiredViewMixin,
@@ -82,6 +91,18 @@ class ConfirmFormView(CompanyOperatorPermissionRequiredViewMixin,
                             company_id=kwargs.get('company_id'))
 
         return super(ConfirmFormView, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ConfirmFormView, self).get_context_data(
+            *args, **kwargs)
+        customer, plan = context.get('customer'), context.get('plan')
+        # check if plan is subscribable
+        is_subscribable, errors = customer.subscriber.validate_plan(
+            plan.get('plan'))
+        if not is_subscribable:
+            context['plan_unsubscribable'] = True
+            context['plan_errors'] = errors
+        return context
 
     def post(self, request, *args, **kwargs):
         """
@@ -179,7 +200,16 @@ class SyncHistoryView(CsrfExemptMixin,
 
 class SubscribeView(CompanyOperatorPermissionRequiredViewMixin,
                     PaymentViewCompanyObjectMixin, DjStripeSubscribeView):
-    pass
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(SubscribeView, self).get_context_data(*args, **kwargs)
+        customer = context.get('customer')
+        plans = context.get('PAYMENT_PLANS', [])
+        for plan in plans:
+            is_subscribable, errors = customer.subscriber.validate_plan(plan)
+            if not is_subscribable:
+                plans[plan].update(dict(unsubscribable=True, errors=errors))
+        return context
 
 
 # payment views

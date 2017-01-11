@@ -1,6 +1,10 @@
 {% extends "base_auth.html" %}
 {% load i18n %}
 
+{% block title %}
+  <TITLE>{% trans "Shareholder" %} {{ shareholder.number }} - Das Aktienregister</TITLE>
+{% endblock %}
+
 {% block ng_app %}js.darg.app.shareholder{% endblock %}
 
 {% block content %}
@@ -30,7 +34,7 @@
   {% endif %}
 
   {# core data #}
-  <table class="table table-striped">
+  <table class="table table-striped small-font-size">
     <tr class="shareholder-number">
       <td>{% trans "Shareholder Number" %}:</td>
       <td>
@@ -52,10 +56,27 @@
         {% verbatim %}<span editable-text="shareholder.user.email" onaftersave="edit_shareholder()">{{ shareholder.user.email || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
       </td>
     </tr>
+    <tr class="legal_type">
+      <td>{% trans "Shareholder Legal Type" %}:</td>
+      <td>
+        {% verbatim %}
+        <span editable-select="shareholder.user.userprofile.legal_type" onaftersave="edit_shareholder()" e-ng-options="l as l.name for l in legal_types">
+          {{ shareholder.user.userprofile.readable_legal_type || 'Aktionaersart' }}
+          <span class="el-icon-pencil"></span>
+        </span>
+        {% endverbatim %}
+      </td>
+    </tr>
     <tr>
       <td>{% trans "Shareholder Company Name" %}:</td>
       <td>
         {% verbatim %}<span editable-text="shareholder.user.userprofile.company_name" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.company_name || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="company-department">
+      <td>{% trans "Shareholder Company Department" %}:</td>
+      <td>
+        {% verbatim %}<span editable-text="shareholder.user.userprofile.company_department" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.company_department || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
       </td>
     </tr>
     <tr>
@@ -126,16 +147,19 @@
   <h2>{% trans "Owned Stock" %}</h2>
   <p>{% trans "Count Shares Total" %}: {{ shareholder.share_count }}</p>
   <p>{% trans "% Ownership" %}: {{ shareholder.share_percent }}% </p>
-  <table class="stock table table-striped">
+  <div class="table-responsive">
+    <table class="stock table table-striped">
     <thead><tr>
-	  <th>{% trans "security" %}</th>
+    <th>{% trans "security" %}</th>
       <th>{% trans "count" %}</th>
       <th>{% trans "segments" %}</th>
     </tr></thead>
-	{% for security in securities %}
+  {% for security in securities %}
       <tr class="security"><td>{{ security.get_title_display }}</td><td>{{ security.count }}</td>{% if security.segments %}<td>{{ security.segments }}</td>{% else %}<td></td>{% endif %}</tr>
-	{% endfor %}
+  {% endfor %}
   </table>
+  </div>
+  
 
   <!-- <a class="btn btn-focus btn-danger" title="{% trans "Delete shareholder" %}" >{% trans "Delete shareholder" %}</a> -->
 

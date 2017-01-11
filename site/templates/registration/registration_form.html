@@ -8,16 +8,20 @@
   {% endblock %}
 <div class="container">
   <div id="auth">
-    <div class="registration-form" >
       <h1>{% trans "Register Here" %}</h1>
-      <form method="post" action=".">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-
-                    <input type="submit" value="{% trans "Sign up now" %}" />
+    <div class="registration-form" >
+      <form method="post" class="form" action=".">
+        {% csrf_token %}
+        {% for field in form %}
+          <p class="{{ field.name }}">
+              {{ field.errors }}
+              {{ field.label_tag }} {{ field }}
+          </p>
+        {% endfor %}
+        <input type="submit" class="btn-submit" value="{% trans "Sign up now" %}" />
       </form>
 
-      <p class="comment">
+      <p class="">
         {% trans "Already registered?" %}
         <a href="{% url 'auth_login' %}" class="btn-inline">{% trans "Login" %}</a>
         <br />
@@ -27,7 +31,7 @@
     </div>
 
     <div class="registration-teaser">
-      <img src="{% static 'compiled/images/Das-Aktienregister-Screenshot.png' %}" alt="Das Aktienregister Screenshot" />
+      <img src="{% static 'compiled/images/aktienbuch-muster-schweiz-ipad.png' %}" alt="Das Aktienregister Screenshot" />
     </div>
   </div>
 </div>

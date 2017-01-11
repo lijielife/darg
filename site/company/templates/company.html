@@ -206,7 +206,7 @@
     <table class="table table-striped operators">
       <tr ng-repeat="operator in operators">
         <td>
-          {{ operator.user.first_name }} {{ operator.user.last_name }}
+          {{ operator.user.first_name }} {{ operator.user.last_name }} {{ operator.user.userprofile.company_name }}
         </td>
         <td>
           {{operator.user.email}}

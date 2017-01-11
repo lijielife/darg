@@ -4,17 +4,20 @@ import datetime
 
 from django.core.urlresolvers import reverse
 from django.test import RequestFactory, TestCase
+from django.utils.translation import ugettext as _
 from rest_framework.exceptions import ValidationError
 
-from project.generators import (OperatorGenerator, OptionPlanGenerator,
+from project.generators import (ComplexShareholderConstellationGenerator,
+                                OperatorGenerator, OptionPlanGenerator,
                                 OptionTransactionGenerator, PositionGenerator,
-                                ShareholderGenerator, UserGenerator,
-                                TwoInitialSecuritiesGenerator)
+                                ShareholderGenerator,
+                                TwoInitialSecuritiesGenerator, UserGenerator)
 from services.rest.serializers import (AddCompanySerializer,
                                        OptionPlanSerializer,
                                        OptionTransactionSerializer,
                                        PositionSerializer,
-                                       ShareholderSerializer)
+                                       ShareholderSerializer,
+                                       UserProfileSerializer)
 from shareholder.models import OptionPlan, OptionTransaction
 from utils.formatters import human_readable_segments
 
@@ -163,6 +166,7 @@ class OptionTransactionSerializerTestCase(TestCase):
         res = serializer.create(serializer.validated_data)
         self.assertTrue(isinstance(res, OptionTransaction))
         self.assertEqual(res.number_segments, [1, u'3-4', u'6-9', 33])
+        self.assertEqual(res.registration_type, '2')
 
 
 class PositionSerializerTestCase(TestCase):
@@ -258,9 +262,13 @@ class PositionSerializerTestCase(TestCase):
         self.assertEqual(
             [1, u'3-4', u'6-9', 33],
             position.security.number_segments)
+        self.assertEqual(position.registration_type, '1')
 
 
 class ShareholderSerializerTestCase(TestCase):
+
+    def setUp(self):
+        self.factory = RequestFactory()
 
     def test_is_company(self):
 
@@ -268,3 +276,58 @@ class ShareholderSerializerTestCase(TestCase):
         s2 = ShareholderGenerator().generate(company=s.company)
         self.assertTrue(ShareholderSerializer(s).get_is_company(s))
         self.assertFalse(ShareholderSerializer(s2).get_is_company(s2))
+
+    def test_performance(self):
+        """
+        avoid query nightmare...
+        """
+        operator = OperatorGenerator().generate()
+        shs, security = ComplexShareholderConstellationGenerator().generate(
+            company=operator.company, shareholder_count=5)  # does +2shs
+        request = self.factory.get('/services/rest/shareholders')
+        request.user = operator.user
+
+        # make sure we don't issue more then one additional query per obj
+        with self.assertNumQueries(100):  # should be < 12
+            # queryset with prefetch to reduce db load
+            qs = operator.company.shareholder_set.all() \
+                .select_related('company', 'user', 'user__userprofile',
+                                'company__country') \
+                .prefetch_related('user__operator_set', 'company__security_set',
+                                  'company__shareholder_set') \
+                .distinct()
+            serializer = ShareholderSerializer(
+                qs, many=True, context={'request': request})
+            self.assertTrue(len(serializer.data) > 0)
+
+    def test_fields(self):
+        """
+        ensure all required fields are there
+        """
+        operator = OperatorGenerator().generate()
+        shs, security = ComplexShareholderConstellationGenerator().generate(
+            company=operator.company, shareholder_count=5)  # does +2shs
+        request = self.factory.get('/services/rest/shareholders')
+        request.user = operator.user
+
+        qs = operator.company.shareholder_set.all()
+        serializer = ShareholderSerializer(
+            qs, many=True, context={'request': request})
+        self.assertTrue(len(serializer.data) > 0)
+        # shortcut to merge user and company name
+        self.assertIsNotNone(serializer.data[0].get('full_name'))
+
+
+class UserProfileSerializerTestCase(TestCase):
+
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.user = UserGenerator().generate()
+        request = self.factory.get('services/rest/user')
+        self.serializer = UserProfileSerializer(self.user.userprofile,
+                                                context={'request': request})
+
+    def test_fields(self):
+        self.assertEqual(self.serializer.data.get('readable_legal_type'),
+                         _('Human Being'))
+        self.assertEqual(self.serializer.data.get('legal_type'), 'H')
