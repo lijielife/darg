@@ -1,16 +1,59 @@
 
 body.payment
-  &.confirm
+  .container
+    h2
+      text-align: center
+    .errorlist
+      margin-bottom: 1rem
+
+    .annotations
+      margin: 1rem .5rem
+
+  #pricing
     float: none
-    .container
-      h2
+    .col
+      // border: 1px solid $color-gray
+      // width: 30%
+      // float: left
+      // margin: 0 .5rem
+      padding: 0
+      .col-content
+        border: 1px solid $color-gray
+        margin: .5rem
+        padding: 0
+      div
         text-align: center
-      #pricing
-        float: none
-        .box
-          margin: 0 auto
-          float: none
-          width: 50%
-          min-width: 300px
-      .errorlist
-        margin-bottom: 1rem
+        padding: 2rem 0.5rem
+      hr
+        margin: 0 1em
+      .heading
+        background-color: $color-blue
+        color: $color-white
+        font-size: 1.8em
+      .price
+        p
+          font-size: 3.5em
+          margin-top: 1rem
+          line-height: 0.8em
+        .note
+          margin: 0
+          padding: 0
+          font-size: 0.8rem
+      .features, .core-features
+        text-align: left
+      .core-features
+        list-style: none
+        padding: 0
+      .features
+        ul li
+          list-style: disc
+      .target
+        padding: 1em
+      .excluded
+        color: $color-light-gray
+        text-decoration: line-through
+      .action
+        padding-top: 1em
+      .btn-focus
+        font-size: 1.2em
+        border-radius: 0px

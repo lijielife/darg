@@ -1,8 +1,6 @@
 
 from django.conf.urls import url
 
-from djstripe import settings as app_settings
-
 
 urlpatterns = [
 

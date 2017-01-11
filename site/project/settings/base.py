@@ -462,12 +462,6 @@ DJSTRIPE_PLANS = collections.OrderedDict((
     })
 ))
 
-PAYMENT_PER_SHAREHOLDER = {
-    'startup': 0,
-    'professional': 49,  # 0.49
-    'enterprise': 9  # 0.09
-}
-
 from utils.payment import stripe_subscriber_request_callback  # noqa
 DJSTRIPE_SUBSCRIBER_MODEL_REQUEST_CALLBACK = stripe_subscriber_request_callback
 
@@ -551,24 +545,34 @@ PLAN_FEATURES = {
 PLAN_FEATURE_CONFIG = {
     'startup': {
         'shareholder_count': 20,
+        'shareholder_price': 0,
         'security_count': 1
     },
     'professional': {
+        'shareholder_price': 49,  # 0.49,
         'security_price': 1500  # 15.00 CHF per month
     },
     'enterprise': {
+        'shareholder_price': 9,  # 0.09
         'security_price': 1500  # 15.00 CHF per month
     }
 }
 # validators for features (downgrade check)
 PLAN_VALIDATORS = {
     'startup': [
+        'company.validators.CompanyEmailRequired',
         'company.validators.features.ShareholderCountValidator',
         'company.validators.features.SecurityCountValidator'
     ],
-    'professional': [],
-    'enterprise': []
+    'professional': [
+        'company.validators.CompanyEmailRequired'
+    ],
+    'enterprise': [
+        'company.validators.CompanyEmailRequired',
+    ]
 }
+
+DEFAULT_HTTP_PROTOCOL = 'https'  # used by djstripe when sending emails
 
 
 try:

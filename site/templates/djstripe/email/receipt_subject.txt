@@ -1,0 +1,2 @@
+{% load trans from i18n %}
+[{{ site.name }}] {% trans 'Payment Receipt' %} ({% trans 'Invoice' %} #{{ charge.pk }})

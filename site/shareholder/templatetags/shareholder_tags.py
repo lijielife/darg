@@ -74,7 +74,8 @@ def get_options_percent(shareholder, date=None):
 
 @register.assignment_tag
 def get_plan_price_per_shareholder(plan):
-    return settings.PAYMENT_PER_SHAREHOLDER.get(plan.get('stripe_plan_id'))
+    plan_config = settings.PLAN_FEATURE_CONFIG.get(plan.get('plan'), {})
+    return plan_config.get('shareholder_price')
 
 
 @register.assignment_tag

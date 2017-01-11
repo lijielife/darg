@@ -28,7 +28,8 @@ from djstripe.views import (
 )
 
 from shareholder.models import Company
-from utils.payment import stripe_company_shareholder_invoice_item
+from utils.payment import (stripe_company_shareholder_invoice_item,
+                           stripe_company_security_invoice_item)
 
 from .mixins import (CompanyOperatorPermissionRequiredViewMixin,
                      PaymentViewCompanyObjectMixin)
@@ -118,8 +119,21 @@ class ConfirmFormView(CompanyOperatorPermissionRequiredViewMixin,
                 customer.update_card(self.request.POST.get("stripe_token"))
 
                 plan = form.cleaned_data['plan']
+
+                # check if plan is subscribable
+                is_subscribable, errors = customer.subscriber.validate_plan(
+                    plan)
+                if not is_subscribable:
+                    for error in errors:
+                        form.add_error(None, error.messages[0])
+                    return self.form_invalid(form)
+
                 # create invoiceitem for shareholders if necessary
                 stripe_company_shareholder_invoice_item(customer, plan)
+
+                # create invoiceitem for securities if necessary
+                stripe_company_security_invoice_item(customer, plan)
+
                 # subscribe customer to selected plan
                 customer.subscribe(plan)
             except stripe.StripeError as exc:

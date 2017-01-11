@@ -1,11 +1,19 @@
 {% extends "djstripe/base.html" %}
 
+{% load i18n %}
+
 {# {% block title %}{% trans "Payment History" %}{% endblock title %} #}
 
 {% block content %}
 <div class="row">
   <div class="col-xs-12">
     {% include "djstripe/includes/_history_table.html" %}
+    <p>
+      {% url 'djstripe:account' customer.subscriber_id as account_url %}
+      {% blocktrans with account_url as account_url %}
+        Go back to your <a href="{{ account_url }}">Account</a>.
+      {% endblocktrans %}
+    </p>
   </div>
 </div>
 {% endblock content %}

@@ -1,14 +1,12 @@
 
-# FIXME: maybe move this to shareholder module
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
-from shareholder.models import Company
+from .base import BaseCompanyValidator
 
 
-class ShareholderCountValidator(object):
+class ShareholderCountValidator(BaseCompanyValidator):
     """
     check if company fulfills shareholder count requirement for given plan
 
@@ -23,12 +21,6 @@ class ShareholderCountValidator(object):
                 ' (max: {max_shareholders})')
     code = 'shareholder_count'
 
-    def __init__(self, company):
-        if not isinstance(company, Company):
-            raise ValueError(_('company must be instance of {}').format(
-                Company._meta.label))
-        self.company = company
-
     def __call__(self, plan):
         plan_config = settings.PLAN_FEATURE_CONFIG.get(plan, {})
         max_shareholder_count = plan_config.get('shareholder_count')
@@ -38,10 +30,10 @@ class ShareholderCountValidator(object):
             error_message = self.message.format(
                 **dict(max_shareholder=max_shareholder_count,
                        count=shareholder_count))
-            raise ValidationError(error_message[0], code=self.code)
+            self.raise_execption(error_message, code=self.code)
 
 
-class SecurityCountValidator(object):
+class SecurityCountValidator(BaseCompanyValidator):
     """
     check if company fulfills security count requirement for given plan
 
@@ -52,15 +44,9 @@ class SecurityCountValidator(object):
         validator(<plan_name>)
     """
 
-    message = _('Too many securities are used ({count}).'
+    message = _('Too many securities in use ({count}).'
                 ' (max: {max_securities})')
     code = 'security_count'
-
-    def __init__(self, company):
-        if not isinstance(company, Company):
-            raise ValueError(_('company must be instance of {}').format(
-                Company._meta.label))
-        self.company = company
 
     def __call__(self, plan):
         plan_config = settings.PLAN_FEATURE_CONFIG.get(plan, {})
@@ -70,4 +56,4 @@ class SecurityCountValidator(object):
             error_message = self.message.format(
                 **dict(max_securities=max_security_count,
                        count=security_count)),
-            raise ValidationError(error_message[0], code=self.code)
+            self.raise_execption(error_message[0], code=self.code)

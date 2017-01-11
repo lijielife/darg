@@ -1,0 +1,56 @@
+{% extends "email/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+
+{% if charge.paid %}
+  <p>
+    {% blocktrans with site.name as site_name and charge.amount|floatformat:2 as amount and charge.card_last_4 as card %}
+      Your {{ site_name }} account was successfully charged {{ amount }} to the credit card ending in {{ card }}. The invoice below is for your records.
+    {% endblocktrans %}
+  </p>
+
+  <p>TODO: details here</p>
+
+  {% comment %}
+  ========================================================
+  INVOICE #{{ charge.pk }}     {{ charge.created_at|date:"F d, Y" }}
+  ........................................................
+
+
+  CUSTOMER: {% block customer_name %}{{ charge.customer.subscriber }}{% endblock %}
+
+
+  DETAILS
+  -------
+  {{ charge.customer.current_subscription.plan_display }} - ${{ charge.amount|floatformat:2 }}
+
+  TOTAL: ${{ charge.amount|floatformat:2 }} USD
+  PAID BY CREDIT CARD: -${{ charge.amount|floatformat:2 }}
+  ========================================================
+  {% endcomment %}
+{% else %}
+
+  {% if charge.refunded %}
+    <p>
+    {% blocktrans with charge.card_last_4 as card and charge.amount|floatformat:2 as amount %}
+      Your credit card ending in {{ card }} was refunded {{ amount }}.
+    {% endblocktrans %}
+    </p>
+
+  {% else %}
+    <p>
+      {% blocktrans with charge.card_last_4 as card and charge.amount|floatformat:2 as amount %}
+        We are sorry, but we failed to charge your credit card ending in {{ card }} for the amount {{ amount }}.
+      {% endblocktrans %}
+    </p>
+  {% endif %}
+
+{% endif %}
+
+<p>
+  {% trans "Please contact us with any questions regarding this invoice." %}
+</p>
+
+{% endblock content %}

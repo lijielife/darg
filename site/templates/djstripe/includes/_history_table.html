@@ -17,8 +17,7 @@
       <tr>
         <td class="fixed">#{{ invoice.id }}</td>
         <td>{{ invoice.date|date:"M d" }}</td>
-        </td>
-        <td colspan=2>
+        <td>
           {% if invoice.paid and invoice.total > 0 %}
             <p>
               <span class="label label-success">{% trans "Paid" %}</span>

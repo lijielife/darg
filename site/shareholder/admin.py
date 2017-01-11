@@ -18,6 +18,8 @@ from shareholder.models import Shareholder, Company, Operator, Position, \
     UserProfile, Country, OptionPlan, OptionTransaction, Security, \
     ShareholderStatement, ShareholderStatementReport
 
+from .admin_forms import CompanyAdminForm
+
 
 class ShareholderAdmin(VersionAdmin):
 
@@ -59,7 +61,8 @@ class ShareholderAdmin(VersionAdmin):
 
 class CompanyAdmin(VersionAdmin):
 
-    search_fields = ('name',)
+    list_display = ('name', 'email')
+    search_fields = ('name', 'email')
     fieldsets = (
         ('', {'fields': ('name', 'founded_at', 'share_count',
                          'provisioned_capital', 'logo', 'email')}),
@@ -68,6 +71,7 @@ class CompanyAdmin(VersionAdmin):
         (_('Statements'), {'fields': ('is_statement_sending_enabled',
                                       'statement_sending_date')})
     )
+    form = CompanyAdminForm
 
     def get_urls(self):
 

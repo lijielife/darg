@@ -17,31 +17,33 @@
 
 <div id="pricing" class="row">
   {% for plan in PLAN_LIST %}
-    <div class="box box1">
-      {% include "djstripe/_plan.html" %}
-      <div class="action">
-        {% if customer.current_subscription.plan == plan.plan and customer.current_subscription.status != CurrentSubscription.STATUS_CANCELLED %}
-          <a href="" class="btn btn-focus" disabled="disabled">
-            {% trans "Your plan" %}
-          </a>
-        {% else %}
-          {% if plan.errors %}
-            <ul class="errorlist">
-              {% for error in plan.errors %}
-                <li>
-                  {% for message in error.messages %}
-                    {{ message }}
-                    {% if not forloop.last %}, {% endif %}
-                  {% endfor %}
-                </li>
-              {% endfor %}
-            </ul>
+    <div class="col-sm-4 col">
+      <div class="col-content">
+        {% include "djstripe/_plan.html" %}
+        <div class="action">
+          {% if customer.current_subscription.plan == plan.plan and customer.current_subscription.status != CurrentSubscription.STATUS_CANCELLED %}
+            <a href="" class="btn btn-focus" disabled="disabled">
+              {% trans "Your plan" %}
+            </a>
+          {% else %}
+            {% if plan.errors %}
+              <ul class="errorlist">
+                {% for error in plan.errors %}
+                  <li>
+                    {% for message in error.messages %}
+                      {{ message }}
+                      {% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+            <a href="{% url 'djstripe:confirm' company_id=customer.subscriber_id plan=plan.plan %}"
+               class="btn btn-focus"{% if plan.unsubscribable %} disabled="disabled"{% endif %}>
+              {% trans "Subscribe" %}
+            </a>
           {% endif %}
-          <a href="{% url 'djstripe:confirm' company_id=customer.subscriber_id plan=plan.plan %}"
-             class="btn btn-focus"{% if plan.unsubscribable %} disabled="disabled"{% endif %}>
-            {% trans "Subscribe" %}
-          </a>
-        {% endif %}
+        </div>
       </div>
     </div>
   {% endfor %}
