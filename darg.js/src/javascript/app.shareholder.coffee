@@ -76,7 +76,7 @@ app.controller 'ShareholderController', ['$scope', '$http', 'Shareholder', ($sco
         if $scope.shareholder.user.userprofile.legal_type.value
             $scope.shareholder.user.userprofile.legal_type = $scope.shareholder.user.userprofile.legal_type.value
         # replace mailing type obj by str
-        if $scope.shareholder.mailing_type.value
+        if $scope.shareholder.mailing_type
             $scope.shareholder.mailing_type = $scope.shareholder.mailing_type.value
         # --- SAVE
         $scope.shareholder.$update().then (result) ->

@@ -1235,7 +1235,7 @@
         if ($scope.shareholder.user.userprofile.legal_type.value) {
           $scope.shareholder.user.userprofile.legal_type = $scope.shareholder.user.userprofile.legal_type.value;
         }
-        if ($scope.shareholder.mailing_type.value) {
+        if ($scope.shareholder.mailing_type) {
           $scope.shareholder.mailing_type = $scope.shareholder.mailing_type.value;
         }
         return $scope.shareholder.$update().then(function(result) {
