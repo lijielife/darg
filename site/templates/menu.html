@@ -82,6 +82,11 @@
                         </a>
                       </li>
                       <li><a href="{% url "two_factor:profile" %}">{% trans "Security Settings" %}</a></li>
+                      {% if user.operator_set.count %}
+                        <li>
+                          <a href="{% url 'subscriptions' %}">{% trans "Subscriptions" %}</a>
+                        </li>
+                      {% endif %}
                       <li>
                         <a href="{% url "auth_logout" %}">{% trans "Logout" %}</a>
                     </li>

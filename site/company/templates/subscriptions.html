@@ -1,0 +1,31 @@
+{% extends "base_auth.html" %}
+{% load i18n %}
+
+{% block content %}
+  <h1>{% trans "Subscriptions of your companies" %}</h1>
+
+  <div class="row">
+    <div class="col-sm-12">
+      <table class="table table-hover">
+        <thead>
+          <th>{% trans "Company" %}</th>
+          <th colspan="2">{% trans "Subscription" %}</th>
+        </thead>
+        <tbody>
+          {% for object in object_list %}
+            <tr>
+              <td><strong>{{ object.name }}</strong></td>
+              <td>{{ object.get_current_subscription_plan_display }}</td>
+              <td>
+                <a href="{% url 'djstripe:account' object.pk %}" class="btn btn-primary">
+                  {% trans "View" %}
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+{% endblock content %}

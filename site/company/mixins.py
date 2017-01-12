@@ -6,9 +6,9 @@ from braces.views._access import AccessMixin
 from shareholder.models import Company
 
 
-class PaymentViewCompanyObjectMixin(object):
+class SubscriptionViewCompanyObjectMixin(object):
     """
-    mixin for payment (djstripe) views to get company object from request kwarg
+    mixin for subscription (djstripe) views to get company object from request
     """
 
     def get_company(self):

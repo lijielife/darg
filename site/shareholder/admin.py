@@ -18,8 +18,6 @@ from shareholder.models import Shareholder, Company, Operator, Position, \
     UserProfile, Country, OptionPlan, OptionTransaction, Security, \
     ShareholderStatement, ShareholderStatementReport
 
-from .admin_forms import CompanyAdminForm
-
 
 class ShareholderAdmin(VersionAdmin):
 
@@ -61,7 +59,22 @@ class ShareholderAdmin(VersionAdmin):
 
 class CompanyAdmin(VersionAdmin):
 
-    list_display = ('name', 'email')
+    def _operators(self, instance):
+        markup = u'<a href="{url}">{text}</a>'
+        admin_list_url = reverse('admin:shareholder_operator_changelist')
+        operators = instance.operator_set.count()
+        if not operators:
+            return '-'
+        text = operators == 1 and _('Operator') or _('Operators')
+        context = dict(
+            url=u'{}?company_id__exact={}'.format(admin_list_url, instance.pk),
+            text=u'{} {}'.format(operators, text)
+        )
+        return markup.format(**context)
+    _operators.short_description = _('Operators')
+    _operators.allow_tags = True
+
+    list_display = ('name', 'email', '_operators')
     search_fields = ('name', 'email')
     fieldsets = (
         ('', {'fields': ('name', 'founded_at', 'share_count',
@@ -71,7 +84,6 @@ class CompanyAdmin(VersionAdmin):
         (_('Statements'), {'fields': ('is_statement_sending_enabled',
                                       'statement_sending_date')})
     )
-    form = CompanyAdminForm
 
     def get_urls(self):
 

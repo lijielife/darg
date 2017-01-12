@@ -18,7 +18,8 @@
         <td class="fixed">#{{ invoice.id }}</td>
         <td>{{ invoice.date|date:"M d" }}</td>
         <td>
-          {% if invoice.paid and invoice.total > 0 %}
+          {# if invoice.paid and invoice.total > 0 #}
+          {% if invoice.paid %}
             <p>
               <span class="label label-success">{% trans "Paid" %}</span>
               {% get_invoice_currency invoice %}{{ invoice.total|floatformat:"2" }}

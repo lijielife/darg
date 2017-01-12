@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template import RequestContext, loader
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import View
+from django.views.generic import View, ListView
 
 import stripe
 
@@ -28,11 +28,11 @@ from djstripe.views import (
 )
 
 from shareholder.models import Company
-from utils.payment import (stripe_company_shareholder_invoice_item,
-                           stripe_company_security_invoice_item)
+from utils.subscriptions import (stripe_company_shareholder_invoice_item,
+                                 stripe_company_security_invoice_item)
 
 from .mixins import (CompanyOperatorPermissionRequiredViewMixin,
-                     PaymentViewCompanyObjectMixin)
+                     SubscriptionViewCompanyObjectMixin)
 
 
 @login_required
@@ -45,8 +45,22 @@ def company(request, company_id):
 
 # djstripe views
 
+class SubscriptionsListView(ListView):
+
+    template_name = 'subscriptions.html'
+    allow_empty = False
+
+    def get_queryset(self):
+        company_ids = self.request.user.operator_set.all().values_list(
+            'company_id')
+        return Company.objects.filter(pk__in=company_ids)
+
+
+subscriptions = login_required(SubscriptionsListView.as_view())
+
+
 class AccountView(CompanyOperatorPermissionRequiredViewMixin,
-                  PaymentViewCompanyObjectMixin, DjStripeAccountView):
+                  SubscriptionViewCompanyObjectMixin, DjStripeAccountView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(AccountView, self).get_context_data(*args, **kwargs)
@@ -60,7 +74,8 @@ class AccountView(CompanyOperatorPermissionRequiredViewMixin,
 
 
 class ChangeCardView(CompanyOperatorPermissionRequiredViewMixin,
-                     PaymentViewCompanyObjectMixin, DjStripeChangeCardView):
+                     SubscriptionViewCompanyObjectMixin,
+                     DjStripeChangeCardView):
 
     def get_post_success_url(self):
         return reverse('djstripe:account',
@@ -68,7 +83,8 @@ class ChangeCardView(CompanyOperatorPermissionRequiredViewMixin,
 
 
 class ConfirmFormView(CompanyOperatorPermissionRequiredViewMixin,
-                      PaymentViewCompanyObjectMixin, DjStripeConfirmFormView):
+                      SubscriptionViewCompanyObjectMixin,
+                      DjStripeConfirmFormView):
 
     success_url = None
 
@@ -149,7 +165,8 @@ class ConfirmFormView(CompanyOperatorPermissionRequiredViewMixin,
 
 
 class ChangePlanView(CompanyOperatorPermissionRequiredViewMixin,
-                     PaymentViewCompanyObjectMixin, DjStripeChangePlanView):
+                     SubscriptionViewCompanyObjectMixin,
+                     DjStripeChangePlanView):
 
     success_url = None
 
@@ -159,7 +176,7 @@ class ChangePlanView(CompanyOperatorPermissionRequiredViewMixin,
 
 
 class CancelSubscriptionView(CompanyOperatorPermissionRequiredViewMixin,
-                             PaymentViewCompanyObjectMixin,
+                             SubscriptionViewCompanyObjectMixin,
                              DjStripeCancelSubscriptionView):
 
     success_url = None
@@ -195,13 +212,13 @@ class CancelSubscriptionView(CompanyOperatorPermissionRequiredViewMixin,
 
 
 class HistoryView(CompanyOperatorPermissionRequiredViewMixin,
-                  PaymentViewCompanyObjectMixin, DjStripeHistoryView):
+                  SubscriptionViewCompanyObjectMixin, DjStripeHistoryView):
     pass
 
 
 class SyncHistoryView(CsrfExemptMixin,
                       CompanyOperatorPermissionRequiredViewMixin,
-                      PaymentViewCompanyObjectMixin, View):
+                      SubscriptionViewCompanyObjectMixin, View):
 
     template_name = "djstripe/includes/_history_table.html"
 
@@ -213,7 +230,7 @@ class SyncHistoryView(CsrfExemptMixin,
 
 
 class SubscribeView(CompanyOperatorPermissionRequiredViewMixin,
-                    PaymentViewCompanyObjectMixin, DjStripeSubscribeView):
+                    SubscriptionViewCompanyObjectMixin, DjStripeSubscribeView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(SubscribeView, self).get_context_data(*args, **kwargs)
@@ -226,7 +243,7 @@ class SubscribeView(CompanyOperatorPermissionRequiredViewMixin,
         return context
 
 
-# payment views
+# subscription views
 account = AccountView.as_view()
 change_card = ChangeCardView.as_view()
 history = HistoryView.as_view()
@@ -234,4 +251,4 @@ sync_history = SyncHistoryView.as_view()
 confirm = ConfirmFormView.as_view()
 subscribe = SubscribeView.as_view()
 change_plan = ChangePlanView.as_view()
-cancel_subscription = CancelSubscriptionView.as_view()
+# cancel_subscription = CancelSubscriptionView.as_view()

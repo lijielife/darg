@@ -1,0 +1,7 @@
+{% extends 'email/base.txt' %}{% load i18n %}
+{% block content %}
+{% trans 'A company was charged but the receipt could not be sent due to missing email address.' %}
+
+Company: {{ charge.customer.subscriber }}
+Admin-URL: {{ protocol }}://{{ site.domain }}{% url 'admin:shareholder_company_changelist' %}?id__exact={{ charge.customer.subscriber_id }}
+{% endblock content %}

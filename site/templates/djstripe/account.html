@@ -47,9 +47,7 @@
     {% url 'djstripe:subscribe' company_id=customer.subscriber_id as subscribe_url %}
     {% url 'djstripe:cancel_subscription' company_id=customer.subscriber_id as cancel_url %}
     {% blocktrans with subscribe_url as subscribe_url and cancel_url as cancel_url %}
-      <p>You can <a href="{{ subscribe_url }}">change</a> your plan
-      or <a href="{{ cancel_url }}">cancel</a> your subscription.
-      </p>
+      <p>You can <a href="{{ subscribe_url }}">change</a> your plan.</p>
     {% endblocktrans %}
   {% else %}
     {% url 'djstripe:subscribe' company_id=customer.subscriber_id as subscribe_url %}

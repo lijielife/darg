@@ -2547,71 +2547,71 @@ div.members-area ul.errorlist {
   padding: 0;
 }
 
-body.payment .container h2 {
-  text-align: center;
-}
-body.payment .container .errorlist {
+body.subscription .container .errorlist {
   margin-bottom: 1rem;
 }
-body.payment .container .annotations {
+body.subscription .container .annotations {
   margin: 1rem 0.5rem;
 }
-body.payment #pricing {
+body.subscription #pricing {
   float: none;
 }
-body.payment #pricing .col {
+body.subscription #pricing .col {
   padding: 0;
 }
-body.payment #pricing .col .col-content {
+body.subscription #pricing .col .col-content {
   border: 1px solid #aaa;
   margin: 0.5rem;
   padding: 0;
 }
-body.payment #pricing .col div {
+body.subscription #pricing .col div {
   text-align: center;
   padding: 2rem 0.5rem;
 }
-body.payment #pricing .col hr {
+body.subscription #pricing .col hr {
   margin: 0 1em;
 }
-body.payment #pricing .col .heading {
+body.subscription #pricing .col .heading {
   background-color: #337ab7;
   color: #fff;
   font-size: 1.8em;
 }
-body.payment #pricing .col .price p {
+body.subscription #pricing .col .price p {
   font-size: 3.5em;
   margin-top: 1rem;
   line-height: 0.8em;
 }
-body.payment #pricing .col .price .note {
+body.subscription #pricing .col .price .note {
   margin: 0;
   padding: 0;
   font-size: 0.8rem;
 }
-body.payment #pricing .col .features, body.payment #pricing .col .core-features {
+body.subscription #pricing .col .features, body.subscription #pricing .col .core-features {
   text-align: left;
 }
-body.payment #pricing .col .core-features {
+body.subscription #pricing .col .core-features {
   list-style: none;
   padding: 0;
 }
-body.payment #pricing .col .features ul li {
+body.subscription #pricing .col .features ul li {
   list-style: disc;
 }
-body.payment #pricing .col .target {
+body.subscription #pricing .col .target {
   padding: 1em;
 }
-body.payment #pricing .col .excluded {
+body.subscription #pricing .col .excluded {
   color: #ccc;
   text-decoration: line-through;
 }
-body.payment #pricing .col .action {
+body.subscription #pricing .col .action {
   padding-top: 1em;
 }
-body.payment #pricing .col .btn-focus {
+body.subscription #pricing .col .btn-focus {
   font-size: 1.2em;
   border-radius: 0px;
+}
+body.subscription.confirm h2 {
+  text-align: center;
 }
 
 @font-face {

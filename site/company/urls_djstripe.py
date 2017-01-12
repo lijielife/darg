@@ -30,11 +30,12 @@ urlpatterns = [
         'company.views.change_card',
         name="change_card"
     ),
-    url(
-        r"^cancel/subscription/$",
-        'company.views.cancel_subscription',
-        name="cancel_subscription"
-    ),
+    # NOTE: cancellation not allowed (free plan available)
+    # url(
+    #     r"^cancel/subscription/$",
+    #     'company.views.cancel_subscription',
+    #     name="cancel_subscription"
+    # ),
     url(
         r"^history/$",
         'company.views.history',

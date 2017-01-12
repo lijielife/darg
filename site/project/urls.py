@@ -90,8 +90,6 @@ urlpatterns = [
     url(r'^accounts/register/$', RegistrationView.as_view(
         form_class=RegistrationForm), name='registration_register'),
     url(r'^accounts/', include('registration.backends.simple.urls')),
-    url(r'^accounts/login/$', RedirectView.as_view(url='/account/login/'),
-        name='auth_login'),
     url(r'', include(tf_urls + tf_twilio_urls, 'two_factor')),  # two factorauth
     url(r'^instapage/', 'project.views.instapage', name='instapage'),
 
@@ -135,7 +133,9 @@ urlpatterns = [
         name='statement_report'),
 
     # stripe
-    url(r'^company/(?P<company_id>[0-9]+)/payments/',
+    url(r'^subscriptions/$', 'company.views.subscriptions',
+        name='subscriptions'),
+    url(r'^company/(?P<company_id>[0-9]+)/subscriptions/',
         include('company.urls_djstripe', namespace="djstripe")),
     url(r'^_stripe/webhooks/$', WebHook.as_view())
 ]

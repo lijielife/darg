@@ -118,6 +118,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+
+    'company.middleware.CompanySubscriptionRequired'
 )
 
 ROOT_URLCONF = 'project.urls'
@@ -462,7 +464,7 @@ DJSTRIPE_PLANS = collections.OrderedDict((
     })
 ))
 
-from utils.payment import stripe_subscriber_request_callback  # noqa
+from utils.subscriptions import stripe_subscriber_request_callback  # noqa
 DJSTRIPE_SUBSCRIBER_MODEL_REQUEST_CALLBACK = stripe_subscriber_request_callback
 
 # all available subscription features
@@ -560,16 +562,11 @@ PLAN_FEATURE_CONFIG = {
 # validators for features (downgrade check)
 PLAN_VALIDATORS = {
     'startup': [
-        'company.validators.CompanyEmailRequired',
         'company.validators.features.ShareholderCountValidator',
         'company.validators.features.SecurityCountValidator'
     ],
-    'professional': [
-        'company.validators.CompanyEmailRequired'
-    ],
-    'enterprise': [
-        'company.validators.CompanyEmailRequired',
-    ]
+    'professional': [],
+    'enterprise': []
 }
 
 DEFAULT_HTTP_PROTOCOL = 'https'  # used by djstripe when sending emails

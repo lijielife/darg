@@ -339,13 +339,18 @@ class Company(AddressModelMixin, models.Model):
 
         return feature_name.lower() in feature_list
 
-    def get_current_subscription_plan(self):
+    def get_current_subscription_plan(self, display=False):
         """
         return plan name of current subscription (if available)
         """
         customer = self.get_customer()
         if customer.has_active_subscription():
+            if display:
+                return customer.current_subscription.plan_display()
             return customer.current_subscription.plan
+
+    def get_current_subscription_plan_display(self):
+        return self.get_current_subscription_plan(display=True)
 
     def get_customer(self):
         """
