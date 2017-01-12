@@ -118,6 +118,29 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
         self.assertEqual(
             self.company.security_set.filter(cusip='22570493').count(), 3)
 
+        # options
+        self.assertEqual(
+            Position.objects.filter(depot_type__isnull=True).count(), 0)
+        self.assertEqual(Position.objects.filter(depot_type='1').count(), 0)
+        self.assertEqual(Position.objects.filter(depot_type='2').count(), 1)
+        self.assertEqual(Position.objects.filter(depot_type='0').count(), 11)
+        self.assertEqual(
+            Position.objects.filter(stock_book_id__isnull=True).count(), 0)
+
+        # positions
+        self.assertEqual(
+            OptionTransaction.objects.filter(depot_type='1').count(), 1)
+        self.assertEqual(
+            OptionTransaction.objects.filter(depot_type='2').count(), 0)
+        self.assertEqual(
+            OptionTransaction.objects.filter(depot_type='0').count(), 6)
+        self.assertEqual(OptionTransaction.objects.filter(
+            depot_type__isnull=True).count(), 0)
+        self.assertEqual(OptionTransaction.objects.filter(
+            stock_book_id__isnull=True).count(), 0)
+        self.assertEqual(OptionTransaction.objects.filter(
+            certificate_id__isnull=True).count(), 0)
+
     def test_get_or_create_user(self):
         self.backend.company = CompanyGenerator().generate()
         kwargs = dict(shareholder_id='1', first_name='first name',

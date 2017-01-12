@@ -360,10 +360,23 @@
       $scope.loading = true;
       $scope.show_add_option_transaction = false;
       $scope.show_add_option_plan = false;
+      $scope.show_optional_fields = false;
       $scope.newOptionPlan = new OptionPlan();
       $scope.newOptionPlan.board_approved_at = new Date();
       $scope.newOptionTransaction = new OptionTransaction();
       $scope.newOptionTransaction.bought_at = new Date();
+      $scope.depot_types = [
+        {
+          name: gettext('Sperrdepot'),
+          value: '2'
+        }, {
+          name: gettext('Zertifikatsdepot'),
+          value: '0'
+        }, {
+          name: gettext('Gesellschaftsdepot'),
+          value: '1'
+        }
+      ];
       $scope.next = false;
       $scope.previous = false;
       $scope.total = 0;
@@ -571,6 +584,9 @@
           date.setHours(date.getHours() - date.getTimezoneOffset() / 60);
           $scope.newOptionTransaction.bought_at = date.toISOString().substring(0, 10);
         }
+        if ($scope.newOptionTransaction.depot_type) {
+          $scope.newOptionTransaction.depot_type = $scope.newOptionTransaction.depot_type.value;
+        }
         return $scope.newOptionTransaction.$save().then(function(result) {
           return $scope.load_all();
         }).then(function() {
@@ -656,6 +672,13 @@
               return $scope.numberSegmentsAvailable = gettext('No security segments available for option plan on selected date or now.');
             }
           });
+        }
+      };
+      $scope.toggle_optional_fields = function() {
+        if ($scope.show_optional_fields) {
+          return $scope.show_optional_fields = false;
+        } else {
+          return $scope.show_optional_fields = true;
         }
       };
       $scope.datepicker = {
@@ -820,8 +843,21 @@
       $scope.show_add_capital = false;
       $scope.show_split_data = false;
       $scope.show_split = false;
+      $scope.show_optional_fields = false;
       $scope.newPosition = new Position();
       $scope.newSplit = new Split();
+      $scope.depot_types = [
+        {
+          name: gettext('Sperrdepot'),
+          value: '2'
+        }, {
+          name: gettext('Zertifikatsdepot'),
+          value: '0'
+        }, {
+          name: gettext('Gesellschaftsdepot'),
+          value: '1'
+        }
+      ];
       $scope.next = false;
       $scope.previous = false;
       $scope.total = 0;
@@ -984,6 +1020,9 @@
           bought_at.setHours(bought_at.getHours() - bought_at.getTimezoneOffset() / 60);
           $scope.newPosition.bought_at = bought_at;
         }
+        if ($scope.newPosition.depot_type) {
+          $scope.newPosition.depot_type = $scope.newPosition.depot_type.value;
+        }
         return $scope.newPosition.$save().then(function(result) {
           return $scope.positions.push(result);
         }).then(function() {
@@ -1062,6 +1101,13 @@
           return $scope.show_split_data = false;
         } else {
           return $scope.show_split_data = true;
+        }
+      };
+      $scope.toggle_optional_fields = function() {
+        if ($scope.show_optional_fields) {
+          return $scope.show_optional_fields = false;
+        } else {
+          return $scope.show_optional_fields = true;
         }
       };
       $scope.show_add_capital_form = function() {
@@ -1232,7 +1278,7 @@
         if ($scope.shareholder.user.userprofile.language) {
           $scope.shareholder.user.userprofile.language = $scope.shareholder.user.userprofile.language.iso;
         }
-        if ($scope.shareholder.user.userprofile.legal_type.value) {
+        if ($scope.shareholder.user.userprofile.legal_type) {
           $scope.shareholder.user.userprofile.legal_type = $scope.shareholder.user.userprofile.legal_type.value;
         }
         if ($scope.shareholder.mailing_type) {

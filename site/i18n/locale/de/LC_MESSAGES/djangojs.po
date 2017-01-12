@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-11 08:22+0000\n"
-"PO-Revision-Date: 2017-01-11 08:22+0000\n"
+"POT-Creation-Date: 2017-01-12 14:00+0000\n"
+"PO-Revision-Date: 2017-01-12 14:00+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -26,15 +26,15 @@ msgstr "Vorname"
 
 #: static/compiled/javascript/i18n_noop.js:4
 #: static/compiled/javascript/i18n_noop.js:23
-#: static/compiled/javascript/script.js:1330
-#: static/compiled/javascript/script.js:1352
+#: static/compiled/javascript/script.js:1376
+#: static/compiled/javascript/script.js:1398
 msgid "Last Name"
 msgstr "Nachname"
 
 #: static/compiled/javascript/i18n_noop.js:5
 #: static/compiled/javascript/i18n_noop.js:24
-#: static/compiled/javascript/script.js:1327
-#: static/compiled/javascript/script.js:1349
+#: static/compiled/javascript/script.js:1373
+#: static/compiled/javascript/script.js:1395
 msgid "Shareholder Number"
 msgstr "Gesellschafter Nummer"
 
@@ -183,59 +183,73 @@ msgstr "Ungültige Aktiennummern. Format: 1,2,3,4-7"
 msgid "number_segments"
 msgstr "Aktiennummern"
 
-#: static/compiled/javascript/script.js:633
-#: static/compiled/javascript/script.js:654
+#: static/compiled/javascript/script.js:370
+#: static/compiled/javascript/script.js:851
+msgid "Sperrdepot"
+msgstr "Sperrdepot"
+
+#: static/compiled/javascript/script.js:373
+#: static/compiled/javascript/script.js:854
+msgid "Zertifikatsdepot"
+msgstr "Zertifikatsdepot"
+
+#: static/compiled/javascript/script.js:376
+#: static/compiled/javascript/script.js:857
+msgid "Gesellschaftsdepot"
+msgstr "Gesellschaftsdepot"
+
+#: static/compiled/javascript/script.js:649
+#: static/compiled/javascript/script.js:670
 msgid "Available security segments for option plan on selected date or now: "
 msgstr ""
 "Verfügbare Aktiennummern für Optionen vom Verkäufer zum ausgewählten Datum "
 "oder heute: "
 
-#: static/compiled/javascript/script.js:635
+#: static/compiled/javascript/script.js:651
 msgid ""
 "Available security segments for option plan on selected date or now: None"
 msgstr "Aktionär hält aktuell keine Optionen."
 
-#: static/compiled/javascript/script.js:656
+#: static/compiled/javascript/script.js:672
 msgid ""
 "No security segments available for option plan on selected date or now."
 msgstr ""
 "Es sind aktuell keine Aktiennummern für den Optionsplan am ausgewählten "
 "Datum verfügbar."
 
-#: static/compiled/javascript/script.js:1095
+#: static/compiled/javascript/script.js:1141
 msgid ""
 "Available security segments from this shareholder on selected date or now: "
 msgstr "Verfügbare Aktiennummern vom Verkäufer zum ausgewählten Datum: "
 
-#: static/compiled/javascript/script.js:1097
+#: static/compiled/javascript/script.js:1143
 msgid ""
 "Available security segments from this shareholder on selected date or now: "
 "None"
 msgstr "Aktionär hält aktuell keine Aktien."
 
-#: static/compiled/javascript/script.js:1169
+#: static/compiled/javascript/script.js:1215
 msgid "Human Being"
 msgstr "Natürliche Person"
 
-#: static/compiled/javascript/script.js:1172
+#: static/compiled/javascript/script.js:1218
 msgid "Corporate"
 msgstr "Juristische Person"
 
-#: static/compiled/javascript/script.js:1178
+#: static/compiled/javascript/script.js:1224
 msgid "Not deliverable"
 msgstr "Unzustellbar"
 
-#: static/compiled/javascript/script.js:1181
+#: static/compiled/javascript/script.js:1227
 msgid "Postal Mail"
 msgstr "Briefversand"
 
-#: static/compiled/javascript/script.js:1184
-#| msgid "Email"
+#: static/compiled/javascript/script.js:1230
 msgid "via Email"
 msgstr "Emailversand"
 
-#: static/compiled/javascript/script.js:1324
-#: static/compiled/javascript/script.js:1346
+#: static/compiled/javascript/script.js:1370
+#: static/compiled/javascript/script.js:1392
 msgid "Email"
 msgstr "Email"
 

@@ -73,7 +73,7 @@ app.controller 'ShareholderController', ['$scope', '$http', 'Shareholder', ($sco
         if $scope.shareholder.user.userprofile.language
             $scope.shareholder.user.userprofile.language = $scope.shareholder.user.userprofile.language.iso
         # replace legal type obj by str
-        if $scope.shareholder.user.userprofile.legal_type.value
+        if $scope.shareholder.user.userprofile.legal_type
             $scope.shareholder.user.userprofile.legal_type = $scope.shareholder.user.userprofile.legal_type.value
         # replace mailing type obj by str
         if $scope.shareholder.mailing_type

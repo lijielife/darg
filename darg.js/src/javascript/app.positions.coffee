@@ -15,8 +15,14 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
     $scope.show_add_capital = false
     $scope.show_split_data = false
     $scope.show_split = false
+    $scope.show_optional_fields = false
     $scope.newPosition = new Position()
     $scope.newSplit = new Split()
+    $scope.depot_types = [
+        {name: gettext('Sperrdepot'), value: '2'},
+        {name: gettext('Zertifikatsdepot'), value: '0'},
+        {name: gettext('Gesellschaftsdepot'), value: '1'},
+    ]
 
     # pagination:
     $scope.next = false
@@ -156,6 +162,10 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
             bought_at = $scope.newPosition.bought_at
             bought_at.setHours(bought_at.getHours() - bought_at.getTimezoneOffset() / 60)
             $scope.newPosition.bought_at = bought_at
+        # replace legal type obj by str
+        if $scope.newPosition.depot_type
+            $scope.newPosition.depot_type = $scope.newPosition.depot_type.value
+        # save
         $scope.newPosition.$save().then (result) ->
             $scope.positions.push result
         .then ->
@@ -224,6 +234,12 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
             $scope.show_split_data = false
         else
             $scope.show_split_data = true
+
+    $scope.toggle_optional_fields = ->
+        if $scope.show_optional_fields
+            $scope.show_optional_fields = false
+        else
+            $scope.show_optional_fields = true
 
     $scope.show_add_capital_form = ->
         $scope.show_add_position = false

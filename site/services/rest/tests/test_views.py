@@ -310,7 +310,9 @@ class PositionTestCase(TestCase):
                     "errors": []
                 }
             },
-            "comment": "sdfg"
+            "comment": "sdfg",
+            "stock_book_id": "666",
+            "depot_type": "1"
         }
 
         response = self.client.post(
@@ -330,6 +332,9 @@ class PositionTestCase(TestCase):
         self.assertEqual(position.registration_type, '2')
         self.assertEqual(
             position.bought_at.isoformat(), '2016-05-13')
+        self.assertEqual(position.comment, "sdfg")
+        self.assertEqual(position.stock_book_id, "666")
+        self.assertEqual(position.depot_type, "1")
 
     def test_add_position_with_number_segment(self):
         """

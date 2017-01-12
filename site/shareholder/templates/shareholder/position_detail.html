@@ -76,6 +76,18 @@
         {% verbatim %}{{ position.readable_registration_type}}{% endverbatim %}
       </td>
     </tr>
+    <tr class="depot-type" ng-show="position.readable_depot_type">
+      <td>{% trans "Depot Type" %}:</td>
+      <td>
+        {% verbatim %}{{ position.readable_depot_type}}{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="stock-book-id" ng-show="position.stock_book_id">
+      <td>{% trans "Stick Book ID" %}:</td>
+      <td>
+        {% verbatim %}{{ position.stock_book_id}}{% endverbatim %}
+      </td>
+    </tr>
   </table>
 </div>
 {% endblock %}

@@ -12,9 +12,9 @@ from django.utils.text import slugify
 from django.utils.translation import gettext as _
 
 from project.generators import DEFAULT_TEST_DATA, OperatorGenerator, _make_user
-from shareholder.models import (REGISTRATION_TYPES, Company, Country,
-                                OptionPlan, OptionTransaction, Position,
-                                Security, Shareholder, UserProfile)
+from shareholder.models import (DEPOT_TYPES, REGISTRATION_TYPES, Company,
+                                Country, OptionPlan, OptionTransaction,
+                                Position, Security, Shareholder, UserProfile)
 from utils.geo import COUNTRY_MAP, _get_language_iso_code
 
 SISWARE_CSV_HEADER = [
@@ -194,14 +194,16 @@ class SisWareImportBackend(BaseImportBackend):
                 bought_at=row[28], buyer=shareholder, count=row[26],
                 value=row[25],
                 face_value=float(row[25].replace(',', '.')),
-                registration_type=row[2]
+                registration_type=row[2],
+                stock_book_id=row[29], depot_type=row[30]
             )
         # OPTION + PLAN
         else:
             self._get_or_create_option_transaction(
                 cert_id=row[27], bought_at=row[28], buyer=shareholder,
                 count=row[26], face_value=float(row[25].replace(',', '.')),
-                registration_type=row[2]
+                registration_type=row[2], certificate_id=row[27],
+                stock_book_id=row[29], depot_type=row[30]
             )
 
         return 1
@@ -244,7 +246,8 @@ class SisWareImportBackend(BaseImportBackend):
         return security
 
     def _get_or_create_position(self, bought_at, buyer, count, value,
-                                face_value, registration_type, **kwargs):
+                                face_value, registration_type, stock_book_id,
+                                depot_type, **kwargs):
         """
         we have no history data, hence, we start with an initial position/
         transaction of the day of the import
@@ -252,6 +255,7 @@ class SisWareImportBackend(BaseImportBackend):
         seller = self.company.get_company_shareholder()
         security = self._get_or_create_security(face_value)
         registration_type = self._match_registration_type(registration_type)
+        depot_type = self._match_depot_type(depot_type)
 
         # FIXME add scontro and depot type to lookup
         position, c_ = Position.objects.get_or_create(
@@ -260,6 +264,8 @@ class SisWareImportBackend(BaseImportBackend):
             defaults={
                 'value': float(value.replace(',', '.')),
                 'registration_type': registration_type,
+                'stock_book_id': stock_book_id,
+                'depot_type': depot_type,
             })
 
         if not c_:
@@ -272,9 +278,12 @@ class SisWareImportBackend(BaseImportBackend):
         return position
 
     def _get_or_create_option_transaction(self, cert_id, bought_at, buyer,
-                                          count, face_value, registration_type):
+                                          count, face_value, registration_type,
+                                          certificate_id, stock_book_id,
+                                          depot_type):
 
         registration_type = self._match_registration_type(registration_type)
+        depot_type = self._match_depot_type(depot_type)
 
         security = self._get_or_create_security(face_value)
         option_plan, c_ = OptionPlan.objects.get_or_create(
@@ -291,7 +300,10 @@ class SisWareImportBackend(BaseImportBackend):
             certificate_id=cert_id, bought_at=bought_at[0:10], buyer=buyer,
             seller=seller, count=count, option_plan=option_plan,
             defaults={
-                'registration_type': registration_type
+                'registration_type': registration_type,
+                'certificate_id': certificate_id,
+                'depot_type': depot_type,
+                'stock_book_id': stock_book_id,
             })
 
         return option
@@ -359,6 +371,15 @@ class SisWareImportBackend(BaseImportBackend):
             return REGISTRATION_TYPES[1][0]
         if registration_type == u'Eigenbestand':
             return REGISTRATION_TYPES[0][0]
+
+    def _match_depot_type(self, depot_type):
+        if depot_type == u'Zertifikatsdepot':
+            return DEPOT_TYPES[0][0]
+        if depot_type == u'Gesellschaftsdepot':
+            return DEPOT_TYPES[1][0]
+        if depot_type == u'Sperrdepot':
+            return DEPOT_TYPES[2][0]
+
 
     def validate(self, filename):
         """

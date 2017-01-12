@@ -16,10 +16,16 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
 
     $scope.show_add_option_transaction = false
     $scope.show_add_option_plan = false
+    $scope.show_optional_fields = false
     $scope.newOptionPlan = new OptionPlan()
     $scope.newOptionPlan.board_approved_at = new Date()
     $scope.newOptionTransaction = new OptionTransaction()
     $scope.newOptionTransaction.bought_at = new Date()
+    $scope.depot_types = [
+        {name: gettext('Sperrdepot'), value: '2'},
+        {name: gettext('Zertifikatsdepot'), value: '0'},
+        {name: gettext('Gesellschaftsdepot'), value: '1'},
+    ]
 
     # pagination:
     $scope.next = false
@@ -202,6 +208,9 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
             date = $scope.newOptionTransaction.bought_at
             date.setHours(date.getHours() - date.getTimezoneOffset() / 60)
             $scope.newOptionTransaction.bought_at = date.toISOString().substring(0, 10)
+        # replace legal type obj by str
+        if $scope.newOptionTransaction.depot_type
+            $scope.newOptionTransaction.depot_type = $scope.newOptionTransaction.depot_type.value
 
         # now save:
         $scope.newOptionTransaction.$save().then (result) ->
@@ -274,6 +283,12 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
                     $scope.numberSegmentsAvailable = gettext('Available security segments for option plan on selected date or now: ') + result.data
                 else
                     $scope.numberSegmentsAvailable = gettext('No security segments available for option plan on selected date or now.')
+
+    $scope.toggle_optional_fields = ->
+        if $scope.show_optional_fields
+            $scope.show_optional_fields = false
+        else
+            $scope.show_optional_fields = true
 
     # --- DATEPICKER
     $scope.datepicker = { opened: false }

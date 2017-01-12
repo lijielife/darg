@@ -12,14 +12,15 @@ from project.generators import (ComplexShareholderConstellationGenerator,
                                 OperatorGenerator, OptionPlanGenerator,
                                 OptionTransactionGenerator, PositionGenerator,
                                 ShareholderGenerator,
-                                TwoInitialSecuritiesGenerator, UserGenerator)
+                                TwoInitialSecuritiesGenerator, UserGenerator,
+                                ComplexPositionsWithSegmentsGenerator)
 from services.rest.serializers import (AddCompanySerializer,
                                        OptionPlanSerializer,
                                        OptionTransactionSerializer,
                                        PositionSerializer,
                                        ShareholderSerializer,
                                        UserProfileSerializer)
-from shareholder.models import OptionPlan, OptionTransaction, Country
+from shareholder.models import OptionPlan, OptionTransaction, Country, Position
 from utils.formatters import human_readable_segments
 
 
@@ -142,6 +143,8 @@ class OptionTransactionSerializerTestCase(TestCase):
         """
         serializer = OptionTransactionSerializer()
         self.assertTrue('readable_number_segments' in serializer.fields.keys())
+        self.assertIn('stock_book_id', serializer.fields.keys())
+        self.assertIn('depot_type', serializer.fields.keys())
 
     def test_is_valid(self):
         """
@@ -264,6 +267,22 @@ class PositionSerializerTestCase(TestCase):
             [1, u'3-4', u'6-9', 33],
             position.security.number_segments)
         self.assertEqual(position.registration_type, '1')
+
+    def test_fields(self):
+        operator = OperatorGenerator().generate()
+        poss, shs = ComplexPositionsWithSegmentsGenerator().generate(
+            company=operator.company)  # does +2shs
+        request = self.factory.get('/services/rest/shareholders')
+        request.user = operator.user
+
+        qs = Position.objects.filter(pk__in=[pos.pk for pos in poss])
+        serializer = PositionSerializer(
+            qs, many=True, context={'request': request})
+
+        self.assertTrue(len(serializer.data) > 0)
+        position_data = serializer.data[0]
+        self.assertIsNotNone(position_data['stock_book_id'])
+        self.assertIsNotNone(position_data['depot_type'])
 
 
 class ShareholderSerializerTestCase(TestCase):

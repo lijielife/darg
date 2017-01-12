@@ -438,6 +438,7 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
     bought_at = serializers.DateTimeField()  # e.g. 2015-06-02T23:00:00.000Z
     readable_number_segments = serializers.SerializerMethodField()
     readable_registration_type = serializers.SerializerMethodField()
+    readable_depot_type = serializers.SerializerMethodField()
     position_type = serializers.SerializerMethodField()
 
     class Meta:
@@ -447,7 +448,8 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
             'pk', 'buyer', 'seller', 'bought_at', 'count', 'value',
             'security', 'comment', 'is_split', 'is_draft', 'number_segments',
             'readable_number_segments', 'registration_type',
-            'readable_registration_type', 'position_type')
+            'readable_registration_type', 'position_type', 'depot_type',
+            'readable_depot_type', 'stock_book_id',)
 
     def get_readable_number_segments(self, obj):
         """
@@ -460,6 +462,12 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
         change make it readable
         """
         return obj.get_registration_type_display()
+
+    def get_readable_depot_type(self, obj):
+        """
+        change make it readable
+        """
+        return obj.get_depot_type_display()
 
     def get_position_type(self, obj):
         return obj.get_position_type()
@@ -605,6 +613,14 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
             kwargs.update({
                 "number_segments": validated_data.get("number_segments")
             })
+
+        if validated_data.get("stock_book_id"):
+            kwargs.update({
+                'stock_book_id': validated_data.get("stock_book_id")})
+
+        if validated_data.get("depot_type"):
+            kwargs.update({
+                'depot_type': validated_data.get("depot_type")})
 
         position = Position.objects.create(**kwargs)
 
@@ -755,13 +771,16 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
     bought_at = serializers.DateField()  # e.g. 2015-06-02T23:00:00.000Z
     readable_number_segments = serializers.SerializerMethodField()
     readable_registration_type = serializers.SerializerMethodField()
+    readable_depot_type = serializers.SerializerMethodField()
     option_plan = OptionPlanSerializer()
 
     class Meta:
         model = OptionTransaction
         fields = ('pk', 'buyer', 'seller', 'bought_at', 'count', 'option_plan',
                   'is_draft', 'number_segments', 'readable_number_segments',
-                  'readable_registration_type', 'registration_type')
+                  'readable_registration_type', 'registration_type',
+                  'depot_type', 'readable_depot_type', 'stock_book_id',
+                  'certificate_id')
 
     def is_valid(self, raise_exception=False):
         """
@@ -877,6 +896,18 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
                     validated_data.get("number_segments"))
             })
 
+        if validated_data.get("stock_book_id"):
+            kwargs.update({
+                'stock_book_id': validated_data.get("stock_book_id")})
+
+        if validated_data.get("depot_type"):
+            kwargs.update({
+                'depot_type': validated_data.get("depot_type")})
+
+        if validated_data.get("certificate_id"):
+            kwargs.update({
+                'certificate_id': validated_data.get("certificate_id")})
+
         option_transaction = OptionTransaction.objects.create(**kwargs)
 
         return option_transaction
@@ -892,6 +923,12 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
         change make it readable
         """
         return obj.get_registration_type_display()
+
+    def get_readable_depot_type(self, obj):
+        """
+        change make it readable
+        """
+        return obj.get_depot_type_display()
 
 
 class OptionHolderSerializer(serializers.HyperlinkedModelSerializer):

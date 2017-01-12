@@ -21,23 +21,34 @@ from utils.formatters import human_readable_segments
 logger = logging.getLogger(__name__)
 
 
-class ShareholderDetailPage(BasePage):
-    """Options List View"""
+class BaseDetailPage(BasePage):
 
     def __init__(self, driver, live_server_url, user, path=None):
         """ load MainPage '/' """
         self.live_server_url = live_server_url
         # prepare driver
-        super(ShareholderDetailPage, self).__init__(driver)
+        super(BaseDetailPage, self).__init__(driver)
 
         # login and load page
         self.operator = user.operator_set.all()[0]
         self.login(username=user.username,
                    password=DEFAULT_TEST_DATA['password'])
+
+        assert 'start' in self.driver.current_url, 'login not successful'
+
         if path:
             self.driver.get('%s%s' % (live_server_url, path))
         else:
             self.driver.get('%s%s' % (live_server_url))
+
+    def get_field(self, cls):
+        """
+        returns string for class
+        """
+        return self.driver.find_element_by_class_name(cls).text
+
+
+class ShareholderDetailPage(BaseDetailPage):
 
     def click_to_edit(self, class_name):
         el = self.wait_until_visible((
@@ -68,12 +79,6 @@ class ShareholderDetailPage(BasePage):
             '//tr[@class="birthday active"]/td/span')
         return bday.text
 
-    def get_field(self, cls):
-        """
-        returns string for class
-        """
-        return self.driver.find_element_by_class_name(cls).text
-
     def get_securities(self):
         """
         returns list of securities from page
@@ -100,6 +105,14 @@ class ShareholderDetailPage(BasePage):
         el = el.find_element_by_class_name('editable-buttons')
         el = el.find_element_by_tag_name('button')
         el.click()
+
+
+class PositionDetailPage(BaseDetailPage):
+    pass
+
+
+class OptionTransactionDetailPage(BaseDetailPage):
+    pass
 
 
 class OptionsPage(BasePage):
@@ -186,6 +199,18 @@ class OptionsPage(BasePage):
             kwargs.get('count', DEFAULT_TEST_DATA.get('count'))))
         inputs[3].send_keys(DEFAULT_TEST_DATA.get('vesting_period'))
 
+        if kwargs.get('depot_type'):
+            select = Select(selects[3])
+            select.select_by_visible_text('Gesellschaftsdepot')
+
+        if kwargs.get('stock_book_id'):
+            inputs[4].clear()
+            inputs[4].send_keys(kwargs.get('stock_book_id'))
+
+        if kwargs.get('certificate_id'):
+            inputs[5].clear()
+            inputs[5].send_keys(kwargs.get('certificate_id'))
+
     def enter_transfer_option_with_segments_data(self, **kwargs):
         el = self.driver.find_element_by_id('add_option_transaction')
         form = el.find_element_by_tag_name('form')
@@ -243,8 +268,11 @@ class OptionsPage(BasePage):
 
     def click_save_transfer_option(self):
         el = self.driver.find_element_by_xpath(
-            '//*[@id="add_option_transaction"]/div/form/div[2]/button[2]')
+            '//button[contains(@class, "btn-focus")]')
         el.click()
+
+    def show_optional_fields(self):
+        self.driver.find_element_by_class_name('el-icon-plus-sign').click()
 
     # -- VALIDATIONs
     def is_option_plan_form_open(self):
@@ -435,6 +463,17 @@ class PositionPage(BasePage):
         else:
             inputs[4].clear()  # clear existing values
             inputs[4].send_keys(position.comment)  # comment
+
+        if position.depot_type:
+            select = Select(selects[3])
+            select.select_by_visible_text('Gesellschaftsdepot')
+
+        if position.stock_book_id:
+            inputs[5].clear()
+            inputs[5].send_keys(position.stock_book_id)
+
+    def show_optional_fields(self):
+        self.driver.find_element_by_class_name('el-icon-plus-sign').click()
 
     def enter_bought_at(self, date):
         """

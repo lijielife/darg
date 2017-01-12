@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-11 08:23+0000\n"
+"POT-Creation-Date: 2017-01-12 14:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -73,44 +73,44 @@ msgstr ""
 msgid "This email is already taken by another user/shareholder."
 msgstr ""
 
-#: services/rest/serializers.py:505 services/rest/serializers.py:794
+#: services/rest/serializers.py:515 services/rest/serializers.py:815
 msgid "Invalid security numbers segments."
 msgstr ""
 
-#: services/rest/serializers.py:511 services/rest/serializers.py:807
+#: services/rest/serializers.py:521 services/rest/serializers.py:828
 msgid "Segments \"{}\" must be owned by seller \"{}\". Available are {}"
 msgstr ""
 
-#: services/rest/serializers.py:524 services/rest/serializers.py:740
-#: services/rest/serializers.py:819
+#: services/rest/serializers.py:534 services/rest/serializers.py:758
+#: services/rest/serializers.py:840
 msgid "Number of shares in segments ({}) does not match count {}"
 msgstr ""
 
-#: services/rest/serializers.py:541
+#: services/rest/serializers.py:551
 msgid ""
 "Segment {} is blocked for options and cannot be transfered to a shareholder."
 msgstr ""
 
-#: services/rest/serializers.py:636
+#: services/rest/serializers.py:654
 msgid "Not a pdf file."
 msgstr ""
 
-#: services/rest/serializers.py:717
+#: services/rest/serializers.py:735
 msgid "Invalid or empty security numbers segments."
 msgstr ""
 
-#: services/rest/serializers.py:728
+#: services/rest/serializers.py:746
 msgid ""
 "Segments \"{}\" must be owned by company shareholder \"{}\". Available are {}"
 msgstr ""
 
-#: services/rest/serializers.py:831
+#: services/rest/serializers.py:852
 msgid ""
 "Segment {} is not reserved for options inside a option plan and cannot be "
 "transfered to a option holder. Available are: {}"
 msgstr ""
 
-#: services/rest/tests/test_serializers.py:372
+#: services/rest/tests/test_serializers.py:391
 msgid "Human Being"
 msgstr ""
 

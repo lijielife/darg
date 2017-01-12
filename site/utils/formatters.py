@@ -83,7 +83,7 @@ def deflate_segments(segments):
     * sort
     """
 
-    if segments == []:
+    if len(segments) == 0:
         return []
 
     # --- standardize on deflate
@@ -96,7 +96,6 @@ def deflate_segments(segments):
     advance = None
     deflated_segments = []
     last_segment = segments[-1]
-
 
     # attention: writes to list backwards elements
     for segment in segments:

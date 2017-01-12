@@ -32,6 +32,11 @@ REGISTRATION_TYPES = [
     ('2', _('Personal representation')),
 ]
 
+DEPOT_TYPES = [
+    ('0', _('Zertifikatsdepot')),
+    ('1', _('Gesellschaftsdepot')),
+    ('2', _('Sperrdepot')),
+]
 
 logger = logging.getLogger(__name__)
 
@@ -784,6 +789,9 @@ class Security(models.Model):
 
 
 class Position(models.Model):
+    """
+    aka Transaction
+    """
 
     buyer = models.ForeignKey(
         'Shareholder', related_name="buyer", blank=True, null=True)
@@ -806,6 +814,12 @@ class Position(models.Model):
     registration_type = models.CharField(
         _('Securities are purchase type (for myself, etc.)'), max_length=1,
         choices=REGISTRATION_TYPES, blank=True, null=True)
+    stock_book_id = models.CharField(
+        _('aka Skontro (read http://bit.ly/2iJquEl)'),
+        max_length=255, blank=True, null=True)
+    depot_type = models.CharField(
+        _('What kind of depot is this position stored within'), max_length=1,
+        choices=DEPOT_TYPES, blank=True, null=True)
     comment = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -921,6 +935,12 @@ class OptionTransaction(models.Model):
     registration_type = models.CharField(
         _('Securities are purchase type (for myself, etc.)'), max_length=1,
         choices=REGISTRATION_TYPES, blank=True, null=True)
+    stock_book_id = models.CharField(
+        _('aka Skontro (read http://bit.ly/2iJquEl)'),
+        max_length=255, blank=True, null=True)
+    depot_type = models.CharField(
+        _('What kind of depot is this position stored within'), max_length=1,
+        choices=DEPOT_TYPES, blank=True, null=True)
     is_draft = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
