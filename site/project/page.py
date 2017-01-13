@@ -263,6 +263,14 @@ class BasePage(object):
             )
         )
 
+    def get_url(self, cls):
+        """
+        return url path of first link inside class element
+        """
+        el = self.driver.find_element_by_class_name(cls)
+        link = el.find_element_by_tag_name('a')
+        return link.get_attribute('href')
+
 
 class StartPage(BasePage):
     """Options List View"""

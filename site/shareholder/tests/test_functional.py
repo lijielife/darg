@@ -295,11 +295,8 @@ class PositionDetailFunctionalTestCase(BaseSeleniumTestCase):
             position = self.poss[-1]
             p = page.PositionDetailPage(
                 self.selenium, self.live_server_url, self.operator.user,
-                path=reverse(
-                    'position',
-                    kwargs={'pk': position.pk}
-                    )
-                )
+                path=reverse('position', kwargs={'pk': position.pk}))
+
             # wait for angular load
             time.sleep(1)
             self.assertIn(
@@ -330,8 +327,8 @@ class OptionTransactionDetailFunctionalTestCase(BaseSeleniumTestCase):
             p = page.OptionTransactionDetailPage(
                 self.selenium, self.live_server_url, self.operator.user,
                 path=reverse('optiontransaction',
-                             kwargs={'pk': optiontransaction.pk})
-                )
+                             kwargs={'pk': optiontransaction.pk}))
+
             # wait for angular load
             time.sleep(1)
             self.assertIn(
@@ -346,6 +343,33 @@ class OptionTransactionDetailFunctionalTestCase(BaseSeleniumTestCase):
             self.assertIn(
                 optiontransaction.certificate_id,
                 p.get_field('certificate-id'))
+
+        except Exception, e:
+            self._handle_exception(e)
+
+    def test_links(self):
+        """
+        test if all data is shown properly
+        """
+        try:
+
+            optiontransaction = self.poss[-1]
+            p = page.OptionTransactionDetailPage(
+                self.selenium, self.live_server_url, self.operator.user,
+                path=reverse('optiontransaction',
+                             kwargs={'pk': optiontransaction.pk}))
+
+            # wait for angular load
+            time.sleep(1)
+            self.assertIn(
+                reverse('shareholder', kwargs={'pk': optiontransaction.seller.pk}),
+                p.get_url('seller'))
+            self.assertIn(
+                reverse('shareholder', kwargs={'pk': optiontransaction.buyer.pk}),
+                p.get_url('buyer'))
+            self.assertIn(
+                reverse('optionplan', kwargs={'optionsplan_id': optiontransaction.option_plan.pk}),
+                p.get_url('option-plan'))
 
         except Exception, e:
             self._handle_exception(e)
@@ -1163,9 +1187,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             position.count = 99999999991
             position.value = 99999599999
             app.enter_new_position_data(position)
-            self._screenshot()
             app.click_save_position()
-            self._screenshot()
             time.sleep(3)
             self.assertTrue(
                 self.selenium.find_element_by_xpath(
