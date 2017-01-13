@@ -63,9 +63,14 @@ class AddressModelMixin(models.Model):
 
     street = models.CharField(_('Street'), max_length=255, blank=True,
                               null=True)
+    street2 = models.CharField(_('Street 2'), max_length=255, blank=True,
+                               null=True)
     city = models.CharField(_('City'), max_length=255, blank=True, null=True)
     province = models.CharField(_('Province'), max_length=255, blank=True,
                                 null=True)
+    pobox = models.CharField(_('PO Box'), max_length=255, blank=True,
+                             null=True)
+    c_o = models.CharField(_('C O'), max_length=255, blank=True, null=True)
     postal_code = models.CharField(_('Postal code'), max_length=255,
                                    blank=True, null=True)
     country = models.ForeignKey('shareholder.Country', blank=True, null=True,

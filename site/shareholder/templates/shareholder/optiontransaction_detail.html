@@ -34,7 +34,7 @@
         {% verbatim %}{{ optiontransaction.seller.full_name }} {% endverbatim %}
       </td>
     </tr>
-    <tr class="certificate-id" ng-show="optiontransaction.vertificate_id">
+    <tr class="certificate-id" ng-show="optiontransaction.certificate_id">
       <td>{% trans "Certificate ID" %}:</td>
       <td>
         {% verbatim %}{{ optiontransaction.certificate_id }} {% endverbatim %}
@@ -46,7 +46,7 @@
         {% verbatim %}{{ optiontransaction.number_segments}}{% endverbatim %}
       </td>
     </tr>
-    <tr class="date">
+    <tr class="bought-at">
       <td>{% trans "Date" %}:</td>
       <td>
         {% verbatim %}{{ optiontransaction.bought_at }} {% endverbatim %}
@@ -74,6 +74,18 @@
       <td>{% trans "Registration Type" %}:</td>
       <td>
         {% verbatim %}{{ optiontransaction.readable_registration_type}}{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="depot-type" ng-show="optiontransaction.readable_depot_type">
+      <td>{% trans "Depot Type" %}:</td>
+      <td>
+        {% verbatim %}{{ optiontransaction.readable_depot_type}}{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="stock-book-id" ng-show="optiontransaction.stock_book_id">
+      <td>{% trans "Stick Book ID" %}:</td>
+      <td>
+        {% verbatim %}{{ optiontransaction.stock_book_id}}{% endverbatim %}
       </td>
     </tr>
   </table>

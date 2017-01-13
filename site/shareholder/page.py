@@ -21,23 +21,34 @@ from utils.formatters import human_readable_segments
 logger = logging.getLogger(__name__)
 
 
-class ShareholderDetailPage(BasePage):
-    """Options List View"""
+class BaseDetailPage(BasePage):
 
     def __init__(self, driver, live_server_url, user, path=None):
         """ load MainPage '/' """
         self.live_server_url = live_server_url
         # prepare driver
-        super(ShareholderDetailPage, self).__init__(driver)
+        super(BaseDetailPage, self).__init__(driver)
 
         # login and load page
         self.operator = user.operator_set.all()[0]
         self.login(username=user.username,
                    password=DEFAULT_TEST_DATA['password'])
+
+        assert 'start' in self.driver.current_url, 'login not successful'
+
         if path:
             self.driver.get('%s%s' % (live_server_url, path))
         else:
             self.driver.get('%s%s' % (live_server_url))
+
+    def get_field(self, cls):
+        """
+        returns string for class
+        """
+        return self.driver.find_element_by_class_name(cls).text
+
+
+class ShareholderDetailPage(BaseDetailPage):
 
     def click_to_edit(self, class_name):
         el = self.wait_until_visible((
@@ -53,7 +64,7 @@ class ShareholderDetailPage(BasePage):
         el.clear()
         el.send_keys(str(value))
 
-    def select_legal_type(self, class_name, legal_type):
+    def select_type(self, class_name, legal_type):
         row = self.driver.find_element_by_class_name(class_name)
         select = row.find_element_by_tag_name('select')
         select = Select(select)
@@ -68,12 +79,6 @@ class ShareholderDetailPage(BasePage):
             '//tr[@class="birthday active"]/td/span')
         return bday.text
 
-    def get_field(self, cls):
-        """
-        returns string for class
-        """
-        return self.driver.find_element_by_class_name(cls).text
-
     def get_securities(self):
         """
         returns list of securities from page
@@ -82,8 +87,15 @@ class ShareholderDetailPage(BasePage):
         t = self.driver.find_element_by_xpath(
             '//table[contains(@class, "stock")]')
         for tr in t.find_elements_by_class_name('security'):
-            tds = tr.find_elements_by_tag_name('td')
-            secs.extend([tds[1].text, tds[2].text])
+            if tr.find_elements_by_class_name('number-segments'):
+                segments = tr.find_element_by_class_name(
+                               'number-segments').text
+            else:
+                segments = u''
+            secs.extend([
+                tr.find_element_by_class_name('count').text,
+                segments
+                ])
 
         return secs
 
@@ -93,6 +105,14 @@ class ShareholderDetailPage(BasePage):
         el = el.find_element_by_class_name('editable-buttons')
         el = el.find_element_by_tag_name('button')
         el.click()
+
+
+class PositionDetailPage(BaseDetailPage):
+    pass
+
+
+class OptionTransactionDetailPage(BaseDetailPage):
+    pass
 
 
 class OptionsPage(BasePage):
@@ -179,6 +199,18 @@ class OptionsPage(BasePage):
             kwargs.get('count', DEFAULT_TEST_DATA.get('count'))))
         inputs[3].send_keys(DEFAULT_TEST_DATA.get('vesting_period'))
 
+        if kwargs.get('depot_type'):
+            select = Select(selects[3])
+            select.select_by_visible_text('Gesellschaftsdepot')
+
+        if kwargs.get('stock_book_id'):
+            inputs[4].clear()
+            inputs[4].send_keys(kwargs.get('stock_book_id'))
+
+        if kwargs.get('certificate_id'):
+            inputs[5].clear()
+            inputs[5].send_keys(kwargs.get('certificate_id'))
+
     def enter_transfer_option_with_segments_data(self, **kwargs):
         el = self.driver.find_element_by_id('add_option_transaction')
         form = el.find_element_by_tag_name('form')
@@ -199,6 +231,7 @@ class OptionsPage(BasePage):
         if seller:
             select_input.extend([seller.user.email])
 
+        time.sleep(1)
         for key, select in enumerate(selects):
             select = Select(select)
             if key < len(select_input) and select_input[key] != '':
@@ -235,8 +268,11 @@ class OptionsPage(BasePage):
 
     def click_save_transfer_option(self):
         el = self.driver.find_element_by_xpath(
-            '//*[@id="add_option_transaction"]/div/form/div[2]/button[2]')
+            '//button[contains(@class, "btn-focus")]')
         el.click()
+
+    def show_optional_fields(self):
+        self.driver.find_element_by_class_name('el-icon-plus-sign').click()
 
     # -- VALIDATIONs
     def is_option_plan_form_open(self):
@@ -255,24 +291,21 @@ class OptionsPage(BasePage):
     def is_transfer_option_shown(self, **kwargs):
         for table in self.driver.find_elements_by_class_name('table'):
             for tr in table.find_elements_by_class_name('optiontransaction'):
-                s = u"{} {}".format(
-                    kwargs.get('buyer').user.first_name,
-                    kwargs.get('buyer').user.last_name,
-                )
-                if s == tr.find_element_by_class_name('full-name').text:
+                s = kwargs.get('buyer').get_full_name()
+                if s == tr.find_element_by_class_name('buyer-name').text:
                     return True
-                print s, '>', tr.find_element_by_class_name('full-name').text
+                print s, '>', tr.find_element_by_class_name('buyer-name').text
 
         return False
 
     def is_transfer_option_with_segments_shown(self, **kwargs):
         buyer = kwargs.get('buyer')
         ot = buyer.option_buyer.latest('id')
-        s1 = u"{} {}".format(buyer.user.first_name, buyer.user.last_name)
+        s1 = buyer.get_full_name()
         for table in self.driver.find_elements_by_class_name('table'):
             trs = table.find_elements_by_class_name("optiontransaction")
             for tr in trs:
-                buyer_td = tr.find_element_by_class_name('buyer')
+                buyer_td = tr.find_element_by_class_name('buyer-name')
                 count_td = tr.find_element_by_class_name('count')
                 if (
                     s1 == buyer_td.text and str(ot.count) in count_td.text and
@@ -405,10 +438,8 @@ class PositionPage(BasePage):
         self.enter_seller(position.seller)
 
         # buyer
-        name = u'{} {}'.format(position.buyer.user.first_name,
-                               position.buyer.user.last_name)
         select = Select(selects[1])
-        select.select_by_visible_text(name)
+        select.select_by_visible_text(position.buyer.get_full_name())
 
         self.enter_security(position.security, 'add-position-form')
         self.enter_bought_at(position.bought_at)
@@ -432,6 +463,17 @@ class PositionPage(BasePage):
         else:
             inputs[4].clear()  # clear existing values
             inputs[4].send_keys(position.comment)  # comment
+
+        if position.depot_type:
+            select = Select(selects[3])
+            select.select_by_visible_text('Gesellschaftsdepot')
+
+        if position.stock_book_id:
+            inputs[5].clear()
+            inputs[5].send_keys(position.stock_book_id)
+
+    def show_optional_fields(self):
+        self.driver.find_element_by_class_name('el-icon-plus-sign').click()
 
     def enter_bought_at(self, date):
         """
@@ -458,10 +500,8 @@ class PositionPage(BasePage):
         form = el.find_element_by_tag_name('form')
         selects = form.find_elements_by_tag_name('select')
 
-        name = u'{} {}'.format(seller.user.first_name,
-                               seller.user.last_name)
         select = Select(selects[0])
-        select.select_by_visible_text(name)
+        select.select_by_visible_text(seller.get_full_name())
 
     def enter_new_cap_data(self, position):
 

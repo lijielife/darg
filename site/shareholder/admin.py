@@ -156,18 +156,15 @@ class UserProfileAdmin(VersionAdmin):
 
     list_display = ('pk', 'user')
     list_display_links = ('pk', 'user')
-    fieldsets = (
-        ('', {'fields': ('user', 'language', 'company_name', 'birthday',
-                         'ip', 'tnc_accepted')}),
-        (_('Address'), {'fields': ('street', 'city', 'province', 'postal_code',
-                                   'country')})
-    )
+    search_fields = [
+        'user__first_name', 'user__email', 'user__last_name'
+    ]
 
 
 class CountryAdmin(VersionAdmin):
 
     list_display = ('iso_code', 'name')
-    search_fields = ('name',)
+    search_fields = ['iso_code', 'name']
 
 
 class SecurityAdmin(VersionAdmin):

@@ -1,7 +1,5 @@
 
 @media only screen and (max-width: 960px)
-  .table.table-small-font
-    font-size: 0.7em
   body.core
     .add-information-inline
       .date-field
@@ -21,6 +19,8 @@
           .auto-suggestions
             width: +zen-grid-item-width(4.5)
   .table
+    &.table-small-font
+      font-size: 0.7em
     .tr
       .td
         font-size: 0.9em
@@ -165,6 +165,7 @@
       .td
         &.text-right-flex
           text-align: right
+          @include align-items(flex-end)
           @include justify-content(flex-end) //align right text desktop
         padding: 0.5em
 
@@ -178,8 +179,46 @@
     @include order(3)
   .order-4
     @include order(4)
+  .order-5
+    @include order(5)
+  .order-6
+    @include order(6)
+  .order-7
+    @include order(7)
+
   //-- responsive table mobile
+  .meta-mobile-only
+    display: block
+  .bought-at
+    font-size: 12px
   .table
+    &.table-centered-mobile
+      .tr
+        padding: 10px
+        @include align-items(center)
+        @include flex-wrap(wrap)
+        @include flex-direction(row)
+      .td
+        padding-top: 15px
+        padding-bottom: 10px
+        margin: 5px 0
+        a
+          font-size: 1.35em
+        &.td-border-right
+          border-right: 1px solid $color-light-gray
+        &.flex-inline-mobile
+          @include flex-direction(row)
+          a
+            margin: 0 10px
+        &.td-flex-inline
+          width: 50%
+          text-align: center
+        .custom-typeface-mobile
+          font-weight: 400
+        @include align-items(center)
+        @include justify-content(center)
+        //-- make tr looks like column
+        width: 100%
     &.table-small-font
       font-size: 1rem
     .tr
@@ -193,13 +232,11 @@
         .note
           padding-left: 0
           font-weight: 300
-      .full-name
+      .buyer-name
         font-weight: 700
-        font-size: 1.1em
+        font-size: 1.2em
       .td
         @include flex-basis(auto)
-        &.full-name-padding
-          padding-left: 85px
         .truncate
           white-space: nowrap /* No break word */
           overflow: hidden /* truncate content */
@@ -217,12 +254,8 @@
           text-overflow: ellipsis /* truncate with ... */
       .shares-count
         display: block
-      .bought-at-column
-        position: absolute
-      .margin-top--additional
-        margin-top: 25px
       .gray-circle
-        .transform--center
+        .transform-center
           &.large
             font-weight: 700
             font-size: 2em
@@ -334,11 +367,8 @@
   .table
     .tr
       .td
-        &.full-name-padding
+        &.buyer-name
           padding-left: 10px
-          padding-top: 5px
-      .margin-top--additional
-        margin-top: 0
       .bought-at-column
         position: relative
     position: relative
@@ -366,7 +396,9 @@
       @include flex-wrap(wrap)
     .tr
       font-size: 1em
-      .full-name
+      .bought-at
+        font-size: 8px
+      .buyer-name
         font-size: 0.75em
   .main-screenshot
     .screenshot
@@ -428,6 +460,8 @@
     .screenshot
       height: 130px
       background-size: cover
+  .bold-mobile
+    font-size: 10px
 
 @media screen and (orientation:portrait)
   // ipad rotation adjustments

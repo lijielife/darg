@@ -166,11 +166,13 @@ class ShareholderGenerator(object):
         number = kwargs.get('number') or random.choice(words)+"234543"
         user = kwargs.get('user') or _make_user()
         company = kwargs.get('company') or CompanyGenerator().generate()
+        mailing_type = kwargs.get('mailing_type') or 1
 
         shareholder = Shareholder.objects.create(
             user=user,
             number=number,
             company=company,
+            mailing_type=mailing_type
         )
 
         return shareholder
@@ -258,6 +260,14 @@ class PositionGenerator(object):
             kwargs2.update(
                 {'registration_type': kwargs.get('registration_type')})
 
+        if kwargs.get('depot_type'):
+            kwargs2.update(
+                {'depot_type': kwargs.get('depot_type')})
+
+        if kwargs.get('stock_book_id'):
+            kwargs2.update(
+                {'stock_book_id': kwargs.get('stock_book_id')})
+
         if kwargs.get('save') == False:
             return Position(**kwargs2)
 
@@ -320,6 +330,18 @@ class OptionTransactionGenerator(object):
         if kwargs.get('registration_type'):
             kwargs2.update(
                 {'registration_type': kwargs.get('registration_type')})
+
+        if kwargs.get('depot_type'):
+            kwargs2.update(
+                {'depot_type': kwargs.get('depot_type')})
+
+        if kwargs.get('stock_book_id'):
+            kwargs2.update(
+                {'stock_book_id': kwargs.get('stock_book_id')})
+
+        if kwargs.get('certificate_id'):
+            kwargs2.update(
+                {'certificate_id': kwargs.get('certificate_id')})
 
         if kwargs.get('save', True):
             position = OptionTransaction.objects.create(**kwargs2)
@@ -415,7 +437,8 @@ class ComplexPositionsWithSegmentsGenerator(object):
         def buy_segment(segments, buyer, seller):
             p = PositionGenerator().generate(
                 company=company, security=s1, buyer=buyer,
-                seller=seller, number_segments=segments)
+                seller=seller, number_segments=segments, stock_book_id='12345',
+                depot_type='1')
             return p
 
         positions.append(buy_segment([u'1000-1050'], s, cs))
@@ -539,7 +562,8 @@ class ComplexOptionTransactionsWithSegmentsGenerator(object):
             p = OptionTransactionGenerator().generate(
                 company=company, security=s1, buyer=buyer,
                 seller=seller, number_segments=segments,
-                option_plan=optionplan)
+                option_plan=optionplan, stock_book_id='12345', depot_type='1',
+                certificate_id='333')
             return p
 
         positions.append(buy_segment([u'1000-1050'], s, cs))

@@ -45,6 +45,11 @@ REGISTRATION_TYPES = [
     ('2', _('Personal representation')),
 ]
 
+DEPOT_TYPES = [
+    ('0', _('Zertifikatsdepot')),
+    ('1', _('Gesellschaftsdepot')),
+    ('2', _('Sperrdepot')),
+]
 
 logger = logging.getLogger(__name__)
 
@@ -399,11 +404,16 @@ class UserProfile(AddressModelMixin, models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL)
 
+    title = models.CharField(max_length=255, blank=True, null=True)
+    salutation = models.CharField(max_length=255, blank=True, null=True)
+
     language = language_fields.LanguageField(blank=True, null=True)
+    nationality = models.ForeignKey(Country, blank=True, null=True,
+                                    related_name='nationality')
+
     legal_type = models.CharField(
         max_length=1, choices=LEGAL_TYPES, default='H',
         help_text=_('legal type of the user'))
-
     company_name = models.CharField(max_length=255, blank=True, null=True)
     company_department = models.CharField(max_length=255, blank=True, null=True)
     birthday = models.DateField(blank=True, null=True)
@@ -432,9 +442,18 @@ class UserProfile(AddressModelMixin, models.Model):
 
 class Shareholder(models.Model):
 
+    MAILING_TYPES = [
+        ('0', _('Not deliverable')),
+        ('1', _('Postal Mail')),
+        ('2', _('via Email')),
+    ]
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     company = models.ForeignKey('Company', verbose_name="Shareholders Company")
     number = models.CharField(max_length=255)
+    mailing_type = models.CharField(
+        _('how should the shareholder be approached by the corp'), max_length=1,
+        choices=MAILING_TYPES, blank=True, null=True)
 
     def __unicode__(self):
         return u'{} {} (#{})'.format(
@@ -453,6 +472,17 @@ class Shareholder(models.Model):
             return True
 
         return False
+
+    def get_full_name(self):
+        if self.user.userprofile.company_name:
+            # return first, last, company name
+            if self.user.first_name or self.user.last_name:
+                return u"{} {} ({})".format(
+                    self.user.first_name, self.user.last_name,
+                    self.user.userprofile.company_name)
+            else:
+                return u"{}".format(self.user.userprofile.company_name)
+        return u"{} {}".format(self.user.first_name, self.user.last_name)
 
     def get_number_segments_display(self):
         """
@@ -816,6 +846,9 @@ class Security(models.Model):
     number_segments = JSONField(
         _('JSON list of segments of ids for securities. can be 1, 2, 3, 4-10'),
         default=list)
+    cusip = models.CharField(
+        _('public security id aka Valor, WKN, CUSIP: http://bit.ly/2ieXwuK'),
+        max_length=255, blank=True, null=True)
 
     # settings
     track_numbers = models.BooleanField(
@@ -853,6 +886,9 @@ class Security(models.Model):
 
 
 class Position(models.Model):
+    """
+    aka Transaction
+    """
 
     buyer = models.ForeignKey(
         'Shareholder', related_name="buyer", blank=True, null=True)
@@ -875,6 +911,12 @@ class Position(models.Model):
     registration_type = models.CharField(
         _('Securities are purchase type (for myself, etc.)'), max_length=1,
         choices=REGISTRATION_TYPES, blank=True, null=True)
+    stock_book_id = models.CharField(
+        _('aka Skontro (read http://bit.ly/2iJquEl)'),
+        max_length=255, blank=True, null=True)
+    depot_type = models.CharField(
+        _('What kind of depot is this position stored within'), max_length=1,
+        choices=DEPOT_TYPES, blank=True, null=True)
     comment = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -990,6 +1032,12 @@ class OptionTransaction(models.Model):
     registration_type = models.CharField(
         _('Securities are purchase type (for myself, etc.)'), max_length=1,
         choices=REGISTRATION_TYPES, blank=True, null=True)
+    stock_book_id = models.CharField(
+        _('aka Skontro (read http://bit.ly/2iJquEl)'),
+        max_length=255, blank=True, null=True)
+    depot_type = models.CharField(
+        _('What kind of depot is this position stored within'), max_length=1,
+        choices=DEPOT_TYPES, blank=True, null=True)
     is_draft = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -1006,7 +1054,10 @@ class OptionTransaction(models.Model):
         """
         permission method to check if user is permitted to view obj
         """
-        if user == self.buyer.user or (self.seller and user == self.seller.user):
+        if (
+                user == self.buyer.user or
+                (self.seller and user == self.seller.user)
+        ):
             return True
 
         # user is an operator

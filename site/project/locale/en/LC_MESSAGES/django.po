@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-07 06:10+0000\n"
+"POT-Creation-Date: 2017-01-12 14:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,15 +46,15 @@ msgstr ""
 
 #: project/templates/_add_capital_form.html:33
 #: project/templates/_add_option_plan_form.html:34
-#: project/templates/_add_option_transaction_form.html:37
-#: project/templates/_add_position_form.html:46
+#: project/templates/_add_option_transaction_form.html:50
+#: project/templates/_add_position_form.html:57
 #: project/templates/_add_shareholder_form.html:15
 #: project/templates/_split_shares_form.html:36
 msgid "Cancel"
 msgstr ""
 
 #: project/templates/_add_capital_form.html:34
-#: project/templates/_add_position_form.html:49
+#: project/templates/_add_position_form.html:60
 msgid "Add Position"
 msgstr ""
 
@@ -114,7 +114,17 @@ msgstr ""
 msgid "Seller"
 msgstr ""
 
-#: project/templates/_add_option_transaction_form.html:38
+#: project/templates/_add_option_transaction_form.html:39
+#: project/templates/_add_position_form.html:48
+msgid "optional fields"
+msgstr ""
+
+#: project/templates/_add_option_transaction_form.html:41
+#: project/templates/_add_position_form.html:50
+msgid "Depot Type"
+msgstr ""
+
+#: project/templates/_add_option_transaction_form.html:51
 msgid "Add Option"
 msgstr ""
 

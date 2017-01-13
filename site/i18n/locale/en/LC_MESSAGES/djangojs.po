@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-06 10:04+0000\n"
+"POT-Creation-Date: 2017-01-12 14:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,15 +24,15 @@ msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:4
 #: static/compiled/javascript/i18n_noop.js:23
-#: static/compiled/javascript/script.js:1238
-#: static/compiled/javascript/script.js:1260
+#: static/compiled/javascript/script.js:1376
+#: static/compiled/javascript/script.js:1398
 msgid "Last Name"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:5
 #: static/compiled/javascript/i18n_noop.js:24
-#: static/compiled/javascript/script.js:1235
-#: static/compiled/javascript/script.js:1257
+#: static/compiled/javascript/script.js:1373
+#: static/compiled/javascript/script.js:1395
 msgid "Shareholder Number"
 msgstr ""
 
@@ -181,40 +181,67 @@ msgstr ""
 msgid "number_segments"
 msgstr ""
 
-#: static/compiled/javascript/script.js:633
-#: static/compiled/javascript/script.js:654
+#: static/compiled/javascript/script.js:370
+#: static/compiled/javascript/script.js:851
+msgid "Sperrdepot"
+msgstr ""
+
+#: static/compiled/javascript/script.js:373
+#: static/compiled/javascript/script.js:854
+msgid "Zertifikatsdepot"
+msgstr ""
+
+#: static/compiled/javascript/script.js:376
+#: static/compiled/javascript/script.js:857
+msgid "Gesellschaftsdepot"
+msgstr ""
+
+#: static/compiled/javascript/script.js:649
+#: static/compiled/javascript/script.js:670
 msgid "Available security segments for option plan on selected date or now: "
 msgstr ""
 
-#: static/compiled/javascript/script.js:635
+#: static/compiled/javascript/script.js:651
 msgid ""
 "Available security segments for option plan on selected date or now: None"
 msgstr ""
 
-#: static/compiled/javascript/script.js:656
+#: static/compiled/javascript/script.js:672
 msgid "No security segments available for option plan on selected date or now."
 msgstr ""
 
-#: static/compiled/javascript/script.js:1068
+#: static/compiled/javascript/script.js:1141
 msgid ""
 "Available security segments from this shareholder on selected date or now: "
 msgstr ""
 
-#: static/compiled/javascript/script.js:1070
+#: static/compiled/javascript/script.js:1143
 msgid ""
 "Available security segments from this shareholder on selected date or now: "
 "None"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1114
+#: static/compiled/javascript/script.js:1215
 msgid "Human Being"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1117
+#: static/compiled/javascript/script.js:1218
 msgid "Corporate"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1232
-#: static/compiled/javascript/script.js:1254
+#: static/compiled/javascript/script.js:1224
+msgid "Not deliverable"
+msgstr ""
+
+#: static/compiled/javascript/script.js:1227
+msgid "Postal Mail"
+msgstr ""
+
+#: static/compiled/javascript/script.js:1230
+msgid "via Email"
+msgstr ""
+
+#: static/compiled/javascript/script.js:1370
+#: static/compiled/javascript/script.js:1392
 msgid "Email"
 msgstr ""

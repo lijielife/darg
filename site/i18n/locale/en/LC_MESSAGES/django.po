@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-07 06:10+0000\n"
+"POT-Creation-Date: 2017-01-12 14:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -498,6 +498,10 @@ msgstr ""
 msgid "Weblog index"
 msgstr ""
 
-#: utils/import_backends.py:192
+#: utils/geo.py:31
+msgid "German"
+msgstr ""
+
+#: utils/import_backends.py:292
 msgid "Default OptionPlan for {}"
 msgstr ""

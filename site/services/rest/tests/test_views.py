@@ -310,7 +310,9 @@ class PositionTestCase(TestCase):
                     "errors": []
                 }
             },
-            "comment": "sdfg"
+            "comment": "sdfg",
+            "stock_book_id": "666",
+            "depot_type": "1"
         }
 
         response = self.client.post(
@@ -330,6 +332,9 @@ class PositionTestCase(TestCase):
         self.assertEqual(position.registration_type, '2')
         self.assertEqual(
             position.bought_at.isoformat(), '2016-05-13')
+        self.assertEqual(position.comment, "sdfg")
+        self.assertEqual(position.stock_book_id, "666")
+        self.assertEqual(position.depot_type, "1")
 
     def test_add_position_with_number_segment(self):
         """
@@ -780,6 +785,7 @@ class PositionTestCase(TestCase):
 
 
 class ShareholderTestCase(TestCase):
+    fixtures = ['initial.json']
 
     def setUp(self):
         self.client = APIClient()
@@ -975,6 +981,7 @@ class ShareholderTestCase(TestCase):
 
         data = {
             "pk": shareholder.user.pk,
+            "mailing_type": '2',
             "user": {
                 "first_name": "Mutter1Editable",
                 "last_name": "KutterEditable",
@@ -991,6 +998,14 @@ class ShareholderTestCase(TestCase):
                     "company_name": "SomeCompany",
                     "language": "ab",
                     "legal_type": 'H',
+                    "street2": 'some street',
+                    "company_department": 'dome depa',
+                    "salutation": 'some saluta',
+                    "title": 'some title',
+                    "pobox": '12345',
+                    "c_o": 'ddd',
+                    "nationality": "http://codingmachine:9000/services/rest/"
+                                   "country/de",
                 },
             },
             "number": "00333e",
@@ -1012,12 +1027,14 @@ class ShareholderTestCase(TestCase):
             }
         }
 
+        # call
         response = self.client.put(
             '/services/rest/shareholders/{}'.format(shareholder.pk),
             data,
             **{'HTTP_AUTHORIZATION': 'Token {}'.format(
                 user.auth_token.key), 'format': 'json'})
 
+        # assert
         s = Shareholder.objects.get(id=shareholder.id)
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(response.data.get('pk'), None)
@@ -1025,6 +1042,7 @@ class ShareholderTestCase(TestCase):
         self.assertEqual(response.data.get('number'), "00333e")
         self.assertEqual(s.user.first_name, "Mutter1Editable")
         self.assertEqual(s.user.userprofile.language, "ab")
+        self.assertEqual(s.mailing_type, u'2')
 
         userprofile = s.user.userprofile
         for k, v in data['user']['userprofile'].iteritems():
@@ -1037,6 +1055,9 @@ class ShareholderTestCase(TestCase):
                         getattr(userprofile, k),
                         datetime.datetime.min.time()
                     ).isoformat(), v[:-5])
+                continue
+            if k == 'nationality':
+                self.assertEqual(getattr(userprofile, k).iso_code, v[-2:])
                 continue
             self.assertEqual(getattr(userprofile, k), v)
 

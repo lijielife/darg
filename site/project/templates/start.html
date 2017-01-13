@@ -52,7 +52,7 @@
 
 	<!-- --- SHARES --- -->
 	<h2 ng-show="shareholders.length" >{% endverbatim %}{% trans "Share Ownership" %}{% verbatim %}</h2>
-    
+
     <!-- TABLE ACTIONS -->
 	{% endverbatim %}
 	{% include "_table_actions.html" %}
@@ -72,7 +72,7 @@
         <div class="td td-width-2 order-3 email"><span>{{ shareholder.user.email }}</span><a class="btn-inline"><span class="el-icon-eye-open"></span></a></div>
         <div class="td text-right-flex order-2 number">{{ shareholder.number }}</div>
         <div class="td text-right-flex order-4 gray-circle">
-          <value class='transform--center' ng-if="shareholder.share_count != '-'">
+          <value class='transform-center' ng-if="shareholder.share_count != '-'">
               {{ shareholder.share_count | number : 0}}
               <span class="shares-count" ng-hide="shareholder.is_company">
                   ({{shareholder.share_percent | number : 1}}%)

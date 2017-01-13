@@ -42,7 +42,7 @@ class SecuritySerializer(serializers.HyperlinkedModelSerializer,
         model = Security
         fields = ('pk', 'readable_title', 'title', 'url', 'count',
                   'track_numbers', 'readable_number_segments',
-                  'number_segments', 'face_value')
+                  'number_segments', 'face_value', 'cusip')
 
     def get_readable_title(self, obj):
         if obj.face_value:
@@ -175,7 +175,9 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
         model = UserProfile
         fields = ('street', 'city', 'province', 'postal_code', 'country',
                   'birthday', 'company_name', 'language', 'readable_language',
-                  'readable_legal_type', 'legal_type', 'company_department')
+                  'readable_legal_type', 'legal_type', 'company_department',
+                  'title', 'salutation', 'street2', 'pobox', 'c_o',
+                  'nationality')
 
     def get_readable_language(self, obj):
         return obj.get_language_display()
@@ -188,8 +190,7 @@ class UserWithEmailOnlySerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name')
-        read_only_fields = ('first_name', 'last_name',)
+        fields = ('email',)
 
 
 class OperatorSerializer(serializers.HyperlinkedModelSerializer):
@@ -288,6 +289,7 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
     company = CompanySerializer(many=False,  read_only=True)
     is_company = serializers.SerializerMethodField()
     full_name = serializers.SerializerMethodField()
+    readable_mailing_type = serializers.SerializerMethodField()
 
     class Meta:
         model = Shareholder
@@ -299,7 +301,9 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
             'share_value',
             'validate_gafi',
             'is_company',
-            'full_name'
+            'full_name',
+            'mailing_type',
+            'readable_mailing_type',
         )
 
     def create(self, validated_data):
@@ -389,19 +393,27 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
         else:
             userprofile = user.userprofile
             userprofile.street = profile_kwargs.get('street')
+            userprofile.street2 = profile_kwargs.get('street2')
             userprofile.city = profile_kwargs.get('city')
             userprofile.province = profile_kwargs.get('province')
             userprofile.postal_code = profile_kwargs.get('postal_code')
+            userprofile.pobox = profile_kwargs.get('pobox')
+            userprofile.c_o = profile_kwargs.get('c_o')
             userprofile.country = profile_kwargs.get('country')
+            userprofile.nationality = profile_kwargs.get('nationality')
             userprofile.company_name = profile_kwargs.get('company_name')
             userprofile.company_department = profile_kwargs.get(
                 'company_department')
             userprofile.birthday = profile_kwargs.get('birthday')
             userprofile.language = profile_kwargs.get('language')
             userprofile.legal_type = profile_kwargs.get('legal_type')
+            userprofile.title = profile_kwargs.get('title')
+            userprofile.salutation = profile_kwargs.get('salutation')
             userprofile.save()
 
         shareholder.number = validated_data['number']
+        if 'mailing_type' in validated_data.keys():
+            shareholder.mailing_type = validated_data['mailing_type']
         shareholder.save()
         return shareholder
 
@@ -409,15 +421,13 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
         return obj.is_company_shareholder()  # adds one query per obj
 
     def get_full_name(self, obj):
-        if obj.user.userprofile.company_name:
-            # return first, last, company name
-            if obj.user.first_name or obj.user.last_name:
-                return u"{} {} ({})".format(
-                    obj.user.first_name, obj.user.last_name,
-                    obj.user.userprofile.company_name)
-            else:
-                return u"{}".format(obj.user.userprofile.company_name)
-        return u"{} {}".format(obj.user.first_name, obj.user.last_name)
+        return obj.get_full_name()
+
+    def get_readable_mailing_type(self, obj):
+        """
+        change make it readable
+        """
+        return obj.get_mailing_type_display()
 
 
 class PositionSerializer(serializers.HyperlinkedModelSerializer,
@@ -429,6 +439,7 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
     bought_at = serializers.DateTimeField()  # e.g. 2015-06-02T23:00:00.000Z
     readable_number_segments = serializers.SerializerMethodField()
     readable_registration_type = serializers.SerializerMethodField()
+    readable_depot_type = serializers.SerializerMethodField()
     position_type = serializers.SerializerMethodField()
 
     class Meta:
@@ -438,7 +449,8 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
             'pk', 'buyer', 'seller', 'bought_at', 'count', 'value',
             'security', 'comment', 'is_split', 'is_draft', 'number_segments',
             'readable_number_segments', 'registration_type',
-            'readable_registration_type', 'position_type')
+            'readable_registration_type', 'position_type', 'depot_type',
+            'readable_depot_type', 'stock_book_id',)
 
     def get_readable_number_segments(self, obj):
         """
@@ -451,6 +463,12 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
         change make it readable
         """
         return obj.get_registration_type_display()
+
+    def get_readable_depot_type(self, obj):
+        """
+        change make it readable
+        """
+        return obj.get_depot_type_display()
 
     def get_position_type(self, obj):
         return obj.get_position_type()
@@ -596,6 +614,14 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
             kwargs.update({
                 "number_segments": validated_data.get("number_segments")
             })
+
+        if validated_data.get("stock_book_id"):
+            kwargs.update({
+                'stock_book_id': validated_data.get("stock_book_id")})
+
+        if validated_data.get("depot_type"):
+            kwargs.update({
+                'depot_type': validated_data.get("depot_type")})
 
         position = Position.objects.create(**kwargs)
 
@@ -746,13 +772,16 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
     bought_at = serializers.DateField()  # e.g. 2015-06-02T23:00:00.000Z
     readable_number_segments = serializers.SerializerMethodField()
     readable_registration_type = serializers.SerializerMethodField()
+    readable_depot_type = serializers.SerializerMethodField()
     option_plan = OptionPlanSerializer()
 
     class Meta:
         model = OptionTransaction
         fields = ('pk', 'buyer', 'seller', 'bought_at', 'count', 'option_plan',
                   'is_draft', 'number_segments', 'readable_number_segments',
-                  'readable_registration_type', 'registration_type')
+                  'readable_registration_type', 'registration_type',
+                  'depot_type', 'readable_depot_type', 'stock_book_id',
+                  'certificate_id')
 
     def is_valid(self, raise_exception=False):
         """
@@ -868,6 +897,18 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
                     validated_data.get("number_segments"))
             })
 
+        if validated_data.get("stock_book_id"):
+            kwargs.update({
+                'stock_book_id': validated_data.get("stock_book_id")})
+
+        if validated_data.get("depot_type"):
+            kwargs.update({
+                'depot_type': validated_data.get("depot_type")})
+
+        if validated_data.get("certificate_id"):
+            kwargs.update({
+                'certificate_id': validated_data.get("certificate_id")})
+
         option_transaction = OptionTransaction.objects.create(**kwargs)
 
         return option_transaction
@@ -883,6 +924,12 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
         change make it readable
         """
         return obj.get_registration_type_display()
+
+    def get_readable_depot_type(self, obj):
+        """
+        change make it readable
+        """
+        return obj.get_depot_type_display()
 
 
 class OptionHolderSerializer(serializers.HyperlinkedModelSerializer):
