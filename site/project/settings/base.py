@@ -562,11 +562,16 @@ PLAN_FEATURE_CONFIG = {
 # validators for features (downgrade check)
 PLAN_VALIDATORS = {
     'startup': [
+        'company.validators.CompanyAddressRequired',
         'company.validators.features.ShareholderCountValidator',
         'company.validators.features.SecurityCountValidator'
     ],
-    'professional': [],
-    'enterprise': []
+    'professional': [
+        'company.validators.CompanyAddressRequired'
+    ],
+    'enterprise': [
+        'company.validators.CompanyAddressRequired'
+    ]
 }
 
 DEFAULT_HTTP_PROTOCOL = 'https'  # used by djstripe when sending emails

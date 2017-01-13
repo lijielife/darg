@@ -17,3 +17,6 @@ class BaseCompanyValidator(object):
 
     def raise_execption(self, message, code=None):
         raise ValidationError(message, code=code)
+
+    def raise_error(self, message, code=None):
+        return self.raise_execption(message, code=code)
