@@ -285,6 +285,11 @@ class PositionDetailFunctionalTestCase(BaseSeleniumTestCase):
         self.operator = OperatorGenerator().generate()
         self.poss, self.shs = ComplexPositionsWithSegmentsGenerator().generate(
             company=self.operator.company)
+        self. position = self.poss[-1]
+        self.page = page.PositionDetailPage(
+            self.selenium, self.live_server_url, self.operator.user,
+            path=reverse('position', kwargs={'pk': self.position.pk}))
+
 
     def test_display(self):
         """
@@ -292,19 +297,32 @@ class PositionDetailFunctionalTestCase(BaseSeleniumTestCase):
         """
         try:
 
-            position = self.poss[-1]
-            p = page.PositionDetailPage(
-                self.selenium, self.live_server_url, self.operator.user,
-                path=reverse('position', kwargs={'pk': position.pk}))
+            # wait for angular load
+            time.sleep(1)
+            self.assertIn(
+                self.position.get_depot_type_display(),
+                self.page.get_field('depot-type'))
+            self.assertIn(
+                self.position.stock_book_id,
+                self.page.get_field('stock-book-id'))
+
+        except Exception, e:
+            self._handle_exception(e)
+
+    def test_links(self):
+        """
+        test if all data is shown properly
+        """
+        try:
 
             # wait for angular load
             time.sleep(1)
             self.assertIn(
-                position.get_depot_type_display(),
-                p.get_field('depot-type'))
+                reverse('shareholder', kwargs={'pk': self.position.seller.pk}),
+                self.page.get_url('seller'))
             self.assertIn(
-                position.stock_book_id,
-                p.get_field('stock-book-id'))
+                reverse('shareholder', kwargs={'pk': self.position.buyer.pk}),
+                self.page.get_url('buyer'))
 
         except Exception, e:
             self._handle_exception(e)
@@ -316,6 +334,11 @@ class OptionTransactionDetailFunctionalTestCase(BaseSeleniumTestCase):
         self.operator = OperatorGenerator().generate()
         self.poss, self.shs = ComplexOptionTransactionsWithSegmentsGenerator() \
             .generate(company=self.operator.company)
+        self.optiontransaction = self.poss[-1]
+        self.page = page.OptionTransactionDetailPage(
+            self.selenium, self.live_server_url, self.operator.user,
+            path=reverse('optiontransaction',
+                         kwargs={'pk': self.optiontransaction.pk}))
 
     def test_display(self):
         """
@@ -323,26 +346,20 @@ class OptionTransactionDetailFunctionalTestCase(BaseSeleniumTestCase):
         """
         try:
 
-            optiontransaction = self.poss[-1]
-            p = page.OptionTransactionDetailPage(
-                self.selenium, self.live_server_url, self.operator.user,
-                path=reverse('optiontransaction',
-                             kwargs={'pk': optiontransaction.pk}))
-
             # wait for angular load
             time.sleep(1)
             self.assertIn(
-                optiontransaction.get_depot_type_display(),
-                p.get_field('depot-type'))
+                self.optiontransaction.get_depot_type_display(),
+                self.page.get_field('depot-type'))
             self.assertIn(
-                optiontransaction.stock_book_id,
-                p.get_field('stock-book-id'))
+                self.optiontransaction.stock_book_id,
+                self.page.get_field('stock-book-id'))
             self.assertIn(
-                optiontransaction.bought_at.strftime('%Y-%m-%d'),
-                p.get_field('bought-at'))
+                self.optiontransaction.bought_at.strftime('%Y-%m-%d'),
+                self.page.get_field('bought-at'))
             self.assertIn(
-                optiontransaction.certificate_id,
-                p.get_field('certificate-id'))
+                self.optiontransaction.certificate_id,
+                self.page.get_field('certificate-id'))
 
         except Exception, e:
             self._handle_exception(e)
@@ -353,23 +370,17 @@ class OptionTransactionDetailFunctionalTestCase(BaseSeleniumTestCase):
         """
         try:
 
-            optiontransaction = self.poss[-1]
-            p = page.OptionTransactionDetailPage(
-                self.selenium, self.live_server_url, self.operator.user,
-                path=reverse('optiontransaction',
-                             kwargs={'pk': optiontransaction.pk}))
-
             # wait for angular load
             time.sleep(1)
             self.assertIn(
-                reverse('shareholder', kwargs={'pk': optiontransaction.seller.pk}),
-                p.get_url('seller'))
+                reverse('shareholder', kwargs={'pk': self.optiontransaction.seller.pk}),
+                self.page.get_url('seller'))
             self.assertIn(
-                reverse('shareholder', kwargs={'pk': optiontransaction.buyer.pk}),
-                p.get_url('buyer'))
+                reverse('shareholder', kwargs={'pk': self.optiontransaction.buyer.pk}),
+                self.page.get_url('buyer'))
             self.assertIn(
-                reverse('optionplan', kwargs={'optionsplan_id': optiontransaction.option_plan.pk}),
-                p.get_url('option-plan'))
+                reverse('optionplan', kwargs={'optionsplan_id': self.optiontransaction.option_plan.pk}),
+                self.page.get_url('option-plan'))
 
         except Exception, e:
             self._handle_exception(e)
