@@ -405,7 +405,7 @@ DBBACKUP_FILENAME_TEMPLATE = backup_filename
 DBBACKUP_MEDIA_FILENAME_TEMPLATE = media_backup_filename
 
 
-# -- SHAREHOLDER STATEMENT
+# SHAREHOLDER STATEMENT
 # NOTE: since the statements are user-specific, we need to ensure that only the
 #       appropriate user can access them and can therefore not place them
 #       within MEDIA_ROOT
@@ -558,16 +558,11 @@ PLAN_FEATURE_CONFIG = {
 # validators for features (downgrade check)
 PLAN_VALIDATORS = {
     'startup': [
-        'company.validators.CompanyAddressRequired',
         'company.validators.features.ShareholderCountValidator',
         'company.validators.features.SecurityCountValidator'
     ],
-    'professional': [
-        'company.validators.CompanyAddressRequired'
-    ],
-    'enterprise': [
-        'company.validators.CompanyAddressRequired'
-    ]
+    'professional': [],
+    'enterprise': []
 }
 
 DEFAULT_HTTP_PROTOCOL = 'https'  # used by djstripe when sending emails

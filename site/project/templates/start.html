@@ -34,113 +34,131 @@
       </a>
     </h2>
 
-    <!-- ACTIONS -->
-    <div class="panel" ng-hide="!user.operator_set.length">
-      <a class="btn-inline align-left" href="" ng-click="show_add_shareholder_form()">
-        {% endverbatim %}{% trans "Add Shareholder" %}{% verbatim %}
-      </a>
-    </div>
+    <div ng-hide="!operator.company.current_subscription">
 
-    <div id="add_shareholder" ng-hide="!user.operator_set.length  || !show_add_shareholder">
-      {% endverbatim %}{% include "_add_shareholder_form.html" %}{% verbatim %}
-    </div>
-
-    <!-- add shareholder success -->
-    <p class="shareholder-added-success alert alert-success" ng-show="shareholder_added_success">
-      {% endverbatim %}{% trans "Shareholderr added. record share transfers here" %}{% verbatim %}
-    </p>
-
-	<!-- --- SHARES --- -->
-	<h2 ng-show="shareholders.length" >{% endverbatim %}{% trans "Share Ownership" %}{% verbatim %}</h2>
-
-    <!-- TABLE ACTIONS -->
-	{% endverbatim %}
-	{% include "_table_actions.html" %}
-	{% verbatim %}
-
-    <!-- TABLE -->
-    <div class="table">
-      <div class="tr th">
-        <div class="td td-width-2 ">{% endverbatim %}{% trans "Name" %}{% verbatim %}</div>
-        <div class="td td-width-2">{% endverbatim %}{% trans "Email" %}{% verbatim %}</div>
-        <div class="td text-right-flex">{% endverbatim %}{% trans "Shareholder Number" %}{% verbatim %}</div>
-        <div class="td text-right-flex">{% endverbatim %}{% trans "Shares (Voting-%%)" %}{% verbatim %}</div>
+      <!-- ACTIONS -->
+      <div class="panel" ng-hide="!user.operator_set.length">
+        <a class="btn-inline align-left" href="" ng-click="show_add_shareholder_form()">
+          {% endverbatim %}{% trans "Add Shareholder" %}{% verbatim %}
+        </a>
       </div>
-      <div class="tr shareholder" ng-repeat="shareholder in shareholders" ng-click="goto_shareholder(shareholder.pk)" ng-mouseover="">
-        <div class="td td-width-2 order-1 full-name">
-          <span class="el-icon-exclamation-sign" ng-hide="shareholder.validate_gafi.is_valid" data-toggle="tooltip" title="{% endverbatim %}{% trans "Gafi Validation failed" %}{% verbatim %}"></span><span class="truncate">{{ shareholder.full_name }}</span></div>
-        <div class="td td-width-2 order-3 email"><span>{{ shareholder.user.email }}</span><a class="btn-inline"><span class="el-icon-eye-open"></span></a></div>
-        <div class="td text-right-flex order-2 number">{{ shareholder.number }}</div>
-        <div class="td text-right-flex order-4 gray-circle">
-          <value class='transform-center' ng-if="shareholder.share_count != '-'">
-              {{ shareholder.share_count | number : 0}}
-              <span class="shares-count" ng-hide="shareholder.is_company">
-                  ({{shareholder.share_percent | number : 1}}%)
-              </span>
-          </value>
+
+      <div id="add_shareholder" ng-hide="!user.operator_set.length  || !show_add_shareholder">
+        {% endverbatim %}{% include "_add_shareholder_form.html" %}{% verbatim %}
+      </div>
+
+      <!-- add shareholder success -->
+      <p class="shareholder-added-success alert alert-success" ng-show="shareholder_added_success">
+        {% endverbatim %}{% trans "Shareholderr added. record share transfers here" %}{% verbatim %}
+      </p>
+
+  	<!-- --- SHARES --- -->
+  	<h2 ng-show="shareholders.length" >{% endverbatim %}{% trans "Share Ownership" %}{% verbatim %}</h2>
+
+      <!-- TABLE ACTIONS -->
+  	{% endverbatim %}
+  	{% include "_table_actions.html" %}
+  	{% verbatim %}
+
+      <!-- TABLE -->
+      <div class="table">
+        <div class="tr th">
+          <div class="td td-width-2 ">{% endverbatim %}{% trans "Name" %}{% verbatim %}</div>
+          <div class="td td-width-2">{% endverbatim %}{% trans "Email" %}{% verbatim %}</div>
+          <div class="td text-right-flex">{% endverbatim %}{% trans "Shareholder Number" %}{% verbatim %}</div>
+          <div class="td text-right-flex">{% endverbatim %}{% trans "Shares (Voting-%%)" %}{% verbatim %}</div>
+        </div>
+        <div class="tr shareholder" ng-repeat="shareholder in shareholders" ng-click="goto_shareholder(shareholder.pk)" ng-mouseover="">
+          <div class="td td-width-2 order-1 full-name">
+            <span class="el-icon-exclamation-sign" ng-hide="shareholder.validate_gafi.is_valid" data-toggle="tooltip" title="{% endverbatim %}{% trans "Gafi Validation failed" %}{% verbatim %}"></span><span class="truncate">{{ shareholder.full_name }}</span></div>
+          <div class="td td-width-2 order-3 email"><span>{{ shareholder.user.email }}</span><a class="btn-inline"><span class="el-icon-eye-open"></span></a></div>
+          <div class="td text-right-flex order-2 number">{{ shareholder.number }}</div>
+          <div class="td text-right-flex order-4 gray-circle">
+            <value class='transform-center' ng-if="shareholder.share_count != '-'">
+                {{ shareholder.share_count | number : 0}}
+                <span class="shares-count" ng-hide="shareholder.is_company">
+                    ({{shareholder.share_percent | number : 1}}%)
+                </span>
+            </value>
+          </div>
+        </div>
+        <div class="tr totals">
+          <div class="td summary td-width-3 no-before">
+            <value ng-if="option_holder.options_count != '-'">
+              {% endverbatim %}{% trans "Total Shares distributed (total shares registered with company)" %}{% verbatim %}
+            </value>
+          </div>
+          <div class="td summary text-right-flex">
+            {{ total_shares }} ({{ shareholders[0].company.share_count }})
+          </div>
+        </div>
+      </div><!-- /table-->
+
+      {% endverbatim %}
+      <div class="panel" ng-show="!shareholders.length">
+        <div class="clearfix">
+          <em>{% trans "No Shareholders yet." %}</em>
         </div>
       </div>
-      <div class="tr totals">
-        <div class="td summary td-width-3 no-before">
-          <value ng-if="option_holder.options_count != '-'">
-            {% endverbatim %}{% trans "Total Shares distributed (total shares registered with company)" %}{% verbatim %}
-          </value>
-        </div>
-        <div class="td summary text-right-flex">
-          {{ total_shares }} ({{ shareholders[0].company.share_count }})
-        </div>
-      </div>
-    </div><!-- /table-->
+      {% verbatim %}
 
-    {% endverbatim %}
-    <div class="panel" ng-show="!shareholders.length">
-      <div class="clearfix">
-        <em>{% trans "No Shareholders yet." %}</em>
-      </div>
-    </div>
-    {% verbatim %}
+      <!-- --- OPTIONS --- -->
+  	<h2 ng-show="option_holders.length" >{% endverbatim %}{% trans "Option Holders" %}{% verbatim %}</h2>
+  	<div class="note" ng-show="option_holders.length" >{% endverbatim %}{% trans "Option Holders note" %}{% verbatim %}</div>
 
-    <!-- --- OPTIONS --- -->
-	<h2 ng-show="option_holders.length" >{% endverbatim %}{% trans "Option Holders" %}{% verbatim %}</h2>
-	<div class="note" ng-show="option_holders.length" >{% endverbatim %}{% trans "Option Holders note" %}{% verbatim %}</div>
+      <!-- TABLE ACTIONS -->
+  	{% endverbatim %}
+  	{% with prefix="optionholder_" %}
+  	{% include "_table_actions.html" %}
+  	{% endwith %}
+  	{% verbatim %}
 
-    <!-- TABLE ACTIONS -->
-	{% endverbatim %}
-	{% with prefix="optionholder_" %}
-	{% include "_table_actions.html" %}
-	{% endwith %}
-	{% verbatim %}
-
-	<!-- TABLE -->
-    <div class="table">
-      <div class="tr option-holders" ng-show="option_holders.length" ng-repeat="option_holder in option_holders  | orderBy:'-share_count'" ng-click="goto_shareholder(option_holder.pk)" ng-mouseover="">
-        <div class="td td-width-2 order-1 option-holders full-name">{{ option_holder.full_name }}</div>
-        <div class="td td-width-2 order-3 email">{{ option_holder.user.email }}<a class="btn-inline"><span class="el-icon-eye-open"></span></a></div>
-        <div class="td text-right-flex number order-2">{{ option_holder.number }}</div>
-        <div class="td text-right-flex share shareholders-count">
-          <value ng-if="option_holder.options_count != '-'">
-            {{ option_holder.options_count | number : 0}} ({{option_holder.options_percent | number : 1}}%)
-          </value>
+  	<!-- TABLE -->
+      <div class="table">
+        <div class="tr option-holders" ng-show="option_holders.length" ng-repeat="option_holder in option_holders  | orderBy:'-share_count'" ng-click="goto_shareholder(option_holder.pk)" ng-mouseover="">
+          <div class="td td-width-2 order-1 option-holders full-name">{{ option_holder.full_name }}</div>
+          <div class="td td-width-2 order-3 email">{{ option_holder.user.email }}<a class="btn-inline"><span class="el-icon-eye-open"></span></a></div>
+          <div class="td text-right-flex number order-2">{{ option_holder.number }}</div>
+          <div class="td text-right-flex share shareholders-count">
+            <value ng-if="option_holder.options_count != '-'">
+              {{ option_holder.options_count | number : 0}} ({{option_holder.options_percent | number : 1}}%)
+            </value>
+          </div>
         </div>
       </div>
-    </div>
 
-    {% endverbatim %}
-    <div class="panel" ng-show="!option_holders.length">
-      <div class="clearfix">
-        <em>{% trans "No option holders yet." %}</em>
+      {% endverbatim %}
+      <div class="panel" ng-show="!option_holders.length">
+        <div class="clearfix">
+          <em>{% trans "No option holders yet." %}</em>
+        </div>
       </div>
-    </div>
-    {% verbatim %}
+      {% verbatim %}
 
-    <div class="captable_context_actions" ng-hide="!shareholders.length">
-      {% endverbatim %}{% trans "Download active Shareholders as" %}{% verbatim %}
-      <a href="{{operator.company.captable_pdf_url}}" title="{% endverbatim %}{% trans "Download active Shareholders as PDF" %}{% verbatim %}" class="btn btn-inline">
-        {% endverbatim %}{% trans "PDF" %}{% verbatim %}
-      </a> |
-      <a href="{{operator.company.captable_csv_url}}" title="{% endverbatim %}{% trans "Download active Shareholders as CSV" %}{% verbatim %}" class="btn btn-inline">
-        {% endverbatim %}{% trans "CSV" %}{% verbatim %}
-      </a>
+      <div class="captable_context_actions" ng-hide="!shareholders.length">
+        {% endverbatim %}{% trans "Download active Shareholders as" %}{% verbatim %}
+        <a href="{{operator.company.captable_pdf_url}}" title="{% endverbatim %}{% trans "Download active Shareholders as PDF" %}{% verbatim %}" class="btn btn-inline">
+          {% endverbatim %}{% trans "PDF" %}{% verbatim %}
+        </a> |
+        <a href="{{operator.company.captable_csv_url}}" title="{% endverbatim %}{% trans "Download active Shareholders as CSV" %}{% verbatim %}" class="btn btn-inline">
+          {% endverbatim %}{% trans "CSV" %}{% verbatim %}
+        </a>
+      </div>
+
+    </div>
+
+    <div ng-show="!operator.company.current_subscription">
+      <ul>
+        {% endverbatim %}
+          {% trans "To access the features you first need to:" %}
+        {% verbatim %}
+        <li class="text-warning">
+          {% endverbatim %}{% trans "Add subscription for company" %}{% verbatim %}
+          <a href="{{ operator.company.profile_url }}subscriptions/subscribe/">
+            {% endverbatim %}{% trans "here" %}{% verbatim %}
+          </a>
+        </li>
+      </ul>
     </div>
 
 

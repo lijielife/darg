@@ -28,12 +28,15 @@ from shareholder.models import (Company, Country, Operator, OptionPlan,
                                 OptionTransaction, Position, Security,
                                 Shareholder)
 
+from .mixins import SubscriptionViewSetMixin
+
+
 User = get_user_model()
 
 
 # --- VIEWSETS
 
-class ShareholderViewSet(viewsets.ModelViewSet):
+class ShareholderViewSet(SubscriptionViewSetMixin, viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
@@ -48,19 +51,23 @@ class ShareholderViewSet(viewsets.ModelViewSet):
                      'number')
     ordering_fields = ('user__last_name', 'user__email', 'number')
 
+    subscription_features = ('shareholder_count',)
+
+    def get_user_companies(self):
+        return Company.objects.filter(operator__user=self.request.user)
+
     def get_object(self):
         try:
-            return Shareholder.objects.get(pk=self.kwargs.get('pk'))
+            self.get_queryset().get(pk=self.kwargs.get('pk'))
         except Shareholder.DoesNotExist:
             raise Http404
 
     def get_queryset(self):
-        user = self.request.user
-        company = user.operator_set.first().company
-        return Shareholder.objects.filter(company=company)\
-            .select_related('company', 'user', 'user__userprofile') \
-            .prefetch_related('user__operator_set') \
-            .distinct()
+        self.subscription_features = ['shareholder_count']
+        qs = Shareholder.objects.filter(company_id__in=self.get_company_pks())
+        return (qs.select_related('company', 'user', 'user__userprofile')
+                .prefetch_related('user__operator_set')
+                .distinct())
 
     @detail_route(methods=['get'])
     def number_segments(self, request, pk=None):
@@ -84,15 +91,24 @@ class ShareholderViewSet(viewsets.ModelViewSet):
         """
         returns the captable part for all option holders
         """
-        company_pk = self.request.GET.get('company')
+        # company_qs = Company.objects.filter(operator__user=self.request.user)
+        #
+        # q_cpks = self.request.query_params.getlist('company')  # filter
+        # query_companies = map(int, [cpk for cpk in q_cpks if cpk.isdigit()])
+        # if query_companies:
+        #     company_qs = company_qs.filter(pk__in=query_companies)
+        #
+        # ohs = Shareholder.objects.none()
+        # for company in company_qs:
+        #     if self.check_subscription(
+        #             company, ['shareholder_count', 'option_count']):
+        #         ohs |= company.get_active_option_holders()  # FIXME: check this
 
-        if company_pk:
-            company = Company.objects.get(pk=company_pk,
-                                          operator__user=self.request.user)
-        else:
-            company = self.request.user.operator_set.first().company
+        self.subscription_features = ['shareholder_count', 'option_count']
+        ohs = Shareholder.objects.none()
+        for company in Company.objects.filter(pk__in=self.get_company_pks()):
+            ohs |= company.get_active_option_holders()
 
-        ohs = company.get_active_option_holders()
         ohs = self.filter_queryset(ohs)
         page = self.paginate_queryset(ohs)
         if page is not None:
@@ -315,7 +331,7 @@ class InviteeUpdateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class PositionViewSet(viewsets.ModelViewSet):
+class PositionViewSet(SubscriptionViewSetMixin, viewsets.ModelViewSet):
     """ API endpoint to get positions """
     serializer_class = PositionSerializer
     pagination_class = SmallPagePagination
@@ -330,12 +346,16 @@ class PositionViewSet(viewsets.ModelViewSet):
     ordering_fields = ('buyer__user__last_name', 'buyer__user__email',
                        'buyer__number', 'seller__user__last_name',
                        'seller__user__email', 'seller__number')
+    # subscription_features = ('position_count',)
+
+    def get_user_companies(self):
+        return Company.objects.filter(operator__user=self.request.user)
 
     def get_queryset(self):
-        user = self.request.user
+        company_pks = self.get_company_pks()
         return Position.objects.filter(
-            Q(buyer__company__operator__user=user) |
-            Q(seller__company__operator__user=user)
+            Q(buyer__company_id__in=company_pks) |
+            Q(seller__company_id__in=company_pks)
         ).distinct().order_by('-bought_at', '-pk')
 
     @detail_route(
@@ -364,28 +384,33 @@ class PositionViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST)
 
 
-class SecurityViewSet(viewsets.ModelViewSet):
+class SecurityViewSet(SubscriptionViewSetMixin, viewsets.ModelViewSet):
     """ API endpoint to get options """
     serializer_class = SecuritySerializer
     permission_classes = [
         UserIsOperatorPermission,
     ]
+    subscription_features = ('security_count',)
+
+    def get_user_companies(self):
+        return Company.objects.filter(operator__user=self.request.user)
 
     def get_queryset(self):
-        user = self.request.user
-        return Security.objects.filter(company__operator__user=user)
+        return Security.objects.filter(company_id__in=self.get_company_pks())
 
 
-class OptionPlanViewSet(viewsets.ModelViewSet):
+class OptionPlanViewSet(SubscriptionViewSetMixin, viewsets.ModelViewSet):
     """ API endpoint to get options """
     serializer_class = OptionPlanSerializer
     permission_classes = [
         # UserCanAddOptionPlanPermission,
     ]
 
+    def get_user_companies(self):
+        return Company.objects.filter(operator__user=self.request.user)
+
     def get_queryset(self):
-        user = self.request.user
-        return OptionPlan.objects.filter(company__operator__user=user)
+        return OptionPlan.objects.filter(company_id__in=self.get_company_pks())
 
     # FIXME add perms like that to decor. permission_classes=[IsAdminOrIsSelf]
     @detail_route(methods=['post'])
@@ -408,7 +433,8 @@ class OptionPlanViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST)
 
 
-class OptionTransactionViewSet(viewsets.ModelViewSet):
+class OptionTransactionViewSet(SubscriptionViewSetMixin,
+                               viewsets.ModelViewSet):
     """ API endpoint to get options """
     serializer_class = OptionTransactionSerializer
     pagination_class = SmallPagePagination
@@ -424,16 +450,31 @@ class OptionTransactionViewSet(viewsets.ModelViewSet):
                        'buyer__number', 'seller__user__last_name',
                        'seller__user__email', 'seller__number')
     ordering = ('option_plan__pk',)
+    subscription_features = ('position_count',)
+
+    def get_user_companies(self):
+        return Company.objects.filter(operator__user=self.request.user)
 
     def get_queryset(self):
-        user = self.request.user
+        # user = self.request.user
+        # qs = OptionTransaction.objects.filter(
+        #     option_plan__company__operator__user=user)
+        #
+        # # filter if option plan is given in query params
+        # if self.request.query_params.get('optionplan_pk', None):
+        #     qs = qs.filter(
+        #         option_plan__pk=self.request.query_params.get('optionplan_pk'))
+        #
+        # return qs
+
+        # FIXME: check this
         qs = OptionTransaction.objects.filter(
-            option_plan__company__operator__user=user)
+            option_plan__company_id__in=self.get_company_pks())
 
         # filter if option plan is given in query params
-        if self.request.query_params.get('optionplan_pk', None):
-            qs = qs.filter(
-                option_plan__pk=self.request.query_params.get('optionplan_pk'))
+        pk = self.request.query_params.get('optionplan_pk')
+        if pk:
+            qs = qs.filter(option_plan_id=pk)
 
         return qs
 

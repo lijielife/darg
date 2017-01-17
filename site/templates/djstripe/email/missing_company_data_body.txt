@@ -1,6 +1,8 @@
 {% extends 'email/base.txt' %}{% load i18n %}
 {% block content %}
-{% trans 'A company was charged but the receipt could not be sent due to missing email address.' %}
+{% trans 'A company was charged but some important data are missing:' %}
+{% if email_missing %}{% trans 'A (valid) email address' %}{% endif %}
+{% if address_missing %}{% trans 'A postal address' %}{% endif %}
 
 Company: {{ charge.customer.subscriber }}
 Admin-URL: {{ protocol }}://{{ site.domain }}{% url 'admin:shareholder_company_changelist' %}?id__exact={{ charge.customer.subscriber_id }}

@@ -31,13 +31,19 @@ def invoice_webhook_handler(event, event_data, event_type, event_subtype):
 @webhooks.handler(['customer'])
 def customer_webhook_handler(event, event_data, event_type, event_subtype):
     """
-    use customer email address for company if no email set on company instance
+    use customer email address for subscriber if no email set on subscriber
+    instance, also set address (if necessary/possible)
     """
-    company = event.customer.subscriber
-    if not company.email:
-        object_data = event.validated_message.get('data', {}).get('object', {})
+    subscriber = event.customer.subscriber
+    object_data = event.validated_message.get('data', {}).get('object', {})
+
+    # email
+    if not subscriber.email:
         email = object_data.get('email') or object_data.get('name')
 
         if is_valid_email(email):
-            company.email = email
-            company.save()
+            subscriber.email = email
+            subscriber.save()
+
+    if not subscriber.has_address:
+        subscriber.read_address_from_stripe_object(object_data)

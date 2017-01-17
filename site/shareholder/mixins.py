@@ -61,6 +61,18 @@ class AddressModelMixin(models.Model):
     add fields street, postal_code, city, province, country to model
     """
 
+    STREET_FIELDS = ('street', 'street2', 'city', 'province', 'pobox', 'c_o',
+                     'postal_code', 'country')
+    REQUIRED_STREET_FIELDS = ('street', 'city', 'postal_code', 'country')
+    STRIPE_FIELD_MAPPING = {
+        'address_line1': 'street',
+        'address_line2': 'street2',
+        'address_zip': 'postal_code',
+        'address_city': 'city',
+        'address_state': 'province'
+        # 'address_country': 'country',
+    }
+
     street = models.CharField(_('Street'), max_length=255, blank=True,
                               null=True)
     street2 = models.CharField(_('Street 2'), max_length=255, blank=True,
@@ -70,7 +82,7 @@ class AddressModelMixin(models.Model):
                                 null=True)
     pobox = models.CharField(_('PO Box'), max_length=255, blank=True,
                              null=True)
-    c_o = models.CharField(_('C O'), max_length=255, blank=True, null=True)
+    c_o = models.CharField(_('C/O'), max_length=255, blank=True, null=True)
     postal_code = models.CharField(_('Postal code'), max_length=255,
                                    blank=True, null=True)
     country = models.ForeignKey('shareholder.Country', blank=True, null=True,
@@ -84,4 +96,25 @@ class AddressModelMixin(models.Model):
         """
         return True if street, city, postal_code and country field are set
         """
-        return self.street and self.city and self.postal_code and self.country
+        return all(getattr(self, fn) for fn in self.REQUIRED_STREET_FIELDS)
+
+    def read_address_from_stripe_object(self, stripe_data, save=True):
+        """
+        update address information for object from stripe data
+        """
+        if not stripe_data:
+            return
+
+        for key, fieldname in self.STRIPE_FIELD_MAPPING.items():
+            setattr(self, fieldname, stripe_data.get(key, ''))
+
+        country_name = stripe_data.get('address_country')
+        if country_name:
+            # try to fetch country object
+            country_field = self._meta.get_field_by_name('country')[0]
+            Country = country_field.related_model
+            self.country = Country.objects.filter(
+                name__iexact=country_name).first()
+
+        if save:
+            self.save()

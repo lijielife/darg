@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='company',
             name='c_o',
-            field=models.CharField(blank=True, max_length=255, null=True, verbose_name='C O'),
+            field=models.CharField(blank=True, max_length=255, null=True, verbose_name='C/O'),
         ),
         migrations.AddField(
             model_name='company',
@@ -80,7 +80,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='userprofile',
             name='c_o',
-            field=models.CharField(blank=True, max_length=255, null=True, verbose_name='C O'),
+            field=models.CharField(blank=True, max_length=255, null=True, verbose_name='C/O'),
         ),
         migrations.AlterField(
             model_name='userprofile',

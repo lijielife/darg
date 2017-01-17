@@ -28,6 +28,7 @@ from djstripe.views import (
 )
 
 from shareholder.models import Company
+from utils.mail import is_valid_email
 from utils.subscriptions import (stripe_company_shareholder_invoice_item,
                                  stripe_company_security_invoice_item)
 
@@ -129,10 +130,17 @@ class ConfirmFormView(CompanyOperatorPermissionRequiredViewMixin,
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         if form.is_valid():
+            post_data = self.request.POST
             try:
                 customer, created = Customer.get_or_create(
                     subscriber=subscriber_request_callback(self.request))
-                customer.update_card(self.request.POST.get("stripe_token"))
+                customer.update_card(post_data.get("stripe_token"))
+
+                # update customer email (if necessary)
+                email = post_data.get('email')
+                if is_valid_email(email) and not customer.subscriber.email:
+                    customer.subscriber.email = email
+                    customer.subscriber.save()
 
                 plan = form.cleaned_data['plan']
 

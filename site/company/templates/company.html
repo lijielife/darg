@@ -127,6 +127,42 @@
       </td>
     </tr>
 
+    <tr>
+      <td>
+        <strong>{% trans "Address" %}:</strong><br/>
+        {% trans "Street" %}<br/>
+        {% trans "Street2" %}<br/>
+        {% trans "Zip" %} {% trans "City" %}<br/>
+        {% trans "Province" %}<br/>
+        {% trans "Country" %}<br/>
+        {% trans "P.O. Box" %}<br/>
+        {% trans "c/o" %}
+      </td>
+      <td>
+        <br/>
+        {% verbatim %}
+        <span editable-text="company.street" onaftersave="edit_company()">{{ company.street || 'Street' }} <span class="el-icon-pencil"></span></span>
+        <br/>
+        <span editable-text="company.street2" onaftersave="edit_company()">{{ company.street2 || 'Street2' }} <span class="el-icon-pencil"></span></span>
+        <br/>
+        <span editable-text="company.postal_code" onaftersave="edit_company()">{{ company.postal_code || 'PLZ' }} <span class="el-icon-pencil"></span></span>
+        <span editable-text="company.city" onaftersave="edit_company()">{{ company.city || 'City' }} <span class="el-icon-pencil"></span></span>
+        <br/>
+        <span editable-text="company.province" onaftersave="edit_company()">{{ company.province || 'Province' }} <span class="el-icon-pencil"></span></span>
+        <br/>
+        <span editable-select="company.country" onaftersave="edit_company()" e-ng-options="c as c.name for c in countries">
+          {{ company.country.name || 'Country' }}
+          <span class="el-icon-pencil"></span>
+        </span>
+        <br/>
+        <span editable-text="company.pobox" onaftersave="edit_company()">{{ company.pobox || 'P.O. Box' }} <span class="el-icon-pencil"></span></span>
+        <br/>
+        <span editable-text="company.c_o" onaftersave="edit_company()">{{ company.c_o || 'c/o' }} <span class="el-icon-pencil"></span></span>
+        <br/>
+        {% endverbatim %}
+      </td>
+    </tr>
+
     {# TODO: check for subscription #}
     <tr>
       <td>{% trans "Is statement sending enabled" %}</td>

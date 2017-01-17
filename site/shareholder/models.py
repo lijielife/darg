@@ -340,7 +340,7 @@ class Company(AddressModelMixin, models.Model):
             return False
 
         feature_list = settings.PLAN_FEATURES.get(
-            self.get_current_subscription_plan, [])
+            self.get_current_subscription_plan(), [])
 
         return feature_name.lower() in feature_list
 
@@ -361,8 +361,7 @@ class Company(AddressModelMixin, models.Model):
         """
         returns djstripe.Customer object
         """
-        customer, created = DjStripeCustomer.objects.get_or_create(
-            subscriber=self)
+        customer, created = DjStripeCustomer.get_or_create(subscriber=self)
         return customer
 
     def validate_plan(self, plan_name, include_errors=True):

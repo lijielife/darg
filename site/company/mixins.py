@@ -1,4 +1,8 @@
 
+import collections
+
+from django.apps import apps
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 
 from braces.views._access import AccessMixin
@@ -37,3 +41,27 @@ class CompanyOperatorPermissionRequiredViewMixin(AccessMixin):
         return (
             super(CompanyOperatorPermissionRequiredViewMixin, self).dispatch(
                 request, *args, **kwargs))
+
+
+class SubscriptionMixin(object):
+    """
+    mixin to check for subscription and plan features
+    """
+
+    def check_subscription(self, subscriber, features=None):
+        """
+        return boolean if subscriber has valid subscription
+        also check for specific feature if given (str or list)
+        """
+        subscriber_model = apps.get_model(settings.DJSTRIPE_SUBSCRIBER_MODEL)
+        if not isinstance(subscriber, subscriber_model):
+            raise ValueError('subscriber must be of type {}'.format(
+                subscriber_model))
+
+        if not features:
+            return subscriber.get_customer().has_active_subscription()
+
+        if not isinstance(features, collections.Iterable):
+            features = [features]
+
+        return all(subscriber.has_feature_enabled(f) for f in features)

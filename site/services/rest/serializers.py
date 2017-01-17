@@ -81,17 +81,23 @@ class CompanySerializer(serializers.HyperlinkedModelSerializer):
     captable_pdf_url = serializers.SerializerMethodField()
     captable_csv_url = serializers.SerializerMethodField()
     logo_url = serializers.SerializerMethodField()
+    current_subscription = serializers.CharField(
+        source='get_current_subscription_plan',
+        read_only=True
+    )
+    has_address = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Company
         fields = ('pk', 'name', 'share_count',
-                  'country', 'url',
+                  'url',
                   # not needed as of now, adding one more db query
                   # 'shareholder_count',
                   'security_set', 'founded_at',
                   'provisioned_capital', 'profile_url', 'captable_pdf_url',
-                  'captable_csv_url', 'logo_url', 'email',
-                  'is_statement_sending_enabled', 'statement_sending_date')
+                  'captable_csv_url', 'logo_url', 'email', 'has_address',
+                  'is_statement_sending_enabled', 'statement_sending_date',
+                  'current_subscription') + Company.STREET_FIELDS
 
     def get_profile_url(self, obj):
         return reverse('company', kwargs={'company_id': obj.id})
