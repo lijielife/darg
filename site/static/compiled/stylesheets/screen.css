@@ -3665,10 +3665,12 @@ div#optionplan .pdf_upload_preview {
   }
   .table .tr .td.text-right-flex {
     text-align: right;
+    -webkit-flex-direction: column;
+    flex-direction: column;
     -webkit-align-items: flex-end;
     align-items: flex-end;
-    -webkit-justify-content: flex-end;
-    justify-content: flex-end;
+    -webkit-justify-content: flex-start;
+    justify-content: flex-start;
   }
 }
 @media only screen and (max-width: 768px) {

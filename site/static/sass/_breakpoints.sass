@@ -165,8 +165,9 @@
       .td
         &.text-right-flex
           text-align: right
+          @include flex-direction(column)
           @include align-items(flex-end)
-          @include justify-content(flex-end) //align right text desktop
+          @include justify-content(flex-start) //align right text desktop
         padding: 0.5em
 
 @media only screen and (max-width: 768px)
