@@ -419,7 +419,8 @@ class OptionTransactionViewSet(viewsets.ModelViewSet):
     search_fields = ('buyer__user__first_name', 'buyer__user__last_name',
                      'buyer__user__email', 'seller__user__first_name',
                      'seller__user__last_name', 'seller__user__email',
-                     'seller__number', 'buyer__number', 'bought_at')
+                     'seller__number', 'buyer__number', 'bought_at',
+                     'option_plan__title')
     ordering_fields = ('buyer__user__last_name', 'buyer__user__email',
                        'buyer__number', 'seller__user__last_name',
                        'seller__user__email', 'seller__number')

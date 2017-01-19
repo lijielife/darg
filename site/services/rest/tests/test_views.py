@@ -1316,6 +1316,18 @@ class OptionTransactionTestCase(APITestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['count'], 1)
 
+        res = self.client.get(
+            '/services/rest/optiontransaction?search={}'.format(
+                optiontransaction.option_plan.title))
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(
+            res.data['count'],
+            OptionTransaction.objects.filter(
+                seller__company=operator.company
+            ).count())
+        self.assertNotEqual(res.data['count'], 0)
+
     def test_ordering(self):
         operator = OperatorGenerator().generate()
         user = operator.user
