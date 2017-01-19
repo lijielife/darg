@@ -221,7 +221,7 @@ html, body
     font-weight: bold
     color: $color-red
     background: none
-  .btn-white 
+  .btn-white
     background-color: $color-white !important
     color: $color-blue !important
     border: 1px solid $color-blue !important
@@ -540,6 +540,8 @@ nav.navbar
       padding-top: 6px
 
 // -- responsive table
+.show-mobile
+  display: none
 .meta-mobile-only
   display: none
 .limit-max-height
@@ -555,8 +557,6 @@ nav.navbar
   @include justify-content(space-between)
   font-size: 1rem
   line-height: 1.5
-.th
-  display: none
 .tr
   &.totals
     border-bottom: 0
@@ -580,6 +580,8 @@ nav.navbar
     @include flex-flow(column)
     .btn-inline
       margin-bottom: 5px
+  &.flex-inline
+    @include flex-direction(row)
   &.text-right-flex
     @include justify-content(flex-start) //reset right aligned to left mobile view
   &:hover

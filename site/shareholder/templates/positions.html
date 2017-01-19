@@ -77,13 +77,13 @@
           </div>
           <div class="td td-width-2 order-2 buyer-name" ng-click="goto_position(position.pk)" ng-mouseover="">{{ position.buyer.full_name }}</div>
           <div class="td order-5 flex-column td-flex-inline" ng-click="goto_position(position.pk)" ng-mouseover="" >
-            <span class="custom-typeface-mobile hidden-md hidden-lg hidden-sm">{{ position.count }}</span>
+            <span class="custom-typeface-mobile show-mobile">{{ position.count }}</span>
             <span class="note" ng-show="position.security.track_numbers && position.readable_number_segments">
               (#{{ position.readable_number_segments }})
             </span>
             <span class="custom-typeface-mobile">{{ position.security.readable_title }}</span>
           </div>
-          <div class="hidden-xs td text-right-flex count order-4 flex-column">
+          <div class="hide-mobile td text-right-flex count order-4 flex-column">
             <span class=" medium">
               <span>{{ position.count }}</span>
               <span class="note" ng-show="position.security.track_numbers && position.readable_number_segments">
@@ -99,7 +99,7 @@
             <span class="limit-max-height ">{{ position.seller.full_name }}</span>
           </div>
           <div class="td hidden-xs" ng-click="goto_position(position.pk)" ng-mouseover="">{{ position.comment }}</div>
-          <div class="td flex-column order-6 flex-inline-mobile">
+          <div class="td order-6 flex-inline">
             <div ng-show="position.is_draft">
               <a class="btn-inline" ng-click="delete_position(position)" href>
                 {% endverbatim %}<i class="gray el-icon-remove-circle"></i>{% verbatim %}
