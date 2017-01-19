@@ -3162,6 +3162,10 @@ nav.navbar .navbar-text {
   padding-top: 6px;
 }
 
+.show-mobile {
+  display: none;
+}
+
 .meta-mobile-only {
   display: none;
 }
@@ -3189,10 +3193,6 @@ nav.navbar .navbar-text {
   justify-content: space-between;
   font-size: 1rem;
   line-height: 1.5;
-}
-
-.th {
-  display: none;
 }
 
 .tr {
@@ -3248,6 +3248,10 @@ nav.navbar .navbar-text {
 }
 .td.flex-column .btn-inline {
   margin-bottom: 5px;
+}
+.td.flex-inline {
+  -webkit-flex-direction: row;
+  flex-direction: row;
 }
 .td.text-right-flex {
   -webkit-justify-content: flex-start;
@@ -3634,7 +3638,7 @@ div#optionplan .pdf_upload_preview {
     display: none;
   }
 }
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 769px) {
   /* override bootstrap default class */
   .navbar-right .dropdown-menu {
     right: 20px;
@@ -3710,6 +3714,14 @@ div#optionplan .pdf_upload_preview {
     order: 7;
   }
 
+  .show-mobile {
+    display: block;
+  }
+
+  .hide-mobile {
+    display: none !important;
+  }
+
   .meta-mobile-only {
     display: block;
   }
@@ -3731,8 +3743,8 @@ div#optionplan .pdf_upload_preview {
     padding-top: 15px;
     padding-bottom: 10px;
     margin: 5px 0;
-    -webkit-align-items: center;
-    align-items: center;
+    -webkit-align-items: center !important;
+    align-items: center !important;
     -webkit-justify-content: center;
     justify-content: center;
     width: 100%;
@@ -3743,11 +3755,7 @@ div#optionplan .pdf_upload_preview {
   .table.table-centered-mobile .td.td-border-right {
     border-right: 1px solid #ccc;
   }
-  .table.table-centered-mobile .td.flex-inline-mobile {
-    -webkit-flex-direction: row;
-    flex-direction: row;
-  }
-  .table.table-centered-mobile .td.flex-inline-mobile a {
+  .table.table-centered-mobile .td.td-border-right a {
     margin: 0 10px;
   }
   .table.table-centered-mobile .td.td-flex-inline {
@@ -3765,6 +3773,9 @@ div#optionplan .pdf_upload_preview {
     padding: 10px 75px 10px 0;
     position: relative;
     border: 1px solid #f5f5f5;
+  }
+  .table .tr.th {
+    display: none;
   }
   .table .tr.option-holders-heading {
     font-weight: 700;

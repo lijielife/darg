@@ -79,7 +79,7 @@
           <span class="transform-center large">
             {{ optiontransaction.count }}
           </span>
-          <span class="note" ng-show="optiontransaction.option_plan.security.track_numbers && optiontransaction.readable_number_segments">
+          <span class="note hide-mobile" ng-show="optiontransaction.option_plan.security.track_numbers && optiontransaction.readable_number_segments">
             (#{{ optiontransaction.readable_number_segments }})
           </span>
         </div>
