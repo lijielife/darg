@@ -45,7 +45,7 @@
         <span>
           <div>{{ optionplan.security.readable_title || 'empty' }}</div>
           <!--<span class="el-icon-pencil"></span>-->
-          <div>{% endverbatim %}({% trans "Valor" %}: {% verbatim %}{{ optionplan.security.cusip }})</div>
+          <div ng-show="optionplan.security.cusip">{% endverbatim %}({% trans "Valor" %}: {% verbatim %}{{ optionplan.security.cusip }})</div>
         </span>
         <span ng-show="optionplan.security.track_numbers">
           ({% endverbatim %}{% trans "Reserved security numbers:" %}{% verbatim %}
