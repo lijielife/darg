@@ -39,6 +39,8 @@ def stripe_company_shareholder_invoice_item(customer, plan, invoice=None):
     if price_per_shareholder:
         # add per shareholder fees as InvoiceItems for customer
         shareholder_count = _get_company_shareholder_count(customer.subscriber)
+        if not shareholder_count:
+            return
         stripe.api_key = settings.STRIPE_SECRET_KEY
         stripe.InvoiceItem.create(
             customer=customer.stripe_id,

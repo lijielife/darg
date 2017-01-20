@@ -11,25 +11,23 @@
     {% endblocktrans %}
   </p>
 
-  <p>TODO: details here</p>
+  <p>{% trans "INVOICE" %} #darg-{{ charge.pk }} {{ charge.created_at|date:"DATE_FORMAT" }}</p>
+  <p>{% trans "CUSTOMER" %}: {{ charge.customer.subscriber }}</p>
+  <p>
+    {% trans "DETAILS" %}<br />
+    {% if invoice_items %}
+      {% for item in invoice_items %}
+      {% if item.quantity > 1 %}{{ item.quantity }} x {% endif %}{% ifequal item.line_type 'subscription' %}{% trans "Subscription" %} {{ charge.customer.current_subscription.plan_display }}{% else %}{{ item.description }}{% endifequal %} - {{ item.currency|upper }}{{ item.amount|floatformat:2 }}
+      {% if not forloop.last %}<br />{% endif %}{% endfor %}
+    {% else %}
+      {{ charge.customer.current_subscription.plan_display }} - {{ plan.currency|upper }}{{ charge.amount|floatformat:2 }}
+    {% endif %}
+    <br /><br />
+    {% if include_vat %}{% trans "incl. VAT" %} {{ vat }}% - {{ plan.currency|upper }}{{ vat_value|floatformat:2 }}<br /><br />{% endif %}
 
-  {% comment %}
-  ========================================================
-  INVOICE #{{ charge.pk }}     {{ charge.created_at|date:"F d, Y" }}
-  ........................................................
-
-
-  CUSTOMER: {% block customer_name %}{{ charge.customer.subscriber }}{% endblock %}
-
-
-  DETAILS
-  -------
-  {{ charge.customer.current_subscription.plan_display }} - ${{ charge.amount|floatformat:2 }}
-
-  TOTAL: ${{ charge.amount|floatformat:2 }} USD
-  PAID BY CREDIT CARD: -${{ charge.amount|floatformat:2 }}
-  ========================================================
-  {% endcomment %}
+    <strong>{% trans "TOTAL" %}:</strong> {{ plan.currency|upper }}{{ charge.amount|floatformat:2 }}<br />
+    {% trans "PAID BY CREDIT CARD" %}: -{{ plan.currency|upper }}{{ charge.amount|floatformat:2 }}
+  </p>
 {% else %}
 
   {% if charge.refunded %}

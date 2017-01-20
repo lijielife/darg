@@ -5,6 +5,7 @@ from django.http import HttpResponse, Http404, FileResponse
 from django.template import RequestContext, loader
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.core import signing
 from django.http import HttpResponseForbidden
 from django.utils.timezone import now
 from django.utils.translation import ugettext as _
@@ -120,29 +121,72 @@ class StatementDownloadPDFView(AuthTokenSingleViewMixin, DetailView):
 
     http_method_names = ['get']
     login_required = True  # see AuthTokenViewMixin
+    model = ShareholderStatement
+
+    def raise_404_error(self, message=None):
+        if message is None:
+            message = (_("No %(verbose_name)s found matching the query") %
+                       {'verbose_name': self.model._meta.verbose_name})
+        raise Http404(message)
 
     def get_queryset(self):
+        # TODO: consider admin/superusers
         return self.request.user.shareholderstatement_set.all()
 
+    def get_object(self, queryset=None):
+
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        file_hash = self.request.GET.get('file', '')
+        salt = getattr(self.model, 'SIGNING_SALT', '')
+        try:
+            data = signing.loads(file_hash, salt=salt)
+        except signing.BadSignature:
+            # FIXME: should we reveal that hash is invalid?
+            self.raise_404_error()
+
+        queryset = queryset.filter(pk=data.get('pk'))
+
+        try:
+            # Get the single item from the filtered queryset
+            obj = queryset.get()
+        except queryset.model.DoesNotExist:
+            self.raise_404_error()
+
+        # check all stored parameters in data
+        if not data.get('company_pk') == obj.report.company_id:
+            self.raise_404_error()
+        elif not data.get('date') == str(obj.report.report_date):
+            self.raise_404_error()
+        elif not data.get('user_pk') == obj.user_id:
+            self.raise_404_error()
+        # FIXME: check for request.user as well? (consider admin/superusers)
+
+        return obj
+
     def get(self, request, *args, **kwargs):
+
         self.object = self.get_object()
 
         if not os.path.isfile(self.object.pdf_file):
             # TODO: how to handle this without outraging the user?
-            raise Http404(_('We could not find this file.'))
+            self.raise_404_error()
 
-        try:
-            with open(self.object.pdf_file, 'r') as f:
-                content = f.read()
-        except:
-            # TODO: proper error handling
-            raise Http404(_('We could not read this file.'))
+        # try:
+        #     with open(self.object.pdf_file, 'r') as f:
+        #         content = f.read()
+        # except:
+        #     # TODO: proper error handling
+        #     # raise Http404(_('We could not read this file.'))
+        #     self.raise_404_error()
 
         # set download date
         self.object.pdf_downloaded_at = now()
         self.object.save()
 
-        return FileResponse(content, content_type='application/pdf')
+        # return FileResponse(content, content_type='application/pdf')
+        return sendfile(request, self.object.pdf_file)
 
 
 statement_download_pdf = StatementDownloadPDFView.as_view()

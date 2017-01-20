@@ -19,3 +19,7 @@ def tracking(request):
         DSN=dsn['dsn_public']
     )
     return res
+
+
+def default_protocol(request):
+    return dict(protocol=settings.DEFAULT_HTTP_PROTOCOL)

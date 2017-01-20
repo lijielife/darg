@@ -10,6 +10,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import JSONField
 from django.contrib.sites.models import Site
+from django.core import signing
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.core.validators import MinValueValidator
@@ -92,6 +93,9 @@ class Company(AddressModelMixin, models.Model):
         _('Is statement sending enabled'), default=True)
     statement_sending_date = models.DateField(_('statement sending date'),
                                               null=True, blank=True)
+
+    # pdf invoice
+    invoice_template = 'pdf/invoice.pdf.html'  # shareholder/templates
 
     class Meta:
         verbose_name = _('Company')
@@ -1274,6 +1278,8 @@ class ShareholderStatement(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    SIGNING_SALT = 'shareholder.shareholderstatement.pdf_download'
+
     class Meta:
         verbose_name = _('shareholder statement')
         verbose_name_plural = _('shareholder statements')
@@ -1311,9 +1317,17 @@ class ShareholderStatement(models.Model):
         absolute -- get absolute url including domain (default: True)
         with_auth_token -- append authentication token (default: False)
         """
-        url = reverse('statement_download_pdf', args=[self.pk])
+        url = reverse('statement_download_pdf')
+        signing_data = dict(
+            pk=self.pk,
+            user_pk=self.user_id,
+            company_pk=self.report.company_id,
+            date=str(self.report.report_date)
+        )
+        file_hash = signing.dumps(signing_data, salt=self.SIGNING_SALT)
+        url += u'?file={}'.format(file_hash)
         if with_auth_token:
-            url += u'?token={}'.format(self.user.auth_token.key)
+            url += u'&token={}'.format(self.user.auth_token.key)
         if absolute:
             url = u'{}://{}{}'.format(
                 (getattr(settings, 'FORCE_SECURE_CONNECTION',

@@ -1,0 +1,120 @@
+{% load i18n shareholder_tags %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{{ STATIC_URL }}compiled/stylesheets/pdf/main.css">
+    <style>
+      .invoice table tr.head td {text-align: center;}
+      .invoice table td.item {}
+      .invoice table td.wide {}
+      .invoice table td.amount {}
+      .invoice h1 {font-size: 24px; color: #337ab7;}
+    </style>
+    <style media="screen">
+      .break {border-bottom: 1px solid #777;}
+      #footer_content {display: none;}
+    </style>
+  </head>
+  <body>
+    <body>
+      <div id="header_content">
+        <table>
+          <tr>
+            <td>
+              <h1>Das Aktienregister</h1>
+            </td>
+            <td class="pull-right">
+              <h3>{{ site.domain }}</h3>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div id="footer_content">
+        <table>
+          <tr>
+            <td>
+              <p class="center">
+                {% trans "Created automatically by" %}<br />
+                {{ site.domain }}. {% trans "Valid without signature." %}
+              </p>
+            </td>
+            <td class="pull-right">
+              {% trans "Page" %} <pdf:pagenumber> {% trans "of" %} <pdf:pagecount>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="address">
+        <table>
+          <tr>
+            <td class="user">
+              {{ company.name }}<br />
+              {{ company.street }}<br />
+              {{ company.postal_code }} {{ company.city }}<br />
+              {% if company.province %}{{ company.province }}<br />{% endif %}
+              {{ company.country.name }}
+            </td>
+            <td class="company">
+              {% for line in from_address %}
+                {{ line }}{% if not forloop.last %}<br />{% endif %}
+              {% endfor %}
+              <br /><br />
+              {{ site.domain }}<br />
+              {% if from_email %}{{ from_email }}<br />{% endif %}
+              {% trans "Your customer number:" %} {{ company.pk }}<br />
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" class="pull-right">{{ charge.charge_created|date:"DATE_FORMAT" }}</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="invoice content">
+        <h1>
+          {% trans "Invoice" %} #darg-{{ charge.pk }}
+        </h1>
+
+        <table>
+          <tr class="head">
+            <td class="item wide" colspan="2">{% trans "Item" %}</td>
+            <td class="amount center">
+              {% blocktrans with plan.currency|upper as currency %}
+                Price in {{ currency }}
+              {% endblocktrans %}
+            </td>
+          </tr>
+          {% for item in invoice_items %}
+            <tr class="row {% cycle 'odd' 'even' %}">
+              <td class="item wide" colspan="2">
+                {% ifequal item.line_type 'subscription' %}
+                  {% trans "Subscription" %} {{ charge.customer.current_subscription.plan_display }}
+                {% else %}
+                  {{ item.description }}
+                {% endifequal %}
+              </td>
+              <td class="amount center">
+                {{ item.amount|floatformat:2 }}
+              </td>
+            </tr>
+          {% endfor %}
+          {% if include_vat %}
+            <tr class="row {% invoice_get_vat_css_class invoice_items|length %}">
+              <td class="item">&nbsp;</td>
+              <td class="center">{% trans "incl. VAT" %} {{ vat }}&percnt;</td>
+              <td class="amount center">{{ vat_value|floatformat:2 }}</td>
+            </tr>
+          {% endif %}
+          <tr class="row {% invoice_get_total_css_class invoice_items|length include_vat %}">
+            <td class="item">&nbsp;</td>
+            <td class="center">{% trans "Total" %}</td>
+            <td class="amount center">{{ charge.amount|floatformat:2 }}</td>
+          </tr>
+        </table>
+      </div>
+
+  </body>
+</html>

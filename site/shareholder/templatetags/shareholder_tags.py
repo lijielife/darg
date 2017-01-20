@@ -160,3 +160,21 @@ def get_plans_annotations():
             )
             annotations.append(annotation)
     return annotations
+
+
+@register.simple_tag
+def invoice_get_vat_css_class(item_count):
+    """
+    return 'odd' or 'even'
+    """
+    return item_count % 2 and 'even' or 'odd'
+
+
+@register.simple_tag
+def invoice_get_total_css_class(item_count, vat_included):
+    """
+    return 'odd' or 'even'
+    """
+    if vat_included:
+        item_count += 1
+    return invoice_get_vat_css_class(item_count)

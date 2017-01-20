@@ -133,6 +133,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'project.context_processors.tracking',
                 'zinnia.context_processors.version',
+                'project.context_processors.default_protocol'
             ],
             'loaders': (
                 'django.template.loaders.filesystem.Loader',
@@ -406,12 +407,8 @@ DBBACKUP_MEDIA_FILENAME_TEMPLATE = media_backup_filename
 
 
 # SHAREHOLDER STATEMENT
-# NOTE: since the statements are user-specific, we need to ensure that only the
-#       appropriate user can access them and can therefore not place them
-#       within MEDIA_ROOT
-RESTRICTED_MEDIA_ROOT = os.path.join(BASE_DIR, 'media_restricted')
 SHAREHOLDER_STATEMENT_ROOT = os.path.join(
-    RESTRICTED_MEDIA_ROOT, 'shareholder', 'statements')
+    SENDFILE_ROOT, 'shareholder', 'statements')
 # send notify to operators that statements will be generated
 SHAREHOLDER_STATEMENT_OPERATOR_NOTIFY_DAYS = 7
 # days to watch if email was opened
@@ -566,6 +563,24 @@ PLAN_VALIDATORS = {
 }
 
 DEFAULT_HTTP_PROTOCOL = 'https'  # used by djstripe when sending emails
+
+COMPANY_INVOICES_ROOT = os.path.join(SENDFILE_ROOT, 'company', 'invoices')
+# NOTE: charge id will be added to invoice filename
+COMPANY_INVOICE_FILENAME = u'das-aktienregister-rechnung'
+# whether to include VAT in company (pdf) invoices or not
+COMPANY_INVOICE_INCLUDE_VAT = True
+COMPANY_INVOICE_VAT = 19  # in percent
+# NOTE: set this to True to include all invoice items directly into the invoice
+#       email. If not set, the items will only we included, if pdf invoice is
+#       missing. If this is set to False, items will never be included in email
+# COMPANY_INVOICE_INCLUDE_IN_EMAIL = True
+
+INVOICE_FROM_ADDRESS = [
+    'KKD Komm. GmbH',
+    'Pulsnitzer Str. 52',
+    '01936 Grossnaundorf',
+    'Deutschland'
+]
 
 
 try:

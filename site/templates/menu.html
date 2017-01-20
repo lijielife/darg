@@ -41,7 +41,7 @@
                   <a href="{{statements_url}}" class="pull-right">{% trans "Statements" %}</a>
                 </li>
               {% endif %}
-              {% if request.user|has_shareholderstatement_reports %} %}
+              {% if request.user|has_shareholderstatement_reports %}
                 {% url 'statement_reports' as statement_reports_url %}
                 <li {% if request.path|slice:':20' == statement_reports_url %}class="active"{% endif %}>
                   <a href="{{statement_reports_url}}" class="pull-right"

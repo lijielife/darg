@@ -1,15 +1,24 @@
 
+import logging
+import os
+
 from django.apps import AppConfig
 from django.conf import settings
-from django.core.mail import EmailMultiAlternatives, mail_managers
-from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string, get_template
+from django.utils.translation import (ugettext_lazy as _,
+                                      activate as activate_lang)
 
 import stripe
 
 from djstripe import settings as djstripe_settings
 
 from utils.mail import is_valid_email
+from utils.pdf import render_pdf
+
+
+# logger = logging.getLogger(__name__)
+logger = logging.getLogger('celery')
 
 
 class CompanyAppConfig(AppConfig):
@@ -38,14 +47,7 @@ class CompanyAppConfig(AppConfig):
         def _send_receipt(self):
             if not self.receipt_sent:
                 subscriber = self.customer.subscriber  # company
-                site = Site.objects.get_current()
-                protocol = getattr(settings, "DEFAULT_HTTP_PROTOCOL", "http")
-                context = {
-                    "charge": self,
-                    "site": site,
-                    "protocol": protocol,
-                }
-
+                context = self._get_template_context()
                 recipient = subscriber.email
                 has_address = subscriber.has_address
 
@@ -65,20 +67,32 @@ class CompanyAppConfig(AppConfig):
                     active_card = data.get('active_card', {})
                     subscriber.read_address_from_stripe_object(active_card)
 
-                if not subscriber.email or not subscriber.has_address:
-                    # mail managers
-                    subject = _('Company data missing')
-                    context.update(dict(
-                        email_missing=not subscriber.email,
-                        address_missing=not subscriber.has_address
-                    ))
-                    message = render_to_string(
-                        'djstripe/email/missing_company_data_body.txt',
-                        context)
-                    mail_managers(subject, message)
+                if not subscriber.email:
+                    error_message = _(
+                        'Company "{}" (ID {}) was charged but has no email '
+                        'address stored').format(subscriber, subscriber.pk)
+                    logger.exception(error_message)
                     return
 
-                # TODO: generate invoice pdf
+                if not subscriber.has_address:
+                    error_message = _(
+                        'Company "{}" (ID {}) was charged but has no postal '
+                        'address stored').format(subscriber, subscriber.pk)
+                    logger.exception(error_message)
+
+                # generate invoice pdf
+                try:
+                    pdf_invoice = self._generate_invoice_pdf()
+                except Exception as ex:
+                    pdf_invoice = None
+
+                include_invoice_items = getattr(
+                    settings, 'COMPANY_INVOICE_INCLUDE_IN_EMAIL', None)
+                if include_invoice_items is None:
+                    include_invoice_items = not bool(pdf_invoice)
+                invoice_items = (
+                    include_invoice_items and context['invoice_items'] or [])
+                context.update(dict(invoice_items=invoice_items))
 
                 subject = render_to_string(
                     "djstripe/email/receipt_subject.txt", context)
@@ -98,7 +112,12 @@ class CompanyAppConfig(AppConfig):
                     "djstripe/email/receipt_body.html", context)
                 email.attach_alternative(html_content, 'text/html')
 
-                # TODO: attachment (pdf invoice)
+                # attachment (pdf invoice)
+                if pdf_invoice:
+                    with open(pdf_invoice, 'r') as f:
+                        invoice_content = f.read()
+                    filename = os.path.basename(pdf_invoice)
+                    email.attach(filename, invoice_content, 'application/pdf')
 
                 num_sent = email.send()
                 self.receipt_sent = num_sent > 0
@@ -121,3 +140,99 @@ class CompanyAppConfig(AppConfig):
             return dict()
 
         Charge._get_customer_data = _get_customer_data
+
+        def _generate_invoice_pdf(self, override_existing=False):
+            """
+            create a PDF invoice for charge
+            if `override_existing` is True (default: False) - regenerate PDF
+            """
+
+            if not self.customer.subscriber.has_address:
+                error_message = _(
+                    'Company "{}" (ID {}) was charged but has no postal '
+                    'address stored').format(self.customer.subscriber,
+                                             self.customer.pk)
+                logger.exception(error_message)
+
+            context = self._get_template_context()
+            context.update(dict(
+                from_address=settings.INVOICE_FROM_ADDRESS,
+                from_email=settings.DEFAULT_FROM_EMAIL
+            ))
+
+            pdf_dir = self._get_invoice_pdf_path_for_company(
+                self.customer.subscriber)
+            pdf_filename = u'{}-{}.pdf'.format(
+                settings.COMPANY_INVOICE_FILENAME, self.pk)
+            pdf_filepath = os.path.join(pdf_dir, pdf_filename)
+
+            # check if exists
+            if os.path.exists(pdf_filepath) and not override_existing:
+                return pdf_filepath
+
+            activate_lang(settings.LANGUAGE_CODE)
+            template = get_template(self.customer.subscriber.invoice_template)
+            pdf = render_pdf(template.render(context))
+
+            if not pdf:
+                error_message = _(
+                    'Company "{}" (ID {}) was charged but invoice pdf could'
+                    ' not be generated.').format(self.customer.subscriber,
+                                                 self.customer.subscriber.pk)
+                logger.exception(error_message)
+                return None
+
+            with open(pdf_filepath, 'w') as f:
+                f.write(pdf.getvalue())
+
+            return pdf_filepath
+
+        Charge._generate_invoice_pdf = _generate_invoice_pdf
+
+        def _get_invoice_pdf_path_for_company(self, company):
+            """
+            returns a unique directory path to for the user
+            """
+            path = os.path.join(settings.COMPANY_INVOICES_ROOT,
+                                str(company.pk),
+                                str(self.charge_created.year))
+            if not os.path.exists(path):
+                os.makedirs(path)
+            return path
+
+        Charge._get_invoice_pdf_path_for_company = (
+            _get_invoice_pdf_path_for_company)
+
+        def _get_template_context(self):
+            """
+            get context for templates (pdf & email)
+            """
+            if self.invoice:
+                invoice_items = self.invoice.items.all().order_by(
+                    '-line_type', '-period_start')
+            else:
+                invoice_items = []
+
+            context = dict(
+                charge=self,
+                invoice_items=invoice_items,
+                company=self.customer.subscriber,
+                site=Site.objects.get_current(),
+                STATIC_URL=settings.STATIC_URL,
+                include_vat=settings.COMPANY_INVOICE_INCLUDE_VAT,
+                plan=settings.DJSTRIPE_PLANS.get(
+                    self.customer.current_subscription.plan, {}),
+                protocol=settings.DEFAULT_HTTP_PROTOCOL
+            )
+
+            if context['include_vat']:
+                net = self.amount / (100 + settings.COMPANY_INVOICE_VAT) * 100
+                vat_value = self.amount - net
+                context.update(dict(
+                    vat=settings.COMPANY_INVOICE_VAT,
+                    vat_value=vat_value
+                ))
+
+            return context
+
+        Charge._get_template_context = _get_template_context

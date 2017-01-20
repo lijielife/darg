@@ -37,7 +37,7 @@
     .mobile50{ width:150px!important; padding: 0 !important; }
     .center{ margin:0 auto !important; text-align:center !important; }
     .img{ width:100% !important; height:auto; }
-    .header{ width:320px; padding: 0 !important; background-image: url(http://placehold.it/320x400) !important; }
+    .header{ width:320px; padding: 0 !important; background-image: url(https://placehold.it/320x400) !important; }
     *[class="mobileOff"] { width: 0px !important; display: none !important; }
     *[class*="mobileOn"] { display: block !important; max-height:none !important; }
     }
@@ -46,14 +46,14 @@
 <body style="margin:0; padding:0; background-color:#FFF;">
 
   <!--[if !mso]><!-- -->
-  <img style="min-width:640px; display:block; margin:0; padding:0" class="mobileOff" width="640" height="1" src="https://{{ domain }}{% static "compiled/images/spacer.gif" %}">
+  <img style="min-width:640px; display:block; margin:0; padding:0" class="mobileOff" width="640" height="1" src="{{ protocol }}://{{ site.domain }}{% static "compiled/images/spacer.gif" %}">
   <!--<![endif]-->
 
   <center>
     <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#FFF" style="margin: 2rem 0;">
       <tr>
         <td align="center" valign="top">
-          <img width="" height="" style="margin:0; padding:0; border:none; display:block;" border="0" class="imgClass" alt="Brand" src="https://{{ domain }}{% static "compiled/images/dasaktienregister.png" %}" />
+          <img width="" height="" style="margin:0; padding:0; border:none; display:block;" border="0" class="imgClass" alt="Brand" src="{{ protocol }}://{{ site.domain }}{% static "compiled/images/dasaktienregister.png" %}" />
           <h3 style="color:#777;font-size:18px;font-weight:300;margin-bottom:36px;">
             Das Aktienregister
           </h3>

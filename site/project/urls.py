@@ -122,7 +122,7 @@ urlpatterns = [
     url(r'^statements/$',
         'shareholder.views.statement_list',
         name='statements'),
-    url(r'^statements/(?P<pk>\d+)/download/pdf/$',
+    url(r'^statements/download/pdf/$',
         'shareholder.views.statement_download_pdf',
         name='statement_download_pdf'),
     url(r'^statements/reports/$',

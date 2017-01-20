@@ -1,0 +1,78 @@
+@page {
+  size: a4 portrait;  /* 210mm x 297mm */
+  @frame header_frame {
+    -pdf-frame-content: header_content;
+    left: 6mm; width: 198mm; top: 6mm; height: 30mm;
+  }
+  @frame footer_frame {
+    -pdf-frame-content: footer_content;
+    left: 10mm; width: 190mm; top: 275mm; height: 15mm;
+  }
+  @frame content_frame {
+    left: 10mm; width: 190mm; top: 40mm; height: 235mm;
+  }
+}
+
+@font-face {
+  font-family: 'Muli';
+  src: url(/static/compiled/fonts/Muli-Regular.ttf);
+}
+@font-face {
+  font-family: 'Muli-Light';
+  src: url(/static/compiled/fonts/Muli-Light.ttf);
+}
+
+.break {page-break-before: always;}
+table {page-break-inside: avoid;}
+.pull-right {text-align: right;}
+.center {text-align: center;}
+
+#header_content table {
+  width: 100%; height: 75pt;
+  padding-top: 15pt;
+  background: #337ab7; color: #fff;
+}
+#header_content h1 {margin: 0 0 0 10mm; font-weight: normal;}
+#header_content h3 {margin: 0 10mm 0 0; font-family: 'Muli-Light'; font-weight: normal;}
+
+#footer_content {color: #777; font-size: 16px; line-height: 18px;}
+#footer_content table {width: 100%;}
+#footer_content table td {width: 50%; height: 24px;}
+#footer_content table td .center {display: inline-block;}
+
+h1 {font-size: 24px;}
+h3 {font-size: 16px;}
+body {
+  font-family: 'Muli';
+  font-size: 16px; line-height: 18px;
+}
+
+.address {
+  padding-top: 12mm;
+}
+.address table {
+  width: 100%;
+}
+.address td {
+  vertical-align: top;
+}
+.address .user, .address .company {
+  padding-left: 10mm;
+}
+
+.content h1 {font-size: 24px; color: #337ab7;}
+
+.content table {
+  /*border: 1px solid #ccc;*/
+  border-spacing: 0;
+}
+.content table .head td {
+  line-height: 14px;
+  background-color: #337ab7;
+  color: #FFF;
+  font-weight: bold;
+  padding: 5px 10px;
+}
+.content table .row td {font-size: 14px; line-height: 16px; color: #777; padding: 5px 10px;}
+/*.content table .row td.pull-right {text-align: right;}*/
+.content table .even td {background-color: #f9f9f9;}

@@ -4,6 +4,7 @@ import cStringIO as StringIO
 from xhtml2pdf import pisa
 
 from django.conf import settings
+from django.contrib.staticfiles import finders
 from django.template.loader import get_template
 from django.template import Context
 from django.http import HttpResponse
@@ -12,11 +13,15 @@ from cgi import escape
 
 def fetch_resources(uri, rel):
     if uri.startswith(settings.MEDIA_URL):
-        path = os.path.join(settings.MEDIA_ROOT,
-                            uri.replace(settings.MEDIA_URL, ""))
+        filepath = uri.split(settings.MEDIA_URL, 1)[1]
+        path = os.path.join(settings.MEDIA_ROOT, filepath)
     elif uri.startswith(settings.STATIC_URL):
-        path = os.path.join(settings.STATIC_ROOT,
-                            uri.replace(settings.STATIC_URL, ""))
+        filepath = uri.split(settings.STATIC_URL, 1)[1]
+        try:
+            path = finders.find(filepath)
+        except:
+            # maybe we get lucky
+            path = os.path.join(settings.STATIC_ROOT, filepath)
     else:
         # pass
         path = uri

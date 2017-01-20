@@ -1,29 +1,35 @@
 {% extends 'email/base.txt' %}
 
-{# TODO: i18n #}
+{% load i18n %}
 
 {% block content %}
-{% if charge.paid %}Your {{ site.name }} account was successfully charged ${{ charge.amount|floatformat:2 }} to the credit card ending in {{ charge.card_last_4 }}. The invoice below is for your records.
-
+{% if charge.paid %}{% blocktrans with site.name as site_name and charge.amount|floatformat:2 as amount and charge.card_last_4 as card and plan.currency|upper as currency %}
+Your {{ site_name }} account was successfully charged {{ currency }}{{ amount }} to the credit card ending in {{ card }}. The invoice below is for your records.{% endblocktrans %}
 
 ========================================================
-INVOICE #{{ charge.pk }}     {{ charge.created_at|date:"F d, Y" }}
+
+{% trans "INVOICE" %} #darg-{{ charge.pk }}     {{ charge.created_at|date:"DATE_FORMAT" }}
 ........................................................
 
+{% trans "CUSTOMER" %}: {{ charge.customer.subscriber }}
 
-CUSTOMER: {% block customer_name %}{{ charge.customer.subscriber }}{% endblock %}
 
-
-DETAILS
+{% trans "DETAILS" %}
 -------
-{{ charge.customer.current_subscription.plan_display }} - ${{ charge.amount|floatformat:2 }}
+{% for item in invoice_items %}
+{% if item.quantity > 1 %}{{ item.quantity }} x {% endif %}{% ifequal item.line_type 'subscription' %}{% trans "Subscription" %} {{ charge.customer.current_subscription.plan_display }}{% else %}{{ item.description }}{% endifequal %} - {{ item.currency|upper }}{{ item.amount|floatformat:2 }}
+{% empty %}{{ charge.customer.current_subscription.plan_display }} - {{ plan.currency|upper }}{{ charge.amount|floatformat:2 }}{% endfor %}
+-------
 
-TOTAL: ${{ charge.amount|floatformat:2 }} USD
-PAID BY CREDIT CARD: -${{ charge.amount|floatformat:2 }}
+{% if include_vat %}{% trans "incl. VAT" %} {{ vat }}% - {{ plan.currency|upper }}{{ vat_value|floatformat:2 }}{% endif %}
+
+{% trans "TOTAL" %}:                {{ plan.currency|upper }}{{ charge.amount|floatformat:2 }}
+{% trans "PAID BY CREDIT CARD" %}: -{{ plan.currency|upper }}{{ charge.amount|floatformat:2 }}
+
 ========================================================
-{% else %}{% if charge.refunded %}Your credit card ending in {{ charge.card_last_4 }} was refunded ${{ charge.amount|floatformat:2 }}.
-{% else %}We are sorry, but we failed to charge your credit card ending in {{ charge.card_last_4 }} for the amount ${{ charge.amount|floatformat:2 }}.
+{% else %}{% if charge.refunded %}{% blocktrans with charge.card_last_4 as card and charge.amount|floatformat:2 as amount and plan.currency|upper as currency %}Your credit card ending in {{ card }} was refunded {{ currency }}{{ amount }}.{% endblocktrans %}
+{% else %}{% blocktrans with charge.card_last_4 as card and charge.amount|floatformat:2 as amount and plan.currency|upper as currency %}We are sorry, but we failed to charge your credit card ending in {{ card }} for the amount {{ currency }}{{ amount }}.{% endblocktrans %}
 {% endif %}{% endif %}
 
-Please contact us with any questions regarding this invoice.
+{% trans "Please contact us with any questions regarding this invoice." %}
 {% endblock content %}

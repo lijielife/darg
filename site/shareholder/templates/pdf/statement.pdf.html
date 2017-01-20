@@ -4,84 +4,9 @@
   <head>
     <meta charset="utf-8">
     <title>{{ user_name }} - {{ company.name }} ({{ report_date|date:"DATE_FORMAT" }})</title>
+    <link rel="stylesheet" href="{{ STATIC_URL }}compiled/stylesheets/pdf/main.css">
     <style>
-
-      @page {
-        size: a4 portrait;  /* 210mm x 297mm */
-        @frame header_frame {
-          -pdf-frame-content: header_content;
-          left: 6mm; width: 198mm; top: 6mm; height: 30mm;
-        }
-        @frame footer_frame {
-            -pdf-frame-content: footer_content;
-            left: 10mm; width: 190mm; top: 275mm; height: 15mm;
-        }
-        @frame content_frame {
-          left: 10mm; width: 190mm; top: 40mm; height: 235mm;
-        }
-      }
-
-      @font-face {
-        font-family: 'Muli';
-        src: url({{ STATIC_URL }}compiled/fonts/Muli-Regular.ttf);
-      }
-      @font-face {
-        font-family: 'Muli-Light';
-        src: url({{ STATIC_URL }}compiled/fonts/Muli-Light.ttf);
-      }
-
-      .break {page-break-before: always;}
-      table {page-break-inside: avoid;}
-      .pull-right {text-align: right;}
-      .center {text-align: center;}
-
-      #header_content table {
-        width: 100%; height: 75pt;
-        padding-top: 15pt;
-        background: #337ab7; color: #fff;
-      }
-      #header_content h1 {margin: 0 0 0 10mm; font-weight: normal;}
-      #header_content h3 {margin: 0 10mm 0 0; font-family: 'Muli-Light'; font-weight: normal;}
-
-      #footer_content {color: #777; font-size: 16px; line-height: 18px;}
-      #footer_content table {width: 100%;}
-      #footer_content table td {width: 50%; height: 24px;}
-      #footer_content table td .center {display: inline-block;}
-
-      h1 {font-size: 24px;}
-      h3 {font-size: 16px;}
-      body {
-        font-family: 'Muli';
-        font-size: 16px; line-height: 18px;
-      }
-
-      .address {
-        padding-top: 12mm;
-      }
-      .address table {
-        width: 100%;
-      }
-      .address td {
-        vertical-align: top;
-      }
-      .address .user, .address .company {
-        padding-left: 10mm;
-      }
-
-      .shareholder h1 {font-size: 24px; color: #337ab7;}
       .shareholder .indent {display: block; margin-left: 40px;}
-      .shareholder table {border: 1px solid #ccc; border-spacing: 0;}
-      .shareholder table .head td {
-        line-height: 14px;
-        background-color: #337ab7;
-        color: #FFF;
-        font-weight: bold;
-        padding: 5px 10px;
-      }
-      .shareholder table .row td {font-size: 14px; line-height: 16px; color: #777; padding: 5px 10px;}
-      .shareholder table .row td.pull-right {text-align: right;}
-      .shareholder table tr.row.even {background-color: #f9f9f9;}
-
     </style>
     <style media="screen">
       .break {border-bottom: 1px solid #777;}
@@ -157,7 +82,7 @@
         </table>
       </div>
 
-      <div class="shareholder">
+      <div class="shareholder content">
         <h1>
           {% trans "Depot statement for" %} {{ shareholder.user_name }} ({{ shareholder.number }})
         </h1>
@@ -206,10 +131,18 @@
             </tr>
             {% for asset in asset_list %}
               <tr class="row {% cycle 'odd' 'even' %}">
-                <td>{{ asset.name }}</td>
-                <td>{{ asset.date }}</td>
-                <td class="pull-right">{{ asset.count }}</td>
-                <td class="pull-right">{{ asset.value|floatformat:2 }}</td>
+                <td>
+                  {% if asset.name %}{{ asset.name }}{% else %}&nbsp;{% endif %}
+                </td>
+                <td>
+                  {% if asset.date %}{{ asset.date }}{% else %}&nbsp;{% endif %}
+                </td>
+                <td class="pull-right">
+                  {% if asset.count %}{{ asset.count }}{% else %}&nbsp;{% endif %}
+                </td>
+                <td class="pull-right">
+                  {% if asset.value %}{{ asset.value|floatformat:2 }}{% else %}&nbsp;{% endif %}
+                </td>
               </tr>
             {% endfor %}
           </table>
@@ -227,10 +160,18 @@
             </tr>
             {% for option in option_list %}
               <tr class="row {% cycle 'odd' 'even' %}">
-                <td>{{ option.name }}</td>
-                <td>{{ report_date|date:"DATE_FORMAT" }}</td>
-                <td class="pull-right">{{ option.count }}</td>
-                <td class="pull-right">{{ option.value|floatformat:2 }}</td>
+                <td>
+                  {% if option.name %}{{ option.name }}{% else %}&nbsp;{% endif %}
+                </td>
+                <td>
+                  {% if report_date %}{{ report_date|date:"DATE_FORMAT" }}{% else %}&nbsp;{% endif %}
+                </td>
+                <td class="pull-right">
+                  {% if option.count %}{{ option.count }}{% else %}&nbsp;{% endif %}
+                </td>
+                <td class="pull-right">
+                  {% if option.value %}{{ option.value|floatformat:2 }}{% else %}&nbsp;{% endif %}
+                </td>
               </tr>
             {% endfor %}
           </table>
@@ -299,10 +240,18 @@ holdings currently value: {{share_value}} in shares and {{options_value}} in opt
             </tr>
             {% for asset in asset_list %}
               <tr class="row {% cycle 'odd' 'even' %}">
-                <td>{{ asset.name }}</td>
-                <td>{{ report_date|date:"DATE_FORMAT" }}</td>
-                <td class="pull-right">{{ asset.count }}</td>
-                <td class="pull-right">{{ asset.value|floatformat:2 }}</td>
+                <td>
+                  {% if asset.name %}{{ asset.name }}{% else %}&nsp;{% endif %}
+                </td>
+                <td>
+                  {% if report_date %}{{ report_date|date:"DATE_FORMAT" }}{% else %}&nsp;{% endif %}
+                </td>
+                <td class="pull-right">
+                  {% if asset.count %}{{ asset.count }}{% else %}&nbsp;{% endif %}
+                </td>
+                <td class="pull-right">
+                  {% if asset.value %}{{ asset.value|floatformat:2 }}{% else %}&nbsp;{% endif %}
+                </td>
               </tr>
             {% endfor %}
           </table>
@@ -319,10 +268,18 @@ holdings currently value: {{share_value}} in shares and {{options_value}} in opt
             </tr>
             {% for option in option_list %}
               <tr class="row {% cycle 'odd' 'even' %}">
-                <td>{{ option.name }}</td>
-                <td>{{ report_date|date:"DATE_FORMAT" }}</td>
-                <td class="pull-right">{{ option.count }}</td>
-                <td class="pull-right">{{ option.value|floatformat:2 }}</td>
+                <td>
+                  {% if option.name %}{{ option.name }}{% else %}&nbsp;{% endif %}
+                </td>
+                <td>
+                  {% if report_date %}{{ report_date|date:"DATE_FORMAT" }}{% else %}&nbsp;{% endif %}
+                </td>
+                <td class="pull-right">
+                  {% if option.count %}{{ option.count }}{% else %}&nbsp;{% endif %}
+                </td>
+                <td class="pull-right">
+                  {% if option.value %}{{ option.value|floatformat:2 }}{% else %}&nbsp;{% endif %}
+                </td>
               </tr>
             {% endfor %}
           </table>
