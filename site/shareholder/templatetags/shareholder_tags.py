@@ -1,4 +1,6 @@
 
+from decimal import Decimal
+
 from django import template
 from django.conf import settings
 from django.utils.timezone import now
@@ -73,9 +75,13 @@ def get_options_percent(shareholder, date=None):
 
 
 @register.assignment_tag
-def get_plan_price_per_shareholder(plan):
-    plan_config = settings.PLAN_FEATURE_CONFIG.get(plan.get('plan'), {})
-    return plan_config.get('shareholder_price')
+def get_plan_price_per_shareholder(plan_data):
+    plan = settings.DJSTRIPE_PLANS.get(plan_data.get('plan'))
+    if not plan:
+        return
+
+    shareholder_feature = plan.get('features', {}).get('shareholders', {})
+    return shareholder_feature.get('price')
 
 
 @register.assignment_tag
@@ -107,39 +113,47 @@ def get_plan_features(plan_name):
     dictionary with 'core' and 'features' keys
     """
     features = dict(core=[], features=[])
-    plan_features = settings.PLAN_FEATURES.get(plan_name, [])
-    plan_features_config = settings.PLAN_FEATURE_CONFIG.get(plan_name, {})
+    plan = settings.DJSTRIPE_PLANS.get(plan_name)
+    if not plan:
+        return features
+
+    plan_features = plan.get('features')
     annotations = 0
-    for name in settings.ORDERED_FEATURES:
-        feature = settings.SUBSCRIPTION_FEATURES.get(name)
-        if feature.get('core'):
+    for name in settings.SUBSCRIPTION_FEATURES.keys():
+        subscription_feature = settings.SUBSCRIPTION_FEATURES.get(name, {})
+        plan_feature = plan_features.get(name, {})
+        if subscription_feature.get('core'):
             key = 'core'
-            config = plan_features_config.get(name, {})
-            if name is 'security_count':
-                if config:
-                    title = u'{} {}'.format(
-                        config,
-                        config == 1 and _('Security') or _('Securities')
+            if name == 'securities':
+                title = u''
+                security_count = plan_feature.get('count')
+                security_price = plan_feature.get('price')
+                if security_count:
+                    label = (security_count == 1 and _('Security')
+                             or _('Securities'))
+                    title += u'{} {}'.format(security_count, label)
+                if security_price:  # NOTE: we assuming a valid number
+                    if title:
+                        title += '\n'
+                    title += _(
+                        'More securities: CHF +{amount:.2f} / M.').format(
+                            **dict(amount=security_price / 100)
                     )
-                elif 'security_price' in plan_features_config.keys():
-                    security_price = plan_features_config.get('security_price')
-                    title = _('More securities: CHF +{amount} / M.').format(
-                        **dict(amount=security_price / 100)
-                    )
-                else:
-                    title = feature['title']
-                feature['title'] = title
+                if not security_count and not security_price:
+                    title = subscription_feature['title']
+                subscription_feature['title'] = title
             else:
-                feature['highlight'] = config or _('Unlimited')
+                subscription_feature['highlight'] = (
+                    plan_feature.get('count') or _('Unlimited'))
         else:
             key = 'features'
-        if feature.get('annotation'):
+        if subscription_feature.get('annotation'):
             annotations += 1
-            feature['annotation_marker'] = '*' * annotations
+            subscription_feature['annotation_marker'] = '*' * annotations
 
-        feature['exclude'] = name not in plan_features
+        subscription_feature['exclude'] = name not in plan_features
 
-        features[key].append(feature)
+        features[key].append(subscription_feature)
 
     return features
 

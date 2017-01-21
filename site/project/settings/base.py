@@ -436,7 +436,24 @@ DJSTRIPE_PLANS = collections.OrderedDict((
         'description': _(u'Designed für StartUps und Neugründungen'),
         'price': 0,
         'currency': 'chf',
-        'interval': 'month'
+        'interval': 'month',
+        'features': {
+            'shareholders': {
+                'count': 20
+            },
+            'positions': {},
+            'options': {},
+            'securities': {
+                'count': 1
+            },
+            'shares': {},
+            'gafi': {},
+            'revision': {}
+        },
+        'validators': [
+            'company.validators.features.ShareholderCountValidator',
+            'company.validators.features.SecurityCountValidator'
+        ]
     }),
     ('professional', {
         'stripe_plan_id': 'professional',
@@ -444,7 +461,24 @@ DJSTRIPE_PLANS = collections.OrderedDict((
         'description': _(u'Für etablierte Aktiengesellschaften und KMU'),
         'price': 1799,  # 17.99
         'currency': 'chf',
-        'interval': 'month'
+        'interval': 'month',
+        'features': {
+            'shareholders': {
+                'price': 49  # 0.49
+            },
+            'positions': {},
+            'options': {},
+            'securities': {
+                'price': 1500  # 15.00 CHF per month
+            },
+            'shares': {},
+            'gafi': {},
+            'revision': {},
+            'shareholder_statements': {},
+            'numbered_shares': {},
+            'email_support': {}
+        },
+        'validators': []
     }),
     ('enterprise', {
         'stripe_plan_id': 'enterprise',
@@ -453,7 +487,27 @@ DJSTRIPE_PLANS = collections.OrderedDict((
             u'First-Class-Service für grosse Aktionärsgesellschaften'),
         'price': 17900,  # 179.00
         'currency': 'chf',
-        'interval': 'month'
+        'interval': 'month',
+        'features': {
+            'shareholdes': {
+                'price': 9  # 0.09
+            },
+            'positions': {},
+            'options': {},
+            'securities': {
+                'price': 1500  # 15.00 CHF per month
+            },
+            'shares': {},
+            'gafi': {},
+            'revision': {},
+            'shareholder_statements': {},
+            'numbered_shares': {},
+            'email_support': {},
+            'shareholder_admin_pro': {},
+            'premium_support': {},
+            'custom_export_import': {}
+        },
+        'validators': []
     })
 ))
 
@@ -461,106 +515,28 @@ from utils.subscriptions import stripe_subscriber_request_callback  # noqa
 DJSTRIPE_SUBSCRIBER_MODEL_REQUEST_CALLBACK = stripe_subscriber_request_callback
 
 # all available subscription features
-ORDERED_FEATURES = [
-    'shareholder_count',
-    'position_count',
-    'option_count',
-    'security_count',
-    'shares',
-    'gafi',
-    'revision',
-    'shareholder_statements',
-    'numbered_shares',
-    'email_support',
-    'shareholder_admin_pro',
-    'premium_support',
-    'custom_export_import'
-]
-SUBSCRIPTION_FEATURES = {
-    'shareholder_count': {'title': _('Shareholders'), 'core': True},
-    'position_count': {'title': _('Positions'), 'core': True},
-    'option_count': {'title': _('Options'), 'core': True},
-    'security_count': {'title': _('Securities'), 'core': True},
-    'shares': {
+SUBSCRIPTION_FEATURES = collections.OrderedDict((
+    ('shareholders', {'title': _('Shareholders'), 'core': True}),
+    ('positions', {'title': _('Positions'), 'core': True}),
+    ('options', {'title': _('Options'), 'core': True}),
+    ('securities', {'title': _('Securities'), 'core': True}),
+    ('shares', {
         'title': _(u'Aktienausgabe, Aktienkauf, -verkauf, '
                    u'Kapitalerhöhung, Aktiensplit')
-    },
-    'gafi': {'title': _('GAFI Validierung')},
-    'revision': {'title': _('Revisionssicherheit')},
-    'shareholder_statements': {
+    }),
+    ('gafi', {'title': _('GAFI Validierung')}),
+    ('revision', {'title': _('Revisionssicherheit')}),
+    ('shareholder_statements', {
         'title': _('Depotauszug Email & Brief'),
         'annotation': _('Es entstehen weitere Kosten bei Briefversand '
                         'pro versendetem Brief.')
-    },
-    'numbered_shares': {'title': _('Nummerierte Aktien')},
-    'email_support': {'title': _('Email Support')},
-    'shareholder_admin_pro': {'title': _(u'Profi-Verwaltung Aktionäre')},
-    'premium_support': {'title': _('Premium-Support 24/7')},
-    'custom_export_import': {'title': _('Custom Export/Import')}
-}
-# features per plan
-PLAN_FEATURES = {
-    'startup': [
-        'shareholder_count',
-        'position_count',
-        'option_count',
-        'security_count',
-        'shares',
-        'gafi',
-        'revision'
-    ],
-    'professional': [
-        'shareholder_count',
-        'position_count',
-        'option_count',
-        'security_count',
-        'shares',
-        'gafi',
-        'revision',
-        'shareholder_statements',
-        'numbered_shares',
-        'email_support'
-    ],
-    'enterprise': [
-        'shareholder_count',
-        'position_count',
-        'option_count',
-        'security_count',
-        'shares',
-        'gafi',
-        'revision',
-        'shareholder_statements',
-        'numbered_shares',
-        'email_support',
-        'shareholder_admin_pro',
-        'premium_support',
-        'custom_export_import'
-    ]
-}
-PLAN_FEATURE_CONFIG = {
-    'startup': {
-        'shareholder_count': 20,
-        'shareholder_price': 0,
-        'security_count': 1
-    },
-    'professional': {
-        'shareholder_price': 49,  # 0.49,
-        'security_price': 1500  # 15.00 CHF per month
-    },
-    'enterprise': {
-        'shareholder_price': 9,  # 0.09
-        'security_price': 1500  # 15.00 CHF per month
-    }
-}
-# validators for features (downgrade check)
-PLAN_VALIDATORS = {
-    'startup': [
-        'company.validators.features.ShareholderCountValidator',
-        'company.validators.features.SecurityCountValidator'
-    ],
-    'professional': [],
-    'enterprise': []
-}
+    }),
+    ('numbered_shares', {'title': _('Nummerierte Aktien')}),
+    ('email_support', {'title': _('Email Support')}),
+    ('shareholder_admin_pro', {'title': _(u'Profi-Verwaltung Aktionäre')}),
+    ('premium_support', {'title': _('Premium-Support 24/7')}),
+    ('custom_export_import', {'title': _('Custom Export/Import')})
+))
 
 DEFAULT_HTTP_PROTOCOL = 'https'  # used by djstripe when sending emails
 

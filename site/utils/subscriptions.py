@@ -17,7 +17,7 @@ def stripe_subscriber_request_callback(request):
     return subscriber_model.objects.filter(pk=pk).first()
 
 
-def stripe_company_shareholder_invoice_item(customer, plan, invoice=None):
+def stripe_company_shareholder_invoice_item(customer, plan_name, invoice=None):
     """
     create an invoice item for all active company shareholders (if in settings)
     """
@@ -34,9 +34,10 @@ def stripe_company_shareholder_invoice_item(customer, plan, invoice=None):
                 count += 1
         return count
 
-    plan_config = settings.PLAN_FEATURE_CONFIG.get(plan, {})
-    price_per_shareholder = plan_config.get('shareholder_price')
-    if price_per_shareholder:
+    plan = settings.DJSTRIPE_PLANS.get(plan_name, {})
+    shareholder_feature = plan.get('features', {}).get('shareholders')
+    price_per_shareholder = shareholder_feature.get('price')
+    if price_per_shareholder:  # NOTE: we assuming a valid number
         # add per shareholder fees as InvoiceItems for customer
         shareholder_count = _get_company_shareholder_count(customer.subscriber)
         if not shareholder_count:
@@ -54,16 +55,17 @@ def stripe_company_shareholder_invoice_item(customer, plan, invoice=None):
         )
 
 
-def stripe_company_security_invoice_item(customer, plan, invoice=None):
+def stripe_company_security_invoice_item(customer, plan_name, invoice=None):
     """
     create an invoice item for extra company securities (if in settings)
     """
     from django.conf import settings
 
-    plan_config = settings.PLAN_FEATURE_CONFIG.get(plan)
-    price_per_security = plan_config.get('security_price')
+    plan = settings.DJSTRIPE_PLANS.get(plan_name, {})
+    security_feature = plan.get('features', {}).get('securities')
+    price_per_security = security_feature.get('price')
     security_count = customer.subscriber.security_set.count()
-    billable_securities = security_count - 1  # one is always free
+    billable_securities = security_count - 1  # one is always free (setting?)
     if price_per_security and max(0, billable_securities):
         stripe.api_key = settings.STRIPE_SECRET_KEY
         stripe.InvoiceItem.create(

@@ -343,8 +343,8 @@ class Company(AddressModelMixin, models.Model):
         if not customer.has_active_subscription():
             return False
 
-        feature_list = settings.PLAN_FEATURES.get(
-            self.get_current_subscription_plan(), [])
+        feature_list = settings.DJSTRIPE_PLANS.get(
+            self.get_current_subscription_plan(), {}).get('features', [])
 
         return feature_name.lower() in feature_list
 
@@ -373,7 +373,8 @@ class Company(AddressModelMixin, models.Model):
         run all validators for company to check if given plan can be subscribed
         if `include_errors` is True, a tuple is returned (bool, error_list)
         """
-        validators = settings.PLAN_VALIDATORS.get(plan_name, [])
+        plan = settings.DJSTRIPE_PLANS.get(plan_name, {})
+        validators = plan.get('validators', [])
         errors = []
         for validator in validators:
             validator_class = import_string(validator)

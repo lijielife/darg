@@ -21,12 +21,17 @@ class ShareholderCountValidator(BaseCompanyValidator):
                 ' (max: {max_shareholders})')
     code = 'shareholder_count'
 
-    def __call__(self, plan):
-        plan_config = settings.PLAN_FEATURE_CONFIG.get(plan, {})
-        max_shareholder_count = plan_config.get('shareholder_count')
+    def __call__(self, plan_name):
+        plan = settings.DJSTRIPE_PLANS.get(plan_name)
+        if not plan:
+            raise ValueError(
+                'Could not find a plan named "{}"'.format(plan_name))
+
+        shareholder_feature = plan.get('features', {}).get('shareholders', {})
+        max_shareholder_count = shareholder_feature.get('count')
         shareholder_count = self.company.shareholder_count()
         if (max_shareholder_count
-                and max_shareholder_count < shareholder_count):
+                and shareholder_count > max_shareholder_count):
             error_message = self.message.format(
                 **dict(max_shareholder=max_shareholder_count,
                        count=shareholder_count))
@@ -48,11 +53,16 @@ class SecurityCountValidator(BaseCompanyValidator):
                 ' (max: {max_securities})')
     code = 'security_count'
 
-    def __call__(self, plan):
-        plan_config = settings.PLAN_FEATURE_CONFIG.get(plan, {})
-        max_security_count = plan_config.get('security_count')
+    def __call__(self, plan_name):
+        plan = settings.DJSTRIPE_PLANS.get(plan_name)
+        if not plan:
+            raise ValueError(
+                'Could not find a plan named "{}"'.format(plan_name))
+
+        security_feature = plan.get('features', {}).get('securities', {})
+        max_security_count = security_feature.get('count')
         security_count = self.company.security_set.count()
-        if max_security_count and max_security_count < security_count:
+        if max_security_count and security_count > max_security_count:
             error_message = self.message.format(
                 **dict(max_securities=max_security_count,
                        count=security_count)),
