@@ -36,6 +36,8 @@ SISWARE_CSV_HEADER = [
 
 logger = logging.getLogger(__name__)
 
+COMPANY_SHAREHOLDER_NUMBER = 1913  # RFB AG
+
 
 class BaseImportBackend(object):
     """
@@ -94,8 +96,17 @@ class SisWareImportBackend(BaseImportBackend):
         try:
             self.company_shareholder = self.company.get_company_shareholder()
         except ValueError:
-            self.company_shareholder = Shareholder.objects.create(
-                company=self.company, number=0, user=_make_user())
+            # import based in setting
+            row = self._find_row(column=0, needle=COMPANY_SHAREHOLDER_NUMBER)
+            user = self._get_or_create_user(
+                shareholder_id=row[0], first_name=row[8]+' '+row[9],
+                last_name=row[10], legal_type=row[1], company=row[4],
+                department=row[5], title=row[6], salutation=row[7], street=row[12],
+                street2=row[12], pobox=row[14], postal_code=row[15],
+                city=row[16], country=row[17], language=row[20], birthday=row[19],
+                c_o=row[18], nationality=row[22])
+            self._get_or_create_shareholder(row[0], user,
+                                                          mailing_type=row[21])
 
         # and a matching operator?
         self.operator = self.company.operator_set.first()
@@ -207,6 +218,16 @@ class SisWareImportBackend(BaseImportBackend):
             )
 
         return 1
+
+    def _find_row(self, column, needle):
+        with open(self.filename) as f:
+            reader = csv.reader(f, delimiter=';', dialect=csv.excel)
+            for row in reader:
+                row = [self.to_unicode(field) for field in row]
+                if row == SISWARE_CSV_HEADER:
+                    continue
+                if row[column] == str(needle):
+                    return row
 
     def _finish_import(self):
         """

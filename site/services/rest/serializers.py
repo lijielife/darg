@@ -941,10 +941,14 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
 class OptionHolderSerializer(serializers.HyperlinkedModelSerializer):
     user = UserSerializer(many=False)
     company = CompanySerializer(many=False,  read_only=True)
+    full_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Shareholder
         fields = (
             'pk', 'user', 'number', 'company', 'options_percent',
-            'options_count', 'options_value'
+            'options_count', 'options_value', 'full_name'
         )
+
+    def get_full_name(self, obj):
+        return obj.get_full_name()

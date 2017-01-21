@@ -189,6 +189,9 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
                                  shareholder.number)
                 self.assertEqual(row.find_element_by_class_name('share').text,
                                  u'6 (200,0%)')
+                self.assertEqual(
+                    row.find_element_by_class_name('full-name').text,
+                    shareholder.get_full_name())
 
         except Exception, e:
             self._handle_exception(e)

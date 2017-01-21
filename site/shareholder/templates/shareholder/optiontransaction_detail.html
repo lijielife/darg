@@ -25,13 +25,13 @@
     <tr class="buyer">
       <td>{% trans "Buyer" %}:</td>
       <td>
-        {% verbatim %}{{ optiontransaction.buyer.full_name }} {% endverbatim %}
+       {% verbatim %}<a href="/shareholder/{{optiontransaction.buyer.pk}}/" >{{ optiontransaction.buyer.full_name }}</a>{% endverbatim %}
       </td>
     </tr>
     <tr class="seller">
       <td>{% trans "Seller" %}:</td>
       <td>
-        {% verbatim %}{{ optiontransaction.seller.full_name }} {% endverbatim %}
+        {% verbatim %}<a href="/shareholder/{{optiontransaction.seller.pk}}/" >{{ optiontransaction.seller.full_name }}</a>{% endverbatim %}
       </td>
     </tr>
     <tr class="certificate-id" ng-show="optiontransaction.certificate_id">
@@ -58,10 +58,10 @@
         {% verbatim %}{{ optiontransaction.count }} {% endverbatim %}
       </td>
     </tr>
-    <tr class="option_plan">
+    <tr class="option-plan">
       <td>{% trans "Option Plan" %}:</td>
       <td>
-        {% verbatim %}{{ optiontransaction.option_plan.title }} {% endverbatim %}
+        {% verbatim %}<a href="/optionsplan/{{optiontransaction.option_plan.pk}}/">{{ optiontransaction.option_plan.title }}</a>{% endverbatim %}
       </td>
     </tr>
     <tr class="vesting-months" ng-show="optiontransaction.vesting_months">

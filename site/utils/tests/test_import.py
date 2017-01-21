@@ -76,6 +76,7 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
                          OptionTransaction.objects.filter(
                             option_plan__company=self.company).count()
                          )
+        self.assertEqual(self.company_shareholder.number, u'1913')
 
         # legal_type import cross check
         content = '\n'.join(self.backend.file_content)
@@ -105,7 +106,7 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
         # maling_type
         self.assertEqual(
             self.company.shareholder_set.filter(
-                mailing_type__isnull=True).exists(), 1)  # corp sh
+                mailing_type__isnull=True).exists(), False)
         self.assertEqual(
             self.company.shareholder_set.filter(mailing_type='0').count(), 1)
 
