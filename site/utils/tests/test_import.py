@@ -5,12 +5,13 @@ import logging
 
 from dateutil.parser import parse
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.core.management import call_command
 from django.test import TestCase
 
 from project.generators import CompanyGenerator
 from shareholder.models import OptionTransaction, Position, Shareholder
-from utils.import_backends import SisWareImportBackend
+from utils.import_backends import SisWareImportBackend, SECURITIES
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +31,9 @@ class ImportTestCaseMixin(object):
         """
         # trigger fully featured share register validation,
         # raises ValidationError
-        self.company.full_validate()
+        self.company.refresh_from_db()  # always use latest data
+        with self.assertRaises(ValidationError):
+            self.company.full_validate()
 
 
 class CommandTestCase(ImportTestCaseMixin, TestCase):
@@ -54,6 +57,7 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
         self.assertIn(u'Natürliche', res)
 
     def test_import_repeated(self):
+
         self.backend.import_from_file(str(self.company.pk))
         self.assertImport()
 
@@ -122,11 +126,11 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
         # options
         self.assertEqual(
             Position.objects.filter(depot_type__isnull=True).count(), 0)
-        self.assertEqual(Position.objects.filter(depot_type='1').count(), 0)
+        self.assertEqual(Position.objects.filter(depot_type='1').count(), 3)
         self.assertEqual(Position.objects.filter(depot_type='2').count(), 1)
         self.assertEqual(Position.objects.filter(depot_type='0').count(), 11)
         self.assertEqual(
-            Position.objects.filter(stock_book_id__isnull=True).count(), 0)
+            Position.objects.filter(stock_book_id__isnull=True).count(), 3)
 
         # positions
         self.assertEqual(
@@ -141,6 +145,13 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
             stock_book_id__isnull=True).count(), 0)
         self.assertEqual(OptionTransaction.objects.filter(
             certificate_id__isnull=True).count(), 0)
+
+        # share counts
+        self.assertEqual(self.company.share_count, 18439)
+        for sec in self.company.security_set.all():
+            self.assertEqual(
+                sec.count,
+                SECURITIES[str(sec.face_value).split('.')[0]])
 
     def test_get_or_create_user(self):
         self.backend.company = CompanyGenerator().generate()
@@ -192,8 +203,7 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
 
     def test__init_import(self):
 
-        company = CompanyGenerator().generate()
-        self.backend._init_import(company.pk)
-        self.assertEqual(company.security_set.count(), 0)
-        self.assertEqual(company.shareholder_set.count(), 1)
-        self.assertEqual(company.operator_set.count(), 1)
+        self.backend._init_import(self.company.pk)
+        self.assertEqual(self.company.security_set.count(), 3)
+        self.assertEqual(self.company.shareholder_set.count(), 1)
+        self.assertEqual(self.company.operator_set.count(), 1)

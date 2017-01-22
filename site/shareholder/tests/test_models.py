@@ -687,3 +687,17 @@ class SecurityTestCase(TestCase):
         segments = [1, 3, 4, 5, u'99-1000']
         count = security.count_in_segments(segments)
         self.assertEqual(count, 906)
+
+    def test_calculate_count(self):
+        """
+        how many shares are existing based on positions
+        """
+        company = CompanyGenerator().generate()
+        security = SecurityGenerator().generate(company=company)
+        # 1 cap increase and one sale position
+        p1 = PositionGenerator().generate(company=company, seller=None,
+                                          security=security, count=10)
+        PositionGenerator().generate(company=company, count=2,
+                                     security=security, seller=p1.buyer)
+
+        self.assertEqual(security.calculate_count(), 10)
