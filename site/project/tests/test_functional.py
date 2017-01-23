@@ -129,7 +129,7 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
                     u'//div[@class="table"]/div[contains(@class, "tr")][last()]'
                     u'/div[contains(@class, "td")][last()]'
                 ).text,
-                "{} ({})".format(share_count, share_count)
+                "{}".format(share_count)
             )
         except Exception, e:
             self._handle_exception(e)
