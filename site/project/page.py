@@ -361,7 +361,7 @@ class StartPage(BasePage):
         tds = self.driver.find_elements_by_xpath(
             '//div[contains(@class, "totals")]/div[contains(@class, "td")]')
         td = tds[-1]
-        return int(td.text.split('(')[1][:-1].rstrip())
+        return int(td.text)
 
     # --- CHECKS
     def has_shareholder_count(self):
