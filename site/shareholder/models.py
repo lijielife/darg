@@ -226,7 +226,7 @@ class Company(models.Model):
         for security in self.security_set.all():
             votes += security.face_value * security.count / self.vote_ratio
 
-        return votes
+        return int(votes)
 
     def get_logo_url(self):
         """ return url for logo """

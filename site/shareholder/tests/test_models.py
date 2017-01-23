@@ -69,6 +69,22 @@ class CompanyTestCase(TestCase):
         self.assertEqual(company.get_all_option_plan_segments(),
                          [2222, u'3000-4011', u'1000-2000'])
 
+    def test_get_total_votes(self):
+        self.company = CompanyGenerator().generate(share_count=10, vote_ratio=2)
+        self.security = SecurityGenerator().generate(count=10, face_value=100,
+                                                     company=self.company)
+
+        self.shareholder1 = ShareholderGenerator().generate(
+            company=self.company)
+        self.shareholder2 = ShareholderGenerator().generate(
+            company=self.company)
+        PositionGenerator().generate(seller=None, buyer=self.shareholder1,
+                                     security=self.security, count=10)
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=self.shareholder2,
+                                     security=self.security, count=2)
+
+        self.assertEqual(self.company.get_total_votes(), 10*100/2)
 
 class CountryTestCase(TestCase):
 
