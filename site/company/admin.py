@@ -3,15 +3,39 @@
 
 # from django.conf import settings
 # from django.conf.urls import url
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.core.management import call_command
 # from django.http import Http404
 # from django.shortcuts import render_to_response
 # from django.template import RequestContext
+from django.utils.translation import ugettext_lazy as _
 
 from djstripe.admin import Charge, send_charge_receipt
 
 
 class ChargeAdmin(admin.ModelAdmin):
+
+    def generate_pdf(self, request, queryset, forced=False):
+        """
+        generate PDF for invoice/charge (calling management command)
+        """
+        pks = queryset.values_list('pk', flat=True)
+        call_command('generate_invoice_pdf', ' '.join([str(pk) for pk in pks]),
+                     force=forced)
+        message = _('Called management command "generate_invoice_pdf" for '
+                    '{} object(s)').format(queryset.count())
+        messages.info(request, message)
+
+    generate_pdf.short_description = _('Generate PDF')
+
+    def generate_pdf_forced(self, request, queryset):
+        """
+        force (re)generation of invoice/charge PDF (calling management command)
+        """
+        self.generate_pdf(request, queryset, forced=True)
+
+    generate_pdf_forced.short_description = _(
+        'Generate PDF (override existing)')
 
     readonly_fields = ('created',)
     list_display = [
@@ -43,7 +67,7 @@ class ChargeAdmin(admin.ModelAdmin):
         "customer",
         "invoice"
     ]
-    actions = (send_charge_receipt,)
+    actions = (send_charge_receipt, generate_pdf, generate_pdf_forced)
 
     # def get_urls(self):
     #
