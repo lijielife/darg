@@ -324,9 +324,13 @@ class PositionViewSet(viewsets.ModelViewSet):
     ]
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('buyer__user__first_name', 'buyer__user__last_name',
-                     'buyer__user__email', 'seller__user__first_name',
+                     'buyer__user__email',
+                     'buyer__user__userprofile__company_name',
+                     'seller__user__first_name',
                      'seller__user__last_name', 'seller__user__email',
-                     'seller__number', 'buyer__number', 'bought_at', 'comment')
+                     'seller__number', 'buyer__number',
+                     'seller__user__userprofile__company_name',
+                     'bought_at', 'comment')
     ordering_fields = ('buyer__user__last_name', 'buyer__user__email',
                        'buyer__number', 'seller__user__last_name',
                        'seller__user__email', 'seller__number')

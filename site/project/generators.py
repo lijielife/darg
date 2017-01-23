@@ -102,6 +102,7 @@ class CompanyGenerator(object):
             "country": country,
             "founded_at": datetime.datetime.now().date()
         }
+        kwargs2.update(**kwargs)
 
         company = Company.objects.create(**kwargs2)
 

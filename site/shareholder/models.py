@@ -78,6 +78,9 @@ class Company(models.Model):
     logo = models.ImageField(
         blank=True, null=True,
         upload_to=get_company_logo_upload_path,)
+    vote_ratio = models.PositiveIntegerField(
+        _('Voting rights calculation: one vote per X of security.face_value'),
+        blank=True, null=True, default=1)
 
     def __unicode__(self):
         return u"{}".format(self.name)
@@ -214,6 +217,16 @@ class Company(models.Model):
             val -= position.count * position.value
 
         return val
+
+    def get_total_votes(self):
+        """
+        returns the total number of voting rights the company is existing
+        """
+        votes = 0
+        for security in self.security_set.all():
+            votes += security.face_value * security.count / self.vote_ratio
+
+        return votes
 
     def get_logo_url(self):
         """ return url for logo """
@@ -718,6 +731,23 @@ class Shareholder(models.Model):
         segments_owning = set(counter_bought - counter_sold)
         return deflate_segments(segments_owning)
 
+    def vote_count(self, date=None):
+        """
+        returns the total number of voting rights for this shareholder
+        """
+        votes = 0
+        for security in self.company.security_set.all():
+            votes += (self.share_count(security=security, date=date) *
+                      security.face_value / self.company.vote_ratio)
+
+        return int(votes)
+
+    def vote_percent(self, date=None):
+        """
+        returns percentage of the users voting rights compared to total voting
+        rights existing
+        """
+        return float(self.vote_count(date) / self.company.get_total_votes())
 
 class Operator(models.Model):
 
