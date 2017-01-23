@@ -83,11 +83,11 @@
       <div class="tr totals">
         <div class="td summary td-width-3 no-before">
           <value ng-if="option_holder.options_count != '-'">
-            {% endverbatim %}{% trans "Total Shares distributed (total shares registered with company)" %}{% verbatim %}
+            {% endverbatim %}{% trans "Total Shares distributed" %}{% verbatim %}
           </value>
         </div>
         <div class="td summary text-right-flex">
-          {{ total_shares }} ({{ shareholders[0].company.share_count }})
+          {{ shareholders[0].company.share_count }}
         </div>
       </div>
     </div><!-- /table-->

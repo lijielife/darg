@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-23 07:26+0000\n"
-"PO-Revision-Date: 2017-01-23 07:27+0000\n"
+"POT-Creation-Date: 2017-01-23 08:51+0000\n"
+"PO-Revision-Date: 2017-01-23 08:53+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -418,7 +418,6 @@ msgstr "Aktienbesitz"
 
 #: project/templates/start.html:67
 #, python-format
-#| msgid "Shares (%%)"
 msgid "Shares (%%%%)"
 msgstr "Aktien (%)"
 
@@ -427,8 +426,8 @@ msgid "Gafi Validation failed"
 msgstr "GAFI-FATF Validierung fehlgeschlagen"
 
 #: project/templates/start.html:86
-msgid "Total Shares distributed (total shares registered with company)"
-msgstr "Zahl Aktien lt. Tabelle (Zahl Aktien lt. Unternehmensdaten)"
+msgid "Total Shares distributed"
+msgstr "Gesamtzahl ausgegebener Aktien"
 
 #: project/templates/start.html:98
 msgid "No Shareholders yet."
@@ -537,6 +536,9 @@ msgstr "Aktiennummern"
 #: project/views.py:161
 msgid "None"
 msgstr "Keine"
+
+#~ msgid "Total Shares distributed (total shares registered with company)"
+#~ msgstr "Zahl Aktien lt. Tabelle (Zahl Aktien lt. Unternehmensdaten)"
 
 #~ msgid "Shares (Voting-%%%%)"
 #~ msgstr "Aktien (%Stimmrechte)"

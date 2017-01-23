@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-23 07:26+0000\n"
+"POT-Creation-Date: 2017-01-23 08:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -94,138 +94,138 @@ msgid ""
 "Your Share Register Team"
 msgstr ""
 
-#: shareholder/models.py:268
+#: shareholder/models.py:276
 msgid "Share split of {} on {} with ratio {}:{}. Return of old shares."
 msgstr ""
 
-#: shareholder/models.py:288
+#: shareholder/models.py:296
 msgid "Share split of {} on {} with ratio {}:{}. Provisioning of new shares."
 msgstr ""
 
-#: shareholder/models.py:323
+#: shareholder/models.py:331
 msgid "Human Being"
 msgstr ""
 
-#: shareholder/models.py:324 shareholder/tests/test_functional.py:145
+#: shareholder/models.py:332 shareholder/tests/test_functional.py:145
 msgid "Corporate"
 msgstr ""
 
-#: shareholder/models.py:346
+#: shareholder/models.py:354
 msgid "legal type of the user"
 msgstr ""
 
-#: shareholder/models.py:365
+#: shareholder/models.py:373
 msgid "user with legal type company must have company name set"
 msgstr ""
 
-#: shareholder/models.py:369
+#: shareholder/models.py:377
 msgid "user company must have legal type set to company"
 msgstr ""
 
-#: shareholder/models.py:379
+#: shareholder/models.py:387
 msgid "how should the shareholder be approached by the corp"
 msgstr ""
 
-#: shareholder/models.py:520
+#: shareholder/models.py:528
 msgid "Missing all data required for #GAFI."
 msgstr ""
 
-#: shareholder/models.py:527
+#: shareholder/models.py:535
 msgid "Shareholder first name, last name or company name missing."
 msgstr ""
 
-#: shareholder/models.py:531
+#: shareholder/models.py:539
 msgid "Shareholder birthday missing."
 msgstr ""
 
-#: shareholder/models.py:535
+#: shareholder/models.py:543
 msgid "Shareholder origin/country missing."
 msgstr ""
 
-#: shareholder/models.py:544
+#: shareholder/models.py:552
 msgid "Shareholder address or address details missing."
 msgstr ""
 
-#: shareholder/models.py:765 shareholder/page.py:141 shareholder/page.py:159
+#: shareholder/models.py:779 shareholder/page.py:141 shareholder/page.py:159
 msgid "Preferred Stock"
 msgstr ""
 
-#: shareholder/models.py:766
+#: shareholder/models.py:780
 msgid "Common Stock"
 msgstr ""
 
-#: shareholder/models.py:767
+#: shareholder/models.py:781
 msgid "Registered Shares"
 msgstr ""
 
-#: shareholder/models.py:774
+#: shareholder/models.py:788
 msgid "Nominal value of this asset"
 msgstr ""
 
-#: shareholder/models.py:780 shareholder/models.py:853
-#: shareholder/models.py:923 shareholder/models.py:974
+#: shareholder/models.py:794 shareholder/models.py:867
+#: shareholder/models.py:937 shareholder/models.py:988
 msgid "JSON list of segments of ids for securities. can be 1, 2, 3, 4-10"
 msgstr ""
 
-#: shareholder/models.py:783
+#: shareholder/models.py:797
 msgid "public security id aka Valor, WKN, CUSIP: http://bit.ly/2ieXwuK"
 msgstr ""
 
-#: shareholder/models.py:788
+#: shareholder/models.py:802
 msgid ""
 "App needs to track IDs of shares. WARNING: update initial transaction with "
 "segments on enabling."
 msgstr ""
 
-#: shareholder/models.py:793
+#: shareholder/models.py:807
 msgid "{} ({} CHF)"
 msgstr ""
 
-#: shareholder/models.py:842
+#: shareholder/models.py:856
 msgid "Share Count transfered or created"
 msgstr ""
 
-#: shareholder/models.py:846
+#: shareholder/models.py:860
 msgid "Nominal value or payed price for the transaction"
 msgstr ""
 
-#: shareholder/models.py:850
+#: shareholder/models.py:864
 msgid "Position is part of a split transaction"
 msgstr ""
 
-#: shareholder/models.py:856 shareholder/models.py:977
+#: shareholder/models.py:870 shareholder/models.py:991
 msgid "Securities are purchase type (for myself, etc.)"
 msgstr ""
 
-#: shareholder/models.py:859 shareholder/models.py:980
+#: shareholder/models.py:873 shareholder/models.py:994
 msgid "aka Skontro (read http://bit.ly/2iJquEl)"
 msgstr ""
 
-#: shareholder/models.py:862 shareholder/models.py:983
+#: shareholder/models.py:876 shareholder/models.py:997
 msgid "What kind of depot is this position stored within"
 msgstr ""
 
-#: shareholder/models.py:891
+#: shareholder/models.py:905
 msgid "Capital Increase"
 msgstr ""
 
-#: shareholder/models.py:893
+#: shareholder/models.py:907
 msgid "Part of Split"
 msgstr ""
 
-#: shareholder/models.py:895
+#: shareholder/models.py:909
 msgid "Share issue"
 msgstr ""
 
-#: shareholder/models.py:896
+#: shareholder/models.py:910
 msgid "Regular Ownership change"
 msgstr ""
 
-#: shareholder/models.py:917
+#: shareholder/models.py:931
 msgid "Number of shares approved"
 msgstr ""
 
-#: shareholder/models.py:972
+#: shareholder/models.py:986
 msgid "id of the issued certificate"
 msgstr ""
 
@@ -581,36 +581,44 @@ msgstr ""
 msgid "Value of all shares according to last transaction"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:195
+#: shareholder/templates/shareholder/shareholder_detail.html:194
+msgid "Voting rights total count"
+msgstr ""
+
+#: shareholder/templates/shareholder/shareholder_detail.html:198
+msgid "Voting rights percent"
+msgstr ""
+
+#: shareholder/templates/shareholder/shareholder_detail.html:204
 msgid "Owned Stock"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:196
+#: shareholder/templates/shareholder/shareholder_detail.html:205
 msgid "Count Shares Total"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:197
+#: shareholder/templates/shareholder/shareholder_detail.html:206
 #, python-format
 msgid "%% Ownership"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:201
+#: shareholder/templates/shareholder/shareholder_detail.html:210
 msgid "security"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:202
+#: shareholder/templates/shareholder/shareholder_detail.html:211
 msgid "cusip"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:203
+#: shareholder/templates/shareholder/shareholder_detail.html:212
 msgid "count"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:204
+#: shareholder/templates/shareholder/shareholder_detail.html:213
 msgid "segments"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:219
+#: shareholder/templates/shareholder/shareholder_detail.html:228
 msgid "Delete shareholder"
 msgstr ""
 
