@@ -38,6 +38,12 @@ DEPOT_TYPES = [
     ('2', _('Sperrdepot')),
 ]
 
+MAILING_TYPES = [
+    ('0', _('Not deliverable')),
+    ('1', _('Postal Mail')),
+    ('2', _('via Email')),
+]
+
 logger = logging.getLogger(__name__)
 
 
@@ -352,12 +358,6 @@ class UserProfile(models.Model):
 
 
 class Shareholder(models.Model):
-
-    MAILING_TYPES = [
-        ('0', _('Not deliverable')),
-        ('1', _('Postal Mail')),
-        ('2', _('via Email')),
-    ]
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     company = models.ForeignKey('Company', verbose_name="Shareholders Company")
@@ -739,7 +739,7 @@ class Security(models.Model):
         # ('W', 'Warrant'),
         # ('V', 'Convertible Instrument'),
     )
-    title = models.CharField(max_length=1, choices=SECURITY_TITLES)
+    title = models.CharField(max_length=1, choices=SECURITY_TITLES, default='C')
     face_value = models.DecimalField(
         _('Nominal value of this asset'),
         max_digits=16, decimal_places=4, blank=True,
@@ -764,6 +764,17 @@ class Security(models.Model):
                 self.get_title_display(), int(self.face_value))
 
         return self.get_title_display()
+
+    def calculate_count(self):
+        """
+        calculate how many shares does the company have by iterating
+        over all shareholders of the company and getting their
+        share count. summarize it.
+        """
+        count = 0
+        for shareholder in self.company.shareholder_set.all():
+            count += shareholder.share_count(security=self)
+        return count
 
     def count_in_segments(self, segments=None):
         """

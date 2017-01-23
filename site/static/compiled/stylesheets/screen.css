@@ -3638,7 +3638,7 @@ div#optionplan .pdf_upload_preview {
     display: none;
   }
 }
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 769px) {
   /* override bootstrap default class */
   .navbar-right .dropdown-menu {
     right: 20px;
@@ -3719,7 +3719,7 @@ div#optionplan .pdf_upload_preview {
   }
 
   .hide-mobile {
-    display: none;
+    display: none !important;
   }
 
   .meta-mobile-only {

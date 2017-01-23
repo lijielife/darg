@@ -142,7 +142,7 @@
             .orange
               display: none
 
-@media only screen and (min-width: 768px)
+@media only screen and (min-width: 769px)
   /* override bootstrap default class*/
   .navbar-right
     .dropdown-menu
@@ -166,7 +166,7 @@
         &.text-right-flex
           text-align: right
           @include flex-direction(column) //display content y-axis
-          @include align-items(flex-end) //align right text (y-axis) desktop 
+          @include align-items(flex-end) //align right text (y-axis) desktop
           @include justify-content(flex-start) //align left text (x-axis) desktop
         padding: 0.5em
 
@@ -191,7 +191,7 @@
   .show-mobile
     display: block
   .hide-mobile
-    display: none
+    display: none !important //force hide on mobile
   .meta-mobile-only
     display: block
   .bought-at
