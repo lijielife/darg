@@ -41,7 +41,7 @@
         <input type="number" class="form-control" ng-model="newPosition.value" translate translate-attr-placeholder="Payed Price" ng-maxlength="10" step=".01">
         <input type="text" class="form-control" ng-model="newPosition.number_segments" translate translate-attr-placeholder="Share IDs" ng-maxlength="255" ng-show="newPosition.security.track_numbers" uib-popover="{{numberSegmentsAvailable}}" popover-placement="bottom">
         <input type="text" class="form-control" ng-model="newPosition.comment" translate translate-attr-placeholder="Comment">
-        <span class="el-icon-plus-sign" ng-hide="show_optional_fields" ng-click="toggle_optional_fields();"></span>
+        <span class="el-icon-plus-sign" ng-hide="show_optional_fields" ng-click="toggle_optional_fields();">&nbsp;</span>
       </div>
       <!-- optional fields -->
       <div class="optional-fields" ng-show="show_optional_fields">

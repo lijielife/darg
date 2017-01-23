@@ -279,6 +279,7 @@ class OptionsPage(BasePage):
         return self._is_element_displayed(id='add_option_plan')
 
     def is_option_plan_displayed(self):
+        time.sleep(1)
         h2s = self.driver.find_elements_by_tag_name('h2')
         string = u"Optionsplan: {} f\xfcr {}".format(
             DEFAULT_TEST_DATA.get('title'),
