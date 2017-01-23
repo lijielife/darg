@@ -138,7 +138,7 @@ class OptionsPage(BasePage):
         selects = form.find_elements_by_tag_name('select')
 
         select = Select(selects[0])
-        select.select_by_visible_text(_('Preferred Stock'))
+        select.select_by_index(2)
 
         inputs[0].send_keys(DEFAULT_TEST_DATA.get('date'))
         inputs[1].send_keys(DEFAULT_TEST_DATA.get('title'))
@@ -156,7 +156,7 @@ class OptionsPage(BasePage):
         selects = form.find_elements_by_tag_name('select')
 
         select = Select(selects[0])
-        select.select_by_visible_text(_('Preferred Stock'))
+        select.select_by_index(2)
 
         inputs[0].send_keys(DEFAULT_TEST_DATA.get('date'))
         inputs[1].send_keys(DEFAULT_TEST_DATA.get('title'))
@@ -284,7 +284,7 @@ class OptionsPage(BasePage):
             DEFAULT_TEST_DATA.get('title'),
             DEFAULT_TEST_DATA.get('security'))
         for h2 in h2s:
-            if h2.text == string:
+            if string in h2.text:
                 return True
         return False
 
