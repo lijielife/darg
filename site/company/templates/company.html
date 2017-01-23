@@ -125,6 +125,15 @@
     </tr>
 
     <tr>
+      <td>{% trans "Total Vote Count Floating" %}:</td>
+      <td>
+        {% verbatim %}
+          {{ company.vote_count_floating || 'k.A.' }}
+        {% endverbatim %}
+      </td>
+    </tr>
+
+    <tr>
       <td>{% trans "Company Headquarter Country" %}:</td>
       <td>
       {% verbatim %}
