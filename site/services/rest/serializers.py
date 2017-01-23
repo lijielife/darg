@@ -81,6 +81,7 @@ class CompanySerializer(serializers.HyperlinkedModelSerializer):
     captable_pdf_url = serializers.SerializerMethodField()
     captable_csv_url = serializers.SerializerMethodField()
     logo_url = serializers.SerializerMethodField()
+    vote_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Company
@@ -90,7 +91,7 @@ class CompanySerializer(serializers.HyperlinkedModelSerializer):
                   # 'shareholder_count',
                   'security_set', 'founded_at',
                   'provisioned_capital', 'profile_url', 'captable_pdf_url',
-                  'captable_csv_url', 'logo_url')
+                  'captable_csv_url', 'logo_url', 'vote_count', 'vote_ratio')
 
     def get_profile_url(self, obj):
         return reverse('company', kwargs={'company_id': obj.id})
@@ -103,6 +104,9 @@ class CompanySerializer(serializers.HyperlinkedModelSerializer):
 
     def get_logo_url(self, obj):
         return obj.get_logo_url()
+
+    def get_vote_count(self, obj):
+        return obj.get_total_votes()
 
 
 class AddCompanySerializer(serializers.Serializer):
@@ -303,6 +307,7 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
             'full_name',
             'mailing_type',
             'readable_mailing_type',
+            'vote_count', 'vote_percent'
         )
 
     def create(self, validated_data):

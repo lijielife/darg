@@ -104,6 +104,27 @@
     </tr>
 
     <tr>
+      <td>{% trans "CHF for one vote based on face value of securities" %}:</td>
+      <td>
+        {% verbatim %}
+        <span editable-text="company.vote_ratio" onaftersave="edit_company()">
+          {{ company.vote_ratio || 'k.A.' }}
+          <span class="el-icon-pencil"></span>
+        </span>
+        {% endverbatim %}
+      </td>
+    </tr>
+
+    <tr>
+      <td>{% trans "Total Vote Count" %}:</td>
+      <td>
+        {% verbatim %}
+          {{ company.vote_count || 'k.A.' }}
+        {% endverbatim %}
+      </td>
+    </tr>
+
+    <tr>
       <td>{% trans "Company Headquarter Country" %}:</td>
       <td>
       {% verbatim %}
