@@ -747,7 +747,8 @@ class Shareholder(models.Model):
         returns percentage of the users voting rights compared to total voting
         rights existing
         """
-        return float(self.vote_count(date) / self.company.get_total_votes())
+        return self.vote_count(date) / float(self.company.get_total_votes())
+
 
 class Operator(models.Model):
 
