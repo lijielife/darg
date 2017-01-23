@@ -679,7 +679,7 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
                 self.selenium, self.live_server_url, operator.user, path)
 
             security_text = (
-                    u'Vorzugsaktien (Reservierte Aktiennummern 1000-2000)')
+                    u'Vorzugsaktien\n(Reservierte Aktiennummern 1000-2000)')
             app.wait_until_text_present(
                 (By.CSS_SELECTOR, 'tr.security td.text'), security_text)
 

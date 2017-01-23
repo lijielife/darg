@@ -8,10 +8,12 @@ import logging
 from dateutil.parser import parse
 from django.contrib.auth.models import User
 from django.db import DataError
+from django.db.models import Sum
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
 
-from project.generators import DEFAULT_TEST_DATA, OperatorGenerator, _make_user
+from project.generators import (DEFAULT_TEST_DATA, OperatorGenerator,
+                                PositionGenerator)
 from shareholder.models import (DEPOT_TYPES, REGISTRATION_TYPES, Company,
                                 Country, OptionPlan, OptionTransaction,
                                 Position, Security, Shareholder, UserProfile)
@@ -33,6 +35,10 @@ SISWARE_CSV_HEADER = [
     # 29
     u'Skontro-Nr', u'DepotArt'
 ]
+
+# face_value:count structure
+SECURITIES = {'10': 1000, '100': 7900, '500': 9539}
+
 
 logger = logging.getLogger(__name__)
 
@@ -92,21 +98,36 @@ class SisWareImportBackend(BaseImportBackend):
             raise ValueError('company not existing. please create company and '
                              'operator first')
 
-        # with a company shareholder?
+        # get or make company shareholder?
         try:
             self.company_shareholder = self.company.get_company_shareholder()
         except ValueError:
-            # import based in setting
+            # import based on setting
             row = self._find_row(column=0, needle=COMPANY_SHAREHOLDER_NUMBER)
             user = self._get_or_create_user(
                 shareholder_id=row[0], first_name=row[8]+' '+row[9],
                 last_name=row[10], legal_type=row[1], company=row[4],
-                department=row[5], title=row[6], salutation=row[7], street=row[12],
-                street2=row[12], pobox=row[14], postal_code=row[15],
-                city=row[16], country=row[17], language=row[20], birthday=row[19],
-                c_o=row[18], nationality=row[22])
-            self._get_or_create_shareholder(row[0], user,
-                                                          mailing_type=row[21])
+                department=row[5], title=row[6], salutation=row[7],
+                street=row[11], street2=row[12], pobox=row[14],
+                postal_code=row[15], city=row[16], country=row[17],
+                language=row[20], birthday=row[19], c_o=row[18],
+                nationality=row[22])
+            self.company_shareholder = self._get_or_create_shareholder(
+                row[0], user, mailing_type=row[21])
+
+        print 'using SECURITIES for initial cap creation positions: {}'.format(
+            SECURITIES)
+
+        # create mandatory initial position
+        for face_value, count in SECURITIES.iteritems():
+            s = self._get_or_create_security(face_value=face_value)
+            Position.objects.get_or_create(security=s, count=count,
+                                         buyer=self.company_shareholder,
+                                         defaults={
+                                         'bought_at': datetime.datetime(2013, 1, 1),
+                                         'depot_type': '1'
+                                         }
+                                         )
 
         # and a matching operator?
         self.operator = self.company.operator_set.first()
@@ -116,66 +137,6 @@ class SisWareImportBackend(BaseImportBackend):
                 company=self.company)
             print u'operator created with username {} and pw {}'.format(
                 self.operator.user.username, DEFAULT_TEST_DATA.get('password'))
-
-        # check if we can import all countries
-        countries = []
-        with open(self.filename) as f:
-            reader = csv.reader(f, delimiter=';', dialect=csv.excel)
-            self.row_count = 0
-            for row in reader:
-                row = [self.to_unicode(field) for field in row]
-                if row == SISWARE_CSV_HEADER:
-                    continue
-                if row[17]:
-                    countries.append(row[17])
-        countries = set(countries)
-        missing_countries = []
-        for country in countries:
-            if country not in COUNTRY_MAP.keys():
-                missing_countries.append(country)
-        if missing_countries:
-            raise ValueError('cannot map countries to db objs: {}. '
-                             'import not started'.format(missing_countries))
-
-        # check if we can import all nationalities
-        countries = []
-        with open(self.filename) as f:
-            reader = csv.reader(f, delimiter=';', dialect=csv.excel)
-            self.row_count = 0
-            for row in reader:
-                row = [self.to_unicode(field) for field in row]
-                if row == SISWARE_CSV_HEADER:
-                    continue
-                if row[22]:
-                    countries.append(row[22])
-        countries = set(countries)
-        missing_countries = []
-        for country in countries:
-            if country not in COUNTRY_MAP.keys():
-                missing_countries.append(country)
-        if missing_countries:
-            raise ValueError('cannot map nationalities to db objs: {}. '
-                             'import not started'.format(missing_countries))
-
-        # check if we can map all languages
-        languages = []
-        with open(self.filename) as f:
-            reader = csv.reader(f, delimiter=';', dialect=csv.excel)
-            self.row_count = 0
-            for row in reader:
-                row = [self.to_unicode(field) for field in row]
-                if row == SISWARE_CSV_HEADER:
-                    continue
-                if row[20]:
-                    languages.append(row[20])
-        languages = set(languages)
-        missing = []
-        for language in languages:
-            if not _get_language_iso_code(language):
-                missing.append(language)
-        if missing:
-            raise ValueError('cannot map languages to db objs: {}. '
-                             'import not started.'.format(missing))
 
     def _import_row(self, row):
         """
@@ -196,7 +157,7 @@ class SisWareImportBackend(BaseImportBackend):
         shareholder = self._get_or_create_shareholder(row[0], user,
                                                       mailing_type=row[21])
         # SECURITY
-        self._get_or_create_security(
+        security = self._get_or_create_security(
             face_value=float(row[25].replace(',', '.')), cusip=row[24])
 
         # POSITION
@@ -206,7 +167,7 @@ class SisWareImportBackend(BaseImportBackend):
                 value=row[25],
                 face_value=float(row[25].replace(',', '.')),
                 registration_type=row[2],
-                stock_book_id=row[29], depot_type=row[30]
+                stock_book_id=row[29], depot_type=row[30], security=security
             )
         # OPTION + PLAN
         else:
@@ -214,7 +175,7 @@ class SisWareImportBackend(BaseImportBackend):
                 cert_id=row[27], bought_at=row[28], buyer=shareholder,
                 count=row[26], face_value=float(row[25].replace(',', '.')),
                 registration_type=row[2], certificate_id=row[27],
-                stock_book_id=row[29], depot_type=row[30]
+                stock_book_id=row[29], depot_type=row[30], security=security
             )
 
         return 1
@@ -234,8 +195,13 @@ class SisWareImportBackend(BaseImportBackend):
         check data consistency, company data, total sums to ensure the import is
         fully valid
         """
-        # FIXME update security.count
-        logger.warning('import finishing not implemented')
+        for security in self.company.security_set.all():
+            security.count = security.calculate_count()
+            security.save()
+
+        self.company.share_count = self.company.security_set.all().aggregate(
+            Sum('count'))['count__sum']
+        self.company.save()
 
     def _get_or_create_shareholder(self, shareholder_number, user,
                                    mailing_type):
@@ -260,21 +226,25 @@ class SisWareImportBackend(BaseImportBackend):
         if cusip:
             kwargs.update({'cusip': cusip})
 
+        # no create, must be done in init method for capital creation positions
         security, c_ = Security.objects.get_or_create(
             title='R', face_value=face_value,
-            company=self.company, defaults=kwargs)  # count=1 intermediary
+            company=self.company, defaults=kwargs)
+
+        if not security.cusip:
+            security.cusip = cusip
+            security.save()
 
         return security
 
     def _get_or_create_position(self, bought_at, buyer, count, value,
                                 face_value, registration_type, stock_book_id,
-                                depot_type, **kwargs):
+                                depot_type, security, **kwargs):
         """
         we have no history data, hence, we start with an initial position/
         transaction of the day of the import
         """
         seller = self.company.get_company_shareholder()
-        security = self._get_or_create_security(face_value)
         registration_type = self._match_registration_type(registration_type)
         depot_type = self._match_depot_type(depot_type)
 
@@ -301,12 +271,11 @@ class SisWareImportBackend(BaseImportBackend):
     def _get_or_create_option_transaction(self, cert_id, bought_at, buyer,
                                           count, face_value, registration_type,
                                           certificate_id, stock_book_id,
-                                          depot_type):
+                                          depot_type, security):
 
         registration_type = self._match_registration_type(registration_type)
         depot_type = self._match_depot_type(depot_type)
 
-        security = self._get_or_create_security(face_value)
         option_plan, c_ = OptionPlan.objects.get_or_create(
             company=self.company, security=security,
             defaults={
@@ -401,8 +370,23 @@ class SisWareImportBackend(BaseImportBackend):
         if depot_type == u'Sperrdepot':
             return DEPOT_TYPES[2][0]
 
-
     def validate(self, filename):
+        self._validate_file_structure(filename)
+        self._validate_language_iso_code_known()
+        self._validate_country_names_mappable()
+        self._validate_nationality_names_mappable()
+
+# not used
+#     def _validate_initial_positions(self):
+#         """
+#         we need to have the initial position for capital creation already
+#         entered manually
+#         """
+#         if not self.company.security_set.first().position_set.first():
+#             raise ValueError('Initial Position missing. Must be created'
+#                              'manually for any security')
+
+    def _validate_file_structure(self, filename):
         """
         validate if file can be used
         """
@@ -414,6 +398,69 @@ class SisWareImportBackend(BaseImportBackend):
                     break
                 else:
                     raise ValueError('invalid file for sisware import backend')
+
+    def _validate_country_names_mappable(self):
+        # check if we can import all countries
+        countries = []
+        with open(self.filename) as f:
+            reader = csv.reader(f, delimiter=';', dialect=csv.excel)
+            self.row_count = 0
+            for row in reader:
+                row = [self.to_unicode(field) for field in row]
+                if row == SISWARE_CSV_HEADER:
+                    continue
+                if row[17]:
+                    countries.append(row[17])
+        countries = set(countries)
+        missing_countries = []
+        for country in countries:
+            if country not in COUNTRY_MAP.keys():
+                missing_countries.append(country)
+        if missing_countries:
+            raise ValueError('cannot map countries to db objs: {}. '
+                             'import not started'.format(missing_countries))
+
+    def _validate_nationality_names_mappable(self):
+        # check if we can import all nationalities
+        countries = []
+        with open(self.filename) as f:
+            reader = csv.reader(f, delimiter=';', dialect=csv.excel)
+            self.row_count = 0
+            for row in reader:
+                row = [self.to_unicode(field) for field in row]
+                if row == SISWARE_CSV_HEADER:
+                    continue
+                if row[22]:
+                    countries.append(row[22])
+        countries = set(countries)
+        missing_countries = []
+        for country in countries:
+            if country not in COUNTRY_MAP.keys():
+                missing_countries.append(country)
+        if missing_countries:
+            raise ValueError('cannot map nationalities to db objs: {}. '
+                             'import not started'.format(missing_countries))
+
+    def _validate_language_iso_code_known(self):
+        # check if we can map all languages
+        languages = []
+        with open(self.filename) as f:
+            reader = csv.reader(f, delimiter=';', dialect=csv.excel)
+            self.row_count = 0
+            for row in reader:
+                row = [self.to_unicode(field) for field in row]
+                if row == SISWARE_CSV_HEADER:
+                    continue
+                if row[20]:
+                    languages.append(row[20])
+        languages = set(languages)
+        missing = []
+        for language in languages:
+            if not _get_language_iso_code(language):
+                missing.append(language)
+        if missing:
+            raise ValueError('cannot map languages to db objs: {}. '
+                             'import not started.'.format(missing))
 
     def import_from_file(self, company_pk):
         """
@@ -440,4 +487,3 @@ class SisWareImportBackend(BaseImportBackend):
 IMPORT_BACKENDS = [
     SisWareImportBackend,
 ]
-
