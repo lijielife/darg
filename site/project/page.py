@@ -81,6 +81,7 @@ class BasePage(object):
     def refresh(self):
         """ reload page """
         self.driver.get(self.driver.current_url)
+        time.sleep(1)
 
     def use_datepicker(self, class_name, date=None):
         """
