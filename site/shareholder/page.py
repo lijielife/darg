@@ -490,7 +490,7 @@ class PositionPage(BasePage):
         select = form.find_element_by_class_name('security')
 
         select = Select(select)
-        select.select_by_visible_text(security.get_title_display())
+        select.select_by_visible_text(unicode(security))
 
     def enter_seller(self, seller):
         """
