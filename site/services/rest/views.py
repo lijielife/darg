@@ -45,7 +45,7 @@ class ShareholderViewSet(viewsets.ModelViewSet):
     ]
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('user__first_name', 'user__last_name', 'user__email',
-                     'number')
+                     'number', 'user__userprofile__company_name')
     ordering_fields = ('user__last_name', 'user__email', 'number')
 
     def get_object(self):
@@ -424,7 +424,9 @@ class OptionTransactionViewSet(viewsets.ModelViewSet):
                      'buyer__user__email', 'seller__user__first_name',
                      'seller__user__last_name', 'seller__user__email',
                      'seller__number', 'buyer__number', 'bought_at',
-                     'option_plan__title')
+                     'option_plan__title',
+                     'buyer__user__userprofile__company_name',
+                     'seller__user__userprofile__company_name')
     ordering_fields = ('buyer__user__last_name', 'buyer__user__email',
                        'buyer__number', 'seller__user__last_name',
                        'seller__user__email', 'seller__number')

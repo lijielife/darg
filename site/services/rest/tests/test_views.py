@@ -1114,6 +1114,17 @@ class ShareholderTestCase(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['count'], 1)
 
+        profile = operator.company.shareholder_set.first().user.userprofile
+        profile.company_name = 'some corp 888'
+        profile.save()
+
+        res = self.client.get(
+            '/services/rest/shareholders?search={}'.format(profile.company_name)
+        )
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['count'], 1)
+
     def test_ordering(self):
         operator = OperatorGenerator().generate()
         user = operator.user
