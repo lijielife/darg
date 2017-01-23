@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-12 14:00+0000\n"
-"PO-Revision-Date: 2017-01-12 14:01+0000\n"
+"POT-Creation-Date: 2017-01-23 07:26+0000\n"
+"PO-Revision-Date: 2017-01-23 07:27+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -130,7 +130,6 @@ msgstr "Verkäufer"
 
 #: project/templates/_add_option_transaction_form.html:39
 #: project/templates/_add_position_form.html:48
-#| msgid "Option Holders"
 msgid "optional fields"
 msgstr "Optionale Daten"
 
@@ -419,8 +418,9 @@ msgstr "Aktienbesitz"
 
 #: project/templates/start.html:67
 #, python-format
-msgid "Shares (Voting-%%%%)"
-msgstr "Aktien (%Stimmrechte)"
+#| msgid "Shares (%%)"
+msgid "Shares (%%%%)"
+msgstr "Aktien (%)"
 
 #: project/templates/start.html:71
 msgid "Gafi Validation failed"
@@ -537,6 +537,9 @@ msgstr "Aktiennummern"
 #: project/views.py:161
 msgid "None"
 msgstr "Keine"
+
+#~ msgid "Shares (Voting-%%%%)"
+#~ msgstr "Aktien (%Stimmrechte)"
 
 #~ msgid "Buying Date"
 #~ msgstr "Kaufdatum"

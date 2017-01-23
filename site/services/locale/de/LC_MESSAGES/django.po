@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-12 14:00+0000\n"
+"POT-Creation-Date: 2017-01-23 07:26+0000\n"
 "PO-Revision-Date: 2017-01-06 09:34+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -150,7 +150,7 @@ msgstr ""
 msgid "Field may not be empty."
 msgstr "Das Feld darf nicht leer sein."
 
-#: services/rest/views.py:362 services/rest/views.py:461
+#: services/rest/views.py:366 services/rest/views.py:466
 msgid "Confirmed position cannot be deleted."
 msgstr ""
 "Festgeschriebene Transaktionen können nicht gelöscht werden. Verwenden Sie "
