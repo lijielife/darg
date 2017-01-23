@@ -41,6 +41,11 @@ urlpatterns = [
         'company.views.history',
         name="history"
     ),
+    url(
+        r"^invoice/(?P<pk>\d+)/$",
+        'company.views.invoice',
+        name="invoice"
+    ),
 
 
     # Web services

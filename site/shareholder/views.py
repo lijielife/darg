@@ -1,7 +1,7 @@
 
 import os
 
-from django.http import HttpResponse, Http404, FileResponse
+from django.http import HttpResponse, Http404
 from django.template import RequestContext, loader
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required

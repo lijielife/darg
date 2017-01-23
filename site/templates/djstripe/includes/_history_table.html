@@ -5,41 +5,49 @@
     {% trans "Payment History" %}
     <img class="in-progress-gif" src="{% static 'img/in-progress.gif' %}" /></h2>
 
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>{% trans "Transaction ID" %}</th>
-        <th>{% trans "Date" %}</th>
-        <th>{% trans "Amount" %}</th>
-      </tr>
-    </thead>
-    {% for invoice in customer.invoices.all %}
-      <tr>
-        <td class="fixed">#{{ invoice.id }}</td>
-        <td>{{ invoice.date|date:"M d" }}</td>
-        <td>
-          {# if invoice.paid and invoice.total > 0 #}
-          {% if invoice.paid %}
-            <p>
-              <span class="label label-success">{% trans "Paid" %}</span>
-              {% get_invoice_currency invoice %}{{ invoice.total|floatformat:"2" }}
-            </p>
-          {% endif %}
+    <div class="table">
+      <div class="tr th">
+        <div class="td td-width-2">{% trans "Invoice Number" %}</div>
+        <div class="td td-width-2">{% trans "Date" %}</div>
+        <div class="td text-right-flex">{% trans "Amount" %}</div>
+      </div>
+      {% for invoice in customer.invoices.all  %}
+        {# FIXME: theoretically, an invoice can have multiple charges! #}
+        {% with invoice.charges.first as charge %}
+          <div class="tr">
+            <div class="td td-width-2">
+              {% if charge.has_invoice_pdf %}
+                <a href="{% url 'djstripe:invoice' customer.subscriber_id charge.pk %}">
+              {% endif %}
+              #{{ charge.pk }}
+              {% if charge.has_invoice_pdf %}</a>{% endif %}
+            </div>
+            <div class="td td-width-2">
+              {{ charge.charge_created|date:'DATE_FORMAT' }}
+            </div>
+            <div class="td text-right-flex">
+              {% if invoice.paid %}
+                <p>
+                  <span class="label label-success">{% trans "Paid" %}</span>
+                  {% get_invoice_currency invoice %}{{ invoice.total|floatformat:"2" }}
+                </p>
+              {% endif %}
 
-          {% if invoice.paid and invoice.total < 0 %}
-            <p>
-              <span class="label label-success">{% trans "Credit" %}</span>
-              {% get_invoice_currency invoice %}{{ invoice.total|floatformat:"2" }}
-            </p>
-          {% endif %}
-        </td>
-      </tr>
-    {% empty %}
-      <tr>
-        <td colspan="3">
-          <img class="in-progress-gif" src="{% static 'img/in-progress.gif' %}" />
-        </td>
-      </tr>
-    {% endfor %}
-  </table>
+              {% if invoice.paid and invoice.total < 0 %}
+                <p>
+                  <span class="label label-success">{% trans "Credit" %}</span>
+                  {% get_invoice_currency invoice %}{{ invoice.total|floatformat:"2" }}
+                </p>
+              {% endif %}
+            </div>
+          </div>
+        {% endwith %}
+      {% empty %}
+        <div class="tr">
+          <div class="td td-width-2">
+            <img class="in-progress-gif" src="{% static 'img/in-progress.gif' %}" />
+          </div>
+        </div>
+      {% endfor %}
+    </div>
 </div>

@@ -51,7 +51,7 @@ class ShareholderViewSet(SubscriptionViewSetMixin, viewsets.ModelViewSet):
                      'number')
     ordering_fields = ('user__last_name', 'user__email', 'number')
 
-    subscription_features = ('shareholder_count',)
+    subscription_features = ('shareholders',)
 
     def get_user_companies(self):
         return Company.objects.filter(operator__user=self.request.user)
@@ -63,7 +63,7 @@ class ShareholderViewSet(SubscriptionViewSetMixin, viewsets.ModelViewSet):
             raise Http404
 
     def get_queryset(self):
-        self.subscription_features = ['shareholder_count']
+        self.subscription_features = ['shareholders']
         qs = Shareholder.objects.filter(company_id__in=self.get_company_pks())
         return (qs.select_related('company', 'user', 'user__userprofile')
                 .prefetch_related('user__operator_set')
@@ -104,7 +104,7 @@ class ShareholderViewSet(SubscriptionViewSetMixin, viewsets.ModelViewSet):
         #             company, ['shareholder_count', 'option_count']):
         #         ohs |= company.get_active_option_holders()  # FIXME: check this
 
-        self.subscription_features = ['shareholder_count', 'option_count']
+        self.subscription_features = ['shareholders', 'options']
         ohs = Shareholder.objects.none()
         for company in Company.objects.filter(pk__in=self.get_company_pks()):
             ohs |= company.get_active_option_holders()
@@ -346,7 +346,7 @@ class PositionViewSet(SubscriptionViewSetMixin, viewsets.ModelViewSet):
     ordering_fields = ('buyer__user__last_name', 'buyer__user__email',
                        'buyer__number', 'seller__user__last_name',
                        'seller__user__email', 'seller__number')
-    # subscription_features = ('position_count',)
+    subscription_features = ('positions',)
 
     def get_user_companies(self):
         return Company.objects.filter(operator__user=self.request.user)
@@ -390,7 +390,7 @@ class SecurityViewSet(SubscriptionViewSetMixin, viewsets.ModelViewSet):
     permission_classes = [
         UserIsOperatorPermission,
     ]
-    subscription_features = ('security_count',)
+    subscription_features = ('securities',)
 
     def get_user_companies(self):
         return Company.objects.filter(operator__user=self.request.user)
@@ -451,7 +451,7 @@ class OptionTransactionViewSet(SubscriptionViewSetMixin,
                        'buyer__number', 'seller__user__last_name',
                        'seller__user__email', 'seller__number')
     ordering = ('option_plan__pk',)
-    subscription_features = ('position_count',)
+    subscription_features = ('positions',)
 
     def get_user_companies(self):
         return Company.objects.filter(operator__user=self.request.user)

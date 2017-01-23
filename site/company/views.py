@@ -3,16 +3,16 @@ from django.contrib import messages
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template import RequestContext, loader
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import View, ListView
+from django.views.generic import View, ListView, DetailView
 
 import stripe
 
 from braces.views import CsrfExemptMixin
-from djstripe.models import Customer, CurrentSubscription
+from djstripe.models import Customer, CurrentSubscription, Charge
 from djstripe.settings import (PAYMENT_PLANS, subscriber_request_callback,
                                CANCELLATION_AT_PERIOD_END)
 from djstripe.sync import sync_subscriber
@@ -26,6 +26,7 @@ from djstripe.views import (
     ChangePlanView as DjStripeChangePlanView,
     CancelSubscriptionView as DjStripeCancelSubscriptionView
 )
+from sendfile import sendfile
 
 from shareholder.models import Company
 from utils.mail import is_valid_email
@@ -251,6 +252,30 @@ class SubscribeView(CompanyOperatorPermissionRequiredViewMixin,
         return context
 
 
+class ChargeDetailView(CompanyOperatorPermissionRequiredViewMixin,
+                       SubscriptionViewCompanyObjectMixin, DetailView):
+    """
+    return PDF of invoice/charge
+    """
+
+    def get_queryset(self):
+        company_pk = self.kwargs.get('company_id', 0)
+        return Charge.objects.filter(customer__subscriber_id=company_pk)
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if not self.object.has_invoice_pdf:
+            # try to generate now
+            self.object._generate_invoice_pdf()
+
+        if not self.object.has_invoice_pdf:
+            # FIXME: what now (logger exception, mail_managery)?
+            error_message = _('Could not find requested filed.')
+            raise Http404(error_message)
+
+        return sendfile(request, self.object._get_pdf_filepath())
+
+
 # subscription views
 account = AccountView.as_view()
 change_card = ChangeCardView.as_view()
@@ -260,3 +285,6 @@ confirm = ConfirmFormView.as_view()
 subscribe = SubscribeView.as_view()
 change_plan = ChangePlanView.as_view()
 # cancel_subscription = CancelSubscriptionView.as_view()
+
+# NOTE: naming is a bit weird but makes sense for user
+invoice = ChargeDetailView.as_view()

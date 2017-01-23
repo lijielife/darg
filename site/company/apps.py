@@ -160,11 +160,7 @@ class CompanyAppConfig(AppConfig):
                 from_email=settings.DEFAULT_FROM_EMAIL
             ))
 
-            pdf_dir = self._get_invoice_pdf_path_for_company(
-                self.customer.subscriber)
-            pdf_filename = u'{}-{}.pdf'.format(
-                settings.COMPANY_INVOICE_FILENAME, self.pk)
-            pdf_filepath = os.path.join(pdf_dir, pdf_filename)
+            pdf_filepath = self._get_pdf_filepath()
 
             # check if exists
             if os.path.exists(pdf_filepath) and not override_existing:
@@ -191,17 +187,38 @@ class CompanyAppConfig(AppConfig):
 
         def _get_invoice_pdf_path_for_company(self, company):
             """
-            returns a unique directory path to for the user
+            returns a unique directory path to for the charge
             """
             path = os.path.join(settings.COMPANY_INVOICES_ROOT,
                                 str(company.pk),
-                                str(self.charge_created.year))
+                                str(self.pk))
             if not os.path.exists(path):
                 os.makedirs(path)
             return path
 
         Charge._get_invoice_pdf_path_for_company = (
             _get_invoice_pdf_path_for_company)
+
+        def _get_pdf_filepath(self):
+            """
+            return complete filepath to PDF
+            """
+            pdf_dir = self._get_invoice_pdf_path_for_company(
+                self.customer.subscriber)
+            pdf_filename = u'{}-{}.pdf'.format(
+                settings.COMPANY_INVOICE_FILENAME, self.pk)
+            return os.path.join(pdf_dir, pdf_filename)
+
+        Charge._get_pdf_filepath = _get_pdf_filepath
+
+        def _has_invoice_pdf(self):
+            """
+            return boolean whether invoice PDF exists or not
+            """
+            filepath = self._get_pdf_filepath()
+            return os.path.exists(filepath) and os.path.isfile(filepath)
+
+        Charge.has_invoice_pdf = property(_has_invoice_pdf)
 
         def _get_template_context(self):
             """
