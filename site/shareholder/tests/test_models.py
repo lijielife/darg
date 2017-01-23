@@ -86,6 +86,7 @@ class CompanyTestCase(TestCase):
 
         self.assertEqual(self.company.get_total_votes(), 10*100/2)
 
+
 class CountryTestCase(TestCase):
 
     def test_model(self):
@@ -691,8 +692,8 @@ class ShareholderTestCase(TestCase):
         self.assertEqual(self.shareholder2.vote_count(), 100)
 
     def test_vote_percent(self):
-        self.assertEqual(self.shareholder1.vote_percent(), 0.8)
-        self.assertEqual(self.shareholder2.vote_percent(), 0.2)
+        self.assertEqual(self.shareholder1.vote_percent(), 0.0)
+        self.assertEqual(self.shareholder2.vote_percent(), 1)
 
 
 class SecurityTestCase(TestCase):

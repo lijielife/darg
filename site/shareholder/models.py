@@ -228,6 +228,14 @@ class Company(models.Model):
 
         return int(votes)
 
+    def get_total_votes_floating(self):
+        """
+        returns total amount of votes owned by regular shareholers. excludes
+        votes owned by company
+        """
+        company_votes = self.get_company_shareholder().vote_count()
+        return self.get_total_votes() - company_votes
+
     def get_logo_url(self):
         """ return url for logo """
         if not self.logo:
@@ -747,7 +755,12 @@ class Shareholder(models.Model):
         returns percentage of the users voting rights compared to total voting
         rights existing
         """
-        return self.vote_count(date) / float(self.company.get_total_votes())
+        if self.is_company_shareholder():
+            return float(0.0)
+
+        return (self.vote_count(date) /
+                float(self.company.get_total_votes_floating())
+                )
 
 
 class Operator(models.Model):
