@@ -99,7 +99,8 @@ class CompanySerializer(SubscriptionSerializerMixin,
                   'provisioned_capital', 'profile_url', 'captable_pdf_url',
                   'captable_csv_url', 'logo_url', 'email', 'has_address',
                   'is_statement_sending_enabled', 'statement_sending_date',
-                  'current_subscription') + Company.STREET_FIELDS
+                  'current_subscription', 'subscription_features',
+                  'subscription_permissions') + Company.STREET_FIELDS
 
     def get_profile_url(self, obj):
         return reverse('company', kwargs={'company_id': obj.id})
@@ -311,7 +312,7 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
             'is_company',
             'full_name',
             'mailing_type',
-            'readable_mailing_type',
+            'readable_mailing_type'
         )
 
     def create(self, validated_data):

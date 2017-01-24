@@ -439,20 +439,30 @@ DJSTRIPE_PLANS = collections.OrderedDict((
         'interval': 'month',
         'features': {
             'shareholders': {
-                'max': 20
+                'max': 20,
+                'validators': {
+                    'create': [
+                        'company.validators.features.ShareholderCreateMaxCountValidator'
+                    ]
+                }
             },
             'positions': {},
             'options': {},
             'securities': {
-                'max': 1
+                'max': 1,
+                'validators': {
+                    'create': [
+                        'company.validators.features.SecurityCreateMaxCountValidator'
+                    ]
+                }
             },
             'shares': {},
             'gafi': {},
             'revision': {}
         },
         'validators': [
-            'company.validators.features.ShareholderCountValidator',
-            'company.validators.features.SecurityCountValidator'
+            'company.validators.features.ShareholderCountPlanValidator',
+            'company.validators.features.SecurityCountPlanValidator'
         ]
     }),
     ('professional', {

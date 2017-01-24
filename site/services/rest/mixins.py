@@ -92,30 +92,4 @@ class SubscriptionSerializerMixin(object):
     mixin to handle subscription for serializers
     """
 
-    def get_fields(self):
-
-        fields = super(SubscriptionSerializerMixin, self).get_fields()
-
-        if not self.instance:
-            return fields
-
-        plan_name = self.instance.get_current_subscription_plan()
-        plan = settings.DJSTRIPE_PLANS.get(plan_name, {})
-
-        if not plan:
-            return fields
-
-        # check if field list include some fields not in subscription
-        all_features = settings.SUBSCRIPTION_FEATURES.keys()
-        plan_features = plan.get('features', {}).keys()
-        excluded = set(all_features).difference(set(plan_features))
-        for key in excluded:
-            form_fields = (settings.SUBSCRIPTION_FEATURES.get(key, {})
-                           .get('form_fields', []))
-            [fields.pop(fieldname, None) for fieldname in form_fields]
-
-        # add all plan/subscription features
-        fields['subscription_features'] = serializers.ListField(
-            child=serializers.CharField(), read_only=True)
-
-        return fields
+    pass

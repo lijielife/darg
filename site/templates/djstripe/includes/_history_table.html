@@ -12,40 +12,33 @@
         <div class="td text-right-flex">{% trans "Amount" %}</div>
       </div>
       {% for invoice in customer.invoices.all  %}
-        {# FIXME: theoretically, an invoice can have multiple charges! #}
-        {% with invoice.charges.first as charge %}
-          <div class="tr">
-            <div class="td td-width-2">
-              {% if charge.has_invoice_pdf %}
-                <a href="{% url 'djstripe:invoice' customer.subscriber_id charge.pk %}">
-              {% endif %}
-              {% if charge %}#{{ charge.pk }}{% else %}-{% endif %}
-              {% if charge.has_invoice_pdf %}</a>{% endif %}
-            </div>
-            <div class="td td-width-2">
-              {% if charge %}
-                {{ charge.charge_created|date:'DATE_FORMAT' }}
-              {% else %}
-                {{ invoice.date|date:'DATE_FORMAT' }}
-              {% endif %}
-            </div>
-            <div class="td text-right-flex">
-              {% if invoice.paid %}
-                <p>
-                  <span class="label label-success">{% trans "Paid" %}</span>
-                  {% get_invoice_currency invoice %}{{ invoice.total|floatformat:"2" }}
-                </p>
-              {% endif %}
-
-              {% if invoice.paid and invoice.total < 0 %}
-                <p>
-                  <span class="label label-success">{% trans "Credit" %}</span>
-                  {% get_invoice_currency invoice %}{{ invoice.total|floatformat:"2" }}
-                </p>
-              {% endif %}
-            </div>
+        <div class="tr">
+          <div class="td td-width-2">
+            {% if invoice.has_invoice_pdf %}
+              <a href="{% url 'djstripe:invoice' customer.subscriber_id invoice.pk %}">
+            {% endif %}
+            #{{ invoice.pk }}
+            {% if invoice.has_invoice_pdf %}</a>{% endif %}
           </div>
-        {% endwith %}
+          <div class="td td-width-2">
+            {{ invoice.date|date:'DATE_FORMAT' }}
+          </div>
+          <div class="td text-right-flex">
+            {% if invoice.paid %}
+              <p>
+                <span class="label label-success">{% trans "Paid" %}</span>
+                {% get_invoice_currency invoice %}{{ invoice.total|floatformat:"2" }}
+              </p>
+            {% endif %}
+
+            {% if invoice.paid and invoice.total < 0 %}
+              <p>
+                <span class="label label-success">{% trans "Credit" %}</span>
+                {% get_invoice_currency invoice %}{{ invoice.total|floatformat:"2" }}
+              </p>
+            {% endif %}
+          </div>
+        </div>
       {% empty %}
         <div class="tr">
           <div class="td td-width-2">

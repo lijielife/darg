@@ -37,13 +37,13 @@
     <div ng-hide="!operator.company.current_subscription">
 
       <!-- ACTIONS -->
-      <div class="panel" ng-hide="!user.operator_set.length">
+      <div class="panel" ng-hide="!user.operator_set.length || operator.company.subscription_permissions.indexOf('create_shareholders') == -1">
         <a class="btn-inline align-left" href="" ng-click="show_add_shareholder_form()">
           {% endverbatim %}{% trans "Add Shareholder" %}{% verbatim %}
         </a>
       </div>
 
-      <div id="add_shareholder" ng-hide="!user.operator_set.length  || !show_add_shareholder">
+      <div id="add_shareholder" ng-hide="!user.operator_set.length  || !show_add_shareholder || operator.company.subscription_permissions.indexOf('create_shareholders') == -1">
         {% endverbatim %}{% include "_add_shareholder_form.html" %}{% verbatim %}
       </div>
 
@@ -52,7 +52,7 @@
         {% endverbatim %}{% trans "Shareholderr added. record share transfers here" %}{% verbatim %}
       </p>
 
-  	<!-- --- SHARES --- -->
+  	<!-- SHARES -->
   	<h2 ng-show="shareholders.length" >{% endverbatim %}{% trans "Share Ownership" %}{% verbatim %}</h2>
 
       <!-- TABLE ACTIONS -->

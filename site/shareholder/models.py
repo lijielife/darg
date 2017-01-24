@@ -414,6 +414,32 @@ class Company(AddressModelMixin, models.Model):
     def securities_count(self):
         return self.security_set.count()
 
+    @property
+    def subscription_permissions(self):
+        """
+        return list of permission that are dependent on subscription features
+        """
+        permissions = []
+        plan_name = self.get_current_subscription_plan()
+        plan = settings.DJSTRIPE_PLANS.get(plan_name, {})
+        for feature_name, feature_config in plan.get('features', {}).items():
+            if feature_config:
+                action_validators = feature_config.get('validators', {})
+                for action, validators in action_validators.items():
+                    action_valid = True
+                    for validator in validators:
+                        validator_class = import_string(validator)
+                        try:
+                            validator_class(self)()
+                        except ValidationError:
+                            action_valid = False
+
+                    if action_valid:
+                        permission_name = '{}_{}'.format(action, feature_name)
+                        permissions.append(permission_name)
+
+        return permissions
+
 
 class UserProfile(AddressModelMixin, models.Model):
 

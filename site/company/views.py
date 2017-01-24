@@ -12,7 +12,7 @@ from django.views.generic import View, ListView, DetailView
 import stripe
 
 from braces.views import CsrfExemptMixin
-from djstripe.models import Customer, CurrentSubscription, Charge
+from djstripe.models import Customer, CurrentSubscription, Invoice
 from djstripe.settings import (PAYMENT_PLANS, subscriber_request_callback,
                                CANCELLATION_AT_PERIOD_END)
 from djstripe.sync import sync_subscriber
@@ -56,6 +56,31 @@ class SubscriptionsListView(ListView):
         company_ids = self.request.user.operator_set.all().values_list(
             'company_id')
         return Company.objects.filter(pk__in=company_ids)
+
+    def get(self, request, *args, **kwargs):
+        self.object_list = self.get_queryset()
+        if self.object_list.count() == 1:
+            # redirect to company subscription account page
+            return redirect(
+                'djstripe:account', company_id=self.object_list.first().pk)
+
+        allow_empty = self.get_allow_empty()
+
+        if not allow_empty:
+            # When pagination is enabled and object_list is a queryset,
+            # it's better to do a cheap query than to load the unpaginated
+            # queryset in memory.
+            if (self.get_paginate_by(self.object_list) is not None
+                    and hasattr(self.object_list, 'exists')):
+                is_empty = not self.object_list.exists()
+            else:
+                is_empty = len(self.object_list) == 0
+            if is_empty:
+                raise Http404(
+                    _("Empty list and '%(class_name)s.allow_empty' is False.")
+                    % {'class_name': self.__class__.__name__})
+        context = self.get_context_data()
+        return self.render_to_response(context)
 
 
 subscriptions = login_required(SubscriptionsListView.as_view())
@@ -252,15 +277,15 @@ class SubscribeView(CompanyOperatorPermissionRequiredViewMixin,
         return context
 
 
-class ChargeDetailView(CompanyOperatorPermissionRequiredViewMixin,
-                       SubscriptionViewCompanyObjectMixin, DetailView):
+class InvoiceDetailView(CompanyOperatorPermissionRequiredViewMixin,
+                        SubscriptionViewCompanyObjectMixin, DetailView):
     """
     return PDF of invoice/charge
     """
 
     def get_queryset(self):
         company_pk = self.kwargs.get('company_id', 0)
-        return Charge.objects.filter(customer__subscriber_id=company_pk)
+        return Invoice.objects.filter(customer__subscriber_id=company_pk)
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -285,6 +310,4 @@ confirm = ConfirmFormView.as_view()
 subscribe = SubscribeView.as_view()
 change_plan = ChangePlanView.as_view()
 # cancel_subscription = CancelSubscriptionView.as_view()
-
-# NOTE: naming is a bit weird but makes sense for user
-invoice = ChargeDetailView.as_view()
+invoice = InvoiceDetailView.as_view()

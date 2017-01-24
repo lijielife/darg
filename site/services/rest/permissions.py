@@ -1,5 +1,7 @@
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.utils.module_loading import import_string
 
 from rest_framework import permissions
 
@@ -128,20 +130,14 @@ class SubscriptionPermission(permissions.BasePermission):
                 continue
 
             # got config
-
-            # check for max count (create action)
-            if 'max' in feature_config and view.action == 'create':
-                method_name = '{}_count'.format(feature)
-                method = getattr(company, method_name, None)
-                if not method:
-                    # logger?
-                    continue
-
-                # check if +1 (create) is possible
-                value = method()
-                if (isinstance(value, int) and
-                        isinstance(feature_config['max'], int)):
-                    return value + 1 <= feature_config['max']
+            validators = feature_config.get('validators').get(view.action, [])
+            for validator in validators:
+                validator_class = import_string(validator)
+                try:
+                    validator_class(company)()
+                except ValidationError as err:
+                    self.message = {feature: err.messages}
+                    return False
 
         return True
 

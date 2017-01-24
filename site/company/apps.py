@@ -36,9 +36,10 @@ class CompanyAppConfig(AppConfig):
         from . import signals  # NOQA
 
         # overwrite 3rd party app model method
-        self._tweak_djstripe_charge_send_receipt()
+        self._tweak_djstripe_charge()
+        # self._tweak_djstripe_invoice()
 
-    def _tweak_djstripe_charge_send_receipt(self):
+    def _tweak_djstripe_charge(self):
 
         # override receipt email sending to provide html email and attachment
         from django.contrib.sites.models import Site

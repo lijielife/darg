@@ -4,28 +4,27 @@
 {% block content %}
   <h1>{% trans "Subscriptions of your companies" %}</h1>
 
-  <div class="row">
-    <div class="col-sm-12">
-      <table class="table table-hover">
-        <thead>
-          <th>{% trans "Company" %}</th>
-          <th colspan="2">{% trans "Subscription" %}</th>
-        </thead>
-        <tbody>
-          {% for object in object_list %}
-            <tr>
-              <td><strong>{{ object.name }}</strong></td>
-              <td>{{ object.get_current_subscription_plan_display }}</td>
-              <td>
-                <a href="{% url 'djstripe:account' object.pk %}" class="btn btn-primary">
-                  {% trans "View" %}
-                </a>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+  <div class="table">
+    <div class="tr th">
+      <div class="td td-width-2">{% trans "Company" %}</div>
+      <div class="td td-width-2">{% trans "Subscription" %}</div>
+      <div class="td">&nbsp;</div>
     </div>
+    {% for object in object_list %}
+      <div class="tr">
+        <div class="td td-width-2">
+          {{ object.name }}
+        </div>
+        <div class="td td-width-2">
+          {{ object.get_current_subscription_plan_display }}
+        </div>
+        <div class="td text-right-flex">
+          <a href="{% url 'djstripe:account' object.pk %}" class="btn btn-primary">
+            {% trans "View" %}
+          </a>
+        </div>
+      </div>
+    {% endfor %}
   </div>
 
 {% endblock content %}

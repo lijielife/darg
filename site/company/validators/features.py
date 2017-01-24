@@ -1,12 +1,13 @@
 
 
 from django.conf import settings
+from django.core.validators import MaxValueValidator
 from django.utils.translation import ugettext_lazy as _
 
 from .base import BaseCompanyValidator
 
 
-class ShareholderCountValidator(BaseCompanyValidator):
+class ShareholderCountPlanValidator(BaseCompanyValidator):
     """
     check if company fulfills shareholder count requirement for given plan
 
@@ -27,9 +28,10 @@ class ShareholderCountValidator(BaseCompanyValidator):
             raise ValueError(
                 'Could not find a plan named "{}"'.format(plan_name))
 
-        shareholder_feature = plan.get('features', {}).get('shareholders', {})
-        max_shareholder_count = shareholder_feature.get('max')
-        shareholder_count = self.company.shareholder_count()
+        shareholders_feature = plan.get('features', {}).get('shareholders', {})
+        max_shareholder_count = shareholders_feature.get('max')
+        # FIXME: use company.shareholder_count for only active shareholders?
+        shareholder_count = self.company.shareholder_set.count()
         if (max_shareholder_count
                 and shareholder_count > max_shareholder_count):
             error_message = self.message.format(
@@ -38,7 +40,7 @@ class ShareholderCountValidator(BaseCompanyValidator):
             self.raise_execption(error_message, code=self.code)
 
 
-class SecurityCountValidator(BaseCompanyValidator):
+class SecurityCountPlanValidator(BaseCompanyValidator):
     """
     check if company fulfills security count requirement for given plan
 
@@ -67,3 +69,33 @@ class SecurityCountValidator(BaseCompanyValidator):
                 **dict(count=security_count,
                        max_securities=max_security_count,)),
             self.raise_execption(error_message[0], code=self.code)
+
+
+class ShareholderCreateMaxCountValidator(BaseCompanyValidator):
+    """
+    check if given company subscription allow addition of shareholder
+    """
+
+    def __call__(self):
+        # FIXME: use company.shareholder_count for only active shareholders?
+        company_shareholders = self.company.shareholder_set.count()
+        plan = settings.DJSTRIPE_PLANS.get(
+            self.company.get_current_subscription_plan(), {})
+        shareholders_feature = plan.get('features', {}).get('shareholders', {})
+        max_shareholders = shareholders_feature.get('max')
+        return MaxValueValidator(max_shareholders)(company_shareholders + 1)
+
+
+class SecurityCreateMaxCountValidator(BaseCompanyValidator):
+    """
+    check if given company subscription allow addition of security
+    """
+
+    def __call__(self):
+        # FIXME: use company.shareholder_count for only active shareholders?
+        company_securities = self.company.security_set.count()
+        plan = settings.DJSTRIPE_PLANS.get(
+            self.company.get_current_subscription_plan(), {})
+        security_feature = plan.get('features', {}).get('securities', {})
+        max_securities = security_feature.get('max')
+        return MaxValueValidator(max_securities)(company_securities + 1)
