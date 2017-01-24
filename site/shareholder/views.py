@@ -13,13 +13,14 @@ from django.views.generic import ListView, DetailView
 
 from sendfile import sendfile
 
+from company.mixins import SubscriptionViewMixin
 from shareholder.models import (Shareholder, OptionPlan, ShareholderStatement,
-                                ShareholderStatementReport, Position,
-                                OptionTransaction)
+                                Position, OptionTransaction)
 from project.permissions import OperatorPermissionRequiredMixin
 from utils.formatters import human_readable_segments
 
-from .mixins import AuthTokenSingleViewMixin
+from .mixins import (AuthTokenSingleViewMixin,
+                     ShareholderStatementReportViewMixin)
 
 
 @login_required
@@ -60,7 +61,8 @@ class ShareholderView(OperatorPermissionRequiredMixin, DetailView):
     context_object_name = 'shareholder'
 
     def get_context_data(self, *args, **kwargs):
-        context = super(ShareholderView, self).get_context_data(*args, **kwargs)
+        context = super(ShareholderView, self).get_context_data(
+            *args, **kwargs)
 
         shareholder = self.get_object()
         securities = shareholder.company.security_set.all()
@@ -108,6 +110,7 @@ def optionsplan_download_img(request, optionsplan_id):
 class StatementListView(ListView):
 
     template_name = 'statement_list.html'  # in shareholder/templates
+    allow_empty = False
 
     def get_queryset(self):
         qs = ShareholderStatement.objects.filter(user=self.request.user)
@@ -192,32 +195,20 @@ class StatementDownloadPDFView(AuthTokenSingleViewMixin, DetailView):
 statement_download_pdf = StatementDownloadPDFView.as_view()
 
 
-class StatementReportListView(ListView):
+class StatementReportListView(ShareholderStatementReportViewMixin,
+                              SubscriptionViewMixin, ListView):
 
     template_name = 'statement_report_list.html'  # in shareholder/templates
     allow_empty = False
-
-    def get_queryset(self):
-        company_ids = self.request.user.operator_set.values_list(
-            'company_id', flat=True)
-        # TODO: check for company subscription
-        qs = ShareholderStatementReport.objects.filter(company__in=company_ids)
-        return qs.order_by('company__name')
 
 
 statement_report_list = login_required(StatementReportListView.as_view())
 
 
-class StatementReportDetailView(DetailView):
+class StatementReportDetailView(ShareholderStatementReportViewMixin,
+                                SubscriptionViewMixin, DetailView):
 
     template_name = 'statement_report_detail.html'  # in shareholder/templates
-
-    def get_queryset(self):
-        company_ids = self.request.user.operator_set.values_list(
-            'company_id', flat=True)
-        # TODO: check for company subscription
-        qs = ShareholderStatementReport.objects.filter(company__in=company_ids)
-        return qs
 
 
 statement_report_detail = login_required(StatementReportDetailView.as_view())

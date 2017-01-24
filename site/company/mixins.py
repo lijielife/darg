@@ -65,3 +65,38 @@ class SubscriptionMixin(object):
             features = [features]
 
         return all(subscriber.has_feature_enabled(f) for f in features)
+
+
+class SubscriptionViewMixin(SubscriptionMixin):
+    """
+    mixin to handle subscription for view(set)s
+    """
+
+    COMPANY_QUERY_VAR = 'company'
+    subscription_features = []
+
+    def get_user_companies(self):
+        raise NotImplementedError(
+            u'{} needs to implement get_user_companies'.format(self.__class__))
+
+    def get_company_pks(self):
+        """
+        return a list of
+        """
+        company_qs = self.get_user_companies()
+
+        if hasattr(self.request, 'query_params'):
+            query_params = self.request.query_params
+        else:
+            query_params = getattr(self.request, self.request.method)
+        q_cpks = query_params.getlist(self.COMPANY_QUERY_VAR)
+        query_companies = map(int, [cpk for cpk in q_cpks if cpk.isdigit()])
+        if query_companies:
+            company_qs = company_qs.filter(pk__in=query_companies)
+
+        company_pks = []
+        for company in company_qs:
+            if self.check_subscription(company, self.subscription_features):
+                company_pks.append(company.pk)
+
+        return company_pks

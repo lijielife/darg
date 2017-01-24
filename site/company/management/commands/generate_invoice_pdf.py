@@ -2,15 +2,15 @@
 from django.core.management import BaseCommand
 from django.utils.translation import ugettext_lazy as _
 
-from djstripe.models import Charge
+from djstripe.models import Invoice
 
 
 class Command(BaseCommand):
 
-    help = _('(Re)Generate PDF for invoice/charge')
+    help = _('(Re)Generate PDF for invoice')
 
     def add_arguments(self, parser):
-        parser.add_argument('charge_id', nargs='+', type=int)
+        parser.add_argument('invoice_id', nargs='+', type=int)
 
         parser.add_argument(
             '-f',
@@ -22,12 +22,12 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        for pk in options.get('charge_id'):
-            obj = Charge.objects.filter(pk=pk).first()
+        for pk in options.get('invoice_id'):
+            obj = Invoice.objects.filter(pk=pk).first()
             if obj is None:
                 error_message = _(
-                    'Could not find Charge with id {}! Skipping...').format(pk)
-                self.stdout.write(error_message)
+                    'Could not find Invoice with id {}! Skipping...')
+                self.stdout.write(error_message.format(pk))
                 continue
 
             obj._generate_invoice_pdf(override_existing=options.get('force'))

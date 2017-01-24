@@ -5,55 +5,48 @@
 {% block content %}
   <h2>{% trans "Your shareholder statements reports" %}</h2>
 
-  <div>
+  {% for object in object_list %}
+    {% ifchanged object.company_id %}
+      {% if not forloop.first and not forloop.last %}</div><hr />{% endif %}
+      <h3>{{ object.company }}</h3>
 
-    {% for object in object_list %}
-      {% ifchanged object.company_id %}
-        {% if not forloop.last %}</table><hr />{% endif %}
-        <h3>{{ object.company }}</h3>
-        <table class="table">
-          <thead>
-            <tr>
-              <th title="{% trans 'Date when report was created' %}">
-                {% trans "Date" %}
-              </th>
-              <th title="{% trans 'Number of generated statements' %}">
-                {% trans "Count" %}
-              </th>
-              <th title="{% trans 'Number of statements sent to shareholder via email' %}">
-                {% trans "email" %}
-              </th>
-              <th title="{% trans 'Number of shareholders that opened statement email' %}">
-                {% trans "Opened" %}
-              </th>
-              <th title="{% trans 'Number of shareholders that downloaded statement PDF' %}">
-                {% trans "Downloaded" %}
-              </th>
-              <th title="{% trans 'Number of shareholders the statment was sent via letter' %}">
-                {% trans "Letter" %}
-              </th>
-            </tr>
-          </thead>
-      {% endifchanged %}
+      <div class="table">
+        <div class="tr th">
+          <div class="td" title="{% trans 'Date when report was created' %}">
+            {% trans "Date" %}
+          </div>
+          <div class="td" title="{% trans 'Number of generated statements' %}">
+            {% trans "Count" %}
+          </div>
+          <div class="td" title="{% trans 'Number of statements sent to shareholder via email' %}">
+            {% trans "email" %}
+          </div>
+          <div class="td" title="{% trans 'Number of shareholders that opened statement email' %}">
+            {% trans "Opened" %}
+          </div>
+          <div class="td" title="{% trans 'Number of shareholders that downloaded statement PDF' %}">
+            {% trans "Downloaded" %}
+          </div>
+          <div class="td" title="{% trans 'Number of shareholders the statment was sent via letter' %}">
+            {% trans "Letter" %}
+          </div>
+        </div>
+    {% endifchanged %}
 
-      <tbody>
-        <tr class="panel">
-          <td>
-            <a href="{% url 'statement_report' object.pk %}">
-              {{ object.report_date|date:"SHORT_DATE_FORMAT" }}
-            </a>
-          </td>
-          <td>{{ object.statement_count }}</td>
-          <td>{{ object.statement_sent_count }}</td>
-          <td>{{ object.statement_opened_count }}</td>
-          <td>{{ object.statement_downloaded_count }}</td>
-          <td>{{ object.statement_letter_count }}</td>
-        </tr>
-      </tbody>
+    <div class="tr">
+      <div class="td">
+        <a href="{% url 'statement_report' object.pk %}">
+          {{ object.report_date|date:"SHORT_DATE_FORMAT" }}
+        </a>
+      </div>
+      <div class="td">{{ object.statement_count }}</div>
+      <div class="td">{{ object.statement_sent_count }}</div>
+      <div class="td">{{ object.statement_opened_count }}</div>
+      <div class="td">{{ object.statement_downloaded_count }}</div>
+      <div class="td">{{ object.statement_letter_count }}</div>
+    </div>
 
-    {% endfor %}
-
-    </table>
+  {% endfor %}
 
   </div>
 

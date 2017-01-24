@@ -37,11 +37,13 @@ class CompanyAppConfig(AppConfig):
 
         # overwrite 3rd party app model method
         self._tweak_djstripe_charge()
-        # self._tweak_djstripe_invoice()
+        self._tweak_djstripe_invoice()
 
     def _tweak_djstripe_charge(self):
+        """
+        override receipt email sending to provide html email and attachment
+        """
 
-        # override receipt email sending to provide html email and attachment
         from django.contrib.sites.models import Site
         from djstripe.models import Charge
 
@@ -82,9 +84,10 @@ class CompanyAppConfig(AppConfig):
                     logger.exception(error_message)
 
                 # generate invoice pdf
-                try:
-                    pdf_invoice = self._generate_invoice_pdf()
-                except Exception as ex:
+                if self.invoice:
+                    pdf_invoice = self.invoice._generate_invoice_pdf(
+                        override_existing=True)
+                else:
                     pdf_invoice = None
 
                 include_invoice_items = getattr(
@@ -142,6 +145,49 @@ class CompanyAppConfig(AppConfig):
 
         Charge._get_customer_data = _get_customer_data
 
+        def _get_template_context(self):
+            """
+            get context for templates (email)
+            """
+            if self.invoice:
+                invoice_items = self.invoice.items.all().order_by(
+                    '-line_type', '-period_start')
+            else:
+                invoice_items = []
+
+            context = dict(
+                charge=self,
+                # invoice=self.invoice,
+                invoice_items=invoice_items,
+                company=self.customer.subscriber,
+                site=Site.objects.get_current(),
+                STATIC_URL=settings.STATIC_URL,
+                include_vat=settings.COMPANY_INVOICE_INCLUDE_VAT,
+                plan=settings.DJSTRIPE_PLANS.get(
+                    self.customer.current_subscription.plan, {}),
+                protocol=settings.DEFAULT_HTTP_PROTOCOL
+            )
+
+            if context['include_vat']:
+                net = self.amount / (100 + settings.COMPANY_INVOICE_VAT) * 100
+                vat_value = self.amount - net
+                context.update(dict(
+                    vat=settings.COMPANY_INVOICE_VAT,
+                    vat_value=vat_value
+                ))
+
+            return context
+
+        Charge._get_template_context = _get_template_context
+
+    def _tweak_djstripe_invoice(self):
+        """
+        add pdf invoice handling
+        """
+
+        from django.contrib.sites.models import Site
+        from djstripe.models import Invoice
+
         def _generate_invoice_pdf(self, override_existing=False):
             """
             create a PDF invoice for charge
@@ -184,7 +230,7 @@ class CompanyAppConfig(AppConfig):
 
             return pdf_filepath
 
-        Charge._generate_invoice_pdf = _generate_invoice_pdf
+        Invoice._generate_invoice_pdf = _generate_invoice_pdf
 
         def _get_invoice_pdf_path_for_company(self, company):
             """
@@ -197,7 +243,7 @@ class CompanyAppConfig(AppConfig):
                 os.makedirs(path)
             return path
 
-        Charge._get_invoice_pdf_path_for_company = (
+        Invoice._get_invoice_pdf_path_for_company = (
             _get_invoice_pdf_path_for_company)
 
         def _get_pdf_filepath(self):
@@ -210,7 +256,7 @@ class CompanyAppConfig(AppConfig):
                 settings.COMPANY_INVOICE_FILENAME, self.pk)
             return os.path.join(pdf_dir, pdf_filename)
 
-        Charge._get_pdf_filepath = _get_pdf_filepath
+        Invoice._get_pdf_filepath = _get_pdf_filepath
 
         def _has_invoice_pdf(self):
             """
@@ -219,20 +265,19 @@ class CompanyAppConfig(AppConfig):
             filepath = self._get_pdf_filepath()
             return os.path.exists(filepath) and os.path.isfile(filepath)
 
-        Charge.has_invoice_pdf = property(_has_invoice_pdf)
+        Invoice.has_invoice_pdf = property(_has_invoice_pdf)
 
         def _get_template_context(self):
             """
-            get context for templates (pdf & email)
+            get context for template (pdf)
             """
-            if self.invoice:
-                invoice_items = self.invoice.items.all().order_by(
-                    '-line_type', '-period_start')
-            else:
-                invoice_items = []
+
+            invoice_items = self.items.all().order_by(
+                '-line_type', '-period_start')
 
             context = dict(
-                charge=self,
+                # charge=self,
+                invoice=self,
                 invoice_items=invoice_items,
                 company=self.customer.subscriber,
                 site=Site.objects.get_current(),
@@ -244,8 +289,8 @@ class CompanyAppConfig(AppConfig):
             )
 
             if context['include_vat']:
-                net = self.amount / (100 + settings.COMPANY_INVOICE_VAT) * 100
-                vat_value = self.amount - net
+                net = self.total / (100 + settings.COMPANY_INVOICE_VAT) * 100
+                vat_value = self.total - net
                 context.update(dict(
                     vat=settings.COMPANY_INVOICE_VAT,
                     vat_value=vat_value
@@ -253,4 +298,4 @@ class CompanyAppConfig(AppConfig):
 
             return context
 
-        Charge._get_template_context = _get_template_context
+        Invoice._get_template_context = _get_template_context

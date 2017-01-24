@@ -68,14 +68,14 @@
             </td>
           </tr>
           <tr>
-            <td colspan="2" class="pull-right">{{ charge.charge_created|date:"DATE_FORMAT" }}</td>
+            <td colspan="2" class="pull-right">{{ invoice.date|date:"DATE_FORMAT" }}</td>
           </tr>
         </table>
       </div>
 
       <div class="invoice content">
         <h1>
-          {% trans "Invoice" %} #darg-{{ charge.pk }}
+          {% trans "Invoice" %} #darg-{{ invoice.pk }}
         </h1>
 
         <table>
@@ -91,7 +91,7 @@
             <tr class="row {% cycle 'odd' 'even' %}">
               <td class="item wide" colspan="2">
                 {% ifequal item.line_type 'subscription' %}
-                  {% trans "Subscription" %} {{ charge.customer.current_subscription.plan_display }}
+                  {% trans "Subscription" %} {{ invoice.customer.current_subscription.plan_display }}
                 {% else %}
                   {{ item.description }}
                 {% endifequal %}
@@ -111,7 +111,7 @@
           <tr class="row {% invoice_get_total_css_class invoice_items|length include_vat %}">
             <td class="item">&nbsp;</td>
             <td class="center">{% trans "Total" %}</td>
-            <td class="amount center">{{ charge.amount|floatformat:2 }}</td>
+            <td class="amount center">{{ invoice.total|floatformat:2 }}</td>
           </tr>
         </table>
       </div>

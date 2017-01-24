@@ -118,3 +118,23 @@ class AddressModelMixin(models.Model):
 
         if save:
             self.save()
+
+
+class ShareholderStatementReportViewMixin(object):
+    """
+    mixin for shareholder statement report views
+    """
+
+    subscription_features = ['shareholder_statements']
+
+    def get_user_companies(self):
+        from shareholder.models import Company
+        if not self.request.user.is_authenticated():
+            return Company.objects.none()
+        return Company.objects.filter(operator__user=self.request.user)
+
+    def get_queryset(self):
+        from shareholder.models import ShareholderStatementReport
+        qs = ShareholderStatementReport.objects.filter(
+            company__in=self.get_company_pks())
+        return qs.order_by('company__name', '-report_date')

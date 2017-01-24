@@ -130,8 +130,9 @@ class SubscriptionPermission(permissions.BasePermission):
                 continue
 
             # got config
-            validators = feature_config.get('validators').get(view.action, [])
-            for validator in validators:
+            validators = feature_config.get('validators', {})
+            action_validators = validators.get(view.action, [])
+            for validator in action_validators:
                 validator_class = import_string(validator)
                 try:
                     validator_class(company)()

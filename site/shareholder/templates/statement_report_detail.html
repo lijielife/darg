@@ -8,44 +8,35 @@
   <h2>{% trans "Shareholder Statement Report" %}</h2>
   <h3>{{ object.company }} - {{ object.report_date }}</h3>
   <hr />
-  <div>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>{% trans "User" %}</th>
-          <th title="{% trans 'Statement email sent to shareholder' %}">
-            {% trans "email" %}
-          </th>
-          <th title="{% trans 'Statement email was opened' %}">
-            {% trans "Opened" %}
-          </th>
-          <th title="{% trans 'Statement PDF was downloaded' %}">
-            {% trans "Downloaded" %}
-          </th>
-          <th title="{% trans 'Statement letter was sent to shareholder' %}">
-            {% trans "Letter" %}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for statement in object.shareholderstatement_set.all %}
-          <tr class="panel">
-            <td>{{ statement.user|user_name }}</td>
-            <td>{{ statement.email_sent_at|date:"SHORT_DATETIME_FORMAT" }}</td>
-            <td>{{ statement.email_opened_at|date:"SHORT_DATETIME_FORMAT" }}</td>
-            <td>{{ statement.pdf_downloaded_at|date:"SHORT_DATETIME_FORMAT" }}</td>
-            <td>{{ statement.letter_sent_at|date:"SHORT_DATETIME_FORMAT" }}</td>
-          </tr>
-        {% empty %}
-        <tr>
-          <td colspan="5">
-            <span class="note">{% trans "No statements found." %}</span>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
 
+  <div class="table">
+    <div class="tr th">
+      <div class="td td-width-2">{% trans "User" %}</div>
+      <div class="td" title="{% trans 'Statement email sent to shareholder' %}">
+        {% trans "email" %}
+      </div>
+      <div class="td" title="{% trans 'Statement email was opened' %}">
+        {% trans "Opened" %}
+      </div>
+      <div class="td" title="{% trans 'Statement PDF was downloaded' %}">
+        {% trans "Downloaded" %}
+      </div>
+      <div class="td" title="{% trans 'Statement letter was sent to shareholder' %}">
+        {% trans "Letter" %}
+      </div>
+    </div>
+
+    {% for statement in object.shareholderstatement_set.all %}
+      <div class="tr">
+        <div class="td td-width-2">{{ statement.user|user_name }}</div>
+        <div class="td">{{ statement.email_sent_at|date:"SHORT_DATETIME_FORMAT" }}</div>
+        <div class="td">{{ statement.email_opened_at|date:"SHORT_DATETIME_FORMAT" }}</div>
+        <div class="td">{{ statement.pdf_downloaded_at|date:"SHORT_DATETIME_FORMAT" }}</div>
+        <div class="td">{{ statement.letter_sent_at|date:"SHORT_DATETIME_FORMAT" }}</div>
+      </div>
+    {% empty %}
+      <p class="note">{% trans "No statements found." %}</p>
+    {% endfor %}
   </div>
 
 {% endblock content %}

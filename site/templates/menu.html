@@ -35,21 +35,6 @@
               <li {% ifequal request.path options_url %}class="active"{% endifequal %}>
                 <a href="{{options_url}}">{% trans "Options" %}</a>
               </li>
-              {% if request.user.shareholderstatement_set.count %}
-                {% url 'statements' as statements_url %}
-                <li {% if request.path == statements_url %}class="active"{% endif %}>
-                  <a href="{{statements_url}}" class="pull-right">{% trans "Statements" %}</a>
-                </li>
-              {% endif %}
-              {% if request.user|has_shareholderstatement_reports %}
-                {% url 'statement_reports' as statement_reports_url %}
-                <li {% if request.path|slice:':20' == statement_reports_url %}class="active"{% endif %}>
-                  <a href="{{statement_reports_url}}" class="pull-right"
-                     title="{% trans 'Statement reports' %}">
-                    {% trans "Reports" %}
-                  </a>
-                </li>
-              {% endif %}
             {% endif %}
           </ul>
 
@@ -67,30 +52,48 @@
                   </span>
                   </span>
                 </a>
-                  <ul class="dropdown-menu">
-                    {% if request.user.is_superuser %}
-                      <li>
-                        <a href="{% url 'admin:index' %}" target="_blank">{% trans "Admin" %}</a>
-                      </li>
-                      <li>
-                        <a href="/rosetta/" target="_blank">{% trans "I18N" %}</a>
-                      </li>
-                    {% endif %}
-                      <li>
-                        <a href="{% url "auth_password_change" %}" title="{% trans "Reset password" %}" class="btn-inline">
-                          {% trans "Change password" %}
-                        </a>
-                      </li>
-                      <li><a href="{% url "two_factor:profile" %}">{% trans "Security Settings" %}</a></li>
-                      {% if user.operator_set.count %}
-                        <li>
-                          <a href="{% url 'subscriptions' %}">{% trans "Subscriptions" %}</a>
-                        </li>
-                      {% endif %}
-                      <li>
-                        <a href="{% url "auth_logout" %}">{% trans "Logout" %}</a>
+                <ul class="dropdown-menu">
+                  {% if request.user.is_superuser %}
+                    <li>
+                      <a href="{% url 'admin:index' %}" target="_blank">{% trans "Admin" %}</a>
                     </li>
-                  </ul>
+                    <li>
+                      <a href="/rosetta/" target="_blank">{% trans "I18N" %}</a>
+                    </li>
+                  {% endif %}
+                  <li>
+                    <a href="{% url "auth_password_change" %}" title="{% trans "Reset password" %}" class="btn-inline">
+                      {% trans "Change password" %}
+                    </a>
+                  </li>
+                  <li><a href="{% url "two_factor:profile" %}">{% trans "Security Settings" %}</a></li>
+                  {% if user.operator_set.count %}
+                    <li>
+                      <a href="{% url 'subscriptions' %}">{% trans "Subscriptions" %}</a>
+                    </li>
+                  {% endif %}
+                  {# FIXME: maybe(?) check for company subscription(s) #}
+                  {% if request.user.shareholderstatement_set.count %}
+                    {% url 'statements' as statements_url %}
+                    <li>
+                      <a href="{{statements_url}}">
+                        {% trans "Statements" %}
+                      </a>
+                    </li>
+                  {% endif %}
+                  {% if request.user|has_shareholderstatement_reports %}
+                    {% url 'statement_reports' as statement_reports_url %}
+                    <li>
+                      <a href="{{statement_reports_url}}"
+                         title="{% trans 'Statement reports' %}">
+                        {% trans "Reports" %}
+                      </a>
+                    </li>
+                  {% endif %}
+                  <li>
+                    <a href="{% url "auth_logout" %}">{% trans "Logout" %}</a>
+                  </li>
+                </ul>
               </li>
             {% else %}
               <li>

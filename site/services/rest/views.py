@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import filters
 
+from company.mixins import SubscriptionViewMixin
 from services.rest.permissions import (SafeMethodsOnlyPermission,
                                        UserCanAddCompanyPermission,
                                        UserCanEditCompanyPermission,
@@ -29,15 +30,13 @@ from shareholder.models import (Company, Country, Operator, OptionPlan,
                                 OptionTransaction, Position, Security,
                                 Shareholder)
 
-from .mixins import SubscriptionViewSetMixin
-
 
 User = get_user_model()
 
 
 # --- VIEWSETS
 
-class ShareholderViewSet(SubscriptionViewSetMixin, viewsets.ModelViewSet):
+class ShareholderViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
@@ -322,7 +321,7 @@ class InviteeUpdateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class PositionViewSet(SubscriptionViewSetMixin, viewsets.ModelViewSet):
+class PositionViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
     """ API endpoint to get positions """
     serializer_class = PositionSerializer
     pagination_class = SmallPagePagination
@@ -377,7 +376,7 @@ class PositionViewSet(SubscriptionViewSetMixin, viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST)
 
 
-class SecurityViewSet(SubscriptionViewSetMixin, viewsets.ReadOnlyModelViewSet):
+class SecurityViewSet(SubscriptionViewMixin, viewsets.ReadOnlyModelViewSet):
     """ API endpoint to get options """
     serializer_class = SecuritySerializer
     permission_classes = [
@@ -395,7 +394,7 @@ class SecurityViewSet(SubscriptionViewSetMixin, viewsets.ReadOnlyModelViewSet):
         return Security.objects.filter(company_id__in=self.get_company_pks())
 
 
-class OptionPlanViewSet(SubscriptionViewSetMixin, viewsets.ModelViewSet):
+class OptionPlanViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
     """ API endpoint to get options """
     serializer_class = OptionPlanSerializer
     permission_classes = [
@@ -431,7 +430,7 @@ class OptionPlanViewSet(SubscriptionViewSetMixin, viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST)
 
 
-class OptionTransactionViewSet(SubscriptionViewSetMixin,
+class OptionTransactionViewSet(SubscriptionViewMixin,
                                viewsets.ModelViewSet):
     """ API endpoint to get options """
     serializer_class = OptionTransactionSerializer
