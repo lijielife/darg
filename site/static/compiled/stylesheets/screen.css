@@ -2533,10 +2533,43 @@ blockquote p.says:before {
   margin-top: -1px;
 }
 
-div.members-area ul li {
+.core .container.members-area .footer {
+  width: 100%;
+  text-align: center;
+}
+.core .container.members-area .login-meta a {
+  margin-bottom: 15px;
+}
+.core .container.members-area .two_factor_auth {
+  max-width: 230px;
+  margin: 0 auto;
+}
+.core .container.members-area .two_factor_auth .auth {
+  margin-bottom: 15px;
+}
+.core .container.members-area .two_factor_auth .auth .btn {
+  width: 100%;
+  margin-bottom: 5px;
+}
+.core .container.members-area .two_factor_auth .auth .btn.btn-disabled {
+  display: none;
+}
+.core .container.members-area .two_factor_auth .auth .btn.btn-link {
+  display: none;
+}
+.core .container.members-area .two_factor_auth .auth th {
+  display: none;
+}
+.core .container.members-area .two_factor_auth .auth tr {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-flow: column;
+  flex-flow: column;
+}
+.core .container.members-area ul li {
   list-style: none;
 }
-div.members-area ul.errorlist {
+.core .container.members-area ul.errorlist {
   padding: 0;
 }
 
