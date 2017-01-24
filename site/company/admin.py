@@ -10,7 +10,7 @@ from django.core.management import call_command
 # from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
 
-from djstripe.admin import Charge, send_charge_receipt
+from djstripe.admin import Charge, send_charge_receipt, Plan
 
 
 class ChargeAdmin(admin.ModelAdmin):
@@ -101,3 +101,6 @@ class ChargeAdmin(admin.ModelAdmin):
 
 admin.site.unregister(Charge)
 admin.site.register(Charge, ChargeAdmin)
+
+# since we need to extra configuration for plans, we do this in settings
+admin.site.unregister(Plan)

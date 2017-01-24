@@ -15,7 +15,8 @@ from rest_framework import filters
 from services.rest.permissions import (SafeMethodsOnlyPermission,
                                        UserCanAddCompanyPermission,
                                        UserCanEditCompanyPermission,
-                                       UserIsOperatorPermission)
+                                       UserIsOperatorPermission,
+                                       SubscriptionPermission)
 from services.rest.serializers import (AddCompanySerializer, CompanySerializer,
                                        CountrySerializer, OperatorSerializer,
                                        OptionHolderSerializer,
@@ -45,6 +46,7 @@ class ShareholderViewSet(SubscriptionViewSetMixin, viewsets.ModelViewSet):
     pagination_class = SmallPagePagination
     permission_classes = [
         UserIsOperatorPermission,
+        SubscriptionPermission
     ]
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('user__first_name', 'user__last_name', 'user__email',
@@ -54,6 +56,8 @@ class ShareholderViewSet(SubscriptionViewSetMixin, viewsets.ModelViewSet):
     subscription_features = ('shareholders',)
 
     def get_user_companies(self):
+        if not self.request.user.is_authenticated():
+            return Company.objects.none()
         return Company.objects.filter(operator__user=self.request.user)
 
     def get_object(self):
@@ -91,19 +95,6 @@ class ShareholderViewSet(SubscriptionViewSetMixin, viewsets.ModelViewSet):
         """
         returns the captable part for all option holders
         """
-        # company_qs = Company.objects.filter(operator__user=self.request.user)
-        #
-        # q_cpks = self.request.query_params.getlist('company')  # filter
-        # query_companies = map(int, [cpk for cpk in q_cpks if cpk.isdigit()])
-        # if query_companies:
-        #     company_qs = company_qs.filter(pk__in=query_companies)
-        #
-        # ohs = Shareholder.objects.none()
-        # for company in company_qs:
-        #     if self.check_subscription(
-        #             company, ['shareholder_count', 'option_count']):
-        #         ohs |= company.get_active_option_holders()  # FIXME: check this
-
         self.subscription_features = ['shareholders', 'options']
         ohs = Shareholder.objects.none()
         for company in Company.objects.filter(pk__in=self.get_company_pks()):
@@ -349,6 +340,8 @@ class PositionViewSet(SubscriptionViewSetMixin, viewsets.ModelViewSet):
     subscription_features = ('positions',)
 
     def get_user_companies(self):
+        if not self.request.user.is_authenticated():
+            return Company.objects.none()
         return Company.objects.filter(operator__user=self.request.user)
 
     def get_queryset(self):
@@ -384,15 +377,18 @@ class PositionViewSet(SubscriptionViewSetMixin, viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST)
 
 
-class SecurityViewSet(SubscriptionViewSetMixin, viewsets.ModelViewSet):
+class SecurityViewSet(SubscriptionViewSetMixin, viewsets.ReadOnlyModelViewSet):
     """ API endpoint to get options """
     serializer_class = SecuritySerializer
     permission_classes = [
         UserIsOperatorPermission,
+        SubscriptionPermission
     ]
     subscription_features = ('securities',)
 
     def get_user_companies(self):
+        if not self.request.user.is_authenticated():
+            return Company.objects.none()
         return Company.objects.filter(operator__user=self.request.user)
 
     def get_queryset(self):
@@ -407,6 +403,8 @@ class OptionPlanViewSet(SubscriptionViewSetMixin, viewsets.ModelViewSet):
     ]
 
     def get_user_companies(self):
+        if not self.request.user.is_authenticated():
+            return Company.objects.none()
         return Company.objects.filter(operator__user=self.request.user)
 
     def get_queryset(self):
@@ -454,6 +452,8 @@ class OptionTransactionViewSet(SubscriptionViewSetMixin,
     subscription_features = ('positions',)
 
     def get_user_companies(self):
+        if not self.request.user.is_authenticated():
+            return Company.objects.none()
         return Company.objects.filter(operator__user=self.request.user)
 
     def get_queryset(self):

@@ -11,7 +11,8 @@ from django.utils.translation import ugettext as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from services.rest.mixins import FieldValidationMixin
+from services.rest.mixins import (FieldValidationMixin,
+                                  SubscriptionSerializerMixin)
 from services.rest.validators import DependedFieldsValidator
 from shareholder.models import (Company, Country, Operator, OptionPlan,
                                 OptionTransaction, Position, Security,
@@ -68,7 +69,8 @@ class SecuritySerializer(serializers.HyperlinkedModelSerializer,
         return instance
 
 
-class CompanySerializer(serializers.HyperlinkedModelSerializer):
+class CompanySerializer(SubscriptionSerializerMixin,
+                        serializers.HyperlinkedModelSerializer):
     security_set = SecuritySerializer(many=True, read_only=True)
     country = serializers.HyperlinkedRelatedField(
         view_name='country-detail',
@@ -317,7 +319,7 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
         # existing or new user
         user = self.context.get("request").user
 
-        # FIXME: assuming one company per user
+        # FIXME: assuming one company per user (company should be in data!)
         company = user.operator_set.all()[0].company
 
         if not validated_data.get('user').get('email'):

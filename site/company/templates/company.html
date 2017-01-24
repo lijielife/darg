@@ -163,8 +163,7 @@
       </td>
     </tr>
 
-    {# TODO: check for subscription #}
-    <tr>
+    <tr ng-show="isInList('is_statement_sending_enabled', company.subscription_features)">
       <td>{% trans "Is statement sending enabled" %}</td>
       <td>
         {% verbatim %}
@@ -176,7 +175,8 @@
       </td>
     </tr>
 
-    <tr class="statement-send-date" ng-show="company.is_statement_sending_enabled">
+    <tr class="statement-send-date"
+        ng-show="company.is_statement_sending_enabled && isInList('statement_sending_date', company.subscription_features)">
       <td>{% trans "Statement seding date" %}:</td>
       <td class="date-field">
         {% verbatim %}

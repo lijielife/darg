@@ -163,6 +163,11 @@ app.controller 'CompanyController', ['$scope', '$http', 'Company', 'Country', 'O
     $scope.open_datepicker = ->
         $scope.datepicker.opened = true
 
+    $scope.isInList = (item, list) ->
+        if list && item
+            return list.indexOf(item) > -1
+        return false
+
 ]
 
 app.run (editableOptions) ->

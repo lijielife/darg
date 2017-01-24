@@ -1,3 +1,6 @@
+
+from django.conf import settings
+
 from rest_framework import permissions
 
 
@@ -95,3 +98,63 @@ class UserCanAddInviteePermission(SafeMethodsOnlyPermission):
             # Either a list or a create, so no author
             can_add = True
         return can_add or super(UserCanAddInviteePermission, self).has_object_permission(request, view, obj)
+
+
+class SubscriptionPermission(permissions.BasePermission):
+
+    def has_permission(self, request, view):
+        """
+        check company subscription
+        """
+        if not view.subscription_features:
+            return True
+
+        company = self._get_company(request)
+        if not company:
+            # FIXME: what now? True or False?
+            return True
+
+        plan_name = company.get_current_subscription_plan()
+
+        if not plan_name:
+            # FIXME: what now? True or False?
+            return True
+
+        plan = settings.DJSTRIPE_PLANS.get(plan_name, {})
+        plan_features = plan.get('features', {})
+        for feature in view.subscription_features:
+            feature_config = plan_features.get(feature, {})
+            if not feature_config:
+                continue
+
+            # got config
+
+            # check for max count (create action)
+            if 'max' in feature_config and view.action == 'create':
+                method_name = '{}_count'.format(feature)
+                method = getattr(company, method_name, None)
+                if not method:
+                    # logger?
+                    continue
+
+                # check if +1 (create) is possible
+                value = method()
+                if (isinstance(value, int) and
+                        isinstance(feature_config['max'], int)):
+                    return value + 1 <= feature_config['max']
+
+        return True
+
+    def has_object_permission(self, request, view, obj=None):
+        # TODO?!
+        return True
+
+    def _get_company(self, request):
+        """
+        get company from request
+        """
+        # TODO: the company must be delivered with the request data!
+        #       for now: use company of first operator of user
+        if request.user and request.user.is_authenticated():
+            operator = request.user.operator_set.first()
+            return operator and operator.company

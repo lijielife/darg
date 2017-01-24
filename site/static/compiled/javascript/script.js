@@ -307,8 +307,14 @@
         startingDay: 1,
         showWeeks: false
       };
-      return $scope.open_datepicker = function() {
+      $scope.open_datepicker = function() {
         return $scope.datepicker.opened = true;
+      };
+      return $scope.isInList = function(item, list) {
+        if (list && item) {
+          return list.indexOf(item) > -1;
+        }
+        return false;
       };
     }
   ]);

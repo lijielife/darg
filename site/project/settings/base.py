@@ -439,12 +439,12 @@ DJSTRIPE_PLANS = collections.OrderedDict((
         'interval': 'month',
         'features': {
             'shareholders': {
-                'count': 20
+                'max': 20
             },
             'positions': {},
             'options': {},
             'securities': {
-                'count': 1
+                'max': 1
             },
             'shares': {},
             'gafi': {},
@@ -529,7 +529,11 @@ SUBSCRIPTION_FEATURES = collections.OrderedDict((
     ('shareholder_statements', {
         'title': _('Depotauszug Email & Brief'),
         'annotation': _('Es entstehen weitere Kosten bei Briefversand '
-                        'pro versendetem Brief.')
+                        'pro versendetem Brief.'),
+        'form_fields': [
+            'is_statement_sending_enabled',
+            'statement_sending_date'
+        ]
     }),
     ('numbered_shares', {'title': _('Nummerierte Aktien')}),
     ('email_support', {'title': _('Email Support')}),

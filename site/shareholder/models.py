@@ -396,6 +396,24 @@ class Company(AddressModelMixin, models.Model):
         """
         return self.validate_plan(plan_name, include_errors=False)
 
+    @property
+    def subscription_features(self):
+        """
+        return list of subscription features for currently subscribed plan
+        """
+        plan_name = self.get_current_subscription_plan()
+        if plan_name:
+            return (settings.DJSTRIPE_PLANS.get(plan_name, {})
+                    .get('features', {}).keys())
+        return []
+
+    # permissions
+    def shareholders_count(self):
+        return self.shareholder_set.count()
+
+    def securities_count(self):
+        return self.security_set.count()
+
 
 class UserProfile(AddressModelMixin, models.Model):
 

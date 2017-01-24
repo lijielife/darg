@@ -19,11 +19,15 @@
               {% if charge.has_invoice_pdf %}
                 <a href="{% url 'djstripe:invoice' customer.subscriber_id charge.pk %}">
               {% endif %}
-              #{{ charge.pk }}
+              {% if charge %}#{{ charge.pk }}{% else %}-{% endif %}
               {% if charge.has_invoice_pdf %}</a>{% endif %}
             </div>
             <div class="td td-width-2">
-              {{ charge.charge_created|date:'DATE_FORMAT' }}
+              {% if charge %}
+                {{ charge.charge_created|date:'DATE_FORMAT' }}
+              {% else %}
+                {{ invoice.date|date:'DATE_FORMAT' }}
+              {% endif %}
             </div>
             <div class="td text-right-flex">
               {% if invoice.paid %}

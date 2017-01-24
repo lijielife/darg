@@ -19,7 +19,7 @@ class ShareholderCountValidator(BaseCompanyValidator):
 
     message = _('Too many shareholders are registered ({count}).'
                 ' (max: {max_shareholders})')
-    code = 'shareholder_count'
+    code = 'shareholders'
 
     def __call__(self, plan_name):
         plan = settings.DJSTRIPE_PLANS.get(plan_name)
@@ -28,13 +28,13 @@ class ShareholderCountValidator(BaseCompanyValidator):
                 'Could not find a plan named "{}"'.format(plan_name))
 
         shareholder_feature = plan.get('features', {}).get('shareholders', {})
-        max_shareholder_count = shareholder_feature.get('count')
+        max_shareholder_count = shareholder_feature.get('max')
         shareholder_count = self.company.shareholder_count()
         if (max_shareholder_count
                 and shareholder_count > max_shareholder_count):
             error_message = self.message.format(
-                **dict(max_shareholder=max_shareholder_count,
-                       count=shareholder_count))
+                **dict(count=shareholder_count,
+                       max_shareholder=max_shareholder_count))
             self.raise_execption(error_message, code=self.code)
 
 
@@ -51,7 +51,7 @@ class SecurityCountValidator(BaseCompanyValidator):
 
     message = _('Too many securities in use ({count}).'
                 ' (max: {max_securities})')
-    code = 'security_count'
+    code = 'securities'
 
     def __call__(self, plan_name):
         plan = settings.DJSTRIPE_PLANS.get(plan_name)
@@ -60,10 +60,10 @@ class SecurityCountValidator(BaseCompanyValidator):
                 'Could not find a plan named "{}"'.format(plan_name))
 
         security_feature = plan.get('features', {}).get('securities', {})
-        max_security_count = security_feature.get('count')
+        max_security_count = security_feature.get('max')
         security_count = self.company.security_set.count()
         if max_security_count and security_count > max_security_count:
             error_message = self.message.format(
-                **dict(max_securities=max_security_count,
-                       count=security_count)),
+                **dict(count=security_count,
+                       max_securities=max_security_count,)),
             self.raise_execption(error_message[0], code=self.code)
