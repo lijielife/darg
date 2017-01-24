@@ -77,11 +77,13 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
                 start.click_open_add_shareholder()
                 start.add_shareholder(user)
                 start.click_save_add_shareholder()
+                time.sleep(3)
                 # wait for list entry
                 xpath = (
-                    u'//div[@id="shareholder_list"]/div[@class="table"]'
-                    u'/div[contains(@class, "tr")][2]'
-                    u'/div/span[text()="{}"]'.format(user.email)
+                    '//div[@id="shareholder_list"]//span[text()="{}"]'
+                    u''.format(
+                        user.shareholder_set.first().get_full_name()
+                    )
                 )
                 start.wait_until_visible((By.XPATH, xpath))
                 self.assertEqual(start.has_shareholder_count(),
@@ -180,11 +182,11 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
             # wait for list
             start.wait_until_visible((By.CSS_SELECTOR, '#shareholder_list'))
             start.is_properly_displayed()
-            time.sleep(2)
+            time.sleep(3)
             for shareholder in shs[1:]:  # not for company shareholder
                 row = self.selenium.find_elements_by_xpath(
                     '//div[./div="{}" and contains(@class, "tr")]'.format(
-                        shareholder.user.email))[1]
+                        shareholder.get_full_name()))[0]
                 self.assertEqual(row.find_element_by_class_name('number').text,
                                  shareholder.number)
                 self.assertEqual(row.find_element_by_class_name('share').text,
@@ -211,7 +213,7 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
             # wait for list
             start.wait_until_visible((By.CSS_SELECTOR, '#shareholder_list'))
             start.is_properly_displayed()
-            self.assertEqual(start.get_total_share_count(), 3)
+            # self.assertEqual(start.get_total_share_count(), 3)
             self.assertEqual(start.get_company_share_count(), 3)
             self.assertEqual(start.get_total_share_count(),
                              start.get_company_share_count())
@@ -289,11 +291,13 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
             start.click_open_add_shareholder()
             start.add_shareholder(self.operator.user)
             start.click_save_add_shareholder()
+            time.sleep(3)
             # wait for list entry
             xpath = (
                 u'//div[@id="shareholder_list"]/div[@class="table"]'
                 u'/div[contains(@class, "tr")]'
-                u'/div/span[text()="{}"]'.format(self.operator.user.email)
+                u'/div/span[text()="{}"]'.format(
+                    self.operator.user.shareholder_set.first().get_full_name())
             )
             start.wait_until_visible((By.XPATH, xpath))
             self.assertEqual(start.has_shareholder_count(),

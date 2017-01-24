@@ -170,6 +170,26 @@ class BasePage(object):
 
         raise Exception('Clickable button not found')
 
+    def enter_typeahead(self, id, shareholder, cls):
+        """
+        enter selling shareholder
+        """
+        # trigger typeahead search
+        el = self.driver.find_element_by_id(id)
+        form = el.find_element_by_tag_name('form')
+        field = form.find_element_by_class_name(cls)
+        field.send_keys(shareholder.get_full_name()[:10])
+
+        # select typeahead result
+        self.wait_until_present(
+            (By.CSS_SELECTOR, "#{} form .dropdown-menu".format(id)))
+        self.wait_until_text_present(
+            (By.CSS_SELECTOR, '#{} form .dropdown-menu li a'.format(id)),
+            shareholder.get_full_name())
+        self.wait_until_clickable(
+            (By.CSS_SELECTOR, '#{} form .dropdown-menu li a'.format(id))
+        ).click()
+
     def get_form_errors(self):
         """
         finds elements with .form-error and returns contained string
@@ -347,9 +367,11 @@ class StartPage(BasePage):
 
     # --- GET
     def get_row_by_shareholder(self, shareholder):
-        return self.driver.find_element_by_xpath(
-            '//div[./div="{}" and contains(@class, "tr")]'.format(
-                shareholder.user.email))
+        els = self.driver.find_elements_by_xpath(
+            '//div[contains(@class, "tr")]')
+        for el in els:
+            if shareholder.get_full_name() in el.text:
+                return el
 
     def get_total_share_count(self):
         tds = self.driver.find_elements_by_xpath(

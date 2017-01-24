@@ -11,7 +11,6 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
     $scope.option_plans = []
     $scope.optiontransactions = []
     $scope.securities = []
-    $scope.shareholders = []
     $scope.loading = true
 
     $scope.show_add_option_transaction = false
@@ -91,23 +90,6 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
         angular.forEach result.data.results, (item) ->
             $scope.securities.push item
 
-    $scope.load_shareholders = (url) ->
-        # load paginated shareholder objs
-        # used inside the add transaction form
-        if not url
-            url = '/services/rest/shareholders'
-            $scope.shareholders = []
-
-        $http.get(url).then (result) ->
-            angular.forEach result.data.results, (item) ->
-                if item.user.userprofile.birthday
-                    item.user.userprofile.birthday = new Date(item.user.userprofile.birthday)
-                $scope.shareholders.push item
-            if result.data.next
-                $scope.load_shareholders(result.data.next)
-
-    $scope.load_shareholders()
-
     # --- PAGINATION
     $scope.next_page = ->
         if $scope.next
@@ -148,6 +130,12 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
                     $scope.current=result.data.current
 
     # --- SEARCH
+    $scope.search_shareholders = (term) ->
+        paramss = {search: term}
+        $http.get('/services/rest/shareholders', {params: paramss}).then (response) ->
+            response.data.results.map (item) ->
+                item
+
     $scope.search = ->
         # FIXME - its not company specific
         # respect ordering and search
@@ -259,8 +247,7 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
     $scope.show_available_number_segments_for_new_option_plan = ->
         if $scope.newOptionPlan.security
             if $scope.newOptionPlan.security.track_numbers
-                company_shareholder_id = $filter('filter')($scope.shareholders, {is_company: true}, true)[0].pk
-                url = '/services/rest/shareholders/' + company_shareholder_id.toString() + '/number_segments'
+                url = '/services/rest/shareholders/company_number_segments'
                 if $scope.newOptionPlan.board_approved_at
                     url = url + '?date=' + $scope.newOptionPlan.board_approved_at.toISOString()
                 $http.get(url).then (result) ->

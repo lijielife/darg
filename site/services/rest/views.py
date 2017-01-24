@@ -23,7 +23,8 @@ from services.rest.serializers import (AddCompanySerializer, CompanySerializer,
                                        OptionTransactionSerializer,
                                        PositionSerializer, SecuritySerializer,
                                        ShareholderSerializer, UserSerializer,
-                                       UserWithEmailOnlySerializer)
+                                       UserWithEmailOnlySerializer,
+                                       ShareholderListSerializer)
 from shareholder.models import (Company, Country, Operator, OptionPlan,
                                 OptionTransaction, Position, Security,
                                 Shareholder)
@@ -62,9 +63,33 @@ class ShareholderViewSet(viewsets.ModelViewSet):
             .prefetch_related('user__operator_set') \
             .distinct()
 
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return ShareholderListSerializer
+        if self.action == 'retrieve':
+            return ShareholderSerializer
+        return ShareholderSerializer
+
     @detail_route(methods=['get'])
     def number_segments(self, request, pk=None):
         shareholder = self.get_object()
+        kwargs = {}
+
+        if request.GET.get('date'):
+            kwargs.update({'date': request.GET.get('date')[:10]})
+
+        data = {}
+        for security in shareholder.company.security_set.all():
+            if security.track_numbers:
+                kwargs.update({'security': security})
+                data.update({
+                    security.pk: shareholder.current_segments(**kwargs)
+                })
+        return Response(data, status=status.HTTP_200_OK)
+
+    @list_route(methods=['get'])
+    def company_number_segments(self, request):
+        shareholder = request.user.operator_set.first().company.get_company_shareholder()
         kwargs = {}
 
         if request.GET.get('date'):

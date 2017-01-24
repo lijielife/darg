@@ -1058,7 +1058,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             # test cycle: w/ date, seller, sec
             app.enter_bought_at(position.bought_at)
             self.assertFalse(app.has_available_segments_tooltip())
-            app.enter_seller(position.seller)
+            app.enter_typeahead('add_position', position.seller, 'seller')
             self.assertFalse(app.has_available_segments_tooltip())
             app.enter_security(position.security, 'add-position-form')
             self.assertTrue(app.has_available_segments_tooltip())
@@ -1070,7 +1070,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.click_open_add_position_form()
             # test w/ sec + seller
             self.assertFalse(app.has_available_segments_tooltip())
-            app.enter_seller(position.seller)
+            app.enter_typeahead('add_position', position.seller, 'seller')
             self.assertFalse(app.has_available_segments_tooltip())
             app.enter_security(position.security, 'add-position-form')
             self.assertTrue(app.has_available_segments_tooltip())
@@ -1083,7 +1083,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             position.seller = self.seller2
             app.enter_bought_at(position.bought_at)
             self.assertFalse(app.has_available_segments_tooltip())
-            app.enter_seller(position.seller)
+            app.enter_typeahead('add_position', position.seller, 'seller')
             self.assertFalse(app.has_available_segments_tooltip())
             app.enter_security(position.security, 'add-position-form')
             self.assertTrue(app.has_available_segments_tooltip())
@@ -1116,7 +1116,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             # clear numbers segment field
             el = self.selenium.find_element_by_id('add_position')
             form = el.find_element_by_tag_name('form')
-            input = form.find_elements_by_tag_name('input')[3]
+            input = form.find_elements_by_tag_name('input')[5]
             input.clear()
 
             app.click_save_position()
@@ -1129,7 +1129,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             # add [A-Z] number segments
             el = self.selenium.find_element_by_id('add_position')
             form = el.find_element_by_tag_name('form')
-            input = form.find_elements_by_tag_name('input')[3]
+            input = form.find_elements_by_tag_name('input')[5]
             input.send_keys('AA')
 
             app.click_save_position()
@@ -1140,7 +1140,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             el = self.selenium.find_element_by_id('add_position')
             form = el.find_element_by_tag_name('form')
             input.clear()
-            input = form.find_elements_by_tag_name('input')[3]
+            input = form.find_elements_by_tag_name('input')[5]
             input.send_keys('1,2,3')
 
             app.click_save_position()

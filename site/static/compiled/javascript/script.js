@@ -356,7 +356,6 @@
       $scope.option_plans = [];
       $scope.optiontransactions = [];
       $scope.securities = [];
-      $scope.shareholders = [];
       $scope.loading = true;
       $scope.show_add_option_transaction = false;
       $scope.show_add_option_plan = false;
@@ -445,24 +444,6 @@
           return $scope.securities.push(item);
         });
       });
-      $scope.load_shareholders = function(url) {
-        if (!url) {
-          url = '/services/rest/shareholders';
-          $scope.shareholders = [];
-        }
-        return $http.get(url).then(function(result) {
-          angular.forEach(result.data.results, function(item) {
-            if (item.user.userprofile.birthday) {
-              item.user.userprofile.birthday = new Date(item.user.userprofile.birthday);
-            }
-            return $scope.shareholders.push(item);
-          });
-          if (result.data.next) {
-            return $scope.load_shareholders(result.data.next);
-          }
-        });
-      };
-      $scope.load_shareholders();
       $scope.next_page = function() {
         if ($scope.next) {
           return $http.get($scope.next).then(function(result) {
@@ -514,6 +495,19 @@
             }
           });
         }
+      };
+      $scope.search_shareholders = function(term) {
+        var paramss;
+        paramss = {
+          search: term
+        };
+        return $http.get('/services/rest/shareholders', {
+          params: paramss
+        }).then(function(response) {
+          return response.data.results.map(function(item) {
+            return item;
+          });
+        });
       };
       $scope.search = function() {
         var params, paramss;
@@ -634,13 +628,10 @@
         return $scope.newOptionTransaction = new OptionTransaction();
       };
       $scope.show_available_number_segments_for_new_option_plan = function() {
-        var company_shareholder_id, url;
+        var url;
         if ($scope.newOptionPlan.security) {
           if ($scope.newOptionPlan.security.track_numbers) {
-            company_shareholder_id = $filter('filter')($scope.shareholders, {
-              is_company: true
-            }, true)[0].pk;
-            url = '/services/rest/shareholders/' + company_shareholder_id.toString() + '/number_segments';
+            url = '/services/rest/shareholders/company_number_segments';
             if ($scope.newOptionPlan.board_approved_at) {
               url = url + '?date=' + $scope.newOptionPlan.board_approved_at.toISOString();
             }
@@ -837,7 +828,6 @@
   app.controller('PositionsController', [
     '$scope', '$http', '$window', 'Position', 'Split', function($scope, $http, $window, Position, Split) {
       $scope.positions = [];
-      $scope.shareholders = [];
       $scope.securities = [];
       $scope.show_add_position = false;
       $scope.show_add_capital = false;
@@ -916,14 +906,6 @@
         });
       };
       $scope.load_all_positions();
-      $http.get('/services/rest/shareholders').then(function(result) {
-        return angular.forEach(result.data.results, function(item) {
-          if (item.user.userprofile.birthday) {
-            item.user.userprofile.birthday = new Date(item.user.userprofile.birthday);
-          }
-          return $scope.shareholders.push(item);
-        });
-      });
       $http.get('/services/rest/security').then(function(result) {
         return angular.forEach(result.data.results, function(item) {
           return $scope.securities.push(item);
@@ -981,6 +963,19 @@
           });
         }
       };
+      $scope.search_shareholders = function(term) {
+        var paramss;
+        paramss = {
+          search: term
+        };
+        return $http.get('/services/rest/shareholders', {
+          params: paramss
+        }).then(function(response) {
+          return response.data.results.map(function(item) {
+            return item;
+          });
+        });
+      };
       $scope.search = function() {
         var params, paramss;
         params = {};
@@ -991,8 +986,9 @@
           params.ordering = $scope.search_params.ordering;
         }
         paramss = $.param(params);
-        console.log(params);
-        return $http.get('/services/rest/position?' + paramss).then(function(result) {
+        return $http.get('/services/rest/position', {
+          params: params
+        }).then(function(result) {
           $scope.reset_search_params();
           angular.forEach(result.data.results, function(item) {
             return $scope.positions.push(item);
@@ -1188,6 +1184,23 @@
       });
     }
   ]);
+
+}).call(this);
+
+(function() {
+  var app;
+
+  app = angular.module('js.darg.app.reports', ['js.darg.api', 'pascalprecht.translate', 'ui.bootstrap']);
+
+  app.config([
+    '$translateProvider', function($translateProvider) {
+      $translateProvider.translations('de', django.catalog);
+      $translateProvider.preferredLanguage('de');
+      return $translateProvider.useSanitizeValueStrategy('escaped');
+    }
+  ]);
+
+  app.controller('ReportsController', ['$scope', '$http', 'Shareholder', function($scope, $http, Shareholder) {}]);
 
 }).call(this);
 
