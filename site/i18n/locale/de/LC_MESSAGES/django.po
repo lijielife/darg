@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-25 09:43+0000\n"
-"PO-Revision-Date: 2017-01-25 09:48+0000\n"
+"POT-Creation-Date: 2017-01-25 12:13+0000\n"
+"PO-Revision-Date: 2017-01-25 12:16+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -26,6 +26,7 @@ msgstr ""
 "Administrator für dieses Unternehmen anzulegen."
 
 #: company/templates/_add_operator_form.html:15
+#: reports/templates/reports/index.html:76
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -125,48 +126,73 @@ msgstr "Optionsplan editieren"
 msgid "Reports"
 msgstr "Downloads"
 
-#: reports/templates/reports/index.html:15
+#: reports/templates/reports/index.html:16
 msgid "Reports and Downloads for "
 msgstr "Downloads für"
 
-#: reports/templates/reports/index.html:19
+#: reports/templates/reports/index.html:17
+msgid ""
+"Use CSV for Excel like Downloads. Follow this <a "
+"href='https://goo.gl/aQ2gVx'>guide for instructions</a>."
+msgstr ""
+"Verwenden Sie CSV für Excel-Downloads. Folgen Sie  <a "
+"href='https://goo.gl/aQ2gVx'>diesen Guide für das öffnen in Excel</a>."
+
+#: reports/templates/reports/index.html:21
 msgid "Download active Shareholders as"
 msgstr "Aktive Gesellschafter als"
 
-#: reports/templates/reports/index.html:20
+#: reports/templates/reports/index.html:22
 msgid "Download active Shareholders as PDF"
 msgstr "Aktive Gesellschafter als PDF herunterladen"
 
-#: reports/templates/reports/index.html:21
-msgid "PDF"
-msgstr "PDf"
-
 #: reports/templates/reports/index.html:23
+msgid "PDF"
+msgstr "PDF"
+
+#: reports/templates/reports/index.html:25
 msgid "Download active Shareholders as CSV"
 msgstr "Aktive Gesellschafter als CSV herunterladen"
 
-#: reports/templates/reports/index.html:24
+#: reports/templates/reports/index.html:26
 msgid "CSV"
 msgstr "CSV"
 
-#: reports/templates/reports/index.html:27
+#: reports/templates/reports/index.html:30
 msgid "Depot Statement per Shareholder"
 msgstr "Depotauszug pro Gesellschafter"
 
-#: reports/templates/reports/index.html:28
+#: reports/templates/reports/index.html:32
 msgid "Transactions per security in period"
 msgstr "Transaktionen pro Aktientyp im Zeitraum"
 
-#: reports/templates/reports/index.html:29
-#: reports/templates/reports/index.html:30
+#: reports/templates/reports/index.html:40
+msgid "from"
+msgstr "von"
+
+#: reports/templates/reports/index.html:56
+msgid "to"
+msgstr "bis"
+
+#: reports/templates/reports/index.html:73
+#| msgid "Add Security"
+msgid "Security"
+msgstr "Aktienart"
+
+#: reports/templates/reports/index.html:77
+msgid "Download"
+msgstr "Herunterladen"
+
+#: reports/templates/reports/index.html:84
+#: reports/templates/reports/index.html:85
 msgid "Address data of all shareholders"
 msgstr "Adressdaten aller aktiven Gesellschafter"
 
-#: reports/templates/reports/index.html:32
+#: reports/templates/reports/index.html:89
 msgid "Printed Certificates"
 msgstr "Gedruckte Urkunden"
 
-#: reports/templates/reports/index.html:33
+#: reports/templates/reports/index.html:90
 msgid "Vested Shares"
 msgstr "Aktien mit Sperrfristen"
 
@@ -611,9 +637,6 @@ msgstr "Default Optionsplan für {}"
 
 #~ msgid "Log"
 #~ msgstr "Log"
-
-#~ msgid "Add Security"
-#~ msgstr "Aktienklasse hinzufügen"
 
 #~ msgid ""
 #~ "Please contact us at our <a href=\"mailto:jirka.schaefer@das-"

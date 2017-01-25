@@ -3,6 +3,8 @@ import datetime
 import logging
 import time
 
+import dateutil.parser
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
@@ -10,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.flatpages.models import FlatPage
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 from django.http import (HttpResponse, HttpResponseBadRequest,
                          HttpResponseForbidden)
 from django.shortcuts import get_object_or_404, redirect
@@ -20,7 +23,8 @@ from zinnia.models.entry import Entry
 
 from project.tasks import send_initial_password_mail
 from services.instapage import InstapageSubmission as Instapage
-from shareholder.models import Company, Operator
+from shareholder.models import (Company, Operator, Position, OptionTransaction,
+                                Security)
 from utils.formatters import human_readable_segments
 from utils.pdf import render_to_pdf
 
@@ -57,6 +61,61 @@ def _get_contacts(company):
         ]
         if shareholder.user.userprofile.nationality:
             row.append([shareholder.user.userprofile.nationality.name])
+        rows.append(row)
+
+    return rows
+
+
+def _get_transactions(from_date, to_date, security, company):
+    rows = []
+    rows.append([
+        _(u'date'), _(u'buyer'), _(u'seller'),
+        _(u'count'),
+        _(u'value'), _('security'), _('comment'), _('depot type'),
+        _('stock book id'), _(u'vesting period (options only'),
+        _(u'cert id (options only)'),
+    ])
+
+    for position in Position.objects.filter(
+        bought_at__range=(from_date, to_date), security=security
+    ).filter(
+        Q(buyer__company=company) | Q(seller__company=company)
+    ):
+        row = [
+            position.bought_at,
+            position.buyer.get_full_name() if position.buyer else u"",
+            position.seller.get_full_name() if position.seller else u"",
+            position.count,
+            position.value,
+            unicode(position.security),
+            position.comment,
+            position.get_depot_type_display(),
+            position.stock_book_id
+        ]
+        rows.append(row)
+
+    rows.append([_('----------------------------------------')])
+    rows.append([_('Transactions for options:')])
+    rows.append([_('----------------------------------------')])
+
+    for optiontransaction in OptionTransaction.objects.filter(
+        bought_at__range=(from_date, to_date), option_plan__security=security
+    ).filter(
+        Q(buyer__company=company) | Q(seller__company=company)
+    ):
+        row = [
+            optiontransaction.bought_at,
+            optiontransaction.buyer.get_full_name(),
+            optiontransaction.seller.get_full_name(),
+            optiontransaction.count,
+            optiontransaction.option_plan.exercise_price,
+            unicode(optiontransaction.option_plan.security),
+            '',
+            optiontransaction.get_depot_type_display(),
+            optiontransaction.stock_book_id,
+            optiontransaction.vesting_months,
+            optiontransaction.certificate_id,
+        ]
         rows.append(row)
 
     return rows
@@ -166,6 +225,39 @@ def contacts_csv(request, company_id):
     writer = csv.writer(response)
 
     rows = _get_contacts(company)
+    for row in rows:
+        writer.writerow([unicode(s).encode("utf-8") for s in row])
+
+    return response
+
+
+@login_required
+def transactions_csv(request, company_id):
+    """ returns csv with transactions """
+
+    # perm check
+    if not Operator.objects.filter(
+        user=request.user, company__id=company_id
+    ).exists():
+        return HttpResponseForbidden()
+
+    company = get_object_or_404(Company, id=company_id)
+    security = get_object_or_404(Security, id=request.GET.get('security'))
+    from_date = dateutil.parser.parse(request.GET.get('from'))
+    to_date = dateutil.parser.parse(request.GET.get('to'))
+
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = (
+        u'attachment; '
+        u'filename="{}_transactions_{}_.csv"'.format(
+            time.strftime("%Y-%m-%d"), slugify(company.name),
+            slugify(security.get_title_display())
+        ))
+
+    writer = csv.writer(response)
+
+    rows = _get_transactions(from_date, to_date, security, company)
     for row in rows:
         writer.writerow([unicode(s).encode("utf-8") for s in row])
 

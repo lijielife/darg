@@ -70,6 +70,8 @@ urlpatterns = [
         'project.views.captable_pdf', name='captable_pdf'),
     url(r'^company/(?P<company_id>[0-9]+)/download/contacts$',
         'project.views.contacts_csv', name='contacts_csv'),
+    url(r'^company/(?P<company_id>[0-9]+)/download/transactions$',
+        'project.views.transactions_csv', name='transactions_csv'),
 
     url(r'^options/$', 'shareholder.views.options', name='options'),
     url(r'^options/(?P<pk>[0-9]+)/$',

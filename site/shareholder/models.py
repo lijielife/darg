@@ -406,15 +406,21 @@ class Shareholder(models.Model):
         return False
 
     def get_full_name(self):
+        # return first, last, company name
+        name = u""
+        if self.user.first_name:
+            name += self.user.first_name
+        if self.user.last_name:
+            if name:
+                name += u" "
+            name += u"{}".format(self.user.last_name)
         if self.user.userprofile.company_name:
-            # return first, last, company name
-            if self.user.first_name or self.user.last_name:
-                return u"{} {} ({})".format(
-                    self.user.first_name, self.user.last_name,
-                    self.user.userprofile.company_name)
+            if name:
+                name += u" ({})".format(self.user.userprofile.company_name)
             else:
-                return u"{}".format(self.user.userprofile.company_name)
-        return u"{} {}".format(self.user.first_name, self.user.last_name)
+                name += u"{}".format(self.user.userprofile.company_name)
+
+        return name
 
     def get_number_segments_display(self):
         """

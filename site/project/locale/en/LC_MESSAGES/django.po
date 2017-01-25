@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-25 09:43+0000\n"
+"POT-Creation-Date: 2017-01-25 12:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -255,7 +255,7 @@ msgstr ""
 msgid "Gratis Aktienbuch-Muster"
 msgstr ""
 
-#: project/templates/index.html:36 project/tests/test_views.py:76
+#: project/templates/index.html:36 project/tests/test_views.py:78
 msgid "My Dashboard"
 msgstr ""
 
@@ -409,14 +409,18 @@ msgstr ""
 msgid "Option Holders note"
 msgstr ""
 
-#: project/tests/test_views.py:134 project/views.py:118
+#: project/tests/test_views.py:136 project/views.py:177
 msgid ""
 "You have already an existing user account. Please login or reset your "
 "password."
 msgstr ""
 
-#: project/tests/test_views.py:467 project/views.py:34 project/views.py:199
+#: project/tests/test_views.py:469 project/views.py:38 project/views.py:291
 msgid "shareholder number"
+msgstr ""
+
+#: project/tests/test_views.py:512 project/views.py:72
+msgid "date"
 msgstr ""
 
 #. Translators: should be a language supported by Twilio,
@@ -439,74 +443,122 @@ msgstr ""
 msgid "You didn't press any keys. Good bye."
 msgstr ""
 
-#: project/views.py:34 project/views.py:199
+#: project/views.py:38 project/views.py:291
 msgid "last name"
 msgstr ""
 
-#: project/views.py:34 project/views.py:199
+#: project/views.py:38 project/views.py:291
 msgid "first name"
 msgstr ""
 
-#: project/views.py:35 project/views.py:200
+#: project/views.py:39 project/views.py:292
 msgid "email"
 msgstr ""
 
-#: project/views.py:36 project/views.py:201
+#: project/views.py:40 project/views.py:293
 msgid "language ISO"
 msgstr ""
 
-#: project/views.py:36 project/views.py:201
+#: project/views.py:40 project/views.py:293
 msgid "language full"
 msgstr ""
 
-#: project/views.py:36
+#: project/views.py:40
 msgid "street"
 msgstr ""
 
-#: project/views.py:36
+#: project/views.py:40
 msgid "street 2"
 msgstr ""
 
-#: project/views.py:37
+#: project/views.py:41
 msgid "c/o"
 msgstr ""
 
-#: project/views.py:37
+#: project/views.py:41
 msgid "city"
 msgstr ""
 
-#: project/views.py:37
+#: project/views.py:41
 msgid "zip"
 msgstr ""
 
-#: project/views.py:37
+#: project/views.py:41
 msgid "country"
 msgstr ""
 
-#: project/views.py:38
+#: project/views.py:42
 msgid "pobox"
 msgstr ""
 
-#: project/views.py:38
+#: project/views.py:42
 msgid "mailing type"
 msgstr ""
 
-#: project/views.py:38
+#: project/views.py:42
 msgid "nationality"
 msgstr ""
 
-#: project/views.py:200
+#: project/views.py:72
+msgid "buyer"
+msgstr ""
+
+#: project/views.py:72
+msgid "seller"
+msgstr ""
+
+#: project/views.py:73
+msgid "count"
+msgstr ""
+
+#: project/views.py:74
+msgid "value"
+msgstr ""
+
+#: project/views.py:74
+msgid "security"
+msgstr ""
+
+#: project/views.py:74
+msgid "comment"
+msgstr ""
+
+#: project/views.py:74
+msgid "depot type"
+msgstr ""
+
+#: project/views.py:75
+msgid "stock book id"
+msgstr ""
+
+#: project/views.py:75
+msgid "vesting period (options only"
+msgstr ""
+
+#: project/views.py:76
+msgid "cert id (options only)"
+msgstr ""
+
+#: project/views.py:97 project/views.py:99
+msgid "----------------------------------------"
+msgstr ""
+
+#: project/views.py:98
+msgid "Transactions for options:"
+msgstr ""
+
+#: project/views.py:292
 msgid "share count"
 msgstr ""
 
-#: project/views.py:200
+#: project/views.py:292
 msgid "votes share percent"
 msgstr ""
 
-#: project/views.py:204
+#: project/views.py:296
 msgid "Share IDs"
 msgstr ""
 
-#: project/views.py:225
+#: project/views.py:317
 msgid "None"
 msgstr ""

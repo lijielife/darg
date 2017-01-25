@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-25 09:43+0000\n"
+"POT-Creation-Date: 2017-01-25 12:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -126,106 +126,106 @@ msgstr ""
 msgid "how should the shareholder be approached by the corp"
 msgstr ""
 
-#: shareholder/models.py:528
+#: shareholder/models.py:534
 msgid "Missing all data required for #GAFI."
 msgstr ""
 
-#: shareholder/models.py:535
+#: shareholder/models.py:541
 msgid "Shareholder first name, last name or company name missing."
 msgstr ""
 
-#: shareholder/models.py:539
+#: shareholder/models.py:545
 msgid "Shareholder birthday missing."
 msgstr ""
 
-#: shareholder/models.py:543
+#: shareholder/models.py:549
 msgid "Shareholder origin/country missing."
 msgstr ""
 
-#: shareholder/models.py:552
+#: shareholder/models.py:558
 msgid "Shareholder address or address details missing."
 msgstr ""
 
-#: shareholder/models.py:779
+#: shareholder/models.py:785
 msgid "Preferred Stock"
 msgstr ""
 
-#: shareholder/models.py:780
+#: shareholder/models.py:786
 msgid "Common Stock"
 msgstr ""
 
-#: shareholder/models.py:781
+#: shareholder/models.py:787
 msgid "Registered Shares"
 msgstr ""
 
-#: shareholder/models.py:788
+#: shareholder/models.py:794
 msgid "Nominal value of this asset"
 msgstr ""
 
-#: shareholder/models.py:794 shareholder/models.py:867
-#: shareholder/models.py:937 shareholder/models.py:988
+#: shareholder/models.py:800 shareholder/models.py:873
+#: shareholder/models.py:943 shareholder/models.py:994
 msgid "JSON list of segments of ids for securities. can be 1, 2, 3, 4-10"
 msgstr ""
 
-#: shareholder/models.py:797
+#: shareholder/models.py:803
 msgid "public security id aka Valor, WKN, CUSIP: http://bit.ly/2ieXwuK"
 msgstr ""
 
-#: shareholder/models.py:802
+#: shareholder/models.py:808
 msgid ""
 "App needs to track IDs of shares. WARNING: update initial transaction with "
 "segments on enabling."
 msgstr ""
 
-#: shareholder/models.py:807
+#: shareholder/models.py:813
 msgid "{} ({} CHF)"
 msgstr ""
 
-#: shareholder/models.py:856
+#: shareholder/models.py:862
 msgid "Share Count transfered or created"
 msgstr ""
 
-#: shareholder/models.py:860
+#: shareholder/models.py:866
 msgid "Nominal value or payed price for the transaction"
 msgstr ""
 
-#: shareholder/models.py:864
+#: shareholder/models.py:870
 msgid "Position is part of a split transaction"
 msgstr ""
 
-#: shareholder/models.py:870 shareholder/models.py:991
+#: shareholder/models.py:876 shareholder/models.py:997
 msgid "Securities are purchase type (for myself, etc.)"
 msgstr ""
 
-#: shareholder/models.py:873 shareholder/models.py:994
+#: shareholder/models.py:879 shareholder/models.py:1000
 msgid "aka Skontro (read http://bit.ly/2iJquEl)"
 msgstr ""
 
-#: shareholder/models.py:876 shareholder/models.py:997
+#: shareholder/models.py:882 shareholder/models.py:1003
 msgid "What kind of depot is this position stored within"
 msgstr ""
 
-#: shareholder/models.py:905
+#: shareholder/models.py:911
 msgid "Capital Increase"
 msgstr ""
 
-#: shareholder/models.py:907
+#: shareholder/models.py:913
 msgid "Part of Split"
 msgstr ""
 
-#: shareholder/models.py:909
+#: shareholder/models.py:915
 msgid "Share issue"
 msgstr ""
 
-#: shareholder/models.py:910
+#: shareholder/models.py:916
 msgid "Regular Ownership change"
 msgstr ""
 
-#: shareholder/models.py:931
+#: shareholder/models.py:937
 msgid "Number of shares approved"
 msgstr ""
 
-#: shareholder/models.py:986
+#: shareholder/models.py:992
 msgid "id of the issued certificate"
 msgstr ""
 

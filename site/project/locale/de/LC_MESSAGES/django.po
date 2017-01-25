@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-25 09:43+0000\n"
-"PO-Revision-Date: 2017-01-25 09:48+0000\n"
+"POT-Creation-Date: 2017-01-25 12:13+0000\n"
+"PO-Revision-Date: 2017-01-25 12:18+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -277,7 +277,7 @@ msgstr "Optionen (%%)"
 msgid "Gratis Aktienbuch-Muster"
 msgstr "Gratis Aktienbuch-Muster"
 
-#: project/templates/index.html:36 project/tests/test_views.py:76
+#: project/templates/index.html:36 project/tests/test_views.py:78
 msgid "My Dashboard"
 msgstr "Mein Dashboard"
 
@@ -442,7 +442,7 @@ msgstr "Optionsinhaber/Zertifikate"
 msgid "Option Holders note"
 msgstr "Zugrundeliegende Aktien werden sind bei der AG hinterlegt."
 
-#: project/tests/test_views.py:134 project/views.py:118
+#: project/tests/test_views.py:136 project/views.py:177
 msgid ""
 "You have already an existing user account. Please login or reset your "
 "password."
@@ -450,9 +450,14 @@ msgstr ""
 "Sie haben bereits ein Nutzerkonto. Bitte loggen Sie sich ein oder setzen Sie"
 " Ihr Passwort zurück."
 
-#: project/tests/test_views.py:467 project/views.py:34 project/views.py:199
+#: project/tests/test_views.py:469 project/views.py:38 project/views.py:291
 msgid "shareholder number"
 msgstr "Aktieninhabernummer"
+
+#: project/tests/test_views.py:512 project/views.py:72
+#| msgid "On (date)"
+msgid "date"
+msgstr "Datum"
 
 #. Translators: should be a language supported by Twilio,
 #. see http://bit.ly/187I5cr
@@ -478,75 +483,129 @@ msgstr ""
 msgid "You didn't press any keys. Good bye."
 msgstr "Sie haben keine Taste gedrückt. Auf Wiedersehen."
 
-#: project/views.py:34 project/views.py:199
+#: project/views.py:38 project/views.py:291
 msgid "last name"
 msgstr "Nachname"
 
-#: project/views.py:34 project/views.py:199
+#: project/views.py:38 project/views.py:291
 msgid "first name"
 msgstr "Vorname"
 
-#: project/views.py:35 project/views.py:200
+#: project/views.py:39 project/views.py:292
 msgid "email"
 msgstr "Email"
 
-#: project/views.py:36 project/views.py:201
+#: project/views.py:40 project/views.py:293
 msgid "language ISO"
 msgstr "Sprache ISO"
 
-#: project/views.py:36 project/views.py:201
+#: project/views.py:40 project/views.py:293
 msgid "language full"
 msgstr "Sprache"
 
-#: project/views.py:36
+#: project/views.py:40
 msgid "street"
 msgstr "Strasse"
 
-#: project/views.py:36
+#: project/views.py:40
 msgid "street 2"
 msgstr "Strasse 2"
 
-#: project/views.py:37
+#: project/views.py:41
 msgid "c/o"
 msgstr "c/o"
 
-#: project/views.py:37
+#: project/views.py:41
 msgid "city"
 msgstr "Ort"
 
-#: project/views.py:37
+#: project/views.py:41
 msgid "zip"
 msgstr "PLZ"
 
-#: project/views.py:37
+#: project/views.py:41
 msgid "country"
 msgstr "Land"
 
-#: project/views.py:38
+#: project/views.py:42
 msgid "pobox"
 msgstr "Postfach"
 
-#: project/views.py:38
+#: project/views.py:42
 msgid "mailing type"
 msgstr "Versandart"
 
-#: project/views.py:38
+#: project/views.py:42
 msgid "nationality"
 msgstr "Nationalität"
 
-#: project/views.py:200
+#: project/views.py:72
+#| msgid "Buyer"
+msgid "buyer"
+msgstr "Käufer"
+
+#: project/views.py:72
+#| msgid "Seller"
+msgid "seller"
+msgstr "Verkäufer"
+
+#: project/views.py:73
+#| msgid "country"
+msgid "count"
+msgstr "Anzahl"
+
+#: project/views.py:74
+#| msgid "Value"
+msgid "value"
+msgstr "Wert"
+
+#: project/views.py:74
+#| msgid "Security"
+msgid "security"
+msgstr "Aktienart"
+
+#: project/views.py:74
+msgid "comment"
+msgstr "Kommentar"
+
+#: project/views.py:74
+#| msgid "Depot Type"
+msgid "depot type"
+msgstr "Depotart"
+
+#: project/views.py:75
+msgid "stock book id"
+msgstr "Valor"
+
+#: project/views.py:75
+msgid "vesting period (options only"
+msgstr "Vesting in Monaten"
+
+#: project/views.py:76
+msgid "cert id (options only)"
+msgstr "Zertifikatsnummer"
+
+#: project/views.py:97 project/views.py:99
+msgid "----------------------------------------"
+msgstr "--------------------- 8<----------------------------"
+
+#: project/views.py:98
+msgid "Transactions for options:"
+msgstr "Transaktionen von Optionen/Urkunden"
+
+#: project/views.py:292
 msgid "share count"
 msgstr "Anzahl Aktien"
 
-#: project/views.py:200
+#: project/views.py:292
 msgid "votes share percent"
 msgstr "% Stimmrechte"
 
-#: project/views.py:204
+#: project/views.py:296
 msgid "Share IDs"
 msgstr "Aktiennummern"
 
-#: project/views.py:225
+#: project/views.py:317
 msgid "None"
 msgstr "Keine"
 
@@ -674,9 +733,6 @@ msgstr "Keine"
 
 #~ msgid "Shareholder"
 #~ msgstr "Aktionär"
-
-#~ msgid "Value"
-#~ msgstr "Nennwert"
 
 #~ msgid "New Transaction"
 #~ msgstr "Neue Transaktion"

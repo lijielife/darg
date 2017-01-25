@@ -2722,6 +2722,9 @@ html, body {
 .core .container .el-icon-cogs {
   font-size: 50%;
 }
+.core .container .el-icon-chevron-down {
+  font-size: 75%;
+}
 .core .container .el-icon-cogs-wrapper {
   padding: 0em;
   margin: 0em;
