@@ -208,13 +208,15 @@ class Company(models.Model):
             buyer__company=self, seller__isnull=True)
         val = 0
         for position in cap_creating_positions:
-            val += position.count * position.security.face_value
+            face_value = position.security.face_value or 1
+            val += position.count * face_value
 
         cap_destroying_positions = Position.objects.filter(
             seller__company=self, buyer__isnull=True)
 
         for position in cap_destroying_positions:
-            val -= position.count * position.security.face_value
+            face_value = position.security.face_value or 1
+            val -= position.count * face_value
 
         return val
 
