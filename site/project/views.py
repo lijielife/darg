@@ -34,8 +34,8 @@ def _get_contacts(company):
         _(u'shareholder number'), _(u'last name'), _(u'first name'),
         _(u'email'),
         _(u'language ISO'), _('language full'), _('street'), _('street 2'),
-        _('c/o'), _('city'), _('zip'), _('country'), _('nationality'),
-        _('pobox'), _('mailing type'),
+        _('c/o'), _('city'), _('zip'), _('country'),
+        _('pobox'), _('mailing type'), _('nationality'),
     ])
 
     for shareholder in company.get_active_shareholders():
@@ -57,9 +57,10 @@ def _get_contacts(company):
         ]
         if shareholder.user.userprofile.nationality:
             row.append([shareholder.user.userprofile.nationality.name])
-        rows.append([row])
+        rows.append(row)
 
     return rows
+
 
 def index(request):
     template = loader.get_template('index.html')

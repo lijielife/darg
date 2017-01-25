@@ -463,4 +463,5 @@ class DownloadTestCase(TestCase):
         res = _get_contacts(company)
         self.assertEqual(len(res), 11)
         self.assertEqual(len(res[0]), 15)
+        self.assertEqual(len(res[1]), 14)  # no nationality
         self.assertEqual(res[0][0], _(u'shareholder number'))
