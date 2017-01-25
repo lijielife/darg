@@ -275,10 +275,12 @@ class OptionsPage(BasePage):
             if string in h2.text:
                 return True
         # for debugging
-        logger.warning('option plan heading not found', extra={
+        extra = {
             'heading_strings': [h2.text for h2 in h2s],
-            'needle': string
-            })
+            'needle': string}
+        logger.warning('option plan heading not found', extra=extra)
+        print extra
+
         return False
 
     def is_transfer_option_shown(self, **kwargs):
