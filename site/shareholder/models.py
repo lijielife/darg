@@ -752,9 +752,11 @@ class Shareholder(models.Model):
         returns the total number of voting rights for this shareholder
         """
         votes = 0
+        ratio = self.company.vote_ratio or 1
         for security in self.company.security_set.all():
+            face_value = security.face_value or 1
             votes += (self.share_count(security=security, date=date) *
-                      security.face_value / self.company.vote_ratio)
+                      face_value / ratio)
 
         return int(votes)
 
