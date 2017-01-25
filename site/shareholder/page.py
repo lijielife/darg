@@ -266,7 +266,7 @@ class OptionsPage(BasePage):
         return self._is_element_displayed(id='add_option_plan')
 
     def is_option_plan_displayed(self):
-        time.sleep(1)
+        self.wait_until_visible((By.TAG_NAME, "h2"))
         h2s = self.driver.find_elements_by_tag_name('h2')
         string = u"Optionsplan: {} f\xfcr {}".format(
             DEFAULT_TEST_DATA.get('title'),
@@ -274,6 +274,11 @@ class OptionsPage(BasePage):
         for h2 in h2s:
             if string in h2.text:
                 return True
+        # for debugging
+        logger.warning('option plan heading not found', extra={
+            'heading_strings': [h2.text for h2 in h2s],
+            'needle': string
+            })
         return False
 
     def is_transfer_option_shown(self, **kwargs):
