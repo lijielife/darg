@@ -18,6 +18,7 @@ from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
                                 PositionGenerator, SecurityGenerator,
                                 ShareholderGenerator,
                                 TwoInitialSecuritiesGenerator, UserGenerator)
+from project.tests.mixins import MoreAssertsTestCaseMixin
 from services.rest.serializers import SecuritySerializer
 from shareholder.models import (Operator, OptionTransaction, Position,
                                 Security, Shareholder)
@@ -227,7 +228,7 @@ class OperatorTestCase(TestCase):
         self.assertFalse(Operator.objects.filter(pk=operator2.pk).exists())
 
 
-class PositionTestCase(TestCase):
+class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
 
     def setUp(self):
         self.client = APIClient()
@@ -543,7 +544,7 @@ class PositionTestCase(TestCase):
 
         # call with perf check
         # was 55, increased to 95
-        with self.assertNumQueries(46):
+        with self.assertLessNumQueries(46):
             response = self.client.post(
                 u'/services/rest/position',
                 data,
@@ -755,8 +756,9 @@ class PositionTestCase(TestCase):
         self.assertEqual(res.data['count'], 3)
         last_names = [s.get('buyer')['full_name']
                       for s in res.data['results']]
-        self.assertEqual(last_names,
-                         sorted(last_names, key=lambda s: s.split(' ')[1].lower()))
+        self.assertEqual(
+            last_names,
+            sorted(last_names, key=lambda s: s.split(' ')[1].lower()))
 
         res = self.client.get(
             '/services/rest/position?ordering=-buyer__number')
@@ -1142,8 +1144,9 @@ class ShareholderTestCase(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['count'], 13)
         last_names = [s.get('full_name') for s in res.data['results']]
-        self.assertEqual(last_names,
-                         sorted(last_names, key=lambda s: s.split(' ')[1].lower()))
+        self.assertEqual(
+            last_names,
+            sorted(last_names, key=lambda s: s.split(' ')[1].lower()))
 
         res = self.client.get(
             '/services/rest/shareholders?ordering=-number')
