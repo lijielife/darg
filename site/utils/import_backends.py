@@ -149,7 +149,7 @@ class SisWareImportBackend(BaseImportBackend):
         user = self._get_or_create_user(
             shareholder_id=row[0], first_name=row[8]+' '+row[9],
             last_name=row[10], legal_type=row[1], company=row[4],
-            department=row[5], title=row[6], salutation=row[7], street=row[12],
+            department=row[5], title=row[6], salutation=row[7], street=row[11],
             street2=row[12], pobox=row[14], postal_code=row[15],
             city=row[16], country=row[17], language=row[20], birthday=row[19],
             c_o=row[18], nationality=row[22])

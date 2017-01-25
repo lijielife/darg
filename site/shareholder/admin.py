@@ -51,7 +51,7 @@ class PositionAdmin(VersionAdmin):
 
 
 class UserProfileAdmin(VersionAdmin):
-    list_display = ('pk',)
+    list_display = ('pk', 'street', 'street2', 'city')
     search_fields = [
         'user__first_name', 'user__email', 'user__last_name'
     ]
