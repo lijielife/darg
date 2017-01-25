@@ -311,7 +311,8 @@ class SisWareImportBackend(BaseImportBackend):
         try:
             user, c_ = User.objects.get_or_create(
                 username=username[:29],
-                defaults={u'first_name': first_name, u'last_name': last_name}
+                defaults={u'first_name': first_name.strip(),
+                          u'last_name': last_name.strip()}
             )
         except DataError as e:
             # some users might have last name exceeding max length.
