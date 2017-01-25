@@ -203,28 +203,27 @@
   <!-- OWNED STOCK -->
   <h2>{% trans "Owned Stock" %}</h2>
   <p>{% trans "Count Shares Total" %}: {{ shareholder.share_count }}</p>
-  <p>{% trans "% Ownership" %}: {{ shareholder.share_percent }}% </p>
-  <div class="table-responsive">
-    <table class="stock table table-striped">
-    <thead><tr>
-      <th>{% trans "security" %}</th>
-      <th>{% trans "cusip" %}</th>
-      <th>{% trans "count" %}</th>
-      <th>{% trans "segments" %}</th>
-    </tr>
-  </thead>
-  {% for security in securities %}
-    <tr class="security">
-      <td class="name">{{ security }}</td>
-      <td class="cusip">{% if security.cusip %}{{ security.cusip }}{% endif %}</td>
-	  <td class="count">{{ security.count }}</td>
-	  {% if security.segments %}<td class="number-segments">{{ security.segments }}</td>{% else %}<td></td>{% endif %}
-	</tr>
-  {% endfor %}
-  </table>
-  </div>
-  
-
+    <p>{% trans "% Ownership" %}: {{ shareholder.share_percent }}% </p>
+    <div class="table-responsive">
+      <table class="stock table table-striped">
+        <thead><tr>
+          <th>{% trans "security" %}</th>
+          <th>{% trans "cusip" %}</th>
+          <th>{% trans "shares owned" %}</th>
+          <th>{% trans "options owned" %}</th>
+          {% if security.track_numbers %}<th>{% trans "share segments" %}</th>{% endif %}
+        </tr></thead>
+        {% for security in securities %}
+        <tr class="security">
+          <td class="name">{{ security }}</td>
+          <td class="cusip">{% if security.cusip %}{{ security.cusip }}{% endif %}</td>
+  	      <td class="count">{{ security.count }}</td>
+  	      <td class="count">{{ security.options_count }}</td>
+  	      {% if security.segments %}<td class="number-segments">{{ security.segments }}</td>{% else %}<td></td>{% endif %}
+  	    </tr>
+        {% endfor %}
+      </table>
+    </div>
   <!-- <a class="btn btn-focus btn-danger" title="{% trans "Delete shareholder" %}" >{% trans "Delete shareholder" %}</a> -->
 
 </div>

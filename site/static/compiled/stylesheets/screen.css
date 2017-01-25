@@ -3354,6 +3354,10 @@ div#optionplan .pdf_upload_preview {
   font-size: 14px;
 }
 
+table.stock {
+  display: table !important;
+}
+
 .blog .lead {
   font-size: 1em;
 }

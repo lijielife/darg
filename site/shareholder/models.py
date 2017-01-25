@@ -587,8 +587,8 @@ class Shareholder(models.Model):
             qs_sold = self.option_seller.filter(bought_at__lte=date)
 
         if security:
-            qs_bought = qs_bought.filter(security=security)
-            qs_sold = qs_sold.filter(security=security)
+            qs_bought = qs_bought.filter(option_plan__security=security)
+            qs_sold = qs_sold.filter(option_plan__security=security)
 
         count_bought = sum(qs_bought.values_list('count', flat=True))
         count_sold = sum(qs_sold.values_list('count', flat=True))
