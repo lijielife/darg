@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-23 08:51+0000\n"
-"PO-Revision-Date: 2017-01-23 08:53+0000\n"
+"POT-Creation-Date: 2017-01-25 09:43+0000\n"
+"PO-Revision-Date: 2017-01-25 09:48+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -121,6 +121,55 @@ msgstr "Name des Optionsplanes"
 msgid "Edit Option Plan"
 msgstr "Optionsplan editieren"
 
+#: reports/templates/reports/index.html:6 templates/menu.html:39
+msgid "Reports"
+msgstr "Downloads"
+
+#: reports/templates/reports/index.html:15
+msgid "Reports and Downloads for "
+msgstr "Downloads für"
+
+#: reports/templates/reports/index.html:19
+msgid "Download active Shareholders as"
+msgstr "Aktive Gesellschafter als"
+
+#: reports/templates/reports/index.html:20
+msgid "Download active Shareholders as PDF"
+msgstr "Aktive Gesellschafter als PDF herunterladen"
+
+#: reports/templates/reports/index.html:21
+msgid "PDF"
+msgstr "PDf"
+
+#: reports/templates/reports/index.html:23
+msgid "Download active Shareholders as CSV"
+msgstr "Aktive Gesellschafter als CSV herunterladen"
+
+#: reports/templates/reports/index.html:24
+msgid "CSV"
+msgstr "CSV"
+
+#: reports/templates/reports/index.html:27
+msgid "Depot Statement per Shareholder"
+msgstr "Depotauszug pro Gesellschafter"
+
+#: reports/templates/reports/index.html:28
+msgid "Transactions per security in period"
+msgstr "Transaktionen pro Aktientyp im Zeitraum"
+
+#: reports/templates/reports/index.html:29
+#: reports/templates/reports/index.html:30
+msgid "Address data of all shareholders"
+msgstr "Adressdaten aller aktiven Gesellschafter"
+
+#: reports/templates/reports/index.html:32
+msgid "Printed Certificates"
+msgstr "Gedruckte Urkunden"
+
+#: reports/templates/reports/index.html:33
+msgid "Vested Shares"
+msgstr "Aktien mit Sperrfristen"
+
 #: templates/_messages.html:7
 msgid "Important:"
 msgstr "Wichtig:"
@@ -137,54 +186,54 @@ msgstr "Kennen Sie unseren"
 msgid "our blog"
 msgstr "Blog"
 
-#: templates/menu.html:29
+#: templates/menu.html:30
 msgid "Start"
 msgstr "Start"
 
-#: templates/menu.html:32
+#: templates/menu.html:33
 msgid "Positions"
 msgstr "Transaktionen"
 
-#: templates/menu.html:35
+#: templates/menu.html:36
 msgid "Options"
 msgstr "Optionen"
 
-#: templates/menu.html:46
+#: templates/menu.html:50
 msgid "Logged in as"
 msgstr "Eingeloggt als "
 
-#: templates/menu.html:57
+#: templates/menu.html:61
 msgid "Admin"
 msgstr "Admin"
 
-#: templates/menu.html:60
+#: templates/menu.html:64
 msgid "I18N"
 msgstr "I18N"
 
-#: templates/menu.html:64 templates/registration/password_reset_form.html:4
+#: templates/menu.html:68 templates/registration/password_reset_form.html:4
 #: templates/registration/password_reset_form.html:14
 #: templates/registration/password_reset_form.html:33
 msgid "Reset password"
 msgstr "Passwort zurücksetzen"
 
-#: templates/menu.html:65 templates/registration/password_change_form.html:4
+#: templates/menu.html:69 templates/registration/password_change_form.html:4
 #: templates/registration/password_change_form.html:12
 msgid "Change password"
 msgstr "Passwort ändern"
 
-#: templates/menu.html:68
+#: templates/menu.html:72
 msgid "Security Settings"
 msgstr "Sicherheitseinstellungen"
 
-#: templates/menu.html:70
+#: templates/menu.html:74
 msgid "Logout"
 msgstr "Logout"
 
-#: templates/menu.html:76 templates/two_factor/core/login.html:55
+#: templates/menu.html:80 templates/two_factor/core/login.html:55
 msgid "Register"
 msgstr "Registrieren"
 
-#: templates/menu.html:79 templates/registration/registration_form.html:26
+#: templates/menu.html:83 templates/registration/registration_form.html:26
 #: templates/two_factor/core/login.html:6
 msgid "Login"
 msgstr "Login"

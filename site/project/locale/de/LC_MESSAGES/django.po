@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-23 08:51+0000\n"
-"PO-Revision-Date: 2017-01-23 08:53+0000\n"
+"POT-Creation-Date: 2017-01-25 09:43+0000\n"
+"PO-Revision-Date: 2017-01-25 09:48+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -47,22 +47,22 @@ msgstr "Am (Datum)"
 
 #: project/templates/_add_capital_form.html:27
 #: project/templates/_add_option_plan_form.html:26
-#: project/templates/_add_position_form.html:38
+#: project/templates/_add_position_form.html:48
 #: project/templates/_split_shares_form.html:30
 msgid "Security"
 msgstr "Aktienart"
 
 #: project/templates/_add_capital_form.html:33
 #: project/templates/_add_option_plan_form.html:34
-#: project/templates/_add_option_transaction_form.html:50
-#: project/templates/_add_position_form.html:57
+#: project/templates/_add_option_transaction_form.html:62
+#: project/templates/_add_position_form.html:67
 #: project/templates/_add_shareholder_form.html:15
 #: project/templates/_split_shares_form.html:36
 msgid "Cancel"
 msgstr "Abbrechen"
 
 #: project/templates/_add_capital_form.html:34
-#: project/templates/_add_position_form.html:60
+#: project/templates/_add_position_form.html:70
 msgid "Add Position"
 msgstr "Position hinzufügen"
 
@@ -115,44 +115,46 @@ msgid "Please enter your Option data:"
 msgstr "Bitte geben Sie die Daten für die Option an:"
 
 #: project/templates/_add_option_transaction_form.html:24
-#: project/templates/_add_position_form.html:33
-msgid "Buyer"
-msgstr "Käufer"
+#: project/templates/_add_position_form.html:28
+msgid "from"
+msgstr "von"
 
 #: project/templates/_add_option_transaction_form.html:27
-msgid "Option Plan"
-msgstr "Optionsplan"
-
-#: project/templates/_add_option_transaction_form.html:31
-#: project/templates/_add_position_form.html:29
+#: project/templates/_add_position_form.html:31
 msgid "Seller"
 msgstr "Verkäufer"
 
-#: project/templates/_add_option_transaction_form.html:39
-#: project/templates/_add_position_form.html:48
+#: project/templates/_add_option_transaction_form.html:33
+#: project/templates/_add_position_form.html:37
+msgid "to"
+msgstr "an"
+
+#: project/templates/_add_option_transaction_form.html:36
+#: project/templates/_add_position_form.html:40
+msgid "Buyer"
+msgstr "Käufer"
+
+#: project/templates/_add_option_transaction_form.html:42
+msgid "Option Plan"
+msgstr "Optionsplan"
+
+#: project/templates/_add_option_transaction_form.html:51
+#: project/templates/_add_position_form.html:58
 msgid "optional fields"
 msgstr "Optionale Daten"
 
-#: project/templates/_add_option_transaction_form.html:41
-#: project/templates/_add_position_form.html:50
+#: project/templates/_add_option_transaction_form.html:53
+#: project/templates/_add_position_form.html:60
 msgid "Depot Type"
 msgstr "Depotart"
 
-#: project/templates/_add_option_transaction_form.html:51
+#: project/templates/_add_option_transaction_form.html:63
 msgid "Add Option"
 msgstr "Option hinzufügen"
 
 #: project/templates/_add_position_form.html:3
 msgid "Please enter your position data:"
 msgstr "Bitte geben Sie die Daten für die Übertragung der Aktien an:"
-
-#: project/templates/_add_position_form.html:27
-msgid "from"
-msgstr "von"
-
-#: project/templates/_add_position_form.html:31
-msgid "to"
-msgstr "an"
 
 #: project/templates/_add_shareholder_form.html:3
 msgid "Please enter your shareholder data:"
@@ -162,6 +164,10 @@ msgstr "Bitte geben Sie die Aktionärsdaten ein:"
 #: project/templates/start.html:40
 msgid "Add Shareholder"
 msgstr "Aktionär hinzufügen"
+
+#: project/templates/_shareholder_typeahead.html:16
+msgid "No Results Found"
+msgstr "Kein Ergebnis gefunden"
 
 #: project/templates/_split_shares_form.html:3
 msgid "Please enter your share split data"
@@ -240,13 +246,12 @@ msgstr "Name"
 
 #: project/templates/active_shareholder_captable.pdf.html:99
 #: project/templates/active_shareholder_captable.pdf.html:142
-#: project/templates/start.html:65
 msgid "Email"
 msgstr "Email"
 
 #: project/templates/active_shareholder_captable.pdf.html:100
 #: project/templates/active_shareholder_captable.pdf.html:143
-#: project/templates/start.html:66
+#: project/templates/start.html:65
 msgid "Shareholder Number"
 msgstr "Aktieninhabernummer"
 
@@ -272,7 +277,7 @@ msgstr "Optionen (%%)"
 msgid "Gratis Aktienbuch-Muster"
 msgstr "Gratis Aktienbuch-Muster"
 
-#: project/templates/index.html:36 project/tests/test_views.py:74
+#: project/templates/index.html:36 project/tests/test_views.py:76
 msgid "My Dashboard"
 msgstr "Mein Dashboard"
 
@@ -416,62 +421,38 @@ msgstr ""
 msgid "Share Ownership"
 msgstr "Aktienbesitz"
 
-#: project/templates/start.html:67
+#: project/templates/start.html:66
 #, python-format
 msgid "Shares (%%%%)"
 msgstr "Aktien (%)"
 
-#: project/templates/start.html:71
+#: project/templates/start.html:70
 msgid "Gafi Validation failed"
 msgstr "GAFI-FATF Validierung fehlgeschlagen"
 
-#: project/templates/start.html:86
+#: project/templates/start.html:84
 msgid "Total Shares distributed"
 msgstr "Gesamtzahl ausgegebener Aktien"
 
-#: project/templates/start.html:98
-msgid "No Shareholders yet."
-msgstr "Noch keine Gesellschafter"
-
-#: project/templates/start.html:104
+#: project/templates/start.html:94
 msgid "Option Holders"
 msgstr "Optionsinhaber/Zertifikate"
 
-#: project/templates/start.html:105
+#: project/templates/start.html:95
 msgid "Option Holders note"
 msgstr "Zugrundeliegende Aktien werden sind bei der AG hinterlegt."
 
-#: project/templates/start.html:131
-msgid "No option holders yet."
-msgstr "Keine Optionsinhaber gefunden."
-
-#: project/templates/start.html:137
-msgid "Download active Shareholders as"
-msgstr "Download Liste der aktiven Aktionäre als"
-
-#: project/templates/start.html:138
-msgid "Download active Shareholders as PDF"
-msgstr "Download Liste der aktiven Aktionäre als PDF"
-
-#: project/templates/start.html:139
-msgid "PDF"
-msgstr "PDF"
-
-#: project/templates/start.html:141
-msgid "Download active Shareholders as CSV"
-msgstr "Download Liste der aktiven Aktionäre als CSV"
-
-#: project/templates/start.html:142
-msgid "CSV"
-msgstr "CSV"
-
-#: project/tests/test_views.py:132 project/views.py:83
+#: project/tests/test_views.py:134 project/views.py:118
 msgid ""
 "You have already an existing user account. Please login or reset your "
 "password."
 msgstr ""
 "Sie haben bereits ein Nutzerkonto. Bitte loggen Sie sich ein oder setzen Sie"
 " Ihr Passwort zurück."
+
+#: project/tests/test_views.py:467 project/views.py:34 project/views.py:199
+msgid "shareholder number"
+msgstr "Aktieninhabernummer"
 
 #. Translators: should be a language supported by Twilio,
 #. see http://bit.ly/187I5cr
@@ -497,45 +478,98 @@ msgstr ""
 msgid "You didn't press any keys. Good bye."
 msgstr "Sie haben keine Taste gedrückt. Auf Wiedersehen."
 
-#: project/views.py:135
-msgid "shareholder number"
-msgstr "Aktieninhabernummer"
-
-#: project/views.py:135
+#: project/views.py:34 project/views.py:199
 msgid "last name"
 msgstr "Nachname"
 
-#: project/views.py:135
+#: project/views.py:34 project/views.py:199
 msgid "first name"
 msgstr "Vorname"
 
-#: project/views.py:136
+#: project/views.py:35 project/views.py:200
 msgid "email"
 msgstr "Email"
 
-#: project/views.py:136
-msgid "share count"
-msgstr "Anzahl Aktien"
-
-#: project/views.py:136
-msgid "votes share percent"
-msgstr "% Stimmrechte"
-
-#: project/views.py:137
+#: project/views.py:36 project/views.py:201
 msgid "language ISO"
 msgstr "Sprache ISO"
 
-#: project/views.py:137
+#: project/views.py:36 project/views.py:201
 msgid "language full"
 msgstr "Sprache"
 
-#: project/views.py:140
+#: project/views.py:36
+msgid "street"
+msgstr "Strasse"
+
+#: project/views.py:36
+msgid "street 2"
+msgstr "Strasse 2"
+
+#: project/views.py:37
+msgid "c/o"
+msgstr "c/o"
+
+#: project/views.py:37
+msgid "city"
+msgstr "Ort"
+
+#: project/views.py:37
+msgid "zip"
+msgstr "PLZ"
+
+#: project/views.py:37
+msgid "country"
+msgstr "Land"
+
+#: project/views.py:38
+msgid "pobox"
+msgstr "Postfach"
+
+#: project/views.py:38
+msgid "mailing type"
+msgstr "Versandart"
+
+#: project/views.py:38
+msgid "nationality"
+msgstr "Nationalität"
+
+#: project/views.py:200
+msgid "share count"
+msgstr "Anzahl Aktien"
+
+#: project/views.py:200
+msgid "votes share percent"
+msgstr "% Stimmrechte"
+
+#: project/views.py:204
 msgid "Share IDs"
 msgstr "Aktiennummern"
 
-#: project/views.py:161
+#: project/views.py:225
 msgid "None"
 msgstr "Keine"
+
+#~ msgid "No Shareholders yet."
+#~ msgstr "Noch keine Gesellschafter"
+
+#~ msgid "No option holders yet."
+#~ msgstr "Keine Optionsinhaber gefunden."
+
+#~ msgid "Download active Shareholders as"
+#~ msgstr "Download Liste der aktiven Aktionäre als"
+
+#~ msgid "Download active Shareholders as PDF"
+#~ msgstr "Download Liste der aktiven Aktionäre als PDF"
+
+#~ msgid "PDF"
+#~ msgstr "PDF"
+
+#~ msgid "Download active Shareholders as CSV"
+#~ msgstr "Download Liste der aktiven Aktionäre als CSV"
+
+#~ msgid "CSV"
+#~ msgstr "CSV"
 
 #~ msgid "Total Shares distributed (total shares registered with company)"
 #~ msgstr "Zahl Aktien lt. Tabelle (Zahl Aktien lt. Unternehmensdaten)"
