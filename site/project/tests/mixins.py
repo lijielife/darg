@@ -8,6 +8,10 @@ mixins to enhance several tests with common code
 from django.db import DEFAULT_DB_ALIAS, connections
 from django.test.utils import CaptureQueriesContext
 
+import requests
+
+from model_mommy import random_gen
+
 
 # stolen here https://goo.gl/IdWkTr
 class _AssertLessNumQueriesContext(CaptureQueriesContext):
@@ -56,3 +60,22 @@ class MoreAssertsTestCaseMixin(object):
 
         with context:
             func(*args, **kwargs)
+
+
+class FakeResponseMixin(object):
+    """
+    mixin to mock responses for requests calls
+    """
+
+    fake_response_content = random_gen.gen_text()
+
+    def get_fake_response(self, method, url=None, status_code=200):
+        if url is None:
+            url = random_gen.gen_url()
+        request = requests.Request(method=method, url=url)
+        request = request.prepare()
+        response = requests.Response()
+        response.status_code = status_code
+        response._content = self.fake_response_content
+        response.request = request
+        return response

@@ -70,7 +70,8 @@ class PingenSettings(object):
 pingen_settings = PingenSettings()
 
 
-def reload_pingen_settings(*args, **kwargs):
+# NOTE: just for tests
+def reload_pingen_settings(*args, **kwargs):  # pragma: no cover
     global pingen_settings
     setting, value = kwargs['setting'], kwargs['value']
     if setting == 'PINGEN':

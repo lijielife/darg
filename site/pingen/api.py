@@ -53,11 +53,9 @@ class Pingen(object):
 
         filename, ext = os.path.splitext(doc)
 
-        try:
-            mimetype = mimetypes.MimeTypes().guess_type(doc)[0]
-        except Exception:
-            # fallback to very simple solution
-            mimetype = 'application/{}'.format(ext.lstrip('.'))
+        mimetype = mimetypes.MimeTypes().guess_type(doc)[0]
+        # NOTE: very simplistic fallback (not bullet proof at all!)
+        mimetype = mimetype or 'application/{}'.format(ext.lstrip('.'))
 
         files = dict(
             file=(

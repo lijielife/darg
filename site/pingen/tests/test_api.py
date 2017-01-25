@@ -1,17 +1,22 @@
 
+import json
+import os
+
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase, override_settings
 
-# import mock
-# import requests
+import mock
+import requests
 
 from model_mommy import random_gen
 
-from ..api import Pingen as PingenAPI
+from project.tests.mixins import FakeResponseMixin
+
+from ..api import Pingen as PingenAPI, APICall
 
 
-class PingenTestCase(TestCase):
+class PingenTestCase(FakeResponseMixin, TestCase):
 
     def setUp(self):
         self.api = PingenAPI(random_gen.gen_string(32))
@@ -40,7 +45,40 @@ class PingenTestCase(TestCase):
         url = self.api.get_api_url(path)
         self.assertTrue(url.endswith(path + '/token/' + self.api.token + '/'))
 
-    # @mock.patch.object(requests, 'request')
-    def test_upload_document(self, mock_request):
-        # TODO
-        pass
+    @mock.patch.object(requests, 'post')
+    def test_upload_document(self, mock_post):
+
+        with self.assertRaises(ValueError):
+            self.api.upload_document(None)
+
+        with self.assertRaises(ValueError):
+            self.api.upload_document('')
+
+        doc = os.path.join(os.path.dirname(__file__), 'files', 'example.pdf')
+
+        self.fake_response_content = json.dumps(dict())
+        mock_post.return_value = self.get_fake_response('post')
+
+        self.assertEqual(APICall.objects.count(), 0)
+
+        self.assertFalse(self.api.upload_document(doc))
+
+        self.assertEqual(APICall.objects.count(), 1)
+
+        self.fake_response_content = json.dumps(dict(error=False))
+        mock_post.return_value = self.get_fake_response('post')
+        self.assertFalse(self.api.upload_document(doc))
+
+        self.assertEqual(APICall.objects.count(), 2)
+
+        self.fake_response_content = json.dumps(dict(error=False, id=1))
+        mock_post.return_value = self.get_fake_response('post')
+        self.assertTrue(self.api.upload_document(doc))
+
+        self.assertEqual(APICall.objects.count(), 3)
+
+        mock_post.return_value = self.get_fake_response(
+            'post', status_code=400)
+        self.assertFalse(self.api.upload_document(doc))
+
+        self.assertEqual(APICall.objects.count(), 4)
