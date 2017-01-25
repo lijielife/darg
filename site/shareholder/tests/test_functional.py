@@ -509,7 +509,7 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
         app.prepare_optionplan_fixtures()
 
         self.assertTrue(app.is_option_plan_displayed(
-            self.operator.company.security_set.first()))
+            OptionPlan.objects.last().security))
 
         app.click_open_transfer_option()
         app.enter_transfer_option_data(seller=self.seller)
@@ -529,7 +529,7 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
         app.prepare_optionplan_fixtures()
 
         self.assertTrue(app.is_option_plan_displayed(
-            self.operator.company.security_set.first()))
+            OptionPlan.objects.last().security))
 
         app.click_open_transfer_option()
         app.enter_transfer_option_data(buyer=self.buyer)
@@ -792,7 +792,8 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
             self.assertTrue(app.is_no_errors_displayed())
-            self.assertTrue(app.is_option_plan_displayed())
+            self.assertTrue(app.is_option_plan_displayed(
+                OptionPlan.objects.last().security))
 
             # not owned by seller
             app.click_open_transfer_option()
