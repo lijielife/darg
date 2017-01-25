@@ -41,7 +41,7 @@ class APICall(models.Model):
         verbose_name_plural = _('API Calls')
         ordering = ['-started_at']
 
-    def __unicode__(self):
+    def __unicode__(self):  # pragma: no cover
         return u'{} {} {} {}'.format(
             self.started_at,
             self.get_method_display(),

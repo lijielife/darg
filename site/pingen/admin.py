@@ -28,6 +28,7 @@ class APICallAdmin(admin.ModelAdmin):
     )
 
     def has_add_permission(self, request):
-        return False
+        return False  # pragma: no cover
+
 
 admin.site.register(APICall, APICallAdmin)

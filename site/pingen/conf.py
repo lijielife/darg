@@ -41,7 +41,7 @@ class PingenSettings(object):
 
     def __init__(self, user_settings=None, defaults=None):
         if user_settings:
-            self._user_settings = self.__check_user_settings(user_settings)
+            self._user_settings = user_settings
         self.defaults = defaults or DEFAULTS
 
     @property
@@ -67,14 +67,14 @@ class PingenSettings(object):
         return val
 
 
-pingen_settings = PingenSettings(None, DEFAULTS)
+pingen_settings = PingenSettings()
 
 
-def reload_api_settings(*args, **kwargs):
-    global api_settings
+def reload_pingen_settings(*args, **kwargs):
+    global pingen_settings
     setting, value = kwargs['setting'], kwargs['value']
     if setting == 'PINGEN':
-        api_settings = PingenSettings(value, DEFAULTS)
+        pingen_settings = PingenSettings(value)
 
 
-setting_changed.connect(reload_api_settings)
+setting_changed.connect(reload_pingen_settings)

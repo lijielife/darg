@@ -1,7 +1,9 @@
-from __future__ import unicode_literals
 
-from django.apps import AppConfig
+from __future__ import unicode_literals  # pragma: no cover
+
+from django.apps import AppConfig  # pragma: no cover
 
 
-class PingenConfig(AppConfig):
+class PingenConfig(AppConfig):  # pragma: no cover
+
     name = 'pingen'

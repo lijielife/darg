@@ -1,5 +1,6 @@
 # coding=utf-8
 
+import mimetypes
 import os
 
 from django.conf import settings
@@ -47,17 +48,22 @@ class Pingen(object):
         upload a document (PDF or ZIP)
         """
 
-        if not os.path.isfile(doc):
+        if not doc or not os.path.isfile(doc):
             raise ValueError(u'Could not find file: {}'.format(doc))
 
         filename, ext = os.path.splitext(doc)
+
+        try:
+            mimetype = mimetypes.MimeTypes().guess_type(doc)[0]
+        except Exception:
+            # fallback to very simple solution
+            mimetype = 'application/{}'.format(ext.lstrip('.'))
+
         files = dict(
             file=(
                 filename + ext,
                 open(doc, 'rb'),
-                # FIXME: using file extension as content type is not quite
-                #        bullet proof!
-                'application/{}'.format(ext.lstrip('.'))
+                mimetype
             )
         )
         data = dict(
