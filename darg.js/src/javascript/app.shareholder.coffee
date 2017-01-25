@@ -116,6 +116,14 @@ app.controller 'ShareholderController', ['$scope', '$http', 'Shareholder', ($sco
 
 ]
 
+# FIXME make global for all controllers
+app.filter 'percentage', [
+  '$filter'
+  ($filter) ->
+    (input, decimals) ->
+      $filter('number')(input * 100, decimals) + '%'
+]
+
 app.run (editableOptions) ->
   editableOptions.theme = 'bs3'
   # bootstrap3 theme. Can be also 'bs2', 'default'

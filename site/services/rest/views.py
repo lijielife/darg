@@ -25,7 +25,8 @@ from services.rest.serializers import (AddCompanySerializer, CompanySerializer,
                                        OptionTransactionSerializer,
                                        PositionSerializer, SecuritySerializer,
                                        ShareholderSerializer, UserSerializer,
-                                       UserWithEmailOnlySerializer)
+                                       UserWithEmailOnlySerializer,
+                                       ShareholderListSerializer)
 from shareholder.models import (Company, Country, Operator, OptionPlan,
                                 OptionTransaction, Position, Security,
                                 Shareholder)
@@ -49,7 +50,7 @@ class ShareholderViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
     ]
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('user__first_name', 'user__last_name', 'user__email',
-                     'number')
+                     'number', 'user__userprofile__company_name')
     ordering_fields = ('user__last_name', 'user__email', 'number')
 
     subscription_features = ('shareholders',)
@@ -72,9 +73,33 @@ class ShareholderViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
                 .prefetch_related('user__operator_set')
                 .distinct())
 
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return ShareholderListSerializer
+        if self.action == 'retrieve':
+            return ShareholderSerializer
+        return ShareholderSerializer
+
     @detail_route(methods=['get'])
     def number_segments(self, request, pk=None):
         shareholder = self.get_object()
+        kwargs = {}
+
+        if request.GET.get('date'):
+            kwargs.update({'date': request.GET.get('date')[:10]})
+
+        data = {}
+        for security in shareholder.company.security_set.all():
+            if security.track_numbers:
+                kwargs.update({'security': security})
+                data.update({
+                    security.pk: shareholder.current_segments(**kwargs)
+                })
+        return Response(data, status=status.HTTP_200_OK)
+
+    @list_route(methods=['get'])
+    def company_number_segments(self, request):
+        shareholder = request.user.operator_set.first().company.get_company_shareholder()
         kwargs = {}
 
         if request.GET.get('date'):
@@ -330,9 +355,13 @@ class PositionViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
     ]
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('buyer__user__first_name', 'buyer__user__last_name',
-                     'buyer__user__email', 'seller__user__first_name',
+                     'buyer__user__email',
+                     'buyer__user__userprofile__company_name',
+                     'seller__user__first_name',
                      'seller__user__last_name', 'seller__user__email',
-                     'seller__number', 'buyer__number', 'bought_at', 'comment')
+                     'seller__number', 'buyer__number',
+                     'seller__user__userprofile__company_name',
+                     'bought_at', 'comment')
     ordering_fields = ('buyer__user__last_name', 'buyer__user__email',
                        'buyer__number', 'seller__user__last_name',
                        'seller__user__email', 'seller__number')
@@ -443,7 +472,9 @@ class OptionTransactionViewSet(SubscriptionViewMixin,
                      'buyer__user__email', 'seller__user__first_name',
                      'seller__user__last_name', 'seller__user__email',
                      'seller__number', 'buyer__number', 'bought_at',
-                     'option_plan__title')
+                     'option_plan__title',
+                     'buyer__user__userprofile__company_name',
+                     'seller__user__userprofile__company_name')
     ordering_fields = ('buyer__user__last_name', 'buyer__user__email',
                        'buyer__number', 'seller__user__last_name',
                        'seller__user__email', 'seller__number')

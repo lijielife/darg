@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-12 14:00+0000\n"
+"POT-Creation-Date: 2017-01-23 08:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -62,44 +62,56 @@ msgid "Provisioned Capital (Liberiertes Kapital)"
 msgstr ""
 
 #: company/templates/company.html:107
+msgid "CHF for one vote based on face value of securities"
+msgstr ""
+
+#: company/templates/company.html:119
+msgid "Total Vote Count"
+msgstr ""
+
+#: company/templates/company.html:128
+msgid "Total Vote Count Floating"
+msgstr ""
+
+#: company/templates/company.html:137
 msgid "Company Headquarter Country"
 msgstr ""
 
-#: company/templates/company.html:120
+#: company/templates/company.html:150
 msgid "Securities"
 msgstr ""
 
-#: company/templates/company.html:128 company/tests/test_views.py:54
+#: company/templates/company.html:158 company/tests/test_views.py:54
 msgid "tracking security numbers for owners enabled. segments:"
 msgstr ""
 
-#: company/templates/company.html:139
+#: company/templates/company.html:169
 msgid "Please contact us at our"
 msgstr ""
 
-#: company/templates/company.html:141
+#: company/templates/company.html:171
 msgid ""
 "for getting more security types (common stock, preferred stock, numbered "
 "shares) added"
 msgstr ""
 
-#: company/templates/company.html:148
+#: company/templates/company.html:178
 msgid "Administrators"
 msgstr ""
 
-#: company/templates/company.html:149
+#: company/templates/company.html:179
 msgid "add operator"
 msgstr ""
 
-#: company/templates/company.html:178
+#: company/templates/company.html:208
 msgid "Option Plans"
 msgstr ""
 
-#: company/templates/company.html:182
+#: company/templates/company.html:212
 msgid "Options Plan Name"
 msgstr ""
 
-#: company/templates/company.html:182
+#: company/templates/company.html:212
 msgid "Edit Option Plan"
 msgstr ""
 
@@ -502,6 +514,6 @@ msgstr ""
 msgid "German"
 msgstr ""
 
-#: utils/import_backends.py:292
+#: utils/import_backends.py:282
 msgid "Default OptionPlan for {}"
 msgstr ""

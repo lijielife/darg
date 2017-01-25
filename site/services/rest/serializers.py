@@ -83,6 +83,8 @@ class CompanySerializer(SubscriptionSerializerMixin,
     captable_pdf_url = serializers.SerializerMethodField()
     captable_csv_url = serializers.SerializerMethodField()
     logo_url = serializers.SerializerMethodField()
+    vote_count = serializers.SerializerMethodField()
+    vote_count_floating = serializers.SerializerMethodField()
     current_subscription = serializers.CharField(
         source='get_current_subscription_plan',
         read_only=True
@@ -99,6 +101,7 @@ class CompanySerializer(SubscriptionSerializerMixin,
                   'provisioned_capital', 'profile_url', 'captable_pdf_url',
                   'captable_csv_url', 'logo_url', 'email', 'has_address',
                   'is_statement_sending_enabled', 'statement_sending_date',
+                  'vote_count', 'vote_ratio', 'vote_count_floating',
                   'current_subscription', 'subscription_features',
                   'subscription_permissions') + Company.STREET_FIELDS
 
@@ -113,6 +116,12 @@ class CompanySerializer(SubscriptionSerializerMixin,
 
     def get_logo_url(self, obj):
         return obj.get_logo_url()
+
+    def get_vote_count(self, obj):
+        return obj.get_total_votes()
+
+    def get_vote_count_floating(self, obj):
+        return obj.get_total_votes_floating()
 
 
 class AddCompanySerializer(serializers.Serializer):
@@ -293,6 +302,31 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         return user
 
 
+class ShareholderListSerializer(serializers.HyperlinkedModelSerializer):
+    """ made for performance, avoids any queries or nested data """
+    # user = UserSerializer(many=False)
+    full_name = serializers.SerializerMethodField()
+    is_company = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Shareholder
+        fields = (
+            'pk', 'number',
+            # 'user',
+            'share_percent',  # +2 queries/obj
+            'share_count',  # +2 queries/obj
+            'validate_gafi',
+            'is_company',
+            'full_name',
+        )
+
+    def get_full_name(self, obj):
+        return obj.get_full_name()
+
+    def get_is_company(self, obj):
+        return obj.is_company_shareholder()  # adds one query per obj
+
+
 class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
     user = UserSerializer(many=False)
     company = CompanySerializer(many=False,  read_only=True)
@@ -312,7 +346,8 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
             'is_company',
             'full_name',
             'mailing_type',
-            'readable_mailing_type'
+            'readable_mailing_type',
+            'vote_count', 'vote_percent'
         )
 
     def create(self, validated_data):
@@ -442,8 +477,8 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
 class PositionSerializer(serializers.HyperlinkedModelSerializer,
                          FieldValidationMixin):
 
-    buyer = ShareholderSerializer(many=False, required=False)
-    seller = ShareholderSerializer(many=False, required=False)
+    buyer = ShareholderListSerializer(many=False, required=False)
+    seller = ShareholderListSerializer(many=False, required=False)
     security = SecuritySerializer(many=False, required=True)
     bought_at = serializers.DateTimeField()  # e.g. 2015-06-02T23:00:00.000Z
     readable_number_segments = serializers.SerializerMethodField()
@@ -497,7 +532,8 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
         company = user.operator_set.all()[0].company
 
         if security and Security.objects.get(
-                company=company, title=security.get('title')).track_numbers:
+                company=company, title=security.get('title'),
+                face_value=security.get('face_value')).track_numbers:
 
             logger.info('validation: prepare data...')
             security = Security.objects.get(id=security['pk'])
@@ -577,20 +613,21 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
 
         security = Security.objects.get(
             company=company,
-            title=validated_data.get('security').get('title')
+            title=validated_data.get('security').get('title'),
+            face_value=validated_data.get('security').get('face_value')
         )
 
         # regular security transaction
         if validated_data.get("seller") and validated_data.get("buyer"):
             buyer = Shareholder.objects.get(
                 company=company,
-                user__email=validated_data.get(
-                    "buyer").get("user").get("email")
+                number=validated_data.get(
+                    "buyer").get("number")
             )
             seller = Shareholder.objects.get(
                 company=company,
-                user__email=validated_data.get(
-                    "seller").get("user").get("email")
+                number=validated_data.get(
+                    "seller").get("number")
             )
             kwargs.update({"seller": seller, 'registration_type': '2'})
 
@@ -776,8 +813,8 @@ class OptionPlanSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
-    buyer = ShareholderSerializer(many=False, required=True)
-    seller = ShareholderSerializer(many=False, required=True)
+    buyer = ShareholderListSerializer(many=False, required=True)
+    seller = ShareholderListSerializer(many=False, required=True)
     bought_at = serializers.DateField()  # e.g. 2015-06-02T23:00:00.000Z
     readable_number_segments = serializers.SerializerMethodField()
     readable_registration_type = serializers.SerializerMethodField()
@@ -942,15 +979,22 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class OptionHolderSerializer(serializers.HyperlinkedModelSerializer):
-    user = UserSerializer(many=False)
-    company = CompanySerializer(many=False,  read_only=True)
+    """ commented some fields for the sake of performance """
+    # user = UserSerializer(many=False)
+    # company = CompanySerializer(many=False,  read_only=True)
     full_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Shareholder
         fields = (
-            'pk', 'user', 'number', 'company', 'options_percent',
-            'options_count', 'options_value', 'full_name'
+            'pk',
+            # 'user',
+            'number',
+            # 'company',
+            'options_percent',
+            'options_count',
+            # 'options_value',
+            'full_name'
         )
 
     def get_full_name(self, obj):

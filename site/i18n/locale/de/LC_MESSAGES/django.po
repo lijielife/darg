@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-12 14:00+0000\n"
-"PO-Revision-Date: 2017-01-10 13:01+0000\n"
+"POT-Creation-Date: 2017-01-23 08:51+0000\n"
+"PO-Revision-Date: 2017-01-23 08:53+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -66,22 +66,34 @@ msgid "Provisioned Capital (Liberiertes Kapital)"
 msgstr "Liberiertes/eingelegtes Kapital"
 
 #: company/templates/company.html:107
+msgid "CHF for one vote based on face value of securities"
+msgstr "Anzahl CHF für ein Stimmrecht (Basis Nennwert der Aktien)"
+
+#: company/templates/company.html:119
+msgid "Total Vote Count"
+msgstr "Stimmrechte gesamt"
+
+#: company/templates/company.html:128
+msgid "Total Vote Count Floating"
+msgstr "Stimmrechte gesamt (ohne vom Unternehmen gehaltene Aktien)"
+
+#: company/templates/company.html:137
 msgid "Company Headquarter Country"
 msgstr "Land des Unternehmenssitzes"
 
-#: company/templates/company.html:120
+#: company/templates/company.html:150
 msgid "Securities"
 msgstr "Aktienart"
 
-#: company/templates/company.html:128 company/tests/test_views.py:54
+#: company/templates/company.html:158 company/tests/test_views.py:54
 msgid "tracking security numbers for owners enabled. segments:"
 msgstr "Nummerierte Aktiensegmente:"
 
-#: company/templates/company.html:139
+#: company/templates/company.html:169
 msgid "Please contact us at our"
 msgstr "Bitte kontaktieren Sie uns unter"
 
-#: company/templates/company.html:141
+#: company/templates/company.html:171
 msgid ""
 "for getting more security types (common stock, preferred stock, numbered "
 "shares) added"
@@ -89,23 +101,23 @@ msgstr ""
 "um mehr Wertpapierarten (Vorzugsaktien, Stammaktien, Aktien mit "
 "verschiedenen Nennwerten, Nummerierte Aktien) zu erhalten."
 
-#: company/templates/company.html:148
+#: company/templates/company.html:178
 msgid "Administrators"
 msgstr "Administratoren"
 
-#: company/templates/company.html:149
+#: company/templates/company.html:179
 msgid "add operator"
 msgstr "Administrator hinzufügen"
 
-#: company/templates/company.html:178
+#: company/templates/company.html:208
 msgid "Option Plans"
 msgstr "Optionsplan"
 
-#: company/templates/company.html:182
+#: company/templates/company.html:212
 msgid "Options Plan Name"
 msgstr "Name des Optionsplanes"
 
-#: company/templates/company.html:182
+#: company/templates/company.html:212
 msgid "Edit Option Plan"
 msgstr "Optionsplan editieren"
 
@@ -231,8 +243,8 @@ msgid ""
 "The password reset link was invalid, possibly because it has already been "
 "used.  Please request a new password reset."
 msgstr ""
-"Der Link zum Passwort-zurücksetzen ist nicht gültig. Wahrscheinlich wurde er "
-"bereits benutzt. Bitte fragen Sie diesen erneut an."
+"Der Link zum Passwort-zurücksetzen ist nicht gültig. Wahrscheinlich wurde er"
+" bereits benutzt. Bitte fragen Sie diesen erneut an."
 
 #: templates/registration/password_reset_done.html:4
 #: templates/registration/password_reset_done.html:14
@@ -242,14 +254,12 @@ msgstr "Passwort zurücksetzen"
 #: templates/registration/password_reset_done.html:17
 msgid ""
 "\n"
-"    We have sent you an email with a link to reset your password.  Please "
-"check\n"
+"    We have sent you an email with a link to reset your password.  Please check\n"
 "    your email and click the link to continue.\n"
 "    "
 msgstr ""
 "\n"
-"Wir haben Ihnen eine Email mit einem Link zum Zurücksetzen Ihres Passwortes "
-"gesendet. Bitte öffnen Sie Ihre Email und klicken Sie diesen Link."
+"Wir haben Ihnen eine Email mit einem Link zum Zurücksetzen Ihres Passwortes gesendet. Bitte öffnen Sie Ihre Email und klicken Sie diesen Link."
 
 #: templates/registration/password_reset_email.html:3
 msgid "Greetings"
@@ -260,25 +270,20 @@ msgstr "Mit besten Grüssen"
 msgid ""
 "\n"
 "You are receiving this email because you (or someone pretending to be you)\n"
-"requested that your password be reset on the %(domain)s site.  If you do "
-"not\n"
+"requested that your password be reset on the %(domain)s site.  If you do not\n"
 "wish to reset your password, please ignore this message.\n"
 msgstr ""
 "\n"
-"Sie erhalten diese Email da Sie (oder jemand der vorgibt Sie zu sein) das "
-"Zurücksetzen des Passworts auf der Seite %(domain)s angefragt haben. Falls "
-"Sie dies nicht waren, ignorieren Sie bitte diese Email.\n"
+"Sie erhalten diese Email da Sie (oder jemand der vorgibt Sie zu sein) das Zurücksetzen des Passworts auf der Seite %(domain)s angefragt haben. Falls Sie dies nicht waren, ignorieren Sie bitte diese Email.\n"
 
 #: templates/registration/password_reset_email.html:11
 msgid ""
 "\n"
-"To reset your password, please click the following link, or copy and paste "
-"it\n"
+"To reset your password, please click the following link, or copy and paste it\n"
 "into your web browser:\n"
 msgstr ""
 "\n"
-"Um ihr Passwort zurückzusetzen, klicken Sie bitte den folgenden Link oder "
-"kopieren Sie diesen in die Adress-Leiste Ihres Browsers:\n"
+"Um ihr Passwort zurückzusetzen, klicken Sie bitte den folgenden Link oder kopieren Sie diesen in die Adress-Leiste Ihres Browsers:\n"
 
 #: templates/registration/password_reset_email.html:18
 msgid "Your username, in case you've forgotten:"
@@ -295,14 +300,11 @@ msgstr "Team"
 #: templates/registration/password_reset_form.html:17
 msgid ""
 "\n"
-"    Forgot your password?  Enter your email in the form below and we'll send "
-"you instructions for creating a new one.\n"
+"    Forgot your password?  Enter your email in the form below and we'll send you instructions for creating a new one.\n"
 "    "
 msgstr ""
 "\n"
-"Sie haben Ihr Passwort vergessen? Geben Sie Ihre Email in das Formular unten "
-"ein. Wir senden Ihnen genauere Instruktionen für die Erstellung eines neuen "
-"zu."
+"Sie haben Ihr Passwort vergessen? Geben Sie Ihre Email in das Formular unten ein. Wir senden Ihnen genauere Instruktionen für die Erstellung eines neuen zu."
 
 #: templates/registration/registration_complete.html:11
 msgid "Registration Complete"
@@ -399,8 +401,7 @@ msgstr ""
 #: templates/two_factor/core/login.html:22
 msgid ""
 "Use this form for entering backup tokens for logging in.\n"
-"      These tokens have been generated for you to print and keep safe. "
-"Please\n"
+"      These tokens have been generated for you to print and keep safe. Please\n"
 "      enter one of these backup tokens to login to your account."
 msgstr ""
 "Verwenden Sie dieses Formular um Backup-Token für das Login einzugeben. "
@@ -540,7 +541,7 @@ msgstr "Blog Start"
 msgid "German"
 msgstr "Deutsch"
 
-#: utils/import_backends.py:292
+#: utils/import_backends.py:282
 msgid "Default OptionPlan for {}"
 msgstr "Default Optionsplan für {}"
 

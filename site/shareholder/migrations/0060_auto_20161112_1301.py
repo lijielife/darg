@@ -9,7 +9,7 @@ import shareholder.validators
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('shareholder', '0057_auto_20161110_1730'),
+        ('shareholder', '0059_auto_20161110_1730'),
     ]
 
     operations = [

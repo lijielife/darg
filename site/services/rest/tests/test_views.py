@@ -18,6 +18,7 @@ from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
                                 PositionGenerator, SecurityGenerator,
                                 ShareholderGenerator,
                                 TwoInitialSecuritiesGenerator, UserGenerator)
+from project.tests.mixins import MoreAssertsTestCaseMixin
 from services.rest.serializers import SecuritySerializer
 from shareholder.models import (Operator, OptionTransaction, Position,
                                 Security, Shareholder)
@@ -227,7 +228,7 @@ class OperatorTestCase(TestCase):
         self.assertFalse(Operator.objects.filter(pk=operator2.pk).exists())
 
 
-class PositionTestCase(TestCase):
+class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
 
     def setUp(self):
         self.client = APIClient()
@@ -258,7 +259,7 @@ class PositionTestCase(TestCase):
                     "operator_set": [],
                     "userprofile": None,
                 },
-                "number": "0",
+                "number": buyer.number,
                 "company": {
                     "pk": operator.company.pk,
                     "name": operator.company.name,
@@ -280,7 +281,8 @@ class PositionTestCase(TestCase):
                 "pk": securities[1].pk,
                 "readable_title": "Preferred Stock",
                 "title": "P",
-                "count": 3
+                "count": 3,
+                "face_value": 100
             },
             "count": 1,
             "value": 1,
@@ -293,7 +295,7 @@ class PositionTestCase(TestCase):
                     "operator_set": [],
                     "userprofile": None
                 },
-                "number": "0",
+                "number": seller.number,
                 "company": {
                     "pk": 5,
                     "name": "LieblingzWaldCompany AG",
@@ -372,7 +374,7 @@ class PositionTestCase(TestCase):
                     "operator_set": [],
                     "userprofile": None,
                 },
-                "number": "0",
+                "number": buyer.number,
                 "company": {
                     "pk": operator.company.pk,
                     "name": operator.company.name,
@@ -394,7 +396,8 @@ class PositionTestCase(TestCase):
                 "pk": securities[1].pk,
                 "readable_title": "Preferred Stock",
                 "title": "P",
-                "count": 3
+                "count": 3,
+                "face_value": 100
             },
             "count": 5,
             "value": 1,
@@ -407,7 +410,7 @@ class PositionTestCase(TestCase):
                     "operator_set": [],
                     "userprofile": None
                 },
-                "number": "0",
+                "number": seller.number,
                 "company": {
                     "pk": 5,
                     "name": "LieblingzWaldCompany AG",
@@ -481,7 +484,7 @@ class PositionTestCase(TestCase):
                     "operator_set": [],
                     "userprofile": None,
                 },
-                "number": "0",
+                "number": buyer.number,
                 "company": {
                     "pk": operator.company.pk,
                     "name": operator.company.name,
@@ -504,7 +507,8 @@ class PositionTestCase(TestCase):
                 "title": sec1.title,
                 "count": sec1.count,
                 "track_numbers": True,
-                "number_segments": sec1.number_segments
+                "number_segments": sec1.number_segments,
+                "face_value": sec1.face_value
             },
             "count": 1000000,
             "value": 0.5,
@@ -517,7 +521,7 @@ class PositionTestCase(TestCase):
                     "operator_set": [],
                     "userprofile": None
                 },
-                "number": "0",
+                "number": cs.number,
                 "company": {
                     "pk": 5,
                     "name": "LieblingzWaldCompany AG",
@@ -539,7 +543,8 @@ class PositionTestCase(TestCase):
         }
 
         # call with perf check
-        with self.assertNumQueries(55):
+        # was 55, increased to 95
+        with self.assertLessNumQueries(46):
             response = self.client.post(
                 u'/services/rest/position',
                 data,
@@ -749,10 +754,11 @@ class PositionTestCase(TestCase):
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['count'], 3)
-        last_names = [s.get('buyer')['user']['last_name']
+        last_names = [s.get('buyer')['full_name']
                       for s in res.data['results']]
-        self.assertEqual(last_names,
-                         sorted(last_names, key=lambda s: s.lower()))
+        self.assertEqual(
+            last_names,
+            sorted(last_names, key=lambda s: s.split(' ')[1].lower()))
 
         res = self.client.get(
             '/services/rest/position?ordering=-buyer__number')
@@ -853,9 +859,8 @@ class ShareholderTestCase(TestCase):
 
         self.assertTrue(len(response.data.get('results')) == 1)
         self.assertEqual(
-            response.data['results'][0].get('user').get(
-                'userprofile').get('birthday'),
-            shareholder.user.userprofile.birthday.strftime('%Y-%m-%d'))
+            response.data['results'][0].get('full_name'),
+            shareholder.get_full_name())
 
     def test_add_new_shareholder(self):
         """ addes a new shareholder and user and checks for special chars"""
@@ -1114,6 +1119,17 @@ class ShareholderTestCase(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['count'], 1)
 
+        profile = operator.company.shareholder_set.first().user.userprofile
+        profile.company_name = 'some corp 888'
+        profile.save()
+
+        res = self.client.get(
+            '/services/rest/shareholders?search={}'.format(profile.company_name)
+        )
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['count'], 1)
+
     def test_ordering(self):
         operator = OperatorGenerator().generate()
         user = operator.user
@@ -1127,9 +1143,10 @@ class ShareholderTestCase(TestCase):
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['count'], 13)
-        last_names = [s.get('user')['last_name'] for s in res.data['results']]
-        self.assertEqual(last_names,
-                         sorted(last_names, key=lambda s: s.lower()))
+        last_names = [s.get('full_name') for s in res.data['results']]
+        self.assertEqual(
+            last_names,
+            sorted(last_names, key=lambda s: s.split(' ')[1].lower()))
 
         res = self.client.get(
             '/services/rest/shareholders?ordering=-number')
@@ -1203,7 +1220,7 @@ class ShareholderTestCase(TestCase):
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(len(res.data['results']), 1)
-        self.assertEqual(res.data['results'][0]['user']['first_name'], query)
+        self.assertIn(query, res.data['results'][0]['full_name'])
 
 
 class OptionTransactionTestCase(APITestCase):
@@ -1344,7 +1361,7 @@ class OptionTransactionTestCase(APITestCase):
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['count'], 2)
-        last_names = [s.get('seller')['user']['last_name']
+        last_names = [s.get('seller')['full_name']
                       for s in res.data['results']]
         self.assertEqual(last_names,
                          sorted(last_names, key=lambda s: s.lower()))

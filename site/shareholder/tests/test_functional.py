@@ -290,7 +290,6 @@ class PositionDetailFunctionalTestCase(BaseSeleniumTestCase):
             self.selenium, self.live_server_url, self.operator.user,
             path=reverse('position', kwargs={'pk': self.position.pk}))
 
-
     def test_display(self):
         """
         test if all data is shown properly
@@ -452,12 +451,14 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             # wait for form to disappear
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
+            ot = self.buyer.option_buyer.last()
             self.assertTrue(app.is_no_errors_displayed())
             self.assertTrue(app.is_transfer_option_shown(
                 buyer=self.buyer, seller=self.seller
             ))
             self.assertTrue(app.is_option_date_equal('13.05.16'))
-            self.assertTrue(app.is_option_plan_displayed())
+            self.assertTrue(app.is_option_plan_displayed(
+                ot.option_plan.security))
 
         except Exception, e:
             self._handle_exception(e)
@@ -489,7 +490,8 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
                 buyer=self.buyer, seller=self.seller
             ))
             self.assertTrue(app.is_option_date_equal('13.05.16'))
-            self.assertTrue(app.is_option_plan_displayed())
+            security = self.buyer.option_buyer.first().option_plan.security
+            self.assertTrue(app.is_option_plan_displayed(security))
             optiontransaction = OptionTransaction.objects.last()
             self.assertEqual(optiontransaction.certificate_id, '33')
             self.assertEqual(optiontransaction.stock_book_id, '44')
@@ -506,7 +508,8 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             self.selenium, self.live_server_url, self.operator.user)
         app.prepare_optionplan_fixtures()
 
-        self.assertTrue(app.is_option_plan_displayed())
+        self.assertTrue(app.is_option_plan_displayed(
+            OptionPlan.objects.last().security))
 
         app.click_open_transfer_option()
         app.enter_transfer_option_data(seller=self.seller)
@@ -525,7 +528,8 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             self.selenium, self.live_server_url, self.operator.user)
         app.prepare_optionplan_fixtures()
 
-        self.assertTrue(app.is_option_plan_displayed())
+        self.assertTrue(app.is_option_plan_displayed(
+            OptionPlan.objects.last().security))
 
         app.click_open_transfer_option()
         app.enter_transfer_option_data(buyer=self.buyer)
@@ -637,7 +641,8 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
             self.assertTrue(app.is_no_errors_displayed())
-            self.assertTrue(app.is_option_plan_displayed())
+            self.assertTrue(app.is_option_plan_displayed(
+                OptionPlan.objects.last().security))
 
             ct = shs[1].option_buyer.count()
             app.click_open_transfer_option()
@@ -679,7 +684,8 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
                 self.selenium, self.live_server_url, operator.user, path)
 
             security_text = (
-                    u'Vorzugsaktien\n(Reservierte Aktiennummern 1000-2000)')
+                    u'Vorzugsaktien (100 CHF)\n'
+                    u'(Reservierte Aktiennummern 1000-2000)')
             app.wait_until_text_present(
                 (By.CSS_SELECTOR, 'tr.security td.text'), security_text)
 
@@ -756,7 +762,8 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.wait_until_invisible((By.CSS_SELECTOR, '.form-error'))
 
             self.assertTrue(app.is_no_errors_displayed())
-            self.assertTrue(app.is_option_plan_displayed())
+            self.assertTrue(app.is_option_plan_displayed(
+                OptionPlan.objects.last().security))
 
         except Exception, e:
             self._handle_exception(e)
@@ -785,7 +792,8 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
             self.assertTrue(app.is_no_errors_displayed())
-            self.assertTrue(app.is_option_plan_displayed())
+            self.assertTrue(app.is_option_plan_displayed(
+                OptionPlan.objects.last().security))
 
             # not owned by seller
             app.click_open_transfer_option()
@@ -1057,7 +1065,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             # test cycle: w/ date, seller, sec
             app.enter_bought_at(position.bought_at)
             self.assertFalse(app.has_available_segments_tooltip())
-            app.enter_seller(position.seller)
+            app.enter_typeahead('add_position', position.seller, 'seller')
             self.assertFalse(app.has_available_segments_tooltip())
             app.enter_security(position.security, 'add-position-form')
             self.assertTrue(app.has_available_segments_tooltip())
@@ -1069,7 +1077,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.click_open_add_position_form()
             # test w/ sec + seller
             self.assertFalse(app.has_available_segments_tooltip())
-            app.enter_seller(position.seller)
+            app.enter_typeahead('add_position', position.seller, 'seller')
             self.assertFalse(app.has_available_segments_tooltip())
             app.enter_security(position.security, 'add-position-form')
             self.assertTrue(app.has_available_segments_tooltip())
@@ -1082,7 +1090,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             position.seller = self.seller2
             app.enter_bought_at(position.bought_at)
             self.assertFalse(app.has_available_segments_tooltip())
-            app.enter_seller(position.seller)
+            app.enter_typeahead('add_position', position.seller, 'seller')
             self.assertFalse(app.has_available_segments_tooltip())
             app.enter_security(position.security, 'add-position-form')
             self.assertTrue(app.has_available_segments_tooltip())
@@ -1115,7 +1123,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             # clear numbers segment field
             el = self.selenium.find_element_by_id('add_position')
             form = el.find_element_by_tag_name('form')
-            input = form.find_elements_by_tag_name('input')[3]
+            input = form.find_elements_by_tag_name('input')[5]
             input.clear()
 
             app.click_save_position()
@@ -1128,7 +1136,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             # add [A-Z] number segments
             el = self.selenium.find_element_by_id('add_position')
             form = el.find_element_by_tag_name('form')
-            input = form.find_elements_by_tag_name('input')[3]
+            input = form.find_elements_by_tag_name('input')[5]
             input.send_keys('AA')
 
             app.click_save_position()
@@ -1139,7 +1147,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             el = self.selenium.find_element_by_id('add_position')
             form = el.find_element_by_tag_name('form')
             input.clear()
-            input = form.find_elements_by_tag_name('input')[3]
+            input = form.find_elements_by_tag_name('input')[5]
             input.send_keys('1,2,3')
 
             app.click_save_position()
@@ -1200,6 +1208,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.enter_new_position_data(position)
             app.click_save_position()
             time.sleep(3)
+            self._screenshot()
             self.assertTrue(
                 self.selenium.find_element_by_xpath(
                     '//p[contains(@class, "form-error")]').is_displayed()

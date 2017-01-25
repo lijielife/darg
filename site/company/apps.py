@@ -48,7 +48,8 @@ class CompanyAppConfig(AppConfig):
         from djstripe.models import Charge
 
         def _send_receipt(self):
-            if not self.receipt_sent:
+            # only send receipt when not already sent and amount
+            if not self.receipt_sent and self.amount:
                 subscriber = self.customer.subscriber  # company
                 context = self._get_template_context()
                 recipient = subscriber.email

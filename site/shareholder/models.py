@@ -52,6 +52,12 @@ DEPOT_TYPES = [
     ('2', _('Sperrdepot')),
 ]
 
+MAILING_TYPES = [
+    ('0', _('Not deliverable')),
+    ('1', _('Postal Mail')),
+    ('2', _('via Email')),
+]
+
 logger = logging.getLogger(__name__)
 
 
@@ -87,6 +93,9 @@ class Company(AddressModelMixin, models.Model):
     logo = models.ImageField(
         blank=True, null=True,
         upload_to=get_company_logo_upload_path,)
+    vote_ratio = models.PositiveIntegerField(
+        _('Voting rights calculation: one vote per X of security.face_value'),
+        blank=True, null=True, default=1)
     email = models.EmailField(_('Email'), blank=True)  # required by djstripe
 
     is_statement_sending_enabled = models.BooleanField(
@@ -227,15 +236,36 @@ class Company(AddressModelMixin, models.Model):
             buyer__company=self, seller__isnull=True)
         val = 0
         for position in cap_creating_positions:
-            val += position.count * position.value
+            val += position.count * position.security.face_value
 
         cap_destroying_positions = Position.objects.filter(
             seller__company=self, buyer__isnull=True)
 
         for position in cap_destroying_positions:
-            val -= position.count * position.value
+            val -= position.count * position.security.face_value
 
         return val
+
+    def get_total_votes(self):
+        """
+        returns the total number of voting rights the company is existing
+        """
+        votes = 0
+        vote_ratio = self.vote_ratio or 1
+        if vote_ratio:
+            for security in self.security_set.all():
+                face_value = security.face_value or 1
+                votes += face_value * security.count / vote_ratio
+
+        return int(votes)
+
+    def get_total_votes_floating(self):
+        """
+        returns total amount of votes owned by regular shareholers. excludes
+        votes owned by company
+        """
+        company_votes = self.get_company_shareholder().vote_count()
+        return self.get_total_votes() - company_votes
 
     def get_logo_url(self):
         """ return url for logo """
@@ -488,12 +518,6 @@ class UserProfile(AddressModelMixin, models.Model):
 
 
 class Shareholder(models.Model):
-
-    MAILING_TYPES = [
-        ('0', _('Not deliverable')),
-        ('1', _('Postal Mail')),
-        ('2', _('via Email')),
-    ]
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     company = models.ForeignKey('Company', verbose_name="Shareholders Company")
@@ -854,6 +878,32 @@ class Shareholder(models.Model):
         segments_owning = set(counter_bought - counter_sold)
         return deflate_segments(segments_owning)
 
+    def vote_count(self, date=None):
+        """
+        returns the total number of voting rights for this shareholder
+        """
+        votes = 0
+        vote_ratio = self.company.vote_ratio or 1
+        if vote_ratio:
+            for security in self.company.security_set.all():
+                face_value = security.face_value or 1
+                votes += (self.share_count(security=security, date=date) *
+                          face_value / vote_ratio)
+
+        return int(votes)
+
+    def vote_percent(self, date=None):
+        """
+        returns percentage of the users voting rights compared to total voting
+        rights existing
+        """
+        if self.is_company_shareholder():
+            return float(0.0)
+
+        return (self.vote_count(date) /
+                float(self.company.get_total_votes_floating())
+                )
+
     def get_user_name(self):
         """
         returns full name of user if given, else email
@@ -883,7 +933,7 @@ class Security(models.Model):
         # ('W', 'Warrant'),
         # ('V', 'Convertible Instrument'),
     )
-    title = models.CharField(max_length=1, choices=SECURITY_TITLES)
+    title = models.CharField(max_length=1, choices=SECURITY_TITLES, default='C')
     face_value = models.DecimalField(
         _('Nominal value of this asset'),
         max_digits=16, decimal_places=4, blank=True,
@@ -908,6 +958,17 @@ class Security(models.Model):
                 self.get_title_display(), int(self.face_value))
 
         return self.get_title_display()
+
+    def calculate_count(self):
+        """
+        calculate how many shares does the company have by iterating
+        over all shareholders of the company and getting their
+        share count. summarize it.
+        """
+        count = 0
+        for shareholder in self.company.shareholder_set.all():
+            count += shareholder.share_count(security=self)
+        return count
 
     def count_in_segments(self, segments=None):
         """
@@ -1389,3 +1450,10 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
         UserProfile.objects.create(user=instance)
+
+
+@receiver(post_save, sender=Company)
+def create_stripe_customer(sender, instance=None, created=False, **kwargs):
+    """create stripe customer object when company is created"""
+    if created:
+        instance.get_customer()

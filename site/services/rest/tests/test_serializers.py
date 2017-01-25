@@ -19,6 +19,7 @@ from services.rest.serializers import (AddCompanySerializer,
                                        OptionTransactionSerializer,
                                        PositionSerializer,
                                        ShareholderSerializer,
+                                       ShareholderListSerializer,
                                        UserProfileSerializer)
 from shareholder.models import OptionPlan, OptionTransaction, Country, Position
 from utils.formatters import human_readable_segments
@@ -125,8 +126,8 @@ class OptionTransactionSerializerTestCase(TestCase):
         data = OptionTransactionSerializer(
             position, context={'request': request}).data
         # clear bad datetimedata
-        data['buyer']['user']['userprofile']['birthday'] = None
-        data['seller']['user']['userprofile']['birthday'] = None
+        # data['buyer']['user']['userprofile']['birthday'] = None
+        # data['seller']['user']['userprofile']['birthday'] = None
         data['bought_at'] = '2014-01-01'
         return (
             OptionTransactionSerializer(
@@ -187,8 +188,8 @@ class PositionSerializerTestCase(TestCase):
         data = PositionSerializer(
             position, context={'request': request}).data
         # clear bad datetimedata
-        data['buyer']['user']['userprofile']['birthday'] = None
-        data['seller']['user']['userprofile']['birthday'] = None
+        # data['buyer']['user']['userprofile']['birthday'] = None
+        # data['seller']['user']['userprofile']['birthday'] = None
         data['bought_at'] = '2014-01-01T10:00'
         return (PositionSerializer(data=data, context={'request': request}),
                 position)
@@ -297,7 +298,7 @@ class ShareholderSerializerTestCase(TestCase):
         self.assertTrue(ShareholderSerializer(s).get_is_company(s))
         self.assertFalse(ShareholderSerializer(s2).get_is_company(s2))
 
-    def test_performance(self):
+    def test_list_performance(self):
         """
         avoid query nightmare...
         """
@@ -308,7 +309,7 @@ class ShareholderSerializerTestCase(TestCase):
         request.user = operator.user
 
         # make sure we don't issue more then one additional query per obj
-        with self.assertNumQueries(100):  # should be < 12
+        with self.assertNumQueries(78):  # should be < 12
             # queryset with prefetch to reduce db load
             qs = operator.company.shareholder_set.all() \
                 .select_related('company', 'user', 'user__userprofile',
@@ -316,7 +317,7 @@ class ShareholderSerializerTestCase(TestCase):
                 .prefetch_related('user__operator_set', 'company__security_set',
                                   'company__shareholder_set') \
                 .distinct()
-            serializer = ShareholderSerializer(
+            serializer = ShareholderListSerializer(
                 qs, many=True, context={'request': request})
             self.assertTrue(len(serializer.data) > 0)
 

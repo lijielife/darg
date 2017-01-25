@@ -8,7 +8,6 @@ app.config ['$translateProvider', ($translateProvider) ->
 
 app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position', 'Split', ($scope, $http, $window, Position, Split) ->
     $scope.positions = []
-    $scope.shareholders = []
     $scope.securities = []
 
     $scope.show_add_position = false
@@ -79,12 +78,6 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
                 $scope.current=result.data.current
     $scope.load_all_positions()
 
-    $http.get('/services/rest/shareholders').then (result) ->
-        angular.forEach result.data.results, (item) ->
-            if item.user.userprofile.birthday
-                item.user.userprofile.birthday = new Date(item.user.userprofile.birthday)
-            $scope.shareholders.push item
-
     $http.get('/services/rest/security').then (result) ->
         angular.forEach result.data.results, (item) ->
             $scope.securities.push item
@@ -129,6 +122,12 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
                     $scope.current=result.data.current
 
     # --- SEARCH
+    $scope.search_shareholders = (term) ->
+        paramss = {search: term}
+        $http.get('/services/rest/shareholders', {params: paramss}).then (response) ->
+            response.data.results.map (item) ->
+                item
+
     $scope.search = ->
         # FIXME - its not company specific
         # respect ordering and search
@@ -138,9 +137,8 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
         if $scope.search_params.ordering
             params.ordering = $scope.search_params.ordering
         paramss = $.param(params)
-        console.log(params)
 
-        $http.get('/services/rest/position?' + paramss).then (result) ->
+        $http.get('/services/rest/position', {params: params}).then (result) ->
             $scope.reset_search_params()
             angular.forEach result.data.results, (item) ->
                 $scope.positions.push item

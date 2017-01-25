@@ -102,6 +102,7 @@ class CompanyGenerator(object):
             "country": country,
             "founded_at": datetime.datetime.now().date()
         }
+        kwargs2.update(**kwargs)
 
         company = Company.objects.create(**kwargs2)
 
@@ -112,7 +113,7 @@ class SecurityGenerator(object):
 
     def generate(self, **kwargs):
         company = kwargs.get('company', CompanyGenerator().generate())
-        kwargs2 = dict(title='P', company=company, count=1)
+        kwargs2 = dict(title='P', company=company, count=1, face_value=100)
         kwargs2.update(kwargs)
         s1 = Security.objects.create(**kwargs2)
 
@@ -358,8 +359,10 @@ class TwoInitialSecuritiesGenerator(object):
             company = kwargs.get('company')
         else:
             company = CompanyGenerator().generate()
-        s1 = Security.objects.create(title='P', company=company, count=1)
-        s2 = Security.objects.create(title='C', company=company, count=2)
+        s1 = Security.objects.create(title='P', company=company, count=1,
+                                     face_value=100)
+        s2 = Security.objects.create(title='C', company=company, count=2,
+                                     face_value=10)
 
         return (s1, s2)
 

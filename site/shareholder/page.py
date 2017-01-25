@@ -138,7 +138,7 @@ class OptionsPage(BasePage):
         selects = form.find_elements_by_tag_name('select')
 
         select = Select(selects[0])
-        select.select_by_visible_text(_('Preferred Stock'))
+        select.select_by_index(2)
 
         inputs[0].send_keys(DEFAULT_TEST_DATA.get('date'))
         inputs[1].send_keys(DEFAULT_TEST_DATA.get('title'))
@@ -156,7 +156,7 @@ class OptionsPage(BasePage):
         selects = form.find_elements_by_tag_name('select')
 
         select = Select(selects[0])
-        select.select_by_visible_text(_('Preferred Stock'))
+        select.select_by_index(2)
 
         inputs[0].send_keys(DEFAULT_TEST_DATA.get('date'))
         inputs[1].send_keys(DEFAULT_TEST_DATA.get('title'))
@@ -177,39 +177,33 @@ class OptionsPage(BasePage):
         buyer = kwargs.get('buyer')
         seller = kwargs.get('seller')
 
-        select_input = []
         if buyer:
-            select_input.extend([buyer.user.email])
-        else:
-            select_input.extend([''])
-        select_input.extend([
-            kwargs.get('title') or DEFAULT_TEST_DATA.get('title')
-        ])
+            self.enter_typeahead('add_option_transaction', buyer, 'buyer')
         if seller:
-            select_input.extend([seller.user.email])
+            self.enter_typeahead('add_option_transaction', seller, 'seller')
 
-        for key, select in enumerate(selects):
-            select = Select(select)
-            if key < len(select_input) and select_input[key] != '':
-                select.select_by_visible_text(select_input[key])
+        time.sleep(1)
+        select = Select(selects[0])
+        select.select_by_visible_text(
+            kwargs.get('title') or DEFAULT_TEST_DATA.get('title'))
 
         inputs[0].send_keys(
             kwargs.get('date') or DEFAULT_TEST_DATA.get('date'))
-        inputs[1].send_keys(str(
+        inputs[3].send_keys(str(
             kwargs.get('count', DEFAULT_TEST_DATA.get('count'))))
-        inputs[3].send_keys(DEFAULT_TEST_DATA.get('vesting_period'))
+        inputs[5].send_keys(DEFAULT_TEST_DATA.get('vesting_period'))
 
         if kwargs.get('depot_type'):
-            select = Select(selects[3])
+            select = Select(selects[1])
             select.select_by_visible_text('Gesellschaftsdepot')
 
         if kwargs.get('stock_book_id'):
-            inputs[4].clear()
-            inputs[4].send_keys(kwargs.get('stock_book_id'))
+            inputs[6].clear()
+            inputs[6].send_keys(kwargs.get('stock_book_id'))
 
         if kwargs.get('certificate_id'):
-            inputs[5].clear()
-            inputs[5].send_keys(kwargs.get('certificate_id'))
+            inputs[7].clear()
+            inputs[7].send_keys(kwargs.get('certificate_id'))
 
     def enter_transfer_option_with_segments_data(self, **kwargs):
         el = self.driver.find_element_by_id('add_option_transaction')
@@ -220,30 +214,23 @@ class OptionsPage(BasePage):
         buyer = kwargs.get('buyer')
         seller = kwargs.get('seller')
 
-        select_input = []
         if buyer:
-            select_input.extend([buyer.user.email])
-        else:
-            select_input.extend([''])
-        select_input.extend([
-            kwargs.get('title') or DEFAULT_TEST_DATA.get('title')
-        ])
+            self.enter_typeahead('add_option_transaction', buyer, 'buyer')
         if seller:
-            select_input.extend([seller.user.email])
+            self.enter_typeahead('add_option_transaction', seller, 'seller')
 
         time.sleep(1)
-        for key, select in enumerate(selects):
-            select = Select(select)
-            if key < len(select_input) and select_input[key] != '':
-                select.select_by_visible_text(select_input[key])
+        select = Select(selects[0])
+        select.select_by_visible_text(
+            kwargs.get('title') or DEFAULT_TEST_DATA.get('title'))
 
         inputs[0].send_keys(
             kwargs.get('date') or DEFAULT_TEST_DATA.get('date'))
-        inputs[1].send_keys(kwargs.get('number_segments',
+        inputs[3].send_keys(kwargs.get('number_segments',
                             DEFAULT_TEST_DATA.get('share_count')))
-        inputs[2].send_keys(kwargs.get('number_segments',
+        inputs[4].send_keys(kwargs.get('number_segments',
                             DEFAULT_TEST_DATA.get('number_segments')))
-        inputs[3].send_keys(DEFAULT_TEST_DATA.get('vesting_period'))
+        inputs[5].send_keys(DEFAULT_TEST_DATA.get('vesting_period'))
 
     # -- CLICKs
     def click_optiontransaction(self):
@@ -278,14 +265,22 @@ class OptionsPage(BasePage):
     def is_option_plan_form_open(self):
         return self._is_element_displayed(id='add_option_plan')
 
-    def is_option_plan_displayed(self):
+    def is_option_plan_displayed(self, security):
+        self.wait_until_visible((By.TAG_NAME, "h2"))
         h2s = self.driver.find_elements_by_tag_name('h2')
         string = u"Optionsplan: {} f\xfcr {}".format(
             DEFAULT_TEST_DATA.get('title'),
-            DEFAULT_TEST_DATA.get('security'))
+            security)
         for h2 in h2s:
-            if h2.text == string:
+            if string in h2.text:
                 return True
+        # for debugging
+        extra = {
+            'heading_strings': [h2.text for h2 in h2s],
+            'needle': string}
+        logger.warning('option plan heading not found', extra=extra)
+        print extra
+
         return False
 
     def is_transfer_option_shown(self, **kwargs):
@@ -435,42 +430,37 @@ class PositionPage(BasePage):
         # working
         time.sleep(2)  # FIXME
 
-        self.enter_seller(position.seller)
-
-        # buyer
-        select = Select(selects[1])
-        select.select_by_visible_text(position.buyer.get_full_name())
+        self.enter_typeahead('add_position', position.seller, 'seller')
+        self.enter_typeahead('add_position', position.buyer, 'buyer')
 
         self.enter_security(position.security, 'add-position-form')
         self.enter_bought_at(position.bought_at)
 
         # count
         if position.count:
-            inputs[1].clear()  # clear existing values
-            inputs[1].send_keys(str(position.count))  # count
+            inputs[3].clear()  # clear existing values
+            inputs[3].send_keys(str(position.count))  # count
 
         # value
         if position.value:
-            inputs[2].clear()  # clear existing values
-            inputs[2].send_keys(str(position.value))  # price
+            inputs[4].clear()  # clear existing values
+            inputs[4].send_keys(str(position.value))  # price
 
         # if numbered shares enter segment
         if position.security.track_numbers:
-            inputs[3].clear()
-            inputs[3].send_keys('0,1,2,999-1001')
-            inputs[4].clear()  # clear existing values
-            inputs[4].send_keys(position.comment)  # comment
-        else:
-            inputs[4].clear()  # clear existing values
-            inputs[4].send_keys(position.comment)  # comment
+            inputs[5].clear()
+            inputs[5].send_keys('0,1,2,999-1001')
+
+        inputs[6].clear()  # clear existing values
+        inputs[6].send_keys(position.comment)  # comment
 
         if position.depot_type:
-            select = Select(selects[3])
+            select = Select(selects[1])
             select.select_by_visible_text('Gesellschaftsdepot')
 
         if position.stock_book_id:
-            inputs[5].clear()
-            inputs[5].send_keys(position.stock_book_id)
+            inputs[7].clear()
+            inputs[7].send_keys(position.stock_book_id)
 
     def show_optional_fields(self):
         self.driver.find_element_by_class_name('el-icon-plus-sign').click()
@@ -490,18 +480,7 @@ class PositionPage(BasePage):
         select = form.find_element_by_class_name('security')
 
         select = Select(select)
-        select.select_by_visible_text(security.get_title_display())
-
-    def enter_seller(self, seller):
-        """
-        enter selling shareholder
-        """
-        el = self.driver.find_element_by_id('add_position')
-        form = el.find_element_by_tag_name('form')
-        selects = form.find_elements_by_tag_name('select')
-
-        select = Select(selects[0])
-        select.select_by_visible_text(seller.get_full_name())
+        select.select_by_visible_text(unicode(security))
 
     def enter_new_cap_data(self, position):
 
@@ -599,8 +578,8 @@ class PositionPage(BasePage):
 
         # tooltip is active on click and stays like that. detect if opened or
         # attempt to set element active
-        if inputs[3].is_displayed() and not els:
-            inputs[3].click()
+        if inputs[5].is_displayed() and not els:
+            inputs[5].click()
             time.sleep(2)
             els = self.driver.find_elements_by_xpath(popover_xpath)
 

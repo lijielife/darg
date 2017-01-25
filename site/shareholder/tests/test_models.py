@@ -41,7 +41,7 @@ class CompanyTestCase(TestCase):
 
         company.name = u'UniCodeTestÄGå'
         company.save()
-        # see https://sentry.ttg-dresden.de/sentry-internal/production/issues/46437/
+        # see https://goo.gl/8hEVWH
         force_text(security)  # must not raise exception
 
     def test_get_all_option_plan_segments(self):
@@ -68,6 +68,23 @@ class CompanyTestCase(TestCase):
 
         self.assertEqual(company.get_all_option_plan_segments(),
                          [2222, u'3000-4011', u'1000-2000'])
+
+    def test_get_total_votes(self):
+        self.company = CompanyGenerator().generate(share_count=10, vote_ratio=2)
+        self.security = SecurityGenerator().generate(count=10, face_value=100,
+                                                     company=self.company)
+
+        self.shareholder1 = ShareholderGenerator().generate(
+            company=self.company)
+        self.shareholder2 = ShareholderGenerator().generate(
+            company=self.company)
+        PositionGenerator().generate(seller=None, buyer=self.shareholder1,
+                                     security=self.security, count=10)
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=self.shareholder2,
+                                     security=self.security, count=2)
+
+        self.assertEqual(self.company.get_total_votes(), 10*100/2)
 
 
 class CountryTestCase(TestCase):
@@ -318,6 +335,20 @@ class ShareholderTestCase(TestCase):
     def setUp(self):
         self.client = Client()
         self.factory = RequestFactory()
+
+        self.company = CompanyGenerator().generate(share_count=10, vote_ratio=2)
+        self.security = SecurityGenerator().generate(count=10, face_value=100,
+                                                     company=self.company)
+
+        self.shareholder1 = ShareholderGenerator().generate(
+            company=self.company)
+        self.shareholder2 = ShareholderGenerator().generate(
+            company=self.company)
+        PositionGenerator().generate(seller=None, buyer=self.shareholder1,
+                                     security=self.security, count=10)
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=self.shareholder2,
+                                     security=self.security, count=2)
 
     def test_index(self):
 
@@ -656,6 +687,14 @@ class ShareholderTestCase(TestCase):
             cs.current_options_segments(s1),
             [2])
 
+    def test_vote_count(self):
+        self.assertEqual(self.shareholder1.vote_count(), 400)
+        self.assertEqual(self.shareholder2.vote_count(), 100)
+
+    def test_vote_percent(self):
+        self.assertEqual(self.shareholder1.vote_percent(), 0.0)
+        self.assertEqual(self.shareholder2.vote_percent(), 1)
+
 
 class SecurityTestCase(TestCase):
 
@@ -687,3 +726,17 @@ class SecurityTestCase(TestCase):
         segments = [1, 3, 4, 5, u'99-1000']
         count = security.count_in_segments(segments)
         self.assertEqual(count, 906)
+
+    def test_calculate_count(self):
+        """
+        how many shares are existing based on positions
+        """
+        company = CompanyGenerator().generate()
+        security = SecurityGenerator().generate(company=company)
+        # 1 cap increase and one sale position
+        p1 = PositionGenerator().generate(company=company, seller=None,
+                                          security=security, count=10)
+        PositionGenerator().generate(company=company, count=2,
+                                     security=security, seller=p1.buyer)
+
+        self.assertEqual(security.calculate_count(), 10)

@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('shareholder', '0056_auto_20170112_0737'),
+        ('shareholder', '0058_company_vote_ratio'),
     ]
 
     operations = [

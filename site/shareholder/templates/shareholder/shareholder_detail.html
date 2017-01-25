@@ -190,8 +190,17 @@
       <td>{% trans "Value of all shares according to last transaction" %}:</td>
       <td>{{ shareholder.share_value }}</td>
     </tr>
-  </table>
+    <tr>
+      <td>{% trans "Voting rights total count" %}:</td>
+      <td>{{ shareholder.vote_count }}</td>
+    </tr>
+     <tr>
+      <td>{% trans "Voting rights percent" %}:</td>
+      <td>{% verbatim %}{{ shareholder.vote_percent | percentage:2 }}{% endverbatim %}</td>
+    </tr>
+   </table>
 
+  <!-- OWNED STOCK -->
   <h2>{% trans "Owned Stock" %}</h2>
   <p>{% trans "Count Shares Total" %}: {{ shareholder.share_count }}</p>
   <p>{% trans "% Ownership" %}: {{ shareholder.share_percent }}% </p>
