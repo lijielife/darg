@@ -439,7 +439,10 @@ class PositionPage(BasePage):
         # count
         if position.count:
             inputs[3].clear()  # clear existing values
-            inputs[3].send_keys(str(position.count))  # count
+            # enter in two chunks. attempt to avoid browser moving to next
+            # input on CI
+            inputs[3].send_keys(str(position.count)[:5])  # count
+            inputs[3].send_keys(str(position.count)[5:])
 
         # value
         if position.value:
