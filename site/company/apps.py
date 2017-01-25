@@ -155,16 +155,20 @@ class CompanyAppConfig(AppConfig):
             else:
                 invoice_items = []
 
+            if invoice_items:
+                currency = invoice_items.first().currency
+            else:
+                # fallback
+                currency = settings.DJSTRIPE_CURRENCIES[0][0]
+
             context = dict(
                 charge=self,
-                # invoice=self.invoice,
                 invoice_items=invoice_items,
+                currency=currency,
                 company=self.customer.subscriber,
                 site=Site.objects.get_current(),
                 STATIC_URL=settings.STATIC_URL,
                 include_vat=settings.COMPANY_INVOICE_INCLUDE_VAT,
-                plan=settings.DJSTRIPE_PLANS.get(
-                    self.customer.current_subscription.plan, {}),
                 protocol=settings.DEFAULT_HTTP_PROTOCOL
             )
 
@@ -219,9 +223,9 @@ class CompanyAppConfig(AppConfig):
 
             if not pdf:
                 error_message = _(
-                    'Company "{}" (ID {}) was charged but invoice pdf could'
-                    ' not be generated.').format(self.customer.subscriber,
-                                                 self.customer.subscriber.pk)
+                    'Invoice PDF for company "{}" (ID {}) could not be '
+                    'generated.').format(self.customer.subscriber,
+                                         self.customer.subscriber.pk)
                 logger.exception(error_message)
                 return None
 
@@ -275,16 +279,20 @@ class CompanyAppConfig(AppConfig):
             invoice_items = self.items.all().order_by(
                 '-line_type', '-period_start')
 
+            if invoice_items.count():
+                currency = invoice_items.first().currency
+            else:
+                # fallback
+                currency = settings.DJSTRIPE_CURRENCIES[0][0]
+
             context = dict(
-                # charge=self,
                 invoice=self,
                 invoice_items=invoice_items,
+                currency=currency,
                 company=self.customer.subscriber,
                 site=Site.objects.get_current(),
                 STATIC_URL=settings.STATIC_URL,
                 include_vat=settings.COMPANY_INVOICE_INCLUDE_VAT,
-                plan=settings.DJSTRIPE_PLANS.get(
-                    self.customer.current_subscription.plan, {}),
                 protocol=settings.DEFAULT_HTTP_PROTOCOL
             )
 

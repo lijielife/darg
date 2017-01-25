@@ -5,8 +5,14 @@ from utils.mail import is_valid_email
 
 
 @webhooks.handler(['invoice.created'])
-def invoice_webhook_handler(event, event_data, event_type, event_subtype):
-    # from djstripe.models import Customer
+def invoice_created_webhook_handler(event, event_data, event_type,
+                                    event_subtype):
+    """
+    handler for invoice.created event
+
+    add any pending invoice items if invoice not closed yet
+    """
+
     from utils.subscriptions import (stripe_company_shareholder_invoice_item,
                                      stripe_company_security_invoice_item)
 
@@ -26,6 +32,21 @@ def invoice_webhook_handler(event, event_data, event_type, event_subtype):
             customer.current_subscription.plan,
             invoice=invoice_object.get('id')
         )
+
+
+@webhooks.handler(['invoice.payment_succeeded'])
+def invoice_payment_succeeded_webhook_handler(event, event_data, event_type,
+                                              event_subtype):
+    """
+    handler for invoice.payment_succeeded event
+
+    trigger invoice pdf (re)generation
+    """
+    customer = event.customer
+    invoice_object = event.message.get('data', {}).get('object', {})
+    invoice = customer.invoices.filter(
+        stripe_id=invoice_object.get('id')).first()
+    invoice and invoice._generate_invoice_pdf(override_existing=True)
 
 
 @webhooks.handler(['customer'])

@@ -82,7 +82,7 @@
           <tr class="head">
             <td class="item wide" colspan="2">{% trans "Item" %}</td>
             <td class="amount center">
-              {% blocktrans with plan.currency|upper as currency %}
+              {% blocktrans with currency|upper as currency %}
                 Price in {{ currency }}
               {% endblocktrans %}
             </td>

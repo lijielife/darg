@@ -17,7 +17,7 @@
             {% if invoice.has_invoice_pdf %}
               <a href="{% url 'djstripe:invoice' customer.subscriber_id invoice.pk %}">
             {% endif %}
-            #{{ invoice.pk }}
+              #{{ invoice.pk }}
             {% if invoice.has_invoice_pdf %}</a>{% endif %}
           </div>
           <div class="td td-width-2">

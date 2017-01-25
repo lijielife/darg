@@ -1,4 +1,6 @@
 
+import decimal
+
 from django.contrib import messages
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
@@ -12,9 +14,11 @@ from django.views.generic import View, ListView, DetailView
 import stripe
 
 from braces.views import CsrfExemptMixin
+from djstripe.forms import PlanForm
 from djstripe.models import Customer, CurrentSubscription, Invoice
 from djstripe.settings import (PAYMENT_PLANS, subscriber_request_callback,
-                               CANCELLATION_AT_PERIOD_END)
+                               CANCELLATION_AT_PERIOD_END, PLAN_LIST,
+                               PRORATION_POLICY_FOR_UPGRADES)
 from djstripe.sync import sync_subscriber
 from djstripe.views import (
     AccountView as DjStripeAccountView,
@@ -203,6 +207,60 @@ class ChangePlanView(CompanyOperatorPermissionRequiredViewMixin,
                      DjStripeChangePlanView):
 
     success_url = None
+
+    def post(self, request, *args, **kwargs):
+        form = PlanForm(request.POST)
+        try:
+            customer = subscriber_request_callback(request).customer
+        except Customer.DoesNotExist as exc:
+            error_message = _("You must already be subscribed to a plan before"
+                              " you can change it.")
+            form.add_error(None, error_message)
+            return self.form_invalid(form)
+
+        if form.is_valid():
+            plan_name = form.cleaned_data["plan"]
+
+            # check if plan is subscribable
+            is_subscribable, errors = customer.subscriber.validate_plan(
+                plan_name)
+            if not is_subscribable:
+                for error in errors:
+                    form.add_error(None, error.messages[0])
+                return self.form_invalid(form)
+
+            try:
+                # When a customer upgrades their plan, and
+                # DJSTRIPE_PRORATION_POLICY_FOR_UPGRADES is set to True,
+                # we force the proration of the current plan and use it towards
+                # the upgraded plan, no matter what DJSTRIPE_PRORATION_POLICY
+                # is set to.
+                prorate = False
+                if PRORATION_POLICY_FOR_UPGRADES:
+                    current_subscription_amount = (
+                        customer.current_subscription.amount)
+                    selected_plan = next(plan for plan in PLAN_LIST
+                                         if plan.get('plan') == plan_name)
+                    selected_plan_price = (
+                        selected_plan["price"] / decimal.Decimal(100))
+
+                    # Is it an upgrade?
+                    if selected_plan_price > current_subscription_amount:
+                        prorate = True
+
+                # create invoiceitem for shareholders if necessary
+                stripe_company_shareholder_invoice_item(customer, plan_name)
+
+                # create invoiceitem for securities if necessary
+                stripe_company_security_invoice_item(customer, plan_name)
+
+                customer.subscribe(plan_name, prorate=prorate)
+            except stripe.StripeError as exc:
+                form.add_error(None, str(exc))
+                return self.form_invalid(form)
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
     def get_success_url(self):
         return reverse('djstripe:history',
