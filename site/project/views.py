@@ -55,12 +55,11 @@ def _get_contacts(company):
             shareholder.user.userprofile.c_o,
             shareholder.user.userprofile.city,
             shareholder.user.userprofile.postal_code,
-            shareholder.user.userprofile.country.name,
+            shareholder.user.userprofile.country.name if shareholder.user.userprofile.country else  u'',
             shareholder.user.userprofile.pobox,
-            shareholder.get_mailing_type_display()
+            shareholder.get_mailing_type_display(),
+            shareholder.user.userprofile.nationality.name if shareholder.user.userprofile.nationality else u''
         ]
-        if shareholder.user.userprofile.nationality:
-            row.append([shareholder.user.userprofile.nationality.name])
         rows.append(row)
 
     return rows
