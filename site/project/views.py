@@ -27,6 +27,40 @@ from utils.pdf import render_to_pdf
 logger = logging.getLogger(__name__)
 
 
+def _get_contacts(company):
+
+    rows = []
+    rows.append([
+        _(u'shareholder number'), _(u'last name'), _(u'first name'),
+        _(u'email'),
+        _(u'language ISO'), _('language full'), _('street'), _('street 2'),
+        _('c/o'), _('city'), _('zip'), _('country'), _('nationality'),
+        _('pobox'), _('mailing type'),
+    ])
+
+    for shareholder in company.get_active_shareholders():
+        row = [
+            shareholder.number,
+            shareholder.user.last_name,
+            shareholder.user.first_name,
+            shareholder.user.email,
+            shareholder.user.userprofile.language,
+            shareholder.user.userprofile.get_language_display(),
+            shareholder.user.userprofile.street,
+            shareholder.user.userprofile.street2,
+            shareholder.user.userprofile.c_o,
+            shareholder.user.userprofile.city,
+            shareholder.user.userprofile.postal_code,
+            shareholder.user.userprofile.country.name,
+            shareholder.user.userprofile.pobox,
+            shareholder.get_mailing_type_display()
+        ]
+        if shareholder.user.userprofile.nationality:
+            row.append([shareholder.user.userprofile.nationality.name])
+        rows.append([row])
+
+    return rows
+
 def index(request):
     template = loader.get_template('index.html')
     context = RequestContext(request, {})
@@ -106,6 +140,35 @@ def instapage(request):
                      extra={'user': user, 'kwargs': kwargs})
 
     return redirect(reverse('start'))
+
+
+@login_required
+def contacts_csv(request, company_id):
+    """ returns csv with active shareholders """
+
+    # perm check
+    if not Operator.objects.filter(
+        user=request.user, company__id=company_id
+    ).exists():
+        return HttpResponseForbidden()
+
+    company = get_object_or_404(Company, id=company_id)
+
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = (
+        u'attachment; '
+        u'filename="{}_contacts_{}.csv"'.format(
+            time.strftime("%Y-%m-%d"), slugify(company.name)
+        ))
+
+    writer = csv.writer(response)
+
+    rows = _get_contacts(company)
+    for row in rows:
+        writer.writerow([unicode(s).encode("utf-8") for s in row])
+
+    return response
 
 
 @login_required
@@ -201,4 +264,3 @@ def captable_pdf(request, company_id):
         )
 
     return response
-

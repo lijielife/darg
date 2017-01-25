@@ -12,8 +12,10 @@ from rest_framework.test import APIClient
 from project.generators import (CompanyGenerator, OperatorGenerator,
                                 PositionGenerator, ShareholderGenerator,
                                 TwoInitialSecuritiesGenerator, UserGenerator,
-                                DEFAULT_TEST_DATA)
-from shareholder.models import Shareholder, UserProfile
+                                DEFAULT_TEST_DATA,
+                                ComplexShareholderConstellationGenerator)
+from project.views import _get_contacts
+from shareholder.models import Shareholder, UserProfile, Company
 
 
 def _add_company_to_user_via_rest(user):
@@ -432,3 +434,33 @@ class DownloadTestCase(TestCase):
 
         # assert response code
         self.assertEqual(response.status_code, 403)
+
+    def test_contacts_csv(self):
+        """ test download of all shareholders contact data """
+        company = CompanyGenerator().generate()
+        # run test
+        response = self.client.get(
+            reverse('contacts_csv', kwargs={"company_id": company.id}))
+
+        # not logged in user
+        self.assertEqual(response.status_code, 302)
+
+        # login and retest
+        user = UserGenerator().generate()
+        self.client.force_login(user)
+
+        response = self.client.get(
+            reverse('contacts_csv', kwargs={"company_id": company.id}))
+
+        # assert response code
+        self.assertEqual(response.status_code, 403)
+
+    def test_get_contacts(self):
+        """ get csv list array of contacts data """
+        ComplexShareholderConstellationGenerator().generate()
+
+        company = Company.objects.last()
+        res = _get_contacts(company)
+        self.assertEqual(len(res), 11)
+        self.assertEqual(len(res[0]), 15)
+        self.assertEqual(res[0][0], _(u'shareholder number'))

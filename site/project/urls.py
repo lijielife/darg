@@ -68,6 +68,8 @@ urlpatterns = [
         'project.views.captable_csv', name='captable_csv'),
     url(r'^company/(?P<company_id>[0-9]+)/download/pdf$',
         'project.views.captable_pdf', name='captable_pdf'),
+    url(r'^company/(?P<company_id>[0-9]+)/download/contacts$',
+        'project.views.contacts_csv', name='contacts_csv'),
 
     url(r'^options/$', 'shareholder.views.options', name='options'),
     url(r'^options/(?P<pk>[0-9]+)/$',
@@ -81,6 +83,9 @@ urlpatterns = [
     url(r'^optionsplan/(?P<optionsplan_id>[0-9]+)/download/img/$',
         'shareholder.views.optionsplan_download_img',
         name='optionplan_download_img'),
+
+    # reports
+    url(r'^reports/', include('reports.urls')),
 
     # --- auth
     # disable dj registration login
