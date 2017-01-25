@@ -224,7 +224,9 @@ class Company(models.Model):
         """
         votes = 0
         for security in self.security_set.all():
-            votes += security.face_value * security.count / self.vote_ratio
+            face_value = security.face_value or 1
+            ratio = self.vote_ratio or 1
+            votes += face_value * security.count / ratio
 
         return int(votes)
 
