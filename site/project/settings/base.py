@@ -14,6 +14,8 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import collections
 import os
+import sys
+
 from kombu import Exchange, Queue
 
 from django.core.exceptions import ImproperlyConfigured
@@ -571,6 +573,9 @@ INVOICE_FROM_ADDRESS = [
     '01936 Grossnaundorf',
     'Deutschland'
 ]
+
+# don't create customer
+CREATE_STRIPE_CUSTOMER_FOR_SUBSCRIBER_ON_CREATE = 'test' not in sys.argv
 
 
 try:
