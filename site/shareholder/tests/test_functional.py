@@ -1207,6 +1207,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.enter_new_position_data(position)
             app.click_save_position()
             time.sleep(3)
+            self._screenshot()
             self.assertTrue(
                 self.selenium.find_element_by_xpath(
                     '//p[contains(@class, "form-error")]').is_displayed()
