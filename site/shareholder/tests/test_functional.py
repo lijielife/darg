@@ -290,7 +290,6 @@ class PositionDetailFunctionalTestCase(BaseSeleniumTestCase):
             self.selenium, self.live_server_url, self.operator.user,
             path=reverse('position', kwargs={'pk': self.position.pk}))
 
-
     def test_display(self):
         """
         test if all data is shown properly
@@ -452,12 +451,14 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             # wait for form to disappear
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
+            ot = self.buyer.option_buyer.last()
             self.assertTrue(app.is_no_errors_displayed())
             self.assertTrue(app.is_transfer_option_shown(
                 buyer=self.buyer, seller=self.seller
             ))
             self.assertTrue(app.is_option_date_equal('13.05.16'))
-            self.assertTrue(app.is_option_plan_displayed())
+            self.assertTrue(app.is_option_plan_displayed(
+                ot.option_plan.security))
 
         except Exception, e:
             self._handle_exception(e)
@@ -489,7 +490,8 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
                 buyer=self.buyer, seller=self.seller
             ))
             self.assertTrue(app.is_option_date_equal('13.05.16'))
-            self.assertTrue(app.is_option_plan_displayed())
+            security = self.buyer.option_buyer.first().option_plan.security
+            self.assertTrue(app.is_option_plan_displayed(security))
             optiontransaction = OptionTransaction.objects.last()
             self.assertEqual(optiontransaction.certificate_id, '33')
             self.assertEqual(optiontransaction.stock_book_id, '44')
@@ -506,7 +508,8 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             self.selenium, self.live_server_url, self.operator.user)
         app.prepare_optionplan_fixtures()
 
-        self.assertTrue(app.is_option_plan_displayed())
+        self.assertTrue(app.is_option_plan_displayed(
+            self.operator.company.security_set.first()))
 
         app.click_open_transfer_option()
         app.enter_transfer_option_data(seller=self.seller)
@@ -525,7 +528,8 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             self.selenium, self.live_server_url, self.operator.user)
         app.prepare_optionplan_fixtures()
 
-        self.assertTrue(app.is_option_plan_displayed())
+        self.assertTrue(app.is_option_plan_displayed(
+            self.operator.company.security_set.first()))
 
         app.click_open_transfer_option()
         app.enter_transfer_option_data(buyer=self.buyer)
@@ -637,7 +641,8 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
             self.assertTrue(app.is_no_errors_displayed())
-            self.assertTrue(app.is_option_plan_displayed())
+            self.assertTrue(app.is_option_plan_displayed(
+                OptionPlan.objects.last().security))
 
             ct = shs[1].option_buyer.count()
             app.click_open_transfer_option()
@@ -757,7 +762,8 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.wait_until_invisible((By.CSS_SELECTOR, '.form-error'))
 
             self.assertTrue(app.is_no_errors_displayed())
-            self.assertTrue(app.is_option_plan_displayed())
+            self.assertTrue(app.is_option_plan_displayed(
+                OptionPlan.objects.last().security))
 
         except Exception, e:
             self._handle_exception(e)

@@ -265,12 +265,12 @@ class OptionsPage(BasePage):
     def is_option_plan_form_open(self):
         return self._is_element_displayed(id='add_option_plan')
 
-    def is_option_plan_displayed(self):
+    def is_option_plan_displayed(self, security):
         self.wait_until_visible((By.TAG_NAME, "h2"))
         h2s = self.driver.find_elements_by_tag_name('h2')
         string = u"Optionsplan: {} f\xfcr {}".format(
             DEFAULT_TEST_DATA.get('title'),
-            DEFAULT_TEST_DATA.get('security'))
+            security)
         for h2 in h2s:
             if string in h2.text:
                 return True
