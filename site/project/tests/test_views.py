@@ -251,8 +251,9 @@ class DownloadTestCase(TestCase):
         is_loggedin = self.client.login(username=user.username,
                                         password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(is_loggedin)
-        response = self.client.get(reverse('captable_csv',
-                                   kwargs={"company_id": company.id}))
+        with self.assertNumQueries(35):
+            response = self.client.get(reverse('captable_csv',
+                                       kwargs={"company_id": company.id}))
 
         # assert response code
         self.assertEqual(response.status_code, 200)
@@ -384,8 +385,9 @@ class DownloadTestCase(TestCase):
         is_loggedin = self.client.login(username=user.username,
                                         password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(is_loggedin)
-        response = self.client.get(
-            reverse('captable_pdf', kwargs={"company_id": company.id}))
+        with self.assertNumQueries(10):
+            response = self.client.get(
+                reverse('captable_pdf', kwargs={"company_id": company.id}))
 
         # assert response code
         self.assertEqual(response.status_code, 200)
