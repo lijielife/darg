@@ -903,7 +903,9 @@ class Position(models.Model):
         """
         permission method to check if user is permitted to view obj
         """
-        if user == self.buyer.user or user == self.seller.user:
+        if self.buyer and user == self.buyer.user:
+            return True
+        elif self.seller and user == self.seller.user:
             return True
 
         # user is an operator

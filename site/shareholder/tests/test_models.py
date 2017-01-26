@@ -315,6 +315,18 @@ class PositionTestCase(TransactionTestCase):
         self.assertEqual(p2.seller, sc)
         self.assertEqual(p2.buyer, s1)
 
+    def test_can_view(self):
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        buyer = ShareholderGenerator().generate(company=operator.company)
+        seller = ShareholderGenerator().generate(company=operator.company)
+
+        position = PositionGenerator().generate(seller=None, buyer=buyer)
+        self.assertTrue(position.can_view(user))
+
+        position = PositionGenerator().generate(seller=seller, buyer=buyer)
+        self.assertTrue(position.can_view(user))
+
 
 class UserProfileTestCase(TestCase):
 
