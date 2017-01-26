@@ -462,7 +462,8 @@ class DownloadTestCase(TestCase):
         ComplexShareholderConstellationGenerator().generate()
 
         company = Company.objects.last()
-        res = _get_contacts(company)
+        with self.assertNumQueries(29):
+            res = _get_contacts(company)
         self.assertEqual(len(res), 11)
         self.assertEqual(len(res[0]), 15)
         self.assertEqual(len(res[1]), 15)  # no nationality
@@ -504,8 +505,9 @@ class DownloadTestCase(TestCase):
         company = Company.objects.last()
         from_date = datetime.datetime(2013, 1, 1)
         to_date = datetime.datetime(2099, 1, 1)
-        res = _get_transactions(
-            from_date, to_date, Security.objects.first(), company)
+        with self.assertNumQueries(38):
+            res = _get_transactions(
+                from_date, to_date, Security.objects.first(), company)
         self.assertEqual(len(res), 17)
         self.assertEqual(len(res[0]), 11)
         self.assertEqual(len(res[1]), 9)  # no nationality

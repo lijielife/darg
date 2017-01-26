@@ -141,9 +141,12 @@ class Company(models.Model):
         shareholder_list = []
         for shareholder in self.shareholder_set.all().order_by('number'):
             if shareholder.share_count(date=date) > 0:
-                shareholder_list.append(shareholder)
+                shareholder_list.append(shareholder.pk)
 
-        return shareholder_list
+        return Shareholder.objects.filter(
+            pk__in=shareholder_list
+        ).select_related(
+            'user', 'user__userprofile', 'user__userprofile__country')
 
     def get_active_option_holders(self, date=None):
         """ returns list of all active shareholders """
@@ -168,7 +171,9 @@ class Company(models.Model):
             ):
                 logger.error('user sold more options then he got',
                              extra={'shareholder': sh})
-        return Shareholder.objects.filter(pk__in=[oh.pk for oh in oh_list])
+        return Shareholder.objects.filter(
+            pk__in=[oh.pk for oh in oh_list]
+        ).select_related('user', 'user__userprofile', 'user__userprofile__country')
 
     def get_all_option_plan_segments(self):
         """
