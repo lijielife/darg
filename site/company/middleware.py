@@ -1,9 +1,6 @@
 
 import re
 
-from django.conf import settings
-from django.contrib.flatpages.models import FlatPage
-from django.core.cache import cache
 from django.shortcuts import redirect, resolve_url
 
 

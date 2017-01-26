@@ -33,7 +33,7 @@ class CompanyAppConfig(AppConfig):
         from . import event_handlers  # NOQA
 
         # load signals
-        from . import signals  # NOQA
+        # from . import signals  # NOQA
 
         # overwrite 3rd party app model method
         self._tweak_djstripe_charge()

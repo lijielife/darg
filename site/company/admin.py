@@ -57,24 +57,24 @@ admin.site.register(Charge, ChargeAdmin)
 
 class InvoiceAdmin(admin.ModelAdmin):
 
-    def generate_pdf(self, request, queryset, forced=False):
+    def generate_pdf(self, request, queryset, force=False):  # pragma: no cover
         """
         generate PDF for invoice (calling management command)
         """
         pks = queryset.values_list('pk', flat=True)
         call_command('generate_invoice_pdf', ' '.join([str(pk) for pk in pks]),
-                     force=forced)
+                     force=force)
         message = _('Called management command "generate_invoice_pdf" for '
                     '{} object(s)').format(queryset.count())
         messages.info(request, message)
 
     generate_pdf.short_description = _('Generate PDF')
 
-    def generate_pdf_forced(self, request, queryset):
+    def generate_pdf_forced(self, request, queryset):  # pragma: no cover
         """
         force (re)generation of invoice PDF (calling management command)
         """
-        self.generate_pdf(request, queryset, forced=True)
+        self.generate_pdf(request, queryset, force=True)
 
     generate_pdf_forced.short_description = _(
         'Generate PDF (override existing)')
