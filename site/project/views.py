@@ -306,16 +306,21 @@ def captable_csv(request, company_id):
 
     writer = csv.writer(response)
 
+    # removed share percent due to heavy sql impact. killed perf for higher
+    # shareholder count
     header = [
         _(u'shareholder number'), _(u'last name'), _(u'first name'),
-        _(u'email'), _(u'share count'), _(u'votes share percent'),
+        _(u'email'), _(u'share count'),  # _(u'votes share percent'),
         _(u'language ISO'), _('language full')]
 
-    if track_numbers_secs.exists():
+    has_track_numbers = track_numbers_secs.exists()
+    if has_track_numbers:
         header.append(_('Share IDs'))
 
     writer.writerow(header)
 
+    # removed share percent due to heavy sql impact. killed perf for higher
+    # shareholder count
     for shareholder in company.get_active_shareholders():
         row = [
             shareholder.number,
@@ -323,11 +328,11 @@ def captable_csv(request, company_id):
             shareholder.user.first_name,
             shareholder.user.email,
             shareholder.share_count(),
-            shareholder.share_percent() or '--',
+            # shareholder.share_percent() or '--',
             shareholder.user.userprofile.language,
             shareholder.user.userprofile.get_language_display(),
         ]
-        if track_numbers_secs.exists():
+        if has_track_numbers:
             text = ""
             for sec in track_numbers_secs:
                 text += "{}: {} ".format(

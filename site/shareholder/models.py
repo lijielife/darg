@@ -146,7 +146,8 @@ class Company(models.Model):
         return Shareholder.objects.filter(
             pk__in=shareholder_list
         ).select_related(
-            'user', 'user__userprofile', 'user__userprofile__country')
+            'user', 'user__userprofile', 'user__userprofile__country', 'company'
+        ).order_by('number')
 
     def get_active_option_holders(self, date=None):
         """ returns list of all active shareholders """
@@ -173,7 +174,9 @@ class Company(models.Model):
                              extra={'shareholder': sh})
         return Shareholder.objects.filter(
             pk__in=[oh.pk for oh in oh_list]
-        ).select_related('user', 'user__userprofile', 'user__userprofile__country')
+        ).select_related(
+            'user', 'user__userprofile', 'user__userprofile__country', 'company'
+        )
 
     def get_all_option_plan_segments(self):
         """
