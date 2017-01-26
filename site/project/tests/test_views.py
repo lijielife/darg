@@ -322,7 +322,7 @@ class DownloadTestCase(TestCase):
         for row in lines:
             if row == lines[0]:  # skip first row
                 continue
-            self.assertEqual(row.count(','), 8)
+            self.assertEqual(row.count(','), 7)
             fields = row.split(',')
             s = Shareholder.objects.get(company=company, number=fields[0])
             text = s.current_segments(security)
