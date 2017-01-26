@@ -3684,6 +3684,12 @@ table.stock {
   .table .tr .td a.btn-icon {
     padding-left: 0;
   }
+  .table .tr .td.flex-center {
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+  }
   .table .tr .td.text-right-flex {
     text-align: right;
     -webkit-flex-direction: column;
