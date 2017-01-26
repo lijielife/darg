@@ -163,6 +163,9 @@
       @include display-flex(flex)
       @include flex-flow(row)
       .td
+        &.flex-center
+          @include align-items(center) //vertical align center
+          @include justify-content(center) //horizontal align center
         &.text-right-flex
           text-align: right
           @include flex-direction(column) //display content y-axis
