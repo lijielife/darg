@@ -1,6 +1,30 @@
-div.members-area
-  ul 
-    li
-      list-style: none
-  ul.errorlist
-    padding: 0
+.core
+  .container.members-area
+    .footer
+      width: 100%
+      text-align: center
+    .login-meta
+      a
+        margin-bottom: 15px
+    .two_factor_auth
+      max-width: 230px
+      margin: 0 auto
+      .auth
+        margin-bottom: 15px
+        .btn
+          width: 100%
+          margin-bottom: 5px
+          &.btn-disabled
+            display: none
+          &.btn-link
+            display: none
+        th
+          display: none // hide labels
+        tr
+          @include display-flex
+          @include flex-flow(column)
+    ul
+      li
+        list-style: none
+    ul.errorlist
+      padding: 0
