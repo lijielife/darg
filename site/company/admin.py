@@ -1,13 +1,13 @@
 
-from functools import update_wrapper
-
-from django.conf import settings
-from django.conf.urls import url
+# from functools import update_wrapper
+#
+# from django.conf import settings
+# from django.conf.urls import url
 from django.contrib import admin, messages
 from django.core.management import call_command
-from django.http import Http404
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+# from django.http import Http404
+# from django.shortcuts import render_to_response
+# from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
 
 from djstripe.admin import (Charge, send_charge_receipt, Plan, Invoice,

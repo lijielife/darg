@@ -85,7 +85,8 @@ class BaseSeleniumTestCase(LiveServerTestCase):
         # service_log_path = "./chromedriver.log"
         # service_args = ['--verbose']
 
-        window_size = (1024, 768)
+        window_size = getattr(
+            settings, 'TEST_DISPLAY_WINDOW_SIZE', (1024, 768))
 
         # Add following 2 line before start the Chrome
         cls.display = Display(visible=0, size=window_size)

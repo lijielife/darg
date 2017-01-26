@@ -406,7 +406,7 @@ class PositionViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST)
 
 
-class SecurityViewSet(SubscriptionViewMixin, viewsets.ReadOnlyModelViewSet):
+class SecurityViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
     """ API endpoint to get options """
     serializer_class = SecuritySerializer
     permission_classes = [

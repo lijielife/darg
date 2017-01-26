@@ -1465,5 +1465,7 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 @receiver(post_save, sender=settings.DJSTRIPE_SUBSCRIBER_MODEL)
 def create_stripe_customer(sender, instance=None, created=False, **kwargs):
     """create stripe customer object when subscriber is created"""
-    if settings.CREATE_STRIPE_CUSTOMER_FOR_SUBSCRIBER_ON_CREATE and created:
+    enabled = getattr(
+        settings, 'CREATE_STRIPE_CUSTOMER_FOR_SUBSCRIBER_ON_CREATE', True)
+    if enabled and created:
         instance.get_customer()

@@ -5,12 +5,22 @@
 mixins to enhance several tests with common code
 """
 
+import os
+import sys
+
+# from django.conf import settings
 from django.db import DEFAULT_DB_ALIAS, connections
 from django.test.utils import CaptureQueriesContext
+from django.utils.timezone import now, timedelta
 
+import mock
 import requests
+import stripe
 
+from djstripe.models import CurrentSubscription
 from model_mommy import random_gen
+
+from .helper import STRIPE_RESPONSES
 
 
 # stolen here https://goo.gl/IdWkTr
@@ -79,3 +89,86 @@ class FakeResponseMixin(object):
         response._content = self.fake_response_content
         response.request = request
         return response
+
+
+class StripeTestCaseMixin(object):
+
+    RESTORE_ATTRIBUTES = ('api_version', 'api_key')
+
+    REQUEST_LIBRARIES = ['urlfetch', 'requests', 'pycurl']
+
+    if sys.version_info >= (3, 0):
+        REQUEST_LIBRARIES.append('urllib.request')
+    else:
+        REQUEST_LIBRARIES.append('urllib2')
+
+    def setUp(self):
+        super(StripeTestCaseMixin, self).setUp()
+
+        self._stripe_original_attributes = {}
+
+        for attr in self.RESTORE_ATTRIBUTES:
+            self._stripe_original_attributes[attr] = getattr(stripe, attr)
+
+        api_base = os.environ.get('STRIPE_API_BASE')
+        if api_base:
+            stripe.api_base = api_base
+        stripe.api_key = os.environ.get(
+            'STRIPE_API_KEY', 'tGN0bIwXnHdwOa85VABjPdSn8nWY7G7I')
+
+        self.request_patchers = {}
+        self.request_mocks = {}
+        for lib in self.REQUEST_LIBRARIES:
+            patcher = mock.patch("stripe.http_client.%s" % (lib,))
+
+            self.request_mocks[lib] = patcher.start()
+            self.request_patchers[lib] = patcher
+
+        self.requestor_patcher = mock.patch(
+            'stripe.api_requestor.APIRequestor')
+        requestor_class_mock = self.requestor_patcher.start()
+        self.requestor_mock = requestor_class_mock.return_value
+
+        self.mock_response()
+
+    def tearDown(self):
+        super(StripeTestCaseMixin, self).tearDown()
+
+        for attr in self.RESTORE_ATTRIBUTES:
+            setattr(stripe, attr, self._stripe_original_attributes[attr])
+
+        for patcher in self.request_patchers.itervalues():
+            patcher.stop()
+
+        self.requestor_patcher.stop()
+
+    def mock_response(self, res={}):
+        # self.requestor_mock.request = mock.Mock(return_value=(res, 'reskey'))
+
+        mock_request = mock.Mock(return_value=(res, 'reskey'))
+
+        def side_effect(method, url, params=None, headers=None):
+            res = STRIPE_RESPONSES.get(method, {}).get(url, {})
+            return (res, 'reskey')
+
+        mock_request.side_effect = side_effect
+
+        self.requestor_mock.request = mock_request
+
+
+class SubscriptionTestMixin(object):
+
+    def add_subscription(self, company):
+        """
+        add a (test) subscription for company
+        """
+        CurrentSubscription.objects.create(
+            customer=company.get_customer(),
+            status=CurrentSubscription.STATUS_ACTIVE,
+            plan='test',
+            start=now(),
+            quantity=1,
+            current_period_start=now(),
+            current_period_end=now() + timedelta(days=1),
+            amount=0
+        )

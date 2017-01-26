@@ -203,8 +203,7 @@ LOGGING = {
         },
         'sentry': {
             'level': 'WARNING',
-            'class': 'raven.contrib.django.raven_compat.handlers.'
-                     'SentryHandler',
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler'
         },
     },
     'loggers': {
@@ -575,8 +574,12 @@ INVOICE_FROM_ADDRESS = [
     'Deutschland'
 ]
 
-# don't create customer
-CREATE_STRIPE_CUSTOMER_FOR_SUBSCRIBER_ON_CREATE = 'test' not in sys.argv
+
+if 'test' in sys.argv:
+    try:
+        from .tests import *  # noqa
+    except ImportError:
+        pass
 
 
 try:

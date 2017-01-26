@@ -89,10 +89,12 @@
           description: '{{ plan.name }} {% trans "Plan" %}',
           panelLabel: '{% trans "Subscribe" %}',
           image: '{% static "compiled/images/dasaktienregister.png" %}',
-          billingAddress: true,
+          {% if not customer.subscriber.has_address %}
+            billingAddress: true,
+          {% endif %}
           // locale: 'auto',
           {% if customer.subscriber.email %}
-          email: '{{ customer.subscriber.email }}',
+            email: '{{ customer.subscriber.email }}',
           {% endif %}
           token: token
         });

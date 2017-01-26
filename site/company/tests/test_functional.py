@@ -1,3 +1,4 @@
+
 import datetime
 
 from django.contrib.auth import get_user_model
@@ -7,18 +8,22 @@ from selenium.webdriver.common.by import By
 from company import page
 from project.base import BaseSeleniumTestCase
 from project.generators import (OperatorGenerator, PositionGenerator,
-                                    ShareholderGenerator,
-                                    TwoInitialSecuritiesGenerator,
-                                    UserGenerator)
+                                ShareholderGenerator,
+                                TwoInitialSecuritiesGenerator,
+                                UserGenerator)
+from project.tests.mixins import StripeTestCaseMixin, SubscriptionTestMixin
 from shareholder.models import Company
 
 User = get_user_model()
 
 
 # --- FUNCTIONAL TESTS
-class CompanyFunctionalTestCase(BaseSeleniumTestCase):
+class CompanyFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
+                                BaseSeleniumTestCase):
 
     def setUp(self):
+        super(CompanyFunctionalTestCase, self).setUp()
+
         self.operator = OperatorGenerator().generate()
         # initial position
         shareholder = ShareholderGenerator().generate(user=self.operator.user)
@@ -127,7 +132,7 @@ class CompanyFunctionalTestCase(BaseSeleniumTestCase):
                 p.get_founding_date(),
                 founding_date.strftime('%d.%m.%y'))
 
-        except Exception, e:
+        except Exception as e:
             self._handle_exception(e)
 
         self.assertEqual(
@@ -139,6 +144,9 @@ class CompanyFunctionalTestCase(BaseSeleniumTestCase):
         for s in self.operator.company.security_set.all():
             s.track_numbers = True
             s.save()
+
+        # securities require a subscription
+        self.add_subscription(self.operator.company)
 
         try:
             p = page.CompanyPage(
@@ -169,6 +177,9 @@ class CompanyFunctionalTestCase(BaseSeleniumTestCase):
             security.track_numbers = True
             security.save()
 
+        # securities require a subscription
+        self.add_subscription(self.operator.company)
+
         try:
             p = page.CompanyPage(
                 self.selenium,
@@ -197,6 +208,9 @@ class CompanyFunctionalTestCase(BaseSeleniumTestCase):
             security.number_segments = [1, 2]
             security.track_numbers = True
             security.save()
+
+        # securities require a subscription
+        self.add_subscription(self.operator.company)
 
         try:
             p = page.CompanyPage(
