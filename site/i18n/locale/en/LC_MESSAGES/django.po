@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-23 08:51+0000\n"
+"POT-Creation-Date: 2017-01-25 13:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,6 +22,7 @@ msgid "To add a new operator enter the email of a registered user"
 msgstr ""
 
 #: company/templates/_add_operator_form.html:15
+#: reports/templates/reports/index.html:75
 msgid "Cancel"
 msgstr ""
 
@@ -115,6 +116,77 @@ msgstr ""
 msgid "Edit Option Plan"
 msgstr ""
 
+#: reports/templates/reports/index.html:6 templates/menu.html:39
+msgid "Reports"
+msgstr ""
+
+#: reports/templates/reports/index.html:16
+msgid "Reports and Downloads for "
+msgstr ""
+
+#: reports/templates/reports/index.html:17
+msgid ""
+"Use CSV for Excel like Downloads. Follow this <a href='https://goo.gl/"
+"aQ2gVx'>guide for instructions</a>."
+msgstr ""
+
+#: reports/templates/reports/index.html:21
+msgid "Download active Shareholders as"
+msgstr ""
+
+#: reports/templates/reports/index.html:22
+msgid "Download active Shareholders as PDF"
+msgstr ""
+
+#: reports/templates/reports/index.html:23
+msgid "PDF"
+msgstr ""
+
+#: reports/templates/reports/index.html:25
+msgid "Download active Shareholders as CSV"
+msgstr ""
+
+#: reports/templates/reports/index.html:26
+msgid "CSV"
+msgstr ""
+
+#: reports/templates/reports/index.html:31
+msgid "Transactions per security in period"
+msgstr ""
+
+#: reports/templates/reports/index.html:39
+msgid "from"
+msgstr ""
+
+#: reports/templates/reports/index.html:55
+msgid "to"
+msgstr ""
+
+#: reports/templates/reports/index.html:72
+msgid "Security"
+msgstr ""
+
+#: reports/templates/reports/index.html:76
+msgid "Download"
+msgstr ""
+
+#: reports/templates/reports/index.html:83
+#: reports/templates/reports/index.html:84
+msgid "Address data of all shareholders"
+msgstr ""
+
+#: reports/templates/reports/index.html:88
+msgid "Printed Certificates"
+msgstr ""
+
+#: reports/templates/reports/index.html:89
+msgid "Vested Shares"
+msgstr ""
+
+#: reports/templates/reports/index.html:90
+msgid "Depot Statement per Shareholder"
+msgstr ""
+
 #: templates/_messages.html:7
 msgid "Important:"
 msgstr ""
@@ -131,54 +203,54 @@ msgstr ""
 msgid "our blog"
 msgstr ""
 
-#: templates/menu.html:29
+#: templates/menu.html:30
 msgid "Start"
 msgstr ""
 
-#: templates/menu.html:32
+#: templates/menu.html:33
 msgid "Positions"
 msgstr ""
 
-#: templates/menu.html:35
+#: templates/menu.html:36
 msgid "Options"
 msgstr ""
 
-#: templates/menu.html:46
+#: templates/menu.html:50
 msgid "Logged in as"
 msgstr ""
 
-#: templates/menu.html:57
+#: templates/menu.html:61
 msgid "Admin"
 msgstr ""
 
-#: templates/menu.html:60
+#: templates/menu.html:64
 msgid "I18N"
 msgstr ""
 
-#: templates/menu.html:64 templates/registration/password_reset_form.html:4
+#: templates/menu.html:68 templates/registration/password_reset_form.html:4
 #: templates/registration/password_reset_form.html:14
 #: templates/registration/password_reset_form.html:33
 msgid "Reset password"
 msgstr ""
 
-#: templates/menu.html:65 templates/registration/password_change_form.html:4
+#: templates/menu.html:69 templates/registration/password_change_form.html:4
 #: templates/registration/password_change_form.html:12
 msgid "Change password"
 msgstr ""
 
-#: templates/menu.html:68
+#: templates/menu.html:72
 msgid "Security Settings"
 msgstr ""
 
-#: templates/menu.html:70
+#: templates/menu.html:74
 msgid "Logout"
 msgstr ""
 
-#: templates/menu.html:76 templates/two_factor/core/login.html:55
+#: templates/menu.html:80 templates/two_factor/core/login.html:55
 msgid "Register"
 msgstr ""
 
-#: templates/menu.html:79 templates/registration/registration_form.html:26
+#: templates/menu.html:83 templates/registration/registration_form.html:26
 #: templates/two_factor/core/login.html:6
 msgid "Login"
 msgstr ""

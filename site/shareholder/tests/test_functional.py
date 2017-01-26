@@ -984,12 +984,14 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             security=self.securities[1])
         position.value = 4.55
         position.count = 15000000
+        count = Position.objects.count()
         try:
 
             app = page.PositionPage(
                 self.selenium, self.live_server_url, self.operator.user)
             app.click_open_add_position_form()
             app.enter_new_position_data(position)
+            self._screenshot()
             app.click_save_position()
 
             # wait for form to disappear
@@ -999,6 +1001,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             self.assertTrue(app.is_no_errors_displayed())
 
             position = Position.objects.latest('pk')
+            self.assertEqual(count + 1, Position.objects.count())
             self.assertEqual(position.value, Decimal('4.55'))
             self.assertEqual(position.count, 15000000)
 
@@ -1206,9 +1209,9 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             position.count = 99999999991
             position.value = 99999599999
             app.enter_new_position_data(position)
+            self._screenshot()
             app.click_save_position()
             time.sleep(3)
-            self._screenshot()
             self.assertTrue(
                 self.selenium.find_element_by_xpath(
                     '//p[contains(@class, "form-error")]').is_displayed()

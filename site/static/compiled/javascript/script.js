@@ -1200,6 +1200,73 @@
 (function() {
   var app;
 
+  app = angular.module('js.darg.app.reports', ['js.darg.api', 'pascalprecht.translate', 'ui.bootstrap']);
+
+  app.config([
+    '$translateProvider', function($translateProvider) {
+      $translateProvider.translations('de', django.catalog);
+      $translateProvider.preferredLanguage('de');
+      return $translateProvider.useSanitizeValueStrategy('escaped');
+    }
+  ]);
+
+  app.controller('ReportsController', [
+    '$scope', '$http', 'Shareholder', function($scope, $http, Shareholder) {
+      $scope.transactions_download_params = {};
+      $scope.securities = [];
+      $scope.show_transaction_form = false;
+      $scope.enable_transaction_download = false;
+      $scope.transaction_download_url = '';
+      $http.get('/services/rest/security').then(function(result) {
+        return angular.forEach(result.data.results, function(item) {
+          return $scope.securities.push(item);
+        });
+      });
+      $scope.$watchCollection('transactions_download_params', function(transactions_download_params) {
+        if (transactions_download_params.to && transactions_download_params.from && transactions_download_params.security) {
+          $scope.enable_transaction_download = true;
+          return $scope.transaction_download_url = '/company/' + company_id + '/download/transactions?from=' + $scope.transactions_download_params.from.toISOString() + '&to=' + $scope.transactions_download_params.to.toISOString() + '&security=' + $scope.transactions_download_params.security.pk;
+        }
+      });
+      $scope.toggle_transaction_form = function() {
+        if ($scope.show_transaction_form) {
+          return $scope.show_transaction_form = false;
+        } else {
+          return $scope.show_transaction_form = true;
+        }
+      };
+      $scope.datepicker1 = {
+        opened: false
+      };
+      $scope.datepicker1.format = 'd. MMM yyyy';
+      $scope.datepicker1.options = {
+        formatYear: 'yy',
+        startingDay: 1,
+        showWeeks: false
+      };
+      $scope.open_datepicker1 = function() {
+        return $scope.datepicker1.opened = true;
+      };
+      $scope.datepicker2 = {
+        opened: false
+      };
+      $scope.datepicker2.format = 'd. MMM yyyy';
+      $scope.datepicker2.options = {
+        formatYear: 'yy',
+        startingDay: 1,
+        showWeeks: false
+      };
+      return $scope.open_datepicker2 = function() {
+        return $scope.datepicker2.opened = true;
+      };
+    }
+  ]);
+
+}).call(this);
+
+(function() {
+  var app;
+
   app = angular.module('js.darg.app.shareholder', ['js.darg.api', 'xeditable', 'pascalprecht.translate', 'ui.bootstrap']);
 
   app.config([

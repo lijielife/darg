@@ -2801,6 +2801,9 @@ html, body {
 .core .container .el-icon-cogs {
   font-size: 50%;
 }
+.core .container .el-icon-chevron-down {
+  font-size: 75%;
+}
 .core .container .el-icon-cogs-wrapper {
   padding: 0em;
   margin: 0em;
@@ -3428,6 +3431,10 @@ div#optionplan .pdf_upload_preview {
 
 .shareholder-table__font-size-small {
   font-size: 14px;
+}
+
+table.stock {
+  display: table !important;
 }
 
 .blog .lead {

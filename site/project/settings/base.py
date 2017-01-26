@@ -100,6 +100,7 @@ INSTALLED_APPS = (
     'services',
     'company',
     'project',
+    'reports',
     'utils',
     'pingen'
 )

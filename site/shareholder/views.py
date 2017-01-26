@@ -74,6 +74,7 @@ class ShareholderView(OperatorPermissionRequiredMixin, DetailView):
                     sec.segments = human_readable_segments(
                         shareholder.current_segments(sec))
             sec.count = shareholder.share_count(security=sec) or 0
+            sec.options_count = shareholder.options_count(security=sec) or 0
 
         context.update({
             'securities': securities})

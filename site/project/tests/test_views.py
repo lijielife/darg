@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import datetime
+
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -12,8 +14,10 @@ from rest_framework.test import APIClient
 from project.generators import (CompanyGenerator, OperatorGenerator,
                                 PositionGenerator, ShareholderGenerator,
                                 TwoInitialSecuritiesGenerator, UserGenerator,
-                                DEFAULT_TEST_DATA)
-from shareholder.models import Shareholder, UserProfile
+                                DEFAULT_TEST_DATA, SecurityGenerator,
+                                ComplexShareholderConstellationGenerator)
+from project.views import _get_contacts, _get_transactions
+from shareholder.models import Shareholder, UserProfile, Company, Security
 
 
 def _add_company_to_user_via_rest(user):
@@ -432,3 +436,77 @@ class DownloadTestCase(TestCase):
 
         # assert response code
         self.assertEqual(response.status_code, 403)
+
+    def test_contacts_csv(self):
+        """ test download of all shareholders contact data """
+        company = CompanyGenerator().generate()
+        # run test
+        response = self.client.get(
+            reverse('contacts_csv', kwargs={"company_id": company.id}))
+
+        # not logged in user
+        self.assertEqual(response.status_code, 302)
+
+        # login and retest
+        user = UserGenerator().generate()
+        self.client.force_login(user)
+
+        response = self.client.get(
+            reverse('contacts_csv', kwargs={"company_id": company.id}))
+
+        # assert response code
+        self.assertEqual(response.status_code, 403)
+
+    def test_get_contacts(self):
+        """ get csv list array of contacts data """
+        ComplexShareholderConstellationGenerator().generate()
+
+        company = Company.objects.last()
+        res = _get_contacts(company)
+        self.assertEqual(len(res), 11)
+        self.assertEqual(len(res[0]), 15)
+        self.assertEqual(len(res[1]), 15)  # no nationality
+        self.assertEqual(res[0][0], _(u'shareholder number'))
+
+    def test_transactions_csv(self):
+        """ test download of all transactions data
+        /company/3/download/transactions?from=2017-01-12T23:00:00.000Z&to=2017-01-13T23:00:00.000Z&security=56
+        """
+        company = CompanyGenerator().generate()
+        security = SecurityGenerator().generate(company=company)
+        # run test
+        response = self.client.get(
+            reverse('transactions_csv', kwargs={"company_id": company.id}),
+            {'to': '2017-01-12T23:00:00.000Z',
+             'from': '2011-01-12T23:00:00.000Z',
+             'security': security.pk})
+
+        # not logged in user
+        self.assertEqual(response.status_code, 302)
+
+        # login and retest
+        user = UserGenerator().generate()
+        self.client.force_login(user)
+
+        response = self.client.get(
+            reverse('transactions_csv', kwargs={"company_id": company.id}),
+            {'to': '2017-01-12T23:00:00.000Z',
+             'from': '2011-01-12T23:00:00.000Z',
+             'security': security.pk})
+
+        # assert response code
+        self.assertEqual(response.status_code, 403)
+
+    def test_get_transactions(self):
+        """ get csv list array of contacts data """
+        ComplexShareholderConstellationGenerator().generate()
+
+        company = Company.objects.last()
+        from_date = datetime.datetime(2013, 1, 1)
+        to_date = datetime.datetime(2099, 1, 1)
+        res = _get_transactions(
+            from_date, to_date, Security.objects.first(), company)
+        self.assertEqual(len(res), 17)
+        self.assertEqual(len(res[0]), 11)
+        self.assertEqual(len(res[1]), 9)  # no nationality
+        self.assertEqual(res[0][0], _(u'date'))

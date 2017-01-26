@@ -50,7 +50,7 @@ class ShareholderViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
     ]
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('user__first_name', 'user__last_name', 'user__email',
-                     'number', 'user__userprofile__company_name')
+                     'number', 'user__userprofile__company_name', 'number')
     ordering_fields = ('user__last_name', 'user__email', 'number')
 
     subscription_features = ('shareholders',)
@@ -99,7 +99,8 @@ class ShareholderViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
 
     @list_route(methods=['get'])
     def company_number_segments(self, request):
-        shareholder = request.user.operator_set.first().company.get_company_shareholder()
+        operator = request.user.operator_set.first()
+        shareholder = operator.company.get_company_shareholder()
         kwargs = {}
 
         if request.GET.get('date'):
@@ -361,7 +362,7 @@ class PositionViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
                      'seller__user__last_name', 'seller__user__email',
                      'seller__number', 'buyer__number',
                      'seller__user__userprofile__company_name',
-                     'bought_at', 'comment')
+                     'bought_at', 'comment', 'seller__number', 'buyer__number')
     ordering_fields = ('buyer__user__last_name', 'buyer__user__email',
                        'buyer__number', 'seller__user__last_name',
                        'seller__user__email', 'seller__number')
@@ -474,7 +475,8 @@ class OptionTransactionViewSet(SubscriptionViewMixin,
                      'seller__number', 'buyer__number', 'bought_at',
                      'option_plan__title',
                      'buyer__user__userprofile__company_name',
-                     'seller__user__userprofile__company_name')
+                     'seller__user__userprofile__company_name',
+                     'seller__number', 'buyer__number')
     ordering_fields = ('buyer__user__last_name', 'buyer__user__email',
                        'buyer__number', 'seller__user__last_name',
                        'seller__user__email', 'seller__number')
