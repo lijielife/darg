@@ -1345,6 +1345,25 @@ class OptionTransactionTestCase(APITestCase):
             ).count())
         self.assertNotEqual(res.data['count'], 0)
 
+        optiontransaction.certificate_id = 'SOME STRANGE ID'
+        optiontransaction.stock_book_id = 'MORE TEST STRINGS'
+        optiontransaction.save()
+
+        res = self.client.get(
+            '/services/rest/optiontransaction?search={}'.format(
+                optiontransaction.certificate_id))
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['count'], 1)
+
+        res = self.client.get(
+            '/services/rest/optiontransaction?search={}'.format(
+                optiontransaction.stock_book_id))
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['count'], 1)
+
+
     def test_ordering(self):
         operator = OperatorGenerator().generate()
         user = operator.user

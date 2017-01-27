@@ -453,7 +453,8 @@ class OptionTransactionViewSet(viewsets.ModelViewSet):
                      'option_plan__title',
                      'buyer__user__userprofile__company_name',
                      'seller__user__userprofile__company_name',
-                     'seller__number', 'buyer__number')
+                     'seller__number', 'buyer__number', 'certificate_id',
+                     'stock_book_id')
     ordering_fields = ('buyer__user__last_name', 'buyer__user__email',
                        'buyer__number', 'seller__user__last_name',
                        'seller__user__email', 'seller__number')
