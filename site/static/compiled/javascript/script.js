@@ -537,7 +537,7 @@
           if (result.data.current) {
             $scope.current = result.data.current;
           }
-          return $scope.search_params.query = params.query;
+          return $scope.search_params.query = params.search;
         });
       };
       $scope.add_option_plan = function() {
