@@ -458,12 +458,13 @@ class OptionTransactionViewSet(viewsets.ModelViewSet):
     ordering_fields = ('buyer__user__last_name', 'buyer__user__email',
                        'buyer__number', 'seller__user__last_name',
                        'seller__user__email', 'seller__number')
-    ordering = ('option_plan__pk',)
+    ordering = ('option_plan__pk', '-bought_at')
 
     def get_queryset(self):
         user = self.request.user
         qs = OptionTransaction.objects.filter(
-            option_plan__company__operator__user=user)
+            option_plan__company__operator__user=user
+        )
 
         # filter if option plan is given in query params
         if self.request.query_params.get('optionplan_pk', None):
