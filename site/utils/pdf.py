@@ -52,7 +52,7 @@ def render_to_pdf_response(template_src, context_dict):
     """
     template = get_template(template_src)
     html = template.render(Context(context_dict))
-    pdf = render_to_pdf(template_src, context_dict)
+    pdf = render_pdf(html)
     if not pdf:
         return HttpResponse('We had some errors<pre>%s</pre>' % escape(html))
     return HttpResponse(pdf.getvalue(), content_type='application/pdf')
