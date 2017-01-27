@@ -14,6 +14,7 @@ from project.generators import (ComplexShareholderConstellationGenerator,
                                 ShareholderGenerator,
                                 TwoInitialSecuritiesGenerator, UserGenerator,
                                 ComplexPositionsWithSegmentsGenerator)
+from project.tests.mixins import StripeTestCaseMixin
 from services.rest.serializers import (AddCompanySerializer,
                                        OptionPlanSerializer,
                                        OptionTransactionSerializer,
@@ -286,9 +287,11 @@ class PositionSerializerTestCase(TestCase):
         self.assertIsNotNone(position_data['depot_type'])
 
 
-class ShareholderSerializerTestCase(TestCase):
+class ShareholderSerializerTestCase(StripeTestCaseMixin, TestCase):
 
     def setUp(self):
+        super(ShareholderSerializerTestCase, self).setUp()
+
         self.factory = RequestFactory()
 
     def test_is_company(self):

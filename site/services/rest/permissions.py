@@ -43,6 +43,11 @@ class UserIsOperatorPermission(permissions.BasePermission):
     """
     Only operators of the same company may edit
     """
+
+    def has_permission(self, request, view):
+        return (request.user.is_authenticated() and
+                request.user.operator_set.count())
+
     def has_object_permission(self, request, view, obj=None):
 
         if hasattr(obj, 'company'):

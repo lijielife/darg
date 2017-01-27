@@ -76,8 +76,8 @@ class ShareholderViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'list':
             return ShareholderListSerializer
-        if self.action == 'retrieve':
-            return ShareholderSerializer
+        # if self.action == 'retrieve':
+        #     return ShareholderSerializer
         return ShareholderSerializer
 
     @detail_route(methods=['get'])
@@ -280,7 +280,14 @@ class AvailableOptionSegmentsView(APIView):
         optionplan Y
         """
         optionplan = get_object_or_404(OptionPlan, pk=optionsplan_id)
+        # permission check
+        self.check_object_permissions(request, optionplan)
+
         shareholder = get_object_or_404(Shareholder, pk=shareholder_id)
+        # permission check
+        self.check_object_permissions(request, shareholder)
+
+        # FIXME: subscription check required?
 
         kwargs = {
             'security': optionplan.security,
@@ -534,4 +541,4 @@ class OptionTransactionViewSet(SubscriptionViewMixin,
                     'success': False,
                     'errors': [_('Confirmed position cannot be deleted.')]
                 },
-                status=status.HTTP_400_BAD_REQUEST)
+                status=status.HTTP_400_BAD_REQUEST)  # consider 403!
