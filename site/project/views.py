@@ -62,6 +62,26 @@ def _get_contacts(company):
         ]
         rows.append(row)
 
+    for shareholder in company.get_active_option_holders():
+        row = [
+            shareholder.number,
+            shareholder.user.last_name,
+            shareholder.user.first_name,
+            shareholder.user.email,
+            shareholder.user.userprofile.language,
+            shareholder.user.userprofile.get_language_display(),
+            shareholder.user.userprofile.street,
+            shareholder.user.userprofile.street2,
+            shareholder.user.userprofile.c_o,
+            shareholder.user.userprofile.city,
+            shareholder.user.userprofile.postal_code,
+            shareholder.user.userprofile.country.name if shareholder.user.userprofile.country else  u'',
+            shareholder.user.userprofile.pobox,
+            shareholder.get_mailing_type_display(),
+            shareholder.user.userprofile.nationality.name if shareholder.user.userprofile.nationality else u''
+        ]
+        rows.append(row)
+
     return rows
 
 
@@ -79,7 +99,7 @@ def _get_transactions(from_date, to_date, security, company):
         bought_at__range=(from_date, to_date), security=security
     ).filter(
         Q(buyer__company=company) | Q(seller__company=company)
-    ):
+    ).prefetch_related('buyer', 'seller', 'security'):
         row = [
             position.bought_at,
             position.buyer.get_full_name() if position.buyer else u"",
@@ -101,7 +121,7 @@ def _get_transactions(from_date, to_date, security, company):
         bought_at__range=(from_date, to_date), option_plan__security=security
     ).filter(
         Q(buyer__company=company) | Q(seller__company=company)
-    ):
+    ).prefetch_related('buyer', 'seller', 'option_plan', 'option_plan__security'):
         row = [
             optiontransaction.bought_at,
             optiontransaction.buyer.get_full_name(),
@@ -286,16 +306,21 @@ def captable_csv(request, company_id):
 
     writer = csv.writer(response)
 
+    # removed share percent due to heavy sql impact. killed perf for higher
+    # shareholder count
     header = [
         _(u'shareholder number'), _(u'last name'), _(u'first name'),
-        _(u'email'), _(u'share count'), _(u'votes share percent'),
+        _(u'email'), _(u'share count'),  # _(u'votes share percent'),
         _(u'language ISO'), _('language full')]
 
-    if track_numbers_secs.exists():
+    has_track_numbers = track_numbers_secs.exists()
+    if has_track_numbers:
         header.append(_('Share IDs'))
 
     writer.writerow(header)
 
+    # removed share percent due to heavy sql impact. killed perf for higher
+    # shareholder count
     for shareholder in company.get_active_shareholders():
         row = [
             shareholder.number,
@@ -303,11 +328,11 @@ def captable_csv(request, company_id):
             shareholder.user.first_name,
             shareholder.user.email,
             shareholder.share_count(),
-            shareholder.share_percent() or '--',
+            # shareholder.share_percent() or '--',
             shareholder.user.userprofile.language,
             shareholder.user.userprofile.get_language_display(),
         ]
-        if track_numbers_secs.exists():
+        if has_track_numbers:
             text = ""
             for sec in track_numbers_secs:
                 text += "{}: {} ".format(

@@ -225,6 +225,7 @@ class DownloadTestCase(TestCase):
 
         # initial share creation
         PositionGenerator().generate(
+            seller=None,
             buyer=shareholder_list[0], count=1000, value=10)
         # single transaction
         PositionGenerator().generate(
@@ -251,8 +252,9 @@ class DownloadTestCase(TestCase):
         is_loggedin = self.client.login(username=user.username,
                                         password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(is_loggedin)
-        response = self.client.get(reverse('captable_csv',
-                                   kwargs={"company_id": company.id}))
+        with self.assertNumQueries(21):
+            response = self.client.get(reverse('captable_csv',
+                                       kwargs={"company_id": company.id}))
 
         # assert response code
         self.assertEqual(response.status_code, 200)
@@ -260,7 +262,7 @@ class DownloadTestCase(TestCase):
         lines = response.content.split('\r\n')
         lines.pop()  # remove last element based on final '\r\n'
         for row in lines:
-            self.assertEqual(row.count(','), 7)
+            self.assertEqual(row.count(','), 6)
         self.assertEqual(len(lines), 3)  # ensure we have the right data
         # assert company itself
         self.assertEqual(shareholder_list[0].number, lines[1].split(',')[0])
@@ -320,7 +322,7 @@ class DownloadTestCase(TestCase):
         for row in lines:
             if row == lines[0]:  # skip first row
                 continue
-            self.assertEqual(row.count(','), 8)
+            self.assertEqual(row.count(','), 7)
             fields = row.split(',')
             s = Shareholder.objects.get(company=company, number=fields[0])
             text = s.current_segments(security)
@@ -384,8 +386,9 @@ class DownloadTestCase(TestCase):
         is_loggedin = self.client.login(username=user.username,
                                         password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(is_loggedin)
-        response = self.client.get(
-            reverse('captable_pdf', kwargs={"company_id": company.id}))
+        with self.assertNumQueries(10):
+            response = self.client.get(
+                reverse('captable_pdf', kwargs={"company_id": company.id}))
 
         # assert response code
         self.assertEqual(response.status_code, 200)
@@ -462,7 +465,8 @@ class DownloadTestCase(TestCase):
         ComplexShareholderConstellationGenerator().generate()
 
         company = Company.objects.last()
-        res = _get_contacts(company)
+        with self.assertNumQueries(29):
+            res = _get_contacts(company)
         self.assertEqual(len(res), 11)
         self.assertEqual(len(res[0]), 15)
         self.assertEqual(len(res[1]), 15)  # no nationality
@@ -504,8 +508,9 @@ class DownloadTestCase(TestCase):
         company = Company.objects.last()
         from_date = datetime.datetime(2013, 1, 1)
         to_date = datetime.datetime(2099, 1, 1)
-        res = _get_transactions(
-            from_date, to_date, Security.objects.first(), company)
+        with self.assertNumQueries(38):
+            res = _get_transactions(
+                from_date, to_date, Security.objects.first(), company)
         self.assertEqual(len(res), 17)
         self.assertEqual(len(res[0]), 11)
         self.assertEqual(len(res[1]), 9)  # no nationality
