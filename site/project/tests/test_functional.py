@@ -14,11 +14,16 @@ from project.generators import (CompanyShareholderGenerator,
                                 DEFAULT_TEST_DATA)
 from shareholder.models import Security, Shareholder
 
+from .mixins import StripeTestCaseMixin, SubscriptionTestMixin
+
 
 # --- FUNCTIONAL TESTS
-class StartFunctionalTestCase(BaseSeleniumTestCase):
+class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
+                              BaseSeleniumTestCase):
 
     def setUp(self):
+        super(StartFunctionalTestCase, self).setUp()
+
         self.operator = OperatorGenerator().generate()
         TwoInitialSecuritiesGenerator().generate(company=self.operator.company)
         self.company_shareholder = CompanyShareholderGenerator().generate(
@@ -28,7 +33,12 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
         self.seller = ShareholderGenerator().generate(
             company=self.operator.company)
 
+        # add a subscription for the company
+        self.add_subscription(self.operator.company)
+
     def tearDown(self):
+        super(StartFunctionalTestCase, self).tearDown()
+
         Security.objects.all().delete()
 
     def test_ticket_49(self):
@@ -62,6 +72,9 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
         ops.append(OperatorGenerator().generate())
         ops.append(OperatorGenerator().generate())
         user = UserGenerator().generate()
+
+        # add subscription for companies
+        [self.add_subscription(op.company) for op in ops]
 
         try:
             for op in ops:
@@ -175,6 +188,9 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
         optiontransactions, shs = \
             ComplexOptionTransactionsWithSegmentsGenerator().generate()
 
+        # add a subscription for the company
+        self.add_subscription(shs[0].company)
+
         try:
             start = page.StartPage(
                 self.selenium, self.live_server_url,
@@ -206,6 +222,9 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
         optiontransactions, shs = \
             ComplexOptionTransactionsWithSegmentsGenerator().generate()
 
+        # add a subscription for the company
+        self.add_subscription(shs[0].company)
+
         try:
             start = page.StartPage(
                 self.selenium, self.live_server_url,
@@ -230,6 +249,9 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
             ComplexOptionTransactionsWithSegmentsGenerator().generate()
         for x in range(0, 30):
             ShareholderGenerator().generate(company=shs[0].company)
+
+        # add a subscription for the company
+        self.add_subscription(shs[0].company)
 
         try:
             start = page.StartPage(
@@ -277,6 +299,7 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
         """
         user signs up and adds himself as shareholder
         """
+
         try:
             self.assertEqual(
                 self.operator.user.shareholder_set.filter(

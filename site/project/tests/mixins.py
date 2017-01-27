@@ -20,7 +20,7 @@ import stripe
 from djstripe.models import CurrentSubscription
 from model_mommy import random_gen
 
-from .helper import STRIPE_RESPONSES
+from .helper import FakeStripeResponse
 
 
 # stolen here https://goo.gl/IdWkTr
@@ -148,7 +148,7 @@ class StripeTestCaseMixin(object):
         mock_request = mock.Mock(return_value=(res, 'reskey'))
 
         def side_effect(method, url, params=None, headers=None):
-            res = STRIPE_RESPONSES.get(method, {}).get(url, {})
+            res = FakeStripeResponse(method, url).get_response()
             return (res, 'reskey')
 
         mock_request.side_effect = side_effect
@@ -162,13 +162,21 @@ class SubscriptionTestMixin(object):
         """
         add a (test) subscription for company
         """
-        CurrentSubscription.objects.create(
-            customer=company.get_customer(),
+        n = now()
+        customer = company.get_customer()
+
+        try:
+            customer.current_subscription.delete()
+        except CurrentSubscription.DoesNotExist:
+            pass
+
+        CurrentSubscription.objects.get_or_create(
+            customer=customer,
             status=CurrentSubscription.STATUS_ACTIVE,
             plan='test',
-            start=now(),
+            start=n,
             quantity=1,
-            current_period_start=now(),
-            current_period_end=now() + timedelta(days=1),
+            current_period_start=n,
+            current_period_end=n + timedelta(days=1),
             amount=0
         )
