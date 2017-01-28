@@ -167,6 +167,76 @@ class PositionTestCase(TransactionTestCase):
             u"'{}'".format(company.name)
         )
 
+    def test_split_shares_empty_value(self):
+        """
+        share split leaves value, percent unchanged but
+        increases share count per shareholder
+        """
+        # test data
+        company = CompanyGenerator().generate(share_count=1000)
+        OperatorGenerator().generate(company=company)
+        shareholders, security = ComplexShareholderConstellationGenerator()\
+            .generate(company=company)
+        # all positions have not value
+        for position in Position.objects.all():
+            position.value = None
+            position.save()
+
+        data = {
+            'execute_at': datetime.datetime.now(),
+            'dividend': 3,
+            'divisor': 7,
+            'comment': "Some random comment",
+            'security': security,
+        }
+        multiplier = float(data['divisor']) / float(data['dividend'])
+        company_share_count = company.share_count
+
+        # record initial shareholder asset status
+        assets = {}
+        for shareholder in shareholders:
+            assets.update({
+                shareholder.pk: {
+                    'count': shareholder.share_count(),
+                    'value': shareholder.share_value(),
+                    'percent': shareholder.share_percent()
+                }
+            })
+
+        # run
+        company.split_shares(data)
+
+        # asserts by checking overall shareholder situation
+        # means each shareholder should have now more shares but some
+        # overall stock value
+
+        for shareholder in shareholders:
+            self.assertEqual(
+                shareholder.share_count(),
+                round(assets[shareholder.pk]['count'] * multiplier)
+            )
+            self.assertEqual(
+                round(shareholder.share_value()),
+                assets[shareholder.pk]['value']
+            )
+            self.assertEqual(
+                round(float(shareholder.share_percent()), 2),
+                float(assets[shareholder.pk]['percent'])
+            )
+
+        self.assertEqual(
+            company.share_count,
+            round(company_share_count * multiplier))
+
+        self.assertEquals(len(mail.outbox), 1)
+        self.assertEquals(
+            mail.outbox[0].subject,
+            u"Ihre Liste gespaltener Aktienanrechte f\xfcr das Unternehmen "
+            u"'{}'".format(company.name)
+        )
+        for position in Position.objects.all():
+            self.assertIsNone(position.value)
+
     def test_split_shares_in_past(self):
         """
         we are splitting shares at some point in the past

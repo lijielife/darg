@@ -271,8 +271,8 @@ class Company(models.Model):
         # create return transactions to return old assets to company
         # create transaction to hand out new assets to shareholders with
         # new count
-        value = float(company_shareholder.last_traded_share_price(
-            date=execute_at, security=security))
+        value = company_shareholder.last_traded_share_price(
+            date=execute_at, security=security)
         partials = {}
         for shareholder in shareholders:
             count = shareholder.share_count(
@@ -290,9 +290,12 @@ class Company(models.Model):
                                  security, execute_at.date(),
                                  int(dividend), int(divisor)),
             }
+            if value:
+                kwargs1.update({'value': float(value)})
             if shareholder.pk == company_shareholder.pk:
                 kwargs1.update(dict(buyer=None, count=self.share_count,
                                     value=shareholder.buyer.first().value))
+
             p = Position.objects.create(**kwargs1)
             logger.info('Split: share returned {}'.format(p))
 
@@ -301,7 +304,6 @@ class Company(models.Model):
                 'buyer': shareholder,
                 'seller': company_shareholder,
                 'count': count2,
-                'value': value / divisor * dividend,
                 'security': security,
                 'bought_at': execute_at,
                 'is_split': True,
@@ -310,6 +312,8 @@ class Company(models.Model):
                                  security, execute_at.date(),
                                  int(dividend), int(divisor)),
             }
+            if value:
+                kwargs2.update({'value': float(value) / divisor * dividend})
             if shareholder.pk == company_shareholder.pk:
                 part, count2 = math.modf(
                     self.share_count /
@@ -775,12 +779,12 @@ class Shareholder(models.Model):
         returns percentage of the users voting rights compared to total voting
         rights existing
         """
-        if self.is_company_shareholder() or not self.company.get_total_votes_floating():
+        if (self.is_company_shareholder() or
+                not self.company.get_total_votes_floating()):
             return float(0.0)
 
         return (self.vote_count(date) /
                 float(self.company.get_total_votes_floating()))
-
 
 
 class Operator(models.Model):
