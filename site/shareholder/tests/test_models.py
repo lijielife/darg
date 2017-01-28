@@ -29,6 +29,21 @@ logger = logging.getLogger(__name__)
 # --- MODEL TESTS
 class CompanyTestCase(TestCase):
 
+    def setUp(self):
+        self.company = CompanyGenerator().generate(share_count=10, vote_ratio=2)
+        self.security = SecurityGenerator().generate(count=10, face_value=100,
+                                                     company=self.company)
+
+        self.shareholder1 = ShareholderGenerator().generate(
+            company=self.company)
+        self.shareholder2 = ShareholderGenerator().generate(
+            company=self.company)
+        PositionGenerator().generate(seller=None, buyer=self.shareholder1,
+                                     security=self.security, count=10)
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=self.shareholder2,
+                                     security=self.security, count=2)
+
     def test_text_repr(self):
 
         optiontransaction, shs = \
@@ -70,21 +85,18 @@ class CompanyTestCase(TestCase):
                          [2222, u'3000-4011', u'1000-2000'])
 
     def test_get_total_votes(self):
-        self.company = CompanyGenerator().generate(share_count=10, vote_ratio=2)
-        self.security = SecurityGenerator().generate(count=10, face_value=100,
-                                                     company=self.company)
+        """
+        how many votes does a company have?
+        """
 
-        self.shareholder1 = ShareholderGenerator().generate(
-            company=self.company)
-        self.shareholder2 = ShareholderGenerator().generate(
-            company=self.company)
-        PositionGenerator().generate(seller=None, buyer=self.shareholder1,
-                                     security=self.security, count=10)
-        PositionGenerator().generate(seller=self.shareholder1,
-                                     buyer=self.shareholder2,
-                                     security=self.security, count=2)
-
+        # should be 500
         self.assertEqual(self.company.get_total_votes(), 10*100/2)
+
+    def test_get_total_votes_floating(self):
+        """
+        how many votes are owned by shareholders outside company
+        """
+        self.assertEqual(self.company.get_total_votes_floating(), 2*100/2)
 
 
 class CountryTestCase(TestCase):
@@ -770,12 +782,29 @@ class ShareholderTestCase(TestCase):
             [2])
 
     def test_vote_count(self):
-        self.assertEqual(self.shareholder1.vote_count(), 400)
+        self.assertEqual(self.shareholder1.vote_count(), 400)  # corps sh
         self.assertEqual(self.shareholder2.vote_count(), 100)
 
     def test_vote_percent(self):
         self.assertEqual(self.shareholder1.vote_percent(), 0.0)
         self.assertEqual(self.shareholder2.vote_percent(), 1)
+
+        shareholder3 = ShareholderGenerator().generate(
+            company=self.company)
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=shareholder3,
+                                     security=self.security, count=2)
+        self.assertEqual(self.shareholder2.vote_percent(), 0.5)
+        self.assertEqual(shareholder3.vote_percent(), 0.5)
+
+        shareholder4 = ShareholderGenerator().generate(
+            company=self.company)
+        PositionGenerator().generate(seller=self.shareholder2,
+                                     buyer=shareholder4,
+                                     security=self.security, count=1)
+        self.assertEqual(self.shareholder2.vote_percent(), 0.25)
+        self.assertEqual(shareholder3.vote_percent(), 0.5)
+        self.assertEqual(shareholder4.vote_percent(), 0.25)
 
 
 class SecurityTestCase(TestCase):

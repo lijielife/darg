@@ -767,6 +767,7 @@ class Shareholder(models.Model):
         """
         votes = 0
         ratio = self.company.vote_ratio or 1
+
         for security in self.company.security_set.all():
             face_value = security.face_value or 1
             votes += (self.share_count(security=security, date=date) *

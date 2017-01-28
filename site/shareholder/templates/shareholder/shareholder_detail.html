@@ -192,7 +192,8 @@
     </tr>
     <tr>
       <td>{% trans "Voting rights total count" %}:</td>
-      <td>{{ shareholder.vote_count }}</td>
+      {# company shareholder does not have voting rights #}
+      <td>{% if not shareholder.is_company_shareholder %}{{ shareholder.vote_count }}{% else %}0{% endif %}</td>
     </tr>
      <tr>
       <td>{% trans "Voting rights percent" %}:</td>
