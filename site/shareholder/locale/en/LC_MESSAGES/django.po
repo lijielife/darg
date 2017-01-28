@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-25 13:07+0000\n"
+"POT-Creation-Date: 2017-01-28 07:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -94,138 +94,138 @@ msgid ""
 "Your Share Register Team"
 msgstr ""
 
-#: shareholder/models.py:278
+#: shareholder/models.py:288
 msgid "Share split of {} on {} with ratio {}:{}. Return of old shares."
 msgstr ""
 
-#: shareholder/models.py:298
+#: shareholder/models.py:308
 msgid "Share split of {} on {} with ratio {}:{}. Provisioning of new shares."
 msgstr ""
 
-#: shareholder/models.py:333
+#: shareholder/models.py:343
 msgid "Human Being"
 msgstr ""
 
-#: shareholder/models.py:334 shareholder/tests/test_functional.py:145
+#: shareholder/models.py:344 shareholder/tests/test_functional.py:145
 msgid "Corporate"
 msgstr ""
 
-#: shareholder/models.py:356
+#: shareholder/models.py:366
 msgid "legal type of the user"
 msgstr ""
 
-#: shareholder/models.py:375
+#: shareholder/models.py:385
 msgid "user with legal type company must have company name set"
 msgstr ""
 
-#: shareholder/models.py:379
+#: shareholder/models.py:389
 msgid "user company must have legal type set to company"
 msgstr ""
 
-#: shareholder/models.py:389
+#: shareholder/models.py:399
 msgid "how should the shareholder be approached by the corp"
 msgstr ""
 
-#: shareholder/models.py:536
+#: shareholder/models.py:546
 msgid "Missing all data required for #GAFI."
 msgstr ""
 
-#: shareholder/models.py:543
+#: shareholder/models.py:553
 msgid "Shareholder first name, last name or company name missing."
 msgstr ""
 
-#: shareholder/models.py:547
+#: shareholder/models.py:557
 msgid "Shareholder birthday missing."
 msgstr ""
 
-#: shareholder/models.py:551
+#: shareholder/models.py:561
 msgid "Shareholder origin/country missing."
 msgstr ""
 
-#: shareholder/models.py:560
+#: shareholder/models.py:570
 msgid "Shareholder address or address details missing."
 msgstr ""
 
-#: shareholder/models.py:789
+#: shareholder/models.py:799
 msgid "Preferred Stock"
 msgstr ""
 
-#: shareholder/models.py:790
+#: shareholder/models.py:800
 msgid "Common Stock"
 msgstr ""
 
-#: shareholder/models.py:791
+#: shareholder/models.py:801
 msgid "Registered Shares"
 msgstr ""
 
-#: shareholder/models.py:798
+#: shareholder/models.py:808
 msgid "Nominal value of this asset"
 msgstr ""
 
-#: shareholder/models.py:804 shareholder/models.py:877
-#: shareholder/models.py:947 shareholder/models.py:998
+#: shareholder/models.py:814 shareholder/models.py:887
+#: shareholder/models.py:959 shareholder/models.py:1010
 msgid "JSON list of segments of ids for securities. can be 1, 2, 3, 4-10"
 msgstr ""
 
-#: shareholder/models.py:807
+#: shareholder/models.py:817
 msgid "public security id aka Valor, WKN, CUSIP: http://bit.ly/2ieXwuK"
 msgstr ""
 
-#: shareholder/models.py:812
+#: shareholder/models.py:822
 msgid ""
 "App needs to track IDs of shares. WARNING: update initial transaction with "
 "segments on enabling."
 msgstr ""
 
-#: shareholder/models.py:817
+#: shareholder/models.py:827
 msgid "{} ({} CHF)"
 msgstr ""
 
-#: shareholder/models.py:866
+#: shareholder/models.py:876
 msgid "Share Count transfered or created"
 msgstr ""
 
-#: shareholder/models.py:870
+#: shareholder/models.py:880
 msgid "Nominal value or payed price for the transaction"
 msgstr ""
 
-#: shareholder/models.py:874
+#: shareholder/models.py:884
 msgid "Position is part of a split transaction"
 msgstr ""
 
-#: shareholder/models.py:880 shareholder/models.py:1001
+#: shareholder/models.py:890 shareholder/models.py:1013
 msgid "Securities are purchase type (for myself, etc.)"
 msgstr ""
 
-#: shareholder/models.py:883 shareholder/models.py:1004
+#: shareholder/models.py:893 shareholder/models.py:1016
 msgid "aka Skontro (read http://bit.ly/2iJquEl)"
 msgstr ""
 
-#: shareholder/models.py:886 shareholder/models.py:1007
+#: shareholder/models.py:896 shareholder/models.py:1019
 msgid "What kind of depot is this position stored within"
 msgstr ""
 
-#: shareholder/models.py:915
+#: shareholder/models.py:927
 msgid "Capital Increase"
 msgstr ""
 
-#: shareholder/models.py:917
+#: shareholder/models.py:929
 msgid "Part of Split"
 msgstr ""
 
-#: shareholder/models.py:919
+#: shareholder/models.py:931
 msgid "Share issue"
 msgstr ""
 
-#: shareholder/models.py:920
+#: shareholder/models.py:932
 msgid "Regular Ownership change"
 msgstr ""
 
-#: shareholder/models.py:941
+#: shareholder/models.py:953
 msgid "Number of shares approved"
 msgstr ""
 
-#: shareholder/models.py:996
+#: shareholder/models.py:1008
 msgid "id of the issued certificate"
 msgstr ""
 
