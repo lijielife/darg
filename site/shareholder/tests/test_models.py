@@ -43,6 +43,12 @@ class CompanyTestCase(TestCase):
         PositionGenerator().generate(seller=self.shareholder1,
                                      buyer=self.shareholder2,
                                      security=self.security, count=2)
+        optionplan = OptionPlanGenerator().generate(
+            company=self.company, security=self.security)
+        OptionTransactionGenerator().generate(seller=self.shareholder1,
+                                              buyer=self.shareholder2,
+                                              security=self.security, count=2,
+                                              option_plan=optionplan)
 
     def test_text_repr(self):
 

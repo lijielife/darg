@@ -11,13 +11,12 @@ from django.db import DataError
 from django.db.models import Sum
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
-from tagging.models import Tag
 
 from project.generators import (DEFAULT_TEST_DATA, OperatorGenerator,)
 from shareholder.models import (DEPOT_TYPES, REGISTRATION_TYPES, Company,
                                 Country, OptionPlan, OptionTransaction,
                                 Position, Security, Shareholder, UserProfile,
-                                DISPO_SHAREHOLDER_TAG)
+                                )
 from utils.geo import COUNTRY_MAP, _get_language_iso_code
 
 SISWARE_CSV_HEADER = [
@@ -216,7 +215,7 @@ class SisWareImportBackend(BaseImportBackend):
         # first before summarizing
         # create dispo shares (non registered shares placeholder)
         self.dispo_shareholder = self._get_or_create_dispo_shareholder()
-        Tag.objects.add_tag(self.dispo_shareholder, DISPO_SHAREHOLDER_TAG)
+        self.dispo_shareholder.set_dispo_shareholder()
         self._get_or_create_dispo_shares()
 
         # update security.count value
