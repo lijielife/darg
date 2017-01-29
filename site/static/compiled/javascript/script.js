@@ -228,6 +228,7 @@
         }).then(function() {
           return $scope.errors = null;
         }, function(rejection) {
+          $scope.company.founded_at = new Date($scope.company.founded_at);
           $scope.errors = rejection.data;
           return Raven.captureMessage('form error: ' + rejection.statusText, {
             level: 'warning',
