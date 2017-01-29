@@ -377,16 +377,6 @@ class SisWareImportBackend(BaseImportBackend):
         self._validate_country_names_mappable()
         self._validate_nationality_names_mappable()
 
-# not used
-#     def _validate_initial_positions(self):
-#         """
-#         we need to have the initial position for capital creation already
-#         entered manually
-#         """
-#         if not self.company.security_set.first().position_set.first():
-#             raise ValueError('Initial Position missing. Must be created'
-#                              'manually for any security')
-
     def _validate_file_structure(self, filename):
         """
         validate if file can be used
