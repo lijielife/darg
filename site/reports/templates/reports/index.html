@@ -81,11 +81,11 @@
 		  {% endverbatim %}
 		</li>
         <li>
-		  <a href="{% url "contacts_csv" company_id=operator.company.id %}" title="{% trans "Address data of all shareholders" %}">
-		    {% trans "Address data of all shareholders" %}
-		  </a>
-		  <span class="el-icon-download-alt"></span>
-		</li>
+          {% trans "Address data of all shareholders" %}
+          <a href="{% url "contacts_csv" company_id=operator.company.id %}" title="{% trans "Address data of all shareholders" %}">
+            <span class="el-icon-download-alt"></span>
+          </a>
+        </li>
         <!--<li><a href="" title="">{% trans "Printed Certificates" %}</a></li>-->
         <!--<li><a href="" title="">{% trans "Vested Shares" %}</a></li>-->
         <!-- <li><a href="" title="">{% trans "Depot Statement per Shareholder" %}</a></li> -->
