@@ -1,11 +1,9 @@
 import csv
-import datetime
 import logging
 import time
 
 import dateutil.parser
 
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -26,7 +24,6 @@ from project.tasks import (send_initial_password_mail, send_captable_pdf,
 from services.instapage import InstapageSubmission as Instapage
 from shareholder.models import (Company, Operator, Position, OptionTransaction,
                                 Security)
-from utils.pdf import render_to_pdf_response
 
 logger = logging.getLogger(__name__)
 
@@ -55,10 +52,12 @@ def _get_contacts(company):
             shareholder.user.userprofile.c_o,
             shareholder.user.userprofile.city,
             shareholder.user.userprofile.postal_code,
-            shareholder.user.userprofile.country.name if shareholder.user.userprofile.country else  u'',
+            (shareholder.user.userprofile.country.name
+                if shareholder.user.userprofile.country else u''),
             shareholder.user.userprofile.pobox,
             shareholder.get_mailing_type_display(),
-            shareholder.user.userprofile.nationality.name if shareholder.user.userprofile.nationality else u''
+            (shareholder.user.userprofile.nationality.name
+                if shareholder.user.userprofile.nationality else u'')
         ]
         rows.append(row)
 
@@ -75,10 +74,12 @@ def _get_contacts(company):
             shareholder.user.userprofile.c_o,
             shareholder.user.userprofile.city,
             shareholder.user.userprofile.postal_code,
-            shareholder.user.userprofile.country.name if shareholder.user.userprofile.country else  u'',
+            (shareholder.user.userprofile.country.name
+                if shareholder.user.userprofile.country else u''),
             shareholder.user.userprofile.pobox,
             shareholder.get_mailing_type_display(),
-            shareholder.user.userprofile.nationality.name if shareholder.user.userprofile.nationality else u''
+            (shareholder.user.userprofile.nationality.name
+                if shareholder.user.userprofile.nationality else u'')
         ]
         rows.append(row)
 
@@ -121,7 +122,9 @@ def _get_transactions(from_date, to_date, security, company):
         bought_at__range=(from_date, to_date), option_plan__security=security
     ).filter(
         Q(buyer__company=company) | Q(seller__company=company)
-    ).prefetch_related('buyer', 'seller', 'option_plan', 'option_plan__security'):
+    ).prefetch_related(
+        'buyer', 'seller', 'option_plan', 'option_plan__security'
+    ):
         row = [
             optiontransaction.bought_at,
             optiontransaction.buyer.get_full_name(),
@@ -299,6 +302,7 @@ def captable_csv(request, company_id):
                              'by email to you'))
 
     return redirect(reverse('reports'))
+
 
 @login_required
 def captable_pdf(request, company_id):
