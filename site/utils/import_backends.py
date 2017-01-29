@@ -11,12 +11,13 @@ from django.db import DataError
 from django.db.models import Sum
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
+from tagging.models import Tag
 
-from project.generators import (DEFAULT_TEST_DATA, OperatorGenerator,
-                                PositionGenerator)
+from project.generators import (DEFAULT_TEST_DATA, OperatorGenerator,)
 from shareholder.models import (DEPOT_TYPES, REGISTRATION_TYPES, Company,
                                 Country, OptionPlan, OptionTransaction,
-                                Position, Security, Shareholder, UserProfile)
+                                Position, Security, Shareholder, UserProfile,
+                                DISPO_SHAREHOLDER_TAG)
 from utils.geo import COUNTRY_MAP, _get_language_iso_code
 
 SISWARE_CSV_HEADER = [
@@ -198,13 +199,62 @@ class SisWareImportBackend(BaseImportBackend):
         check data consistency, company data, total sums to ensure the import is
         fully valid
         """
+        # now that we have all certificates loaded, add the initial transaction
+        # for options
+        for op in self.company.optionplan_set.all():
+            count = -self.company_shareholder.options_count(
+                security=op.security)
+            if count:
+                OptionTransaction.objects.get_or_create(
+                    bought_at=datetime.datetime(2013, 9, 21),
+                    option_plan=op,
+                    count=count,
+                    buyer=self.company_shareholder,
+                    depot_type='0'
+                    )
+
+        # first before summarizing
+        # create dispo shares (non registered shares placeholder)
+        self.dispo_shareholder = self._get_or_create_dispo_shareholder()
+        Tag.objects.add_tag(self.dispo_shareholder, DISPO_SHAREHOLDER_TAG)
+        self._get_or_create_dispo_shares()
+
+        # update security.count value
         for security in self.company.security_set.all():
             security.count = security.calculate_count()
             security.save()
 
+        # update company.share_count and provisioned capital
         self.company.share_count = self.company.security_set.all().aggregate(
             Sum('count'))['count__sum']
+        self.company.provisioned_capital = self.company.get_total_capital()
         self.company.save()
+
+    def _get_or_create_dispo_shares(self):
+        """
+        create positions to have dispo shares properly listed
+        """
+        for security in self.company.security_set.all():
+            count = security.calculate_dispo_share_count()
+            # during import the corp shs owned shares are imported as Position
+            # objects too. but this is invalid. We need to subscract this from
+            # the dispo share count and remove the Positions. use `get()` as it
+            # should only be one.
+            pos = Position.objects.filter(
+                buyer=self.company_shareholder, seller=self.company_shareholder,
+                security=security)
+            if pos.exists():
+                pos = pos.get()
+                count = count - pos.count
+                pos.delete()
+
+            if not count:  # skip if there are none
+                continue
+            self._get_or_create_position(
+                datetime.datetime.now().date().isoformat(),
+                self.dispo_shareholder, count, '0,00', None, '2',
+                '', 'Gesellschaftsdepot', security
+            )
 
     def _get_or_create_shareholder(self, shareholder_number, user,
                                    mailing_type):
@@ -221,6 +271,14 @@ class SisWareImportBackend(BaseImportBackend):
                       'mailing_type': mailing_type
                       }
         )
+        return shareholder
+
+    def _get_or_create_dispo_shareholder(self):
+        user = self._get_or_create_user(
+            '9999999999', '', _('Disposhareholder'), 'Juristische Person',
+            '', '', '', '', '', '', '', '', '', '', '', '', '', '')
+        shareholder = self._get_or_create_shareholder(
+            '9999999999', user, 'Unzustellbar')
         return shareholder
 
     def _get_or_create_security(self, face_value, cusip=None):

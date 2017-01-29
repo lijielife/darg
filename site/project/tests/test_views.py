@@ -6,6 +6,7 @@ import datetime
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.core import mail
 from django.test import TestCase
 from django.test.client import Client
 from django.utils.translation import ugettext as _
@@ -210,6 +211,14 @@ class TrackingTestCase(TestCase):
 
 class DownloadTestCase(TestCase):
 
+    def _get_attachment_content(self, idx):
+        """ from email with idx inside mail.outbox, get the first attachments
+        string content
+        """
+        msg = mail.outbox[idx]
+        attn = msg.attachments[0]
+        return attn[0], attn[1]
+
     def setUp(self):
         self.client = Client()
 
@@ -252,14 +261,15 @@ class DownloadTestCase(TestCase):
         is_loggedin = self.client.login(username=user.username,
                                         password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(is_loggedin)
-        with self.assertNumQueries(21):
+        with self.assertNumQueries(34):
             response = self.client.get(reverse('captable_csv',
                                        kwargs={"company_id": company.id}))
 
         # assert response code
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
         # assert proper csv
-        lines = response.content.split('\r\n')
+        f_, content = self._get_attachment_content(1)
+        lines = content.split('\r\n')
         lines.pop()  # remove last element based on final '\r\n'
         for row in lines:
             self.assertEqual(row.count(','), 6)
@@ -315,7 +325,7 @@ class DownloadTestCase(TestCase):
                                    kwargs={"company_id": company.id}))
 
         # assert response code
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
         # assert proper csv
         lines = response.content.split('\r\n')
         lines.pop()  # remove last element based on final '\r\n'
@@ -386,15 +396,16 @@ class DownloadTestCase(TestCase):
         is_loggedin = self.client.login(username=user.username,
                                         password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(is_loggedin)
-        with self.assertNumQueries(10):
+        with self.assertNumQueries(12):
             response = self.client.get(
                 reverse('captable_pdf', kwargs={"company_id": company.id}))
 
         # assert response code
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
         # assert proper csv
-        self.assertTrue(response.content.startswith('%PDF-1.4\r\n'))
-        self.assertTrue(response.content.endswith('EOF\r\n'))
+        f_, content = self._get_attachment_content(1)
+        self.assertTrue(content.startswith('%PDF-1.4\r\n'))
+        self.assertTrue(content.endswith('EOF\r\n'))
 
     def test_pdf_download_with_number_segments(self):
         """ test download of captable pdf """
@@ -414,10 +425,11 @@ class DownloadTestCase(TestCase):
                                            kwargs={"company_id": company.id}))
 
         # assert response code
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
         # assert proper csv
-        self.assertTrue(response.content.startswith('%PDF-1.4\r\n'))
-        self.assertTrue(response.content.endswith('EOF\r\n'))
+        f_, content = self._get_attachment_content(1)
+        self.assertTrue(content.startswith('%PDF-1.4\r\n'))
+        self.assertTrue(content.endswith('EOF\r\n'))
 
     def test_pdf_download_with_missing_operator(self):
         """ test download of captable pdf """
@@ -465,7 +477,7 @@ class DownloadTestCase(TestCase):
         ComplexShareholderConstellationGenerator().generate()
 
         company = Company.objects.last()
-        with self.assertNumQueries(29):
+        with self.assertNumQueries(44):
             res = _get_contacts(company)
         self.assertEqual(len(res), 11)
         self.assertEqual(len(res[0]), 15)
