@@ -37,7 +37,7 @@ SISWARE_CSV_HEADER = [
 ]
 
 # face_value:count structure
-SECURITIES = {'10': 1000, '100': 7900, '500': 9539}
+SECURITIES = {'10': 1000, '100': 7900, '500': 8539}
 
 
 logger = logging.getLogger(__name__)
