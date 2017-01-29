@@ -122,12 +122,15 @@ class SisWareImportBackend(BaseImportBackend):
         for face_value, count in SECURITIES.iteritems():
             s = self._get_or_create_security(face_value=face_value)
             Position.objects.get_or_create(security=s, count=count,
-                                         buyer=self.company_shareholder,
-                                         defaults={
-                                         'bought_at': datetime.datetime(2013, 1, 1),
-                                         'depot_type': '1'
-                                         }
-                                         )
+                                           buyer=self.company_shareholder,
+                                           defaults={
+                                               'bought_at': datetime.datetime(
+                                                   2013, 9, 21),
+                                               'depot_type': '1',
+                                               'registration_type': '1',
+                                               'stock_book_id': '1913,001'
+                                           }
+                                           )
 
         # and a matching operator?
         self.operator = self.company.operator_set.first()
