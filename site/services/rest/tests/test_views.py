@@ -544,7 +544,7 @@ class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
 
         # call with perf check
         # was 55, increased to 95
-        with self.assertLessNumQueries(46):
+        with self.assertLessNumQueries(56):
             response = self.client.post(
                 u'/services/rest/position',
                 data,

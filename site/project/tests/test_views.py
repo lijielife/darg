@@ -12,6 +12,7 @@ from django.test.client import Client
 from django.utils.translation import ugettext as _
 from rest_framework.test import APIClient
 
+from project.tests.mixins import MoreAssertsTestCaseMixin
 from project.generators import (CompanyGenerator, OperatorGenerator,
                                 PositionGenerator, ShareholderGenerator,
                                 TwoInitialSecuritiesGenerator, UserGenerator,
@@ -209,7 +210,7 @@ class TrackingTestCase(TestCase):
         self.assertTrue('Login' in response.content)  # redirect to login
 
 
-class DownloadTestCase(TestCase):
+class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
 
     def _get_attachment_content(self, idx):
         """ from email with idx inside mail.outbox, get the first attachments
@@ -396,7 +397,7 @@ class DownloadTestCase(TestCase):
         is_loggedin = self.client.login(username=user.username,
                                         password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(is_loggedin)
-        with self.assertNumQueries(12):
+        with self.assertLessNumQueries(12):
             response = self.client.get(
                 reverse('captable_pdf', kwargs={"company_id": company.id}))
 

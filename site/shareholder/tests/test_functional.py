@@ -354,7 +354,7 @@ class OptionTransactionDetailFunctionalTestCase(BaseSeleniumTestCase):
                 self.optiontransaction.stock_book_id,
                 self.page.get_field('stock-book-id'))
             self.assertIn(
-                self.optiontransaction.bought_at.strftime('%d.%m.%Y'),
+                self.optiontransaction.bought_at.strftime('%d.%m.%y'),
                 self.page.get_field('bought-at'))
             self.assertIn(
                 self.optiontransaction.certificate_id,
