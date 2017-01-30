@@ -57,6 +57,11 @@ class ShareholderViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        
+        # no company setup yet
+        if not user.operator_set.first():
+          return Shareholder.objects.none()
+        
         company = user.operator_set.first().company
         return Shareholder.objects.filter(company=company)\
             .select_related('company', 'user', 'user__userprofile') \
