@@ -55,7 +55,7 @@ def send_captable_pdf(user_id, company_id):
         }
     )
 
-    filename = u'attachment; filename="{}_captable_{}.pdf"'.format(
+    filename = u'{}_captable_{}.pdf'.format(
         time.strftime("%Y-%m-%d"), company.name)
 
     msg = EmailMessage(
@@ -77,7 +77,7 @@ def send_captable_csv(user_id, company_id):
     user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
     track_numbers_secs = company.security_set.filter(track_numbers=True)
-    filename = u'attachment; filename="{}_captable_{}.csv"'.format(
+    filename = u'{}_captable_{}.csv'.format(
         time.strftime("%Y-%m-%d"), company.name)
 
     csvfile = StringIO.StringIO()
