@@ -1015,9 +1015,9 @@ class Security(models.Model):
         total_shares = self.calculate_count()
         floating_shares = self.company.get_total_share_count_floating(
             security=self)
-        options = self.company.get_total_options(security=self)
+        # options = self.company.get_total_options(security=self)
 
-        return total_shares - floating_shares - options
+        return total_shares - floating_shares
 
     def count_in_segments(self, segments=None):
         """

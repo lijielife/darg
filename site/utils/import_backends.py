@@ -247,7 +247,7 @@ class SisWareImportBackend(BaseImportBackend):
                 count = count - pos.count
                 pos.delete()
 
-            if not count:  # skip if there are none
+            if count < 1:  # skip if there are none
                 continue
             self._get_or_create_position(
                 datetime.datetime.now().date().isoformat(),
