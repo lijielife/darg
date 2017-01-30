@@ -212,11 +212,12 @@ class TrackingTestCase(TestCase):
 
 class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
 
-    def _get_attachment_content(self, idx):
+    def _get_attachment_content(self, idx=None):
         """ from email with idx inside mail.outbox, get the first attachments
         string content
         """
-        msg = mail.outbox[idx]
+        msgs = [msg for msg in mail.outbox if msg.attachments]
+        msg = msgs[idx or 0]
         attn = msg.attachments[0]
         return attn[0], attn[1]
 
@@ -269,7 +270,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
         # assert response code
         self.assertEqual(response.status_code, 302)
         # assert proper csv
-        f_, content = self._get_attachment_content(1)
+        f_, content = self._get_attachment_content()
         lines = content.split('\r\n')
         lines.pop()  # remove last element based on final '\r\n'
         for row in lines:
@@ -404,7 +405,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
         # assert response code
         self.assertEqual(response.status_code, 302)
         # assert proper csv
-        f_, content = self._get_attachment_content(1)
+        f_, content = self._get_attachment_content()
         self.assertTrue(content.startswith('%PDF-1.4\r\n'))
         self.assertTrue(content.endswith('EOF\r\n'))
 
@@ -428,7 +429,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
         # assert response code
         self.assertEqual(response.status_code, 302)
         # assert proper csv
-        f_, content = self._get_attachment_content(1)
+        f_, content = self._get_attachment_content()
         self.assertTrue(content.startswith('%PDF-1.4\r\n'))
         self.assertTrue(content.endswith('EOF\r\n'))
 
