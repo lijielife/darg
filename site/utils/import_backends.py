@@ -367,7 +367,8 @@ class SisWareImportBackend(BaseImportBackend):
         we have no email to identify duplicates and merge then. hence we are
         using the shareholder id to create new users for each shareholder id
         """
-        username = u"{}-{}".format(slugify(self.company.name), shareholder_id)
+        username = u"{}-{}".format(
+            slugify(self.company.name[:20]), shareholder_id)
         try:
             user, c_ = User.objects.get_or_create(
                 username=username[:29],
