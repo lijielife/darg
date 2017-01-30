@@ -204,26 +204,31 @@
   <h2>{% trans "Owned Stock" %}</h2>
   <p>{% trans "Count Shares Total" %}: {{ shareholder.share_count }}</p>
     <p>{% trans "% Ownership" %}: {{ shareholder.share_percent }}% </p>
-    <div class="table-responsive">
-      <table class="stock table table-striped">
-        <thead><tr>
-          <th>{% trans "security" %}</th>
-          <th>{% trans "cusip" %}</th>
-          <th>{% trans "shares owned" %}</th>
-          <th>{% trans "options owned" %}</th>
-          {% if security.track_numbers %}<th>{% trans "share segments" %}</th>{% endif %}
-        </tr></thead>
-        {% for security in securities %}
-        <tr class="security">
-          <td class="name">{{ security }}</td>
-          <td class="cusip">{% if security.cusip %}{{ security.cusip }}{% endif %}</td>
-  	      <td class="count">{{ security.count }}</td>
-  	      <td class="count">{{ security.options_count }}</td>
-  	      {% if security.segments %}<td class="number-segments">{{ security.segments }}</td>{% endif %}
-  	    </tr>
-        {% endfor %}
-      </table>
+
+  <!-- TABLE -->
+  <div class="table stock">
+    <div class="tr th">
+      <div class="td">{% trans "security" %}</div>
+      <div class="td">{% trans "cusip" %}</div>
+      <div class="td">{% trans "shares owned" %}</div>
+      <div class="td">{% trans "options owned" %}</div>
+      {% if security.track_numbers %}
+        <div class="td">{% trans "share segments" %}</div>
+      {% endif %}
     </div>
+    {% for security in securities %}
+    <div class="tr security">
+      <div class="td name">{{ security }}</div>
+      <div class="td cusip">{% if security.cusip %}{{ security.cusip }}{% endif %}</div>
+      <div class="td count">{{ security.count }}</div>
+      <div class="td count">{{ security.options_count }}</div>
+      {% if security.segments %}
+        <div class="td number-segments">{{ security.segments }}</div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div><!-- /table-->
+
   <!-- <a class="btn btn-focus btn-danger" title="{% trans "Delete shareholder" %}" >{% trans "Delete shareholder" %}</a> -->
 
 </div>

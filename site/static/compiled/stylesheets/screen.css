@@ -3295,6 +3295,10 @@ nav.navbar .navbar-text {
   width: 0;
 }
 
+.split-header {
+  word-wrap: break-word;
+}
+
 div #add_shareholder {
   margin-bottom: 1em;
 }
