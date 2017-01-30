@@ -92,6 +92,7 @@ app.controller 'CompanyController', ['$scope', '$http', 'Company', 'Country', 'O
             # Clear any errors
             $scope.errors = null
         , (rejection) ->
+            $scope.company.founded_at = new Date($scope.company.founded_at)
             $scope.errors = rejection.data
             Raven.captureMessage('form error: ' + rejection.statusText, {
                 level: 'warning',

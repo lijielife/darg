@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-04 12:33+0000\n"
+"POT-Creation-Date: 2017-01-29 22:29+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,6 +22,7 @@ msgid "To add a new operator enter the email of a registered user"
 msgstr ""
 
 #: company/templates/_add_operator_form.html:15
+#: reports/templates/reports/index.html:76
 msgid "Cancel"
 msgstr ""
 
@@ -62,45 +63,128 @@ msgid "Provisioned Capital (Liberiertes Kapital)"
 msgstr ""
 
 #: company/templates/company.html:107
+msgid "CHF for one vote based on face value of securities"
+msgstr ""
+
+#: company/templates/company.html:119
+msgid "Total Vote Count"
+msgstr ""
+
+#: company/templates/company.html:128
+msgid "Total Vote Count Floating"
+msgstr ""
+
+#: company/templates/company.html:137
 msgid "Company Headquarter Country"
 msgstr ""
 
-#: company/templates/company.html:120
+#: company/templates/company.html:150
 msgid "Securities"
 msgstr ""
 
-#: company/templates/company.html:128 company/tests/test_views.py:54
+#: company/templates/company.html:158 company/tests/test_views.py:54
 msgid "tracking security numbers for owners enabled. segments:"
 msgstr ""
 
-#: company/templates/company.html:139
+#: company/templates/company.html:169
 msgid "Please contact us at our"
 msgstr ""
 
-#: company/templates/company.html:141
+#: company/templates/company.html:171
 msgid ""
 "for getting more security types (common stock, preferred stock, numbered "
 "shares) added"
 msgstr ""
 
-#: company/templates/company.html:148
+#: company/templates/company.html:178
 msgid "Administrators"
 msgstr ""
 
-#: company/templates/company.html:149
+#: company/templates/company.html:179
 msgid "add operator"
 msgstr ""
 
-#: company/templates/company.html:178
+#: company/templates/company.html:208
 msgid "Option Plans"
 msgstr ""
 
-#: company/templates/company.html:182
+#: company/templates/company.html:212
 msgid "Options Plan Name"
 msgstr ""
 
-#: company/templates/company.html:182
+#: company/templates/company.html:212
 msgid "Edit Option Plan"
+msgstr ""
+
+#: reports/templates/reports/index.html:6 templates/menu.html:39
+msgid "Reports"
+msgstr ""
+
+#: reports/templates/reports/index.html:17
+msgid "Reports and Downloads for "
+msgstr ""
+
+#: reports/templates/reports/index.html:18
+msgid ""
+"Use CSV for Excel like Downloads. Follow this <a href='https://goo.gl/"
+"aQ2gVx'>guide for instructions</a>."
+msgstr ""
+
+#: reports/templates/reports/index.html:22
+msgid "Download active Shareholders as"
+msgstr ""
+
+#: reports/templates/reports/index.html:23
+msgid "Download active Shareholders as PDF"
+msgstr ""
+
+#: reports/templates/reports/index.html:24
+msgid "PDF"
+msgstr ""
+
+#: reports/templates/reports/index.html:26
+msgid "Download active Shareholders as CSV"
+msgstr ""
+
+#: reports/templates/reports/index.html:27
+msgid "CSV"
+msgstr ""
+
+#: reports/templates/reports/index.html:32
+msgid "Transactions per security in period"
+msgstr ""
+
+#: reports/templates/reports/index.html:40
+msgid "from"
+msgstr ""
+
+#: reports/templates/reports/index.html:56
+msgid "to"
+msgstr ""
+
+#: reports/templates/reports/index.html:73
+msgid "Security"
+msgstr ""
+
+#: reports/templates/reports/index.html:77
+msgid "Download"
+msgstr ""
+
+#: reports/templates/reports/index.html:84
+#: reports/templates/reports/index.html:85
+msgid "Address data of all shareholders"
+msgstr ""
+
+#: reports/templates/reports/index.html:89
+msgid "Printed Certificates"
+msgstr ""
+
+#: reports/templates/reports/index.html:90
+msgid "Vested Shares"
+msgstr ""
+
+#: reports/templates/reports/index.html:91
+msgid "Depot Statement per Shareholder"
 msgstr ""
 
 #: templates/_messages.html:7
@@ -119,54 +203,54 @@ msgstr ""
 msgid "our blog"
 msgstr ""
 
-#: templates/menu.html:29
+#: templates/menu.html:30
 msgid "Start"
 msgstr ""
 
-#: templates/menu.html:32
+#: templates/menu.html:33
 msgid "Positions"
 msgstr ""
 
-#: templates/menu.html:35
+#: templates/menu.html:36
 msgid "Options"
 msgstr ""
 
-#: templates/menu.html:46
+#: templates/menu.html:50
 msgid "Logged in as"
 msgstr ""
 
-#: templates/menu.html:57
+#: templates/menu.html:61
 msgid "Admin"
 msgstr ""
 
-#: templates/menu.html:60
+#: templates/menu.html:64
 msgid "I18N"
 msgstr ""
 
-#: templates/menu.html:64 templates/registration/password_reset_form.html:4
+#: templates/menu.html:68 templates/registration/password_reset_form.html:4
 #: templates/registration/password_reset_form.html:14
 #: templates/registration/password_reset_form.html:33
 msgid "Reset password"
 msgstr ""
 
-#: templates/menu.html:65 templates/registration/password_change_form.html:4
+#: templates/menu.html:69 templates/registration/password_change_form.html:4
 #: templates/registration/password_change_form.html:12
 msgid "Change password"
 msgstr ""
 
-#: templates/menu.html:68
+#: templates/menu.html:72
 msgid "Security Settings"
 msgstr ""
 
-#: templates/menu.html:70
+#: templates/menu.html:74
 msgid "Logout"
 msgstr ""
 
-#: templates/menu.html:76 templates/two_factor/core/login.html:55
+#: templates/menu.html:80 templates/two_factor/core/login.html:55
 msgid "Register"
 msgstr ""
 
-#: templates/menu.html:79 templates/registration/registration_form.html:26
+#: templates/menu.html:83 templates/registration/registration_form.html:26
 #: templates/two_factor/core/login.html:6
 msgid "Login"
 msgstr ""
@@ -496,4 +580,16 @@ msgstr ""
 
 #: templates/zinnia/skeleton.html:74 templates/zinnia/skeleton.html:75
 msgid "Weblog index"
+msgstr ""
+
+#: utils/geo.py:31
+msgid "German"
+msgstr ""
+
+#: utils/import_backends.py:276
+msgid "Disposhareholder"
+msgstr ""
+
+#: utils/import_backends.py:341
+msgid "Default OptionPlan for {}"
 msgstr ""

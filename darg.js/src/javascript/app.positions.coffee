@@ -8,15 +8,31 @@ app.config ['$translateProvider', ($translateProvider) ->
 
 app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position', 'Split', ($scope, $http, $window, Position, Split) ->
     $scope.positions = []
-    $scope.shareholders = []
     $scope.securities = []
 
     $scope.show_add_position = false
     $scope.show_add_capital = false
     $scope.show_split_data = false
     $scope.show_split = false
+    $scope.show_optional_fields = false
     $scope.newPosition = new Position()
     $scope.newSplit = new Split()
+    $scope.depot_types = [
+        {name: gettext('Sperrdepot'), value: '2'},
+        {name: gettext('Zertifikatsdepot'), value: '0'},
+        {name: gettext('Gesellschaftsdepot'), value: '1'},
+    ]
+
+    # pagination:
+    $scope.next = false
+    $scope.previous = false
+    $scope.total = 0
+    $scope.current = 0
+    $scope.current_range = ''
+
+    # search
+    $scope.search_params = {'query': null, 'ordering': null, 'ordering_reverse': null}
+    $scope.ordering_options = false
 
     $scope.numberSegmentsAvailable = ''
     $scope.hasSecurityWithTrackNumbers = () ->
@@ -27,22 +43,116 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
             return true
     $scope.positionsLoading = true
     $scope.addPositionLoading = false
-    
-    $http.get('/services/rest/position').then (result) ->
-        angular.forEach result.data.results, (item) ->
-            $scope.positions.push item
-        $scope.positionsLoading = false
 
-    $http.get('/services/rest/shareholders').then (result) ->
-        angular.forEach result.data.results, (item) ->
-            if item.user.userprofile.birthday
-                item.user.userprofile.birthday = new Date(item.user.userprofile.birthday)
-            $scope.shareholders.push item
+
+    # --- Dynamic props
+    $scope.$watchCollection 'current', (current)->
+        start = ($scope.current - 1) * 20
+        end = Math.min($scope.current * 20, $scope.total)
+        $scope.current_range = start.toString() + '-' + end.toString()
+ 
+
+    # --- INITIAL
+    $scope.reset_search_params = ->
+        $scope.current = null
+        $scope.previous = null
+        $scope.next = null
+        $scope.positions = []
+        #$scope.search_params.query = null
+
+    $scope.load_all_positions = ->
+        # FIXME - its not company specific
+        $scope.reset_search_params()
+        $scope.search_params.query = null
+        $http.get('/services/rest/position').then (result) ->
+            angular.forEach result.data.results, (item) ->
+                $scope.positions.push item
+            $scope.positionsLoading = false
+            if result.data.next
+                $scope.next = result.data.next
+            if result.data.previous
+                $scope.previous = result.data.previous
+            if result.data.count
+                $scope.total=result.data.count
+            if result.data.current
+                $scope.current=result.data.current
+    $scope.load_all_positions()
 
     $http.get('/services/rest/security').then (result) ->
         angular.forEach result.data.results, (item) ->
             $scope.securities.push item
 
+    # --- PAGINATION
+    $scope.next_page = ->
+        if $scope.next
+            $http.get($scope.next).then (result) ->
+                $scope.reset_search_params()
+                angular.forEach result.data.results, (item) ->
+                    $scope.positions.push item
+                if result.data.next
+                    $scope.next = result.data.next
+                else
+                    $scope.next = false
+                if result.data.previous
+                    $scope.previous = result.data.previous
+                else
+                    $scope.previous = false
+                if result.data.count
+                    $scope.total=result.data.count
+                if result.data.current
+                    $scope.current=result.data.current
+
+    $scope.previous_page = ->
+        if $scope.previous
+            $http.get($scope.previous).then (result) ->
+                $scope.reset_search_params()
+                angular.forEach result.data.results, (item) ->
+                    $scope.positions.push item
+                if result.data.next
+                    $scope.next = result.data.next
+                else
+                    $scope.next = false
+                if result.data.previous
+                    $scope.previous = result.data.previous
+                else
+                    $scope.previous = false
+                if result.data.count
+                    $scope.total=result.data.count
+                if result.data.current
+                    $scope.current=result.data.current
+
+    # --- SEARCH
+    $scope.search_shareholders = (term) ->
+        paramss = {search: term}
+        $http.get('/services/rest/shareholders', {params: paramss}).then (response) ->
+            response.data.results.map (item) ->
+                item
+
+    $scope.search = ->
+        # FIXME - its not company specific
+        # respect ordering and search
+        params = {}
+        if $scope.search_params.query
+            params.search = $scope.search_params.query
+        if $scope.search_params.ordering
+            params.ordering = $scope.search_params.ordering
+        paramss = $.param(params)
+
+        $http.get('/services/rest/position', {params: params}).then (result) ->
+            $scope.reset_search_params()
+            angular.forEach result.data.results, (item) ->
+                $scope.positions.push item
+            if result.data.next
+                $scope.next = result.data.next
+            if result.data.previous
+                $scope.previous = result.data.previous
+            if result.data.count
+                $scope.total=result.data.count
+            if result.data.current
+                $scope.current=result.data.current
+            $scope.search_params.query = params.search
+
+    # --- LOGIC
     $scope.add_position = ->
         $scope.addPositionLoading = true
         if $scope.newPosition.bought_at
@@ -50,6 +160,10 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
             bought_at = $scope.newPosition.bought_at
             bought_at.setHours(bought_at.getHours() - bought_at.getTimezoneOffset() / 60)
             $scope.newPosition.bought_at = bought_at
+        # replace legal type obj by str
+        if $scope.newPosition.depot_type
+            $scope.newPosition.depot_type = $scope.newPosition.depot_type.value
+        # save
         $scope.newPosition.$save().then (result) ->
             $scope.positions.push result
         .then ->
@@ -119,6 +233,12 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
         else
             $scope.show_split_data = true
 
+    $scope.toggle_optional_fields = ->
+        if $scope.show_optional_fields
+            $scope.show_optional_fields = false
+        else
+            $scope.show_optional_fields = true
+
     $scope.show_add_capital_form = ->
         $scope.show_add_position = false
         $scope.show_add_capital = true
@@ -160,5 +280,8 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
     $scope.open_datepicker = ->
         $scope.datepicker.opened = true
 
+    # --- LINK
+    $scope.goto_position = (position_id) ->
+        window.location = "/positions/"+position_id+"/"
 
 ]

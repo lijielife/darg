@@ -10,6 +10,7 @@ from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.core.mail import send_mail
 from django.core.validators import MinValueValidator
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Sum
 from django.db.models.signals import post_save
@@ -18,14 +19,47 @@ from django.utils.translation import ugettext as _
 from django_languages import fields as language_fields
 from rest_framework.authtoken.models import Token
 from sorl.thumbnail import get_thumbnail
+from tagging.registry import register
+from tagging.models import Tag
 
+from shareholder.validators import ShareRegisterValidator
 from utils.formatters import (deflate_segments, flatten_list,
                               human_readable_segments, inflate_segments,
                               string_list_to_json)
 from utils.math import substract_list
 
 
+REGISTRATION_TYPES = [
+    ('1', _('Personal ownership')),
+    ('2', _('Personal representation')),
+]
+
+DEPOT_TYPES = [
+    ('0', _('Zertifikatsdepot')),
+    ('1', _('Gesellschaftsdepot')),
+    ('2', _('Sperrdepot')),
+]
+
+MAILING_TYPES = [
+    ('0', _('Not deliverable')),
+    ('1', _('Postal Mail')),
+    ('2', _('via Email')),
+]
+
+DISPO_SHAREHOLDER_TAG = 'dispo_shareholder'
+
 logger = logging.getLogger(__name__)
+
+
+class TagMixin(object):
+    """
+    mixin to make tagging objects available inside models
+    """
+    def set_tag(self, tag):
+        Tag.objects.update_tags(self, tag)
+
+    def get_tags(self):
+        return Tag.objects.get_for_object(self)
 
 
 class Country(models.Model):
@@ -59,6 +93,9 @@ class Company(models.Model):
     logo = models.ImageField(
         blank=True, null=True,
         upload_to=get_company_logo_upload_path,)
+    vote_ratio = models.PositiveIntegerField(
+        _('Voting rights calculation: one vote per X of security.face_value'),
+        blank=True, null=True, default=1)
 
     def __unicode__(self):
         return u"{}".format(self.name)
@@ -107,14 +144,25 @@ class Company(models.Model):
         return Position.objects.filter(
             buyer__company=self, seller__isnull=True).count()
 
+    def full_validate(self):
+        """
+        entry point for entire share register validation
+        """
+        validator = ShareRegisterValidator(self)
+        return validator.is_valid()
+
     def get_active_shareholders(self, date=None):
         """ returns list of all active shareholders """
         shareholder_list = []
         for shareholder in self.shareholder_set.all().order_by('number'):
             if shareholder.share_count(date=date) > 0:
-                shareholder_list.append(shareholder)
+                shareholder_list.append(shareholder.pk)
 
-        return shareholder_list
+        return Shareholder.objects.filter(
+            pk__in=shareholder_list
+        ).select_related(
+            'user', 'user__userprofile', 'user__userprofile__country', 'company'
+        ).order_by('number')
 
     def get_active_option_holders(self, date=None):
         """ returns list of all active shareholders """
@@ -139,7 +187,11 @@ class Company(models.Model):
             ):
                 logger.error('user sold more options then he got',
                              extra={'shareholder': sh})
-        return oh_list
+        return Shareholder.objects.filter(
+            pk__in=[oh.pk for oh in oh_list]
+        ).select_related(
+            'user', 'user__userprofile', 'user__userprofile__country', 'company'
+        )
 
     def get_all_option_plan_segments(self):
         """
@@ -151,7 +203,26 @@ class Company(models.Model):
         return flatten_list(segments)
 
     def get_company_shareholder(self):
-        return self.shareholder_set.earliest('id')
+        """
+        return company shareholder, raise ValueError if not existing
+        """
+        try:
+            return self.shareholder_set.earliest('id')
+        except Shareholder.DoesNotExist:
+            raise ValueError('Company Shareholder does not exist')
+
+    def get_dispo_shareholder(self):
+        """
+        return shareholder obj which holds all dispo shares (shares which are
+        owned by someone but are not registered with the share register under
+        his name)
+        """
+        shareholders = Shareholder.tagged.with_all(
+            DISPO_SHAREHOLDER_TAG, self.shareholder_set.all())
+        if shareholders.count() > 1:
+            raise ValueError('too many dispo shareholders for this company')
+        elif shareholders.count() == 1:
+            return shareholders[0]
 
     def get_operators(self):
         return self.operator_set.all().distinct()
@@ -173,13 +244,146 @@ class Company(models.Model):
             buyer__company=self, seller__isnull=True)
         val = 0
         for position in cap_creating_positions:
-            val += position.count * position.value
+            face_value = position.security.face_value or 1
+            val += position.count * face_value
 
         cap_destroying_positions = Position.objects.filter(
             seller__company=self, buyer__isnull=True)
 
         for position in cap_destroying_positions:
-            val -= position.count * position.value
+            face_value = position.security.face_value or 1
+            val -= position.count * face_value
+
+        return val
+
+    def get_total_share_count(self, security=None):
+        cap_creating_positions = Position.objects.filter(
+            buyer__company=self, seller__isnull=True)
+        if security:
+            cap_creating_positions = cap_creating_positions.filter(
+                security=security)
+        val = 0
+        for position in cap_creating_positions:
+            val += position.count
+
+        cap_destroying_positions = Position.objects.filter(
+            seller__company=self, buyer__isnull=True)
+
+        if security:
+            cap_destroying_positions = cap_destroying_positions.filter(
+                security=security)
+
+        for position in cap_destroying_positions:
+            val -= position.count
+
+        return val
+
+    def get_total_share_count_floating(self, security=None):
+        """
+        how many shares are spread among the outer world/non company shareholder
+        """
+        total_shares = self.get_total_share_count(security=security)
+        company_shareholder_count = self.get_company_shareholder().share_count(
+            security=security)
+        return total_shares - company_shareholder_count
+
+    def get_total_votes(self, security=None):
+        """
+        returns the total number of voting rights the company is existing
+        """
+        votes = 0
+        qs = [security] if security else self.security_set.all()
+        for security in qs:
+            face_value = security.face_value or 1
+            ratio = self.vote_ratio or 1
+            votes += face_value * security.count / ratio
+
+        return int(votes)
+
+    def get_total_votes_floating(self, security=None):
+        """
+        returns total amount of votes owned by regular shareholers. excludes
+        votes owned by company and options
+        """
+        company_votes = self.get_company_shareholder().vote_count(
+            security=security)
+        return self.get_total_votes(security=security) - company_votes
+
+    def get_total_votes_in_options(self, security=None):
+        qs = self.security_set.all()
+        ratio = self.vote_ratio or 1
+
+        if security:
+            qs = [security]
+
+        option_votes = 0
+        for security in qs:
+            face_value = security.face_value or 1
+            option_votes += (self.get_total_options(security=security) *
+                             face_value / ratio)
+
+        return option_votes
+
+    def get_total_votes_eligible(self, date=None, security=None):
+        """
+        returns number of total votes permitted to vote
+
+        math is : total - options - dispo - company
+        """
+        total = (
+            self.get_total_votes_floating(security=security) -
+            self.get_total_votes_in_options(security=security)
+        )
+
+        # if we have a dispo shareholder, substract his votes too...
+        dsh = self.get_dispo_shareholder()
+        if dsh:
+            total = total - dsh.vote_count(date=date, security=security)
+
+        return int(total)
+
+    def get_total_options(self, security=None):
+        """
+        count of shares granted through options
+        """
+        options_created = OptionTransaction.objects.filter(
+            buyer__company=self, seller__isnull=True)
+
+        if security:
+            options_created = options_created.filter(
+                option_plan__security=security)
+
+        val = 0
+        for position in options_created:
+            val += position.count
+
+        options_destroyed = OptionTransaction.objects.filter(
+            seller__company=self, buyer__isnull=True)
+
+        if security:
+            options_destroyed = options_destroyed.filter(
+                option_plan__security=security)
+
+        for position in options_destroyed:
+            val -= position.count
+
+        return val
+
+    def get_total_options_floating(self):
+        """
+        count of shares granted through options
+        """
+        options_created = OptionTransaction.objects.filter(
+            buyer__company=self, seller=self.get_company_shareholder())
+        val = 0
+        for position in options_created:
+            val += position.count
+
+        options_returned = OptionTransaction.objects.filter(
+            seller__company=self, buyer=self.get_company_shareholder())
+
+        for position in options_returned:
+            val -= position.count
 
         return val
 
@@ -206,8 +410,8 @@ class Company(models.Model):
         # create return transactions to return old assets to company
         # create transaction to hand out new assets to shareholders with
         # new count
-        value = float(company_shareholder.last_traded_share_price(
-            date=execute_at, security=security))
+        value = company_shareholder.last_traded_share_price(
+            date=execute_at, security=security)
         partials = {}
         for shareholder in shareholders:
             count = shareholder.share_count(
@@ -225,9 +429,12 @@ class Company(models.Model):
                                  security, execute_at.date(),
                                  int(dividend), int(divisor)),
             }
+            if value:
+                kwargs1.update({'value': float(value)})
             if shareholder.pk == company_shareholder.pk:
                 kwargs1.update(dict(buyer=None, count=self.share_count,
                                     value=shareholder.buyer.first().value))
+
             p = Position.objects.create(**kwargs1)
             logger.info('Split: share returned {}'.format(p))
 
@@ -236,7 +443,6 @@ class Company(models.Model):
                 'buyer': shareholder,
                 'seller': company_shareholder,
                 'count': count2,
-                'value': value / divisor * dividend,
                 'security': security,
                 'bought_at': execute_at,
                 'is_split': True,
@@ -245,6 +451,8 @@ class Company(models.Model):
                                  security, execute_at.date(),
                                  int(dividend), int(divisor)),
             }
+            if value:
+                kwargs2.update({'value': float(value) / divisor * dividend})
             if shareholder.pk == company_shareholder.pk:
                 part, count2 = math.modf(
                     self.share_count /
@@ -273,16 +481,34 @@ class Company(models.Model):
 
 class UserProfile(models.Model):
 
+    # legal types of a user
+    LEGAL_TYPES = (
+        ('H', _('Human Being')),
+        ('C', _('Corporate')),
+    )
+
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL)
+    title = models.CharField(max_length=255, blank=True, null=True)
+    salutation = models.CharField(max_length=255, blank=True, null=True)
+
     street = models.CharField(max_length=255, blank=True, null=True)
+    street2 = models.CharField(max_length=255, blank=True, null=True)
     city = models.CharField(max_length=255, blank=True, null=True)
     province = models.CharField(max_length=255, blank=True, null=True)
+    pobox = models.CharField(max_length=255, blank=True, null=True)
+    c_o = models.CharField(max_length=255, blank=True, null=True)
     postal_code = models.CharField(max_length=255, blank=True, null=True)
     country = models.ForeignKey(Country, blank=True, null=True)
     language = language_fields.LanguageField(blank=True, null=True)
+    nationality = models.ForeignKey(Country, blank=True, null=True,
+                                    related_name='nationality')
 
+    legal_type = models.CharField(
+        max_length=1, choices=LEGAL_TYPES, default='H',
+        help_text=_('legal type of the user'))
     company_name = models.CharField(max_length=255, blank=True, null=True)
+    company_department = models.CharField(max_length=255, blank=True, null=True)
     birthday = models.DateField(blank=True, null=True)
 
     ip = models.GenericIPAddressField(blank=True, null=True)
@@ -290,20 +516,35 @@ class UserProfile(models.Model):
 
     def __unicode__(self):
         return u"%s, %s %s" % (self.city, self.province,
-                              str(self.country))
+                               str(self.country))
 
     class Meta:
         verbose_name_plural = "UserProfile"
 
+    def clean(self, *args, **kwargs):
+        super(UserProfile, self).clean(*args, **kwargs)
 
-class Shareholder(models.Model):
+        if self.legal_type == 'C' and not self.company_name:
+            raise ValidationError(_('user with legal type company must have '
+                                    'company name set'))
+
+        if not self.legal_type == 'C' and self.company_name:
+            raise ValidationError(_('user company must have legal type set to '
+                                    'company'))
+
+
+class Shareholder(TagMixin, models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     company = models.ForeignKey('Company', verbose_name="Shareholders Company")
     number = models.CharField(max_length=255)
+    mailing_type = models.CharField(
+        _('how should the shareholder be approached by the corp'), max_length=1,
+        choices=MAILING_TYPES, blank=True, null=True)
 
     def __unicode__(self):
-        return u'{}'.format(self.id)
+        return u'{} {} (#{})'.format(
+            self.user.first_name, self.user.last_name, self.number)
 
     def can_view(self, user):
         """
@@ -319,6 +560,23 @@ class Shareholder(models.Model):
 
         return False
 
+    def get_full_name(self):
+        # return first, last, company name
+        name = u""
+        if self.user.first_name:
+            name += self.user.first_name
+        if self.user.last_name:
+            if name:
+                name += u" "
+            name += u"{}".format(self.user.last_name)
+        if self.user.userprofile.company_name:
+            if name:
+                name += u" ({})".format(self.user.userprofile.company_name)
+            else:
+                name += u"{}".format(self.user.userprofile.company_name)
+
+        return name
+
     def get_number_segments_display(self):
         """
         returns string for date=today and all securities showing number segments
@@ -333,10 +591,25 @@ class Shareholder(models.Model):
 
     def is_company_shareholder(self):
         """
-        returns bool if shareholder is ocmpany shareholder
+        returns bool if shareholder is company shareholder
         """
-        return Shareholder.objects.filter(
-            company=self.company).earliest('id').id == self.id
+        return self.company.get_company_shareholder() == self
+
+    def is_dispo_shareholder(self):
+        """
+        returns bool if shareholder is dispo shareholder
+        """
+        return self.company.get_dispo_shareholder() == self
+
+    def set_dispo_shareholder(self):
+        """ mark this shareholder as disposhareholder """
+        if (
+                self.company.get_dispo_shareholder() and
+                self.company.get_dispo_shareholder() != self
+        ):
+            raise ValueError('disposhareholder already set')
+
+        self.set_tag(DISPO_SHAREHOLDER_TAG)
 
     def share_percent(self, date=None):
         """
@@ -370,7 +643,6 @@ class Shareholder(models.Model):
 
     def share_count(self, date=None, security=None):
         """ total count of shares for shareholder  """
-        date = date or datetime.datetime.now()
         qs_bought = self.buyer.all()
         qs_sold = self.seller.all()
 
@@ -385,7 +657,13 @@ class Shareholder(models.Model):
         count_bought = sum(qs_bought.values_list('count', flat=True))
         count_sold = sum(qs_sold.values_list('count', flat=True))
 
-        return count_bought - count_sold
+        # clean company shareholder count by options count
+        if self.is_company_shareholder():
+            options_created = self.company.get_total_options(security=security)
+        else:
+            options_created = 0
+
+        return count_bought - count_sold - options_created
 
     def share_value(self, date=None):
         """ calculate the total values of all shares for this shareholder """
@@ -484,8 +762,8 @@ class Shareholder(models.Model):
             qs_sold = self.option_seller.filter(bought_at__lte=date)
 
         if security:
-            qs_bought = qs_bought.filter(security=security)
-            qs_sold = qs_sold.filter(security=security)
+            qs_bought = qs_bought.filter(option_plan__security=security)
+            qs_sold = qs_sold.filter(option_plan__security=security)
 
         count_bought = sum(qs_bought.values_list('count', flat=True))
         count_sold = sum(qs_sold.values_list('count', flat=True))
@@ -644,6 +922,36 @@ class Shareholder(models.Model):
         segments_owning = set(counter_bought - counter_sold)
         return deflate_segments(segments_owning)
 
+    def vote_count(self, date=None, security=None):
+        """
+        returns the total number of voting rights for this shareholder
+        """
+        votes = 0
+        ratio = self.company.vote_ratio or 1
+        qs = [security] if security else self.company.security_set.all()
+        for security in qs:
+            face_value = security.face_value or 1
+            votes += (self.share_count(security=security, date=date) *
+                      face_value / ratio)
+
+        return int(votes)
+
+    def vote_percent(self, date=None):
+        """
+        returns percentage of the users voting rights compared to total voting
+        rights existing
+        """
+        if (self.is_company_shareholder() or
+                not self.company.get_total_votes_floating()):
+            return float(0.0)
+
+        # do the math
+        total_votes_eligible = self.company.get_total_votes_eligible()
+
+        # how much percent of these eligible votes does the shareholder have?
+        return (self.vote_count(date) /
+                float(total_votes_eligible))
+
 
 class Operator(models.Model):
 
@@ -660,20 +968,24 @@ class Security(models.Model):
     SECURITY_TITLES = (
         ('P', _('Preferred Stock')),
         ('C', _('Common Stock')),
+        ('R', _('Registered Shares')),
         # ('O', 'Option'),
         # ('W', 'Warrant'),
         # ('V', 'Convertible Instrument'),
     )
-    title = models.CharField(max_length=1, choices=SECURITY_TITLES)
+    title = models.CharField(max_length=1, choices=SECURITY_TITLES, default='C')
     face_value = models.DecimalField(
         _('Nominal value of this asset'),
-        max_digits=16, decimal_places=8, blank=True,
+        max_digits=16, decimal_places=4, blank=True,
         null=True)
     company = models.ForeignKey(Company)
     count = models.PositiveIntegerField()
     number_segments = JSONField(
         _('JSON list of segments of ids for securities. can be 1, 2, 3, 4-10'),
         default=list)
+    cusip = models.CharField(
+        _('public security id aka Valor, WKN, CUSIP: http://bit.ly/2ieXwuK'),
+        max_length=255, blank=True, null=True)
 
     # settings
     track_numbers = models.BooleanField(
@@ -681,7 +993,31 @@ class Security(models.Model):
           'transaction with segments on enabling.'), default=False)
 
     def __unicode__(self):
-        return u"{} ({})".format(self.get_title_display(), self.company)
+        if self.face_value:
+            return _(u"{} ({} CHF)").format(
+                self.get_title_display(), int(self.face_value))
+
+        return self.get_title_display()
+
+    def calculate_count(self):
+        """
+        calculate how many shares does the company have by iterating
+        over all shareholders of the company and getting their
+        share count. summarize it.
+        """
+        return self.company.get_total_share_count(security=self)
+
+    def calculate_dispo_share_count(self):
+        """
+        caculates the number of shares which are not registered within the share
+        register for this security
+        """
+        total_shares = self.calculate_count()
+        floating_shares = self.company.get_total_share_count_floating(
+            security=self)
+        options = self.company.get_total_options(security=self)
+
+        return total_shares - floating_shares - options
 
     def count_in_segments(self, segments=None):
         """
@@ -707,6 +1043,9 @@ class Security(models.Model):
 
 
 class Position(models.Model):
+    """
+    aka Transaction
+    """
 
     buyer = models.ForeignKey(
         'Shareholder', related_name="buyer", blank=True, null=True)
@@ -720,11 +1059,21 @@ class Position(models.Model):
         _('Nominal value or payed price for the transaction'),
         max_digits=16, decimal_places=4, blank=True,
         null=True)
-    is_split = models.BooleanField(default=False)
+    is_split = models.BooleanField(
+        _('Position is part of a split transaction'), default=False)
     is_draft = models.BooleanField(default=True)
     number_segments = JSONField(
         _('JSON list of segments of ids for securities. can be 1, 2, 3, 4-10'),
         default=list, blank=True, null=True)
+    registration_type = models.CharField(
+        _('Securities are purchase type (for myself, etc.)'), max_length=1,
+        choices=REGISTRATION_TYPES, blank=True, null=True)
+    stock_book_id = models.CharField(
+        _('aka Skontro (read http://bit.ly/2iJquEl)'),
+        max_length=255, blank=True, null=True)
+    depot_type = models.CharField(
+        _('What kind of depot is this position stored within'), max_length=1,
+        choices=DEPOT_TYPES, blank=True, null=True)
     comment = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -736,6 +1085,30 @@ class Position(models.Model):
             self.value,
             self.buyer
         )
+
+    def can_view(self, user):
+        """
+        permission method to check if user is permitted to view obj
+        """
+        if self.buyer and user == self.buyer.user:
+            return True
+        elif self.seller and user == self.seller.user:
+            return True
+
+        # user is an operator
+        if self.buyer.company.operator_set.filter(user=user).exists():
+            return True
+
+        return False
+
+    def get_position_type(self):
+        if not self.seller:
+            return _('Capital Increase')
+        if self.is_split:
+            return _('Part of Split')
+        if self.seller.is_company_shareholder():
+            return _('Share issue')
+        return _('Regular Ownership change')
 
 
 def get_option_plan_upload_path(instance, filename):
@@ -809,9 +1182,21 @@ class OptionTransaction(models.Model):
     seller = models.ForeignKey('Shareholder', blank=True, null=True,
                                related_name="option_seller")
     vesting_months = models.PositiveIntegerField(blank=True, null=True)
+    certificate_id = models.CharField(
+        max_length=255, blank=True, null=True,
+        help_text=_('id of the issued certificate'))
     number_segments = JSONField(
         _('JSON list of segments of ids for securities. can be 1, 2, 3, 4-10'),
         default=list, blank=True, null=True)
+    registration_type = models.CharField(
+        _('Securities are purchase type (for myself, etc.)'), max_length=1,
+        choices=REGISTRATION_TYPES, blank=True, null=True)
+    stock_book_id = models.CharField(
+        _('aka Skontro (read http://bit.ly/2iJquEl)'),
+        max_length=255, blank=True, null=True)
+    depot_type = models.CharField(
+        _('What kind of depot is this position stored within'), max_length=1,
+        choices=DEPOT_TYPES, blank=True, null=True)
     is_draft = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -823,6 +1208,26 @@ class OptionTransaction(models.Model):
             self.buyer,
             self.option_plan
         )
+
+    def can_view(self, user):
+        """
+        permission method to check if user is permitted to view obj
+        """
+        if (
+                user == self.buyer.user or
+                (self.seller and user == self.seller.user)
+        ):
+            return True
+
+        # user is an operator
+        if self.buyer.company.operator_set.filter(user=user).exists():
+            return True
+
+        return False
+
+
+# --------- DJANGO TAGGING ----------
+register(Shareholder)
 
 
 # --------- SIGNALS ----------

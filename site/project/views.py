@@ -1,15 +1,16 @@
 import csv
-import datetime
 import logging
 import time
 
-from django.conf import settings
+import dateutil.parser
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.flatpages.models import FlatPage
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 from django.http import (HttpResponse, HttpResponseBadRequest,
                          HttpResponseForbidden)
 from django.shortcuts import get_object_or_404, redirect
@@ -18,13 +19,128 @@ from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from zinnia.models.entry import Entry
 
-from project.tasks import send_initial_password_mail
+from project.tasks import (send_initial_password_mail, send_captable_pdf,
+                           send_captable_csv)
 from services.instapage import InstapageSubmission as Instapage
-from shareholder.models import Company, Operator
-from utils.formatters import human_readable_segments
-from utils.pdf import render_to_pdf
+from shareholder.models import (Company, Operator, Position, OptionTransaction,
+                                Security)
 
 logger = logging.getLogger(__name__)
+
+
+def _get_contacts(company):
+
+    rows = []
+    rows.append([
+        _(u'shareholder number'), _(u'last name'), _(u'first name'),
+        _(u'email'),
+        _(u'language ISO'), _('language full'), _('street'), _('street 2'),
+        _('c/o'), _('city'), _('zip'), _('country'),
+        _('pobox'), _('mailing type'), _('nationality'),
+    ])
+
+    for shareholder in company.get_active_shareholders():
+        row = [
+            shareholder.number,
+            shareholder.user.last_name,
+            shareholder.user.first_name,
+            shareholder.user.email,
+            shareholder.user.userprofile.language,
+            shareholder.user.userprofile.get_language_display(),
+            shareholder.user.userprofile.street,
+            shareholder.user.userprofile.street2,
+            shareholder.user.userprofile.c_o,
+            shareholder.user.userprofile.city,
+            shareholder.user.userprofile.postal_code,
+            (shareholder.user.userprofile.country.name
+                if shareholder.user.userprofile.country else u''),
+            shareholder.user.userprofile.pobox,
+            shareholder.get_mailing_type_display(),
+            (shareholder.user.userprofile.nationality.name
+                if shareholder.user.userprofile.nationality else u'')
+        ]
+        rows.append(row)
+
+    for shareholder in company.get_active_option_holders():
+        row = [
+            shareholder.number,
+            shareholder.user.last_name,
+            shareholder.user.first_name,
+            shareholder.user.email,
+            shareholder.user.userprofile.language,
+            shareholder.user.userprofile.get_language_display(),
+            shareholder.user.userprofile.street,
+            shareholder.user.userprofile.street2,
+            shareholder.user.userprofile.c_o,
+            shareholder.user.userprofile.city,
+            shareholder.user.userprofile.postal_code,
+            (shareholder.user.userprofile.country.name
+                if shareholder.user.userprofile.country else u''),
+            shareholder.user.userprofile.pobox,
+            shareholder.get_mailing_type_display(),
+            (shareholder.user.userprofile.nationality.name
+                if shareholder.user.userprofile.nationality else u'')
+        ]
+        rows.append(row)
+
+    return rows
+
+
+def _get_transactions(from_date, to_date, security, company):
+    rows = []
+    rows.append([
+        _(u'date'), _(u'buyer'), _(u'seller'),
+        _(u'count'),
+        _(u'value'), _('security'), _('comment'), _('depot type'),
+        _('stock book id'), _(u'vesting period (options only'),
+        _(u'cert id (options only)'),
+    ])
+
+    for position in Position.objects.filter(
+        bought_at__range=(from_date, to_date), security=security
+    ).filter(
+        Q(buyer__company=company) | Q(seller__company=company)
+    ).prefetch_related('buyer', 'seller', 'security'):
+        row = [
+            position.bought_at,
+            position.buyer.get_full_name() if position.buyer else u"",
+            position.seller.get_full_name() if position.seller else u"",
+            position.count,
+            position.value,
+            unicode(position.security),
+            position.comment,
+            position.get_depot_type_display(),
+            position.stock_book_id
+        ]
+        rows.append(row)
+
+    rows.append([_('----------------------------------------')])
+    rows.append([_('Transactions for options:')])
+    rows.append([_('----------------------------------------')])
+
+    for optiontransaction in OptionTransaction.objects.filter(
+        bought_at__range=(from_date, to_date), option_plan__security=security
+    ).filter(
+        Q(buyer__company=company) | Q(seller__company=company)
+    ).prefetch_related(
+        'buyer', 'seller', 'option_plan', 'option_plan__security'
+    ):
+        row = [
+            optiontransaction.bought_at,
+            optiontransaction.buyer.get_full_name(),
+            optiontransaction.seller.get_full_name(),
+            optiontransaction.count,
+            optiontransaction.option_plan.exercise_price,
+            unicode(optiontransaction.option_plan.security),
+            '',
+            optiontransaction.get_depot_type_display(),
+            optiontransaction.stock_book_id,
+            optiontransaction.vesting_months,
+            optiontransaction.certificate_id,
+        ]
+        rows.append(row)
+
+    return rows
 
 
 def index(request):
@@ -109,6 +225,68 @@ def instapage(request):
 
 
 @login_required
+def contacts_csv(request, company_id):
+    """ returns csv with active shareholders """
+
+    # perm check
+    if not Operator.objects.filter(
+        user=request.user, company__id=company_id
+    ).exists():
+        return HttpResponseForbidden()
+
+    company = get_object_or_404(Company, id=company_id)
+
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = (
+        u'attachment; '
+        u'filename="{}_contacts_{}.csv"'.format(
+            time.strftime("%Y-%m-%d"), slugify(company.name)
+        ))
+
+    writer = csv.writer(response)
+
+    rows = _get_contacts(company)
+    for row in rows:
+        writer.writerow([unicode(s).encode("utf-8") for s in row])
+
+    return response
+
+
+@login_required
+def transactions_csv(request, company_id):
+    """ returns csv with transactions """
+
+    # perm check
+    if not Operator.objects.filter(
+        user=request.user, company__id=company_id
+    ).exists():
+        return HttpResponseForbidden()
+
+    company = get_object_or_404(Company, id=company_id)
+    security = get_object_or_404(Security, id=request.GET.get('security'))
+    from_date = dateutil.parser.parse(request.GET.get('from'))
+    to_date = dateutil.parser.parse(request.GET.get('to'))
+
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = (
+        u'attachment; '
+        u'filename="{}_transactions_{}_.csv"'.format(
+            time.strftime("%Y-%m-%d"), slugify(company.name),
+            slugify(security.get_title_display())
+        ))
+
+    writer = csv.writer(response)
+
+    rows = _get_transactions(from_date, to_date, security, company)
+    for row in rows:
+        writer.writerow([unicode(s).encode("utf-8") for s in row])
+
+    return response
+
+
+@login_required
 def captable_csv(request, company_id):
     """ returns csv with active shareholders """
 
@@ -119,51 +297,11 @@ def captable_csv(request, company_id):
         return HttpResponseForbidden()
 
     company = get_object_or_404(Company, id=company_id)
-    track_numbers_secs = company.security_set.filter(track_numbers=True)
+    send_captable_csv.apply_async(args=[request.user.pk, company.pk])
+    messages.info(request, _('csv file is being generated and will be sent '
+                             'by email to you'))
 
-    # Create the HttpResponse object with the appropriate CSV header.
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = (
-        u'attachment; '
-        u'filename="{}_captable_{}.csv"'.format(
-            time.strftime("%Y-%m-%d"), slugify(company.name)
-        ))
-
-    writer = csv.writer(response)
-
-    header = [
-        _(u'shareholder number'), _(u'last name'), _(u'first name'),
-        _(u'email'), _(u'share count'), _(u'votes share percent'),
-        _(u'language ISO'), _('language full')]
-
-    if track_numbers_secs.exists():
-        header.append(_('Share IDs'))
-
-    writer.writerow(header)
-
-    for shareholder in company.get_active_shareholders():
-        row = [
-            shareholder.number,
-            shareholder.user.last_name,
-            shareholder.user.first_name,
-            shareholder.user.email,
-            shareholder.share_count(),
-            shareholder.share_percent() or '--',
-            shareholder.user.userprofile.language,
-            shareholder.user.userprofile.get_language_display(),
-        ]
-        if track_numbers_secs.exists():
-            text = ""
-            for sec in track_numbers_secs:
-                text += "{}: {} ".format(
-                    sec.get_title_display(),
-                    human_readable_segments(shareholder.current_segments(sec) or
-                                            _('None'))
-                )
-            row.append(text)
-        writer.writerow([unicode(s).encode("utf-8") for s in row])
-
-    return response
+    return redirect(reverse('reports'))
 
 
 @login_required
@@ -177,28 +315,9 @@ def captable_pdf(request, company_id):
 
     company = get_object_or_404(Company, id=company_id)
 
-    response = render_to_pdf(
-        'active_shareholder_captable.pdf.html',
-        {
-            'pagesize': 'A4',
-            'company': company,
-            'today': datetime.datetime.now().date(),
-            'total_capital': company.get_total_capital(),
-            'currency': 'CHF',
-            'provisioned_capital': company.get_provisioned_capital(),
-            'securities_with_track_numbers': company.security_set.filter(
-                track_numbers=True)
-        }
-    )
+    send_captable_pdf.apply_async(args=[request.user.pk, company.pk])
 
-    # Create the HttpResponse object with the appropriate PDF header.
-    # if not DEBUG
-    if not settings.DEBUG:
-        response['Content-Disposition'] = (
-            u'attachment; filename="'
-            u'{}_captable_{}.pdf"'.format(
-                time.strftime("%Y-%m-%d"), company.name)
-        )
+    messages.info(request, _('pdf file is being generated and will be sent '
+                             'by email to you'))
 
-    return response
-
+    return redirect(reverse('reports'))

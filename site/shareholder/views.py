@@ -1,15 +1,14 @@
-from django.http import HttpResponse
-from django.template import RequestContext, loader
-from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden
+from django.shortcuts import get_object_or_404
+from django.template import RequestContext, loader
 from django.utils.translation import ugettext as _
 from django.views.generic import DetailView
-
 from sendfile import sendfile
 
 from project.permissions import OperatorPermissionRequiredMixin
-from shareholder.models import Shareholder, OptionPlan
+from shareholder.models import (OptionPlan, OptionTransaction, Position,
+                                Shareholder)
 from utils.formatters import human_readable_segments
 
 
@@ -25,6 +24,22 @@ def options(request):
     template = loader.get_template('options.html')
     context = RequestContext(request, {})
     return HttpResponse(template.render(context))
+
+
+class OptionTransactionView(OperatorPermissionRequiredMixin, DetailView):
+    """
+    shows details for one shareholder
+    """
+    model = OptionTransaction
+    context_object_name = 'optiontransaction'
+
+
+class PositionView(OperatorPermissionRequiredMixin, DetailView):
+    """
+    shows details for one shareholder
+    """
+    model = Position
+    context_object_name = 'position'
 
 
 class ShareholderView(OperatorPermissionRequiredMixin, DetailView):
@@ -47,6 +62,7 @@ class ShareholderView(OperatorPermissionRequiredMixin, DetailView):
                     sec.segments = human_readable_segments(
                         shareholder.current_segments(sec))
             sec.count = shareholder.share_count(security=sec) or 0
+            sec.options_count = shareholder.options_count(security=sec) or 0
 
         context.update({
             'securities': securities})
@@ -78,3 +94,4 @@ def optionsplan_download_img(request, optionsplan_id):
         return sendfile(request, optionplan.pdf_file_preview_path())
     else:
         return HttpResponseForbidden(_("Permission denied"))
+

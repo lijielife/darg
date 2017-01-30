@@ -98,7 +98,7 @@
           <th align="left">{% trans "Name" %}</th>
           <th align="left">{% trans "Email" %}</th>
           <th align="right">{% trans "Shareholder Number" %}</th>
-          <th align="right">{% trans "Shares (%)" %}</th>
+          <th align="right">{% trans "Shares" %}</th>
           {% if securities_with_track_numbers.exists %}
           <th align="left">
             {% trans "Aktiennummern" %}
@@ -111,7 +111,7 @@
     <table>
       <tr class="panel {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
         <td>
-          {{ shareholder.user.first_name }} {{ shareholder.user.last_name }}
+          {{ shareholder.user.first_name }} {{ shareholder.user.last_name }} {{shareholder.user.userprofile.company_name }}
         </td>
         <td>
           {{ shareholder.user.email }}
@@ -120,7 +120,7 @@
           {{ shareholder.number }}
         </td>
         <td align="right">
-          {{ shareholder.share_count|intcomma }} {% if shareholder.share_percent %}({{shareholder.share_percent }}){% endif %}
+          {{ shareholder.share_count|intcomma }}
         </td>
         {% if securities_with_track_numbers.exists %}
         <td>
@@ -141,7 +141,7 @@
           <th align="left">{% trans "Name" %}</th>
           <th align="left">{% trans "Email" %}</th>
           <th align="right">{% trans "Shareholder Number" %}</th>
-          <th align="right">{% trans "Optionen (%)" %}</th>
+          <th align="right">{% trans "Optionen" %}</th>
         </tr>
       </thead>
     </table>
@@ -150,7 +150,7 @@
     <table>
       <tr class="panel">
         <td>
-          {{ shareholder.user.first_name }} {{ shareholder.user.last_name }}
+          {{ shareholder.user.first_name }} {{ shareholder.user.last_name }} {{shareholder.user.userprofile.company_name }}
         </td>
         <td>
           {{ shareholder.user.email }}
@@ -159,7 +159,7 @@
           {{ shareholder.number }}
         </td>
         <td align="right">
-          {{ shareholder.options_count|intcomma }} ({{shareholder.options_percent }})
+          {{ shareholder.options_count|intcomma }}
         </td>
       </tr>
     </table>

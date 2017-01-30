@@ -15,6 +15,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.ui import Select
 
 
 # from element import BasePageElement (save all locators here)
@@ -46,7 +47,6 @@ class BasePage(object):
             els = self.driver.find_elements_by_id(
                 kwargs.get('id')
             )
-
         if not len(els):
             return False
 
@@ -81,6 +81,7 @@ class BasePage(object):
     def refresh(self):
         """ reload page """
         self.driver.get(self.driver.current_url)
+        time.sleep(1)
 
     def use_datepicker(self, class_name, date=None):
         """
@@ -168,6 +169,26 @@ class BasePage(object):
                     return
 
         raise Exception('Clickable button not found')
+
+    def enter_typeahead(self, id, shareholder, cls):
+        """
+        enter selling shareholder
+        """
+        # trigger typeahead search
+        el = self.driver.find_element_by_id(id)
+        form = el.find_element_by_tag_name('form')
+        field = form.find_element_by_class_name(cls)
+        field.send_keys(shareholder.get_full_name()[:10])
+
+        # select typeahead result
+        self.wait_until_present(
+            (By.CSS_SELECTOR, "#{} form .dropdown-menu".format(id)))
+        self.wait_until_text_present(
+            (By.CSS_SELECTOR, '#{} form .dropdown-menu li a'.format(id)),
+            shareholder.get_full_name())
+        self.wait_until_clickable(
+            (By.CSS_SELECTOR, '#{} form .dropdown-menu li a'.format(id))
+        ).click()
 
     def get_form_errors(self):
         """
@@ -263,6 +284,14 @@ class BasePage(object):
             )
         )
 
+    def get_url(self, cls):
+        """
+        return url path of first link inside class element
+        """
+        el = self.driver.find_element_by_class_name(cls)
+        link = el.find_element_by_tag_name('a')
+        return link.get_attribute('href')
+
 
 class StartPage(BasePage):
     """Options List View"""
@@ -301,6 +330,15 @@ class StartPage(BasePage):
         inputs[2].send_keys(kwargs.get('count', DEFAULT_TEST_DATA.get('count')))
         inputs[3].send_keys(kwargs.get('value', DEFAULT_TEST_DATA.get('value')))
 
+    def enter_search_term(self, term=None):
+        el = self.driver.find_element_by_class_name('search-input')
+        el.send_keys(term or 'some term')
+
+    def sort_table_by_number(self):
+        selects = self.driver.find_elements_by_tag_name('select')
+        select = Select(selects[0])
+        select.select_by_visible_text('Gesellschafter Nummer')
+
     # -- CLICKs
     def click_save_add_company(self):
         el = self.driver.find_element_by_id('add_company')
@@ -313,17 +351,27 @@ class StartPage(BasePage):
             "Aktionär hinzufügen")
         el.click()
 
+    def click_paginate_next(self):
+        btn = self.driver.find_element_by_class_name('paginate-next')
+        btn.click()
+
     def click_save_add_shareholder(self):
         el = self.driver.find_element_by_id('add_shareholder')
         div = el.find_elements_by_class_name('form-group')[1]
         button = div.find_elements_by_tag_name('button')[1]
         button.click()
 
+    def click_search(self):
+        el = self.driver.find_element_by_class_name('search-btn')
+        el.click()
+
     # --- GET
     def get_row_by_shareholder(self, shareholder):
-        return self.driver.find_element_by_xpath(
-            '//div[./div="{}" and contains(@class, "tr")]'.format(
-                shareholder.user.email))
+        els = self.driver.find_elements_by_xpath(
+            '//div[contains(@class, "tr")]')
+        for el in els:
+            if shareholder.get_full_name() in el.text:
+                return el
 
     def get_total_share_count(self):
         tds = self.driver.find_elements_by_xpath(
@@ -335,11 +383,13 @@ class StartPage(BasePage):
         tds = self.driver.find_elements_by_xpath(
             '//div[contains(@class, "totals")]/div[contains(@class, "td")]')
         td = tds[-1]
-        return int(td.text.split('(')[1][:-1].rstrip())
+        return int(td.text)
 
     # --- CHECKS
-    def has_shareholder_count(self, count):
-        return len(self.driver.find_elements_by_tag_name('tr')) == count
+    def has_shareholder_count(self):
+        return len(self.driver.find_elements_by_xpath(
+            '//div[contains(@class, "tr") and contains(@class, "shareholder")]'
+        ))
 
     def is_add_company_form_displayed(self):
         el = self.driver.find_element_by_id('add_company')

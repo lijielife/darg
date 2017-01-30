@@ -8,17 +8,18 @@ from decimal import Decimal
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
-
 from selenium.webdriver.common.by import By
 
 from project.base import BaseSeleniumTestCase
 from project.generators import (ComplexOptionTransactionsWithSegmentsGenerator,
                                 ComplexPositionsWithSegmentsGenerator,
                                 OperatorGenerator, OptionPlanGenerator,
-                                PositionGenerator, ShareholderGenerator,
+                                OptionTransactionGenerator, PositionGenerator,
+                                ShareholderGenerator,
                                 TwoInitialSecuritiesGenerator)
 from shareholder import page
-from shareholder.models import Position, Security, Shareholder, OptionPlan
+from shareholder.models import (OptionPlan, OptionTransaction, Position,
+                                Security, Shareholder)
 
 
 # --- FUNCTIONAL TESTS
@@ -33,6 +34,39 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
 
     def tearDown(self):
         Security.objects.all().delete()
+
+    def test_display(self):
+        """
+        test if all data is shown properly
+        """
+        try:
+
+            p = page.ShareholderDetailPage(
+                self.selenium, self.live_server_url, self.operator.user,
+                path=reverse(
+                    'shareholder',
+                    kwargs={'pk': self.buyer.id}
+                    )
+                )
+            # wait for 'link'
+            p.wait_until_visible(
+                (By.CSS_SELECTOR, 'tr.shareholder-number span.el-icon-pencil'))
+            time.sleep(1)
+            self.assertIn(
+                self.buyer.user.userprofile.get_legal_type_display(),
+                p.get_field('legal-type'))
+
+            profile = self.buyer.user.userprofile
+            profile.legal_type = 'C'
+            profile.save()
+            p.refresh()
+            p.wait_until_visible(
+                (By.CSS_SELECTOR, 'tr.shareholder-number span.el-icon-pencil'))
+            self.assertIn(profile.get_legal_type_display(),
+                          p.get_field('legal-type'))
+
+        except Exception, e:
+            self._handle_exception(e)
 
     def test_edit_shareholder_number_53(self):
         """ means: create a option plan and move options for users """
@@ -60,6 +94,94 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
 
         shareholder = Shareholder.objects.get(id=self.buyer.id)
         self.assertEqual(shareholder.number, str(99))
+
+    def test_edit_company_department(self):
+        """
+        edit company department
+        """
+        try:
+
+            p = page.ShareholderDetailPage(
+                self.selenium, self.live_server_url, self.operator.user,
+                path=reverse(
+                    'shareholder',
+                    kwargs={'pk': self.buyer.id}
+                    )
+                )
+            # wait for 'link'
+            p.wait_until_visible(
+                (By.CSS_SELECTOR, 'tr.company-department span.el-icon-pencil'))
+            p.click_to_edit("company-department")
+            p.edit_shareholder_number('IT Security Dep.', "company-department")
+            p.save_edit("company-department")
+            # wait for form to disappear
+            p.wait_until_invisible(
+                (By.CSS_SELECTOR, 'tr.company-department form'))
+
+        except Exception, e:
+            self._handle_exception(e)
+
+        shareholder = Shareholder.objects.get(id=self.buyer.id)
+        self.assertEqual(shareholder.user.userprofile.company_department,
+                         'IT Security Dep.')
+
+    def test_edit_legal_type(self):
+        """ means: create a option plan and move options for users """
+        try:
+
+            self.assertEqual(self.buyer.user.userprofile.legal_type, 'H')
+
+            p = page.ShareholderDetailPage(
+                self.selenium, self.live_server_url, self.operator.user,
+                path=reverse(
+                    'shareholder',
+                    kwargs={'pk': self.buyer.id}
+                    )
+                )
+            # wait for 'link'
+            p.wait_until_visible(
+                (By.CSS_SELECTOR, '.legal-type span.el-icon-pencil'))
+            p.click_to_edit("legal-type")
+            p.select_type("legal-type", _('Corporate'))
+            p.save_edit("legal-type")
+            # wait for form to disappear
+            p.wait_until_invisible(
+                (By.CSS_SELECTOR, '.legal-type form'))
+
+            self.buyer.user.userprofile.refresh_from_db()
+            self.assertEqual(self.buyer.user.userprofile.legal_type, 'C')
+
+        except Exception, e:
+            self._handle_exception(e)
+
+    def test_edit_mailing_type(self):
+        """ edit mailing type for user """
+        try:
+
+            self.assertEqual(self.buyer.mailing_type, 1)
+
+            p = page.ShareholderDetailPage(
+                self.selenium, self.live_server_url, self.operator.user,
+                path=reverse(
+                    'shareholder',
+                    kwargs={'pk': self.buyer.id}
+                    )
+                )
+            # wait for 'link'
+            p.wait_until_visible(
+                (By.CSS_SELECTOR, '.mailing-type span.el-icon-pencil'))
+            p.click_to_edit("mailing-type")
+            p.select_type("mailing-type", _('via Email'))
+            p.save_edit("mailing-type")
+            # wait for form to disappear
+            p.wait_until_invisible(
+                (By.CSS_SELECTOR, '.mailing-type form'))
+
+            self.buyer.refresh_from_db()
+            self.assertEqual(self.buyer.mailing_type, '2')
+
+        except Exception, e:
+            self._handle_exception(e)
 
     def test_edit_birthday_76(self):
         """
@@ -110,7 +232,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                 self.selenium, self.live_server_url, self.operator.user,
                 path=reverse(
                     'shareholder',
-                    kwargs={'pk': shs[1]}
+                    kwargs={'pk': shs[1].pk}
                     )
                 )
             # wait for table
@@ -157,6 +279,112 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
             self._handle_exception(e)
 
 
+class PositionDetailFunctionalTestCase(BaseSeleniumTestCase):
+
+    def setUp(self):
+        self.operator = OperatorGenerator().generate()
+        self.poss, self.shs = ComplexPositionsWithSegmentsGenerator().generate(
+            company=self.operator.company)
+        self. position = self.poss[-1]
+        self.page = page.PositionDetailPage(
+            self.selenium, self.live_server_url, self.operator.user,
+            path=reverse('position', kwargs={'pk': self.position.pk}))
+
+    def test_display(self):
+        """
+        test if all data is shown properly
+        """
+        try:
+
+            # wait for angular load
+            time.sleep(1)
+            self.assertIn(
+                self.position.get_depot_type_display(),
+                self.page.get_field('depot-type'))
+            self.assertIn(
+                self.position.stock_book_id,
+                self.page.get_field('stock-book-id'))
+
+        except Exception, e:
+            self._handle_exception(e)
+
+    def test_links(self):
+        """
+        test if all data is shown properly
+        """
+        try:
+
+            # wait for angular load
+            time.sleep(1)
+            self.assertIn(
+                reverse('shareholder', kwargs={'pk': self.position.seller.pk}),
+                self.page.get_url('seller'))
+            self.assertIn(
+                reverse('shareholder', kwargs={'pk': self.position.buyer.pk}),
+                self.page.get_url('buyer'))
+
+        except Exception, e:
+            self._handle_exception(e)
+
+
+class OptionTransactionDetailFunctionalTestCase(BaseSeleniumTestCase):
+
+    def setUp(self):
+        self.operator = OperatorGenerator().generate()
+        self.poss, self.shs = ComplexOptionTransactionsWithSegmentsGenerator() \
+            .generate(company=self.operator.company)
+        self.optiontransaction = self.poss[-1]
+        self.page = page.OptionTransactionDetailPage(
+            self.selenium, self.live_server_url, self.operator.user,
+            path=reverse('optiontransaction',
+                         kwargs={'pk': self.optiontransaction.pk}))
+
+    def test_display(self):
+        """
+        test if all data is shown properly
+        """
+        try:
+
+            # wait for angular load
+            time.sleep(1)
+            self.assertIn(
+                self.optiontransaction.get_depot_type_display(),
+                self.page.get_field('depot-type'))
+            self.assertIn(
+                self.optiontransaction.stock_book_id,
+                self.page.get_field('stock-book-id'))
+            self.assertIn(
+                self.optiontransaction.bought_at.strftime('%d.%m.%y'),
+                self.page.get_field('bought-at'))
+            self.assertIn(
+                self.optiontransaction.certificate_id,
+                self.page.get_field('certificate-id'))
+
+        except Exception, e:
+            self._handle_exception(e)
+
+    def test_links(self):
+        """
+        test if all data is shown properly
+        """
+        try:
+
+            # wait for angular load
+            time.sleep(1)
+            self.assertIn(
+                reverse('shareholder', kwargs={'pk': self.optiontransaction.seller.pk}),
+                self.page.get_url('seller'))
+            self.assertIn(
+                reverse('shareholder', kwargs={'pk': self.optiontransaction.buyer.pk}),
+                self.page.get_url('buyer'))
+            self.assertIn(
+                reverse('optionplan', kwargs={'optionsplan_id': self.optiontransaction.option_plan.pk}),
+                self.page.get_url('option-plan'))
+
+        except Exception, e:
+            self._handle_exception(e)
+
+
 class OptionsFunctionalTestCase(BaseSeleniumTestCase):
 
     def setUp(self):
@@ -189,7 +417,6 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
             self.assertTrue(app.is_no_errors_displayed())
-            self.assertTrue(app.is_option_plan_displayed())
 
             op = OptionPlan.objects.latest('pk')
             self.assertEqual(op.exercise_price, Decimal('4.55'))
@@ -215,11 +442,44 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
             self.assertTrue(app.is_no_errors_displayed())
-            self.assertTrue(app.is_option_plan_displayed())
 
             app.click_open_transfer_option()
             app.enter_transfer_option_data(
                 buyer=self.buyer, seller=self.seller)
+            app.click_save_transfer_option()
+
+            # wait for form to disappear
+            app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
+
+            ot = self.buyer.option_buyer.last()
+            self.assertTrue(app.is_no_errors_displayed())
+            self.assertTrue(app.is_transfer_option_shown(
+                buyer=self.buyer, seller=self.seller
+            ))
+            self.assertTrue(app.is_option_date_equal('13.05.16'))
+            self.assertTrue(app.is_option_plan_displayed(
+                ot.option_plan.security))
+
+        except Exception, e:
+            self._handle_exception(e)
+
+    def test_base_use_case_with_optional_fields(self):
+        """ means: create a option plan and move options for users """
+
+        try:
+            app = page.OptionsPage(
+                self.selenium, self.live_server_url, self.operator.user)
+            app.click_open_create_option_plan()
+            app.enter_option_plan_form_data()
+            app.click_save_option_plan_form()
+
+            # wait for form to disappear
+            app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
+            app.click_open_transfer_option()
+            app.show_optional_fields()
+            app.enter_transfer_option_data(
+                buyer=self.buyer, seller=self.seller, certificate_id='33',
+                stock_book_id='44', depot_type='1')
             app.click_save_transfer_option()
 
             # wait for form to disappear
@@ -230,6 +490,12 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
                 buyer=self.buyer, seller=self.seller
             ))
             self.assertTrue(app.is_option_date_equal('13.05.16'))
+            security = self.buyer.option_buyer.first().option_plan.security
+            self.assertTrue(app.is_option_plan_displayed(security))
+            optiontransaction = OptionTransaction.objects.last()
+            self.assertEqual(optiontransaction.certificate_id, '33')
+            self.assertEqual(optiontransaction.stock_book_id, '44')
+            self.assertEqual(optiontransaction.depot_type, '1')
 
         except Exception, e:
             self._handle_exception(e)
@@ -242,7 +508,8 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             self.selenium, self.live_server_url, self.operator.user)
         app.prepare_optionplan_fixtures()
 
-        self.assertTrue(app.is_option_plan_displayed())
+        self.assertTrue(app.is_option_plan_displayed(
+            OptionPlan.objects.last().security))
 
         app.click_open_transfer_option()
         app.enter_transfer_option_data(seller=self.seller)
@@ -261,7 +528,8 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             self.selenium, self.live_server_url, self.operator.user)
         app.prepare_optionplan_fixtures()
 
-        self.assertTrue(app.is_option_plan_displayed())
+        self.assertTrue(app.is_option_plan_displayed(
+            OptionPlan.objects.last().security))
 
         app.click_open_transfer_option()
         app.enter_transfer_option_data(buyer=self.buyer)
@@ -373,8 +641,10 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
             self.assertTrue(app.is_no_errors_displayed())
-            self.assertTrue(app.is_option_plan_displayed())
+            self.assertTrue(app.is_option_plan_displayed(
+                OptionPlan.objects.last().security))
 
+            ct = shs[1].option_buyer.count()
             app.click_open_transfer_option()
             app.enter_transfer_option_with_segments_data(
                 buyer=shs[1], seller=shs[0])
@@ -384,6 +654,9 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.wait_until_invisible(
                 (By.CSS_SELECTOR, '#add_option_transaction'))
 
+            s = shs[1]
+            s.refresh_from_db()
+            self.assertEqual(ct + 1, s.option_buyer.count())
             self.assertTrue(app.is_no_errors_displayed())
             self.assertTrue(app.is_transfer_option_with_segments_shown(
                 buyer=shs[1], seller=shs[0]
@@ -411,7 +684,8 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
                 self.selenium, self.live_server_url, operator.user, path)
 
             security_text = (
-                    u'Vorzugsaktien (Reservierte Aktiennummern 1000-2000)')
+                    u'Vorzugsaktien (100 CHF)\n'
+                    u'(Reservierte Aktiennummern 1000-2000)')
             app.wait_until_text_present(
                 (By.CSS_SELECTOR, 'tr.security td.text'), security_text)
 
@@ -488,7 +762,8 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.wait_until_invisible((By.CSS_SELECTOR, '.form-error'))
 
             self.assertTrue(app.is_no_errors_displayed())
-            self.assertTrue(app.is_option_plan_displayed())
+            self.assertTrue(app.is_option_plan_displayed(
+                OptionPlan.objects.last().security))
 
         except Exception, e:
             self._handle_exception(e)
@@ -517,7 +792,8 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
             self.assertTrue(app.is_no_errors_displayed())
-            self.assertTrue(app.is_option_plan_displayed())
+            self.assertTrue(app.is_option_plan_displayed(
+                OptionPlan.objects.last().security))
 
             # not owned by seller
             app.click_open_transfer_option()
@@ -585,6 +861,28 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
         except Exception, e:
             self._handle_exception(e)
 
+    def test_click_detail(self):
+
+        # initial pos
+        OptionTransactionGenerator().generate(
+            seller=self.seller, buyer=self.buyer,
+            security=self.securities[0], registration_type='2')
+
+        try:
+
+            app = page.OptionsPage(
+                self.selenium, self.live_server_url, self.operator.user)
+            app.click_optiontransaction()
+
+            app.wait_until_visible((By.ID, "optiontransaction-detail"))
+            self.assertEqual(
+                app.wait_until_visible((By.CLASS_NAME, 'registration-type'))
+                .find_elements_by_tag_name('td')[1].text,
+                _('Personal representation'))
+
+        except Exception, e:
+            self._handle_exception(e)
+
 
 class PositionFunctionalTestCase(BaseSeleniumTestCase):
     """
@@ -638,9 +936,41 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.refresh()
             # wait for table
             app.wait_until_visible(
-                (By.CSS_SELECTOR, '#positions table tr.panel'))
+                (By.CSS_SELECTOR, '#positions .table .position'))
             self.assertEqual(app.get_position_row_data()[0].split('\n')[0],
                              datetime.datetime.today().strftime('%-d.%m.%y'))
+
+        except Exception, e:
+            self._handle_exception(e)
+
+    def test_add_optional_fields(self):
+        """
+        add position
+        """
+        position = PositionGenerator().generate(
+            save=False, seller=self.seller, buyer=self.buyer,
+            security=self.securities[1], stock_book_id='444', depot_type='1')
+
+        try:
+
+            app = page.PositionPage(
+                self.selenium, self.live_server_url, self.operator.user)
+            app.click_open_add_position_form()
+            app.show_optional_fields()
+            app.enter_new_position_data(position)
+            app.click_save_position()
+
+            # wait for form to disappear
+            app.wait_until_invisible((By.CSS_SELECTOR, '#add_position'))
+
+            self.assertEqual(len(app.get_position_row_data()), 8)
+            self.assertTrue(app.is_no_errors_displayed())
+            # ('%-d.%-m.%y') in case leading zero is not needed
+            self.assertIn(datetime.datetime.today().strftime('%-d.%m.%y'),
+                          app.get_position_row_data()[0].split('\n')[0])
+            position = Position.objects.last()
+            self.assertEqual(position.stock_book_id, '444')
+            self.assertEqual(position.depot_type, '1')
 
         except Exception, e:
             self._handle_exception(e)
@@ -654,6 +984,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             security=self.securities[1])
         position.value = 4.55
         position.count = 15000000
+        count = Position.objects.count()
         try:
 
             app = page.PositionPage(
@@ -669,6 +1000,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             self.assertTrue(app.is_no_errors_displayed())
 
             position = Position.objects.latest('pk')
+            self.assertEqual(count + 1, Position.objects.count())
             self.assertEqual(position.value, Decimal('4.55'))
             self.assertEqual(position.count, 15000000)
 
@@ -729,13 +1061,13 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app = page.PositionPage(
                 self.selenium, self.live_server_url, self.operator.user)
             # wait for table
-            app.wait_until_visible((By.CSS_SELECTOR, '#positions table tr'))
+            app.wait_until_visible((By.CSS_SELECTOR, '#positions .table .tr'))
             app.click_open_add_position_form()
 
             # test cycle: w/ date, seller, sec
             app.enter_bought_at(position.bought_at)
             self.assertFalse(app.has_available_segments_tooltip())
-            app.enter_seller(position.seller)
+            app.enter_typeahead('add_position', position.seller, 'seller')
             self.assertFalse(app.has_available_segments_tooltip())
             app.enter_security(position.security, 'add-position-form')
             self.assertTrue(app.has_available_segments_tooltip())
@@ -743,24 +1075,24 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
 
             app.refresh()
             # wait for table
-            app.wait_until_visible((By.CSS_SELECTOR, '#positions table tr'))
+            app.wait_until_visible((By.CSS_SELECTOR, '#positions .table .tr'))
             app.click_open_add_position_form()
             # test w/ sec + seller
             self.assertFalse(app.has_available_segments_tooltip())
-            app.enter_seller(position.seller)
+            app.enter_typeahead('add_position', position.seller, 'seller')
             self.assertFalse(app.has_available_segments_tooltip())
             app.enter_security(position.security, 'add-position-form')
             self.assertTrue(app.has_available_segments_tooltip())
 
             app.refresh()
             # wait for table
-            app.wait_until_visible((By.CSS_SELECTOR, '#positions table tr'))
+            app.wait_until_visible((By.CSS_SELECTOR, '#positions .table .tr'))
             app.click_open_add_position_form()
             # test no segs avail
             position.seller = self.seller2
             app.enter_bought_at(position.bought_at)
             self.assertFalse(app.has_available_segments_tooltip())
-            app.enter_seller(position.seller)
+            app.enter_typeahead('add_position', position.seller, 'seller')
             self.assertFalse(app.has_available_segments_tooltip())
             app.enter_security(position.security, 'add-position-form')
             self.assertTrue(app.has_available_segments_tooltip())
@@ -786,14 +1118,14 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app = page.PositionPage(
                 self.selenium, self.live_server_url, self.operator.user)
             # wait for table
-            app.wait_until_visible((By.CSS_SELECTOR, '#positions table tr'))
+            app.wait_until_visible((By.CSS_SELECTOR, '#positions .table .tr'))
             app.click_open_add_position_form()
             app.enter_new_position_data(position)
 
             # clear numbers segment field
             el = self.selenium.find_element_by_id('add_position')
             form = el.find_element_by_tag_name('form')
-            input = form.find_elements_by_tag_name('input')[3]
+            input = form.find_elements_by_tag_name('input')[5]
             input.clear()
 
             app.click_save_position()
@@ -806,7 +1138,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             # add [A-Z] number segments
             el = self.selenium.find_element_by_id('add_position')
             form = el.find_element_by_tag_name('form')
-            input = form.find_elements_by_tag_name('input')[3]
+            input = form.find_elements_by_tag_name('input')[5]
             input.send_keys('AA')
 
             app.click_save_position()
@@ -817,7 +1149,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             el = self.selenium.find_element_by_id('add_position')
             form = el.find_element_by_tag_name('form')
             input.clear()
-            input = form.find_elements_by_tag_name('input')[3]
+            input = form.find_elements_by_tag_name('input')[5]
             input.send_keys('1,2,3')
 
             app.click_save_position()
@@ -831,7 +1163,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
         except Exception, e:
             self._handle_exception(e)
 
-    def test_add_error(self):
+    def test_add_error_no_value(self):
         """
         confirm form error handling
         """
@@ -856,12 +1188,27 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
 
             self.assertFalse(app.is_no_errors_displayed())
 
+        except Exception, e:
+            self._handle_exception(e)
+
+    def test_add_error_large_numbers(self):
+        """
+        confirm form error handling
+        """
+        position = PositionGenerator().generate(
+            save=False, seller=self.seller, buyer=self.buyer,
+            security=self.securities[1])
+
+        try:
+
+            app = page.PositionPage(
+                self.selenium, self.live_server_url, self.operator.user)
+            app.click_open_add_position_form()
             # enter data too large
             position.count = 99999999991
-            position.value = 99999199999
+            position.value = 99999599999
             app.enter_new_position_data(position)
             app.click_save_position()
-
             time.sleep(3)
             self.assertTrue(
                 self.selenium.find_element_by_xpath(
@@ -869,9 +1216,25 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
                 )
             # self.assertFalse(app.is_no_errors_displayed())
 
+        except Exception, e:
+            self._handle_exception(e)
+
+    def test_add_error_matching_numbers(self):
+        """
+        confirm form error handling
+        """
+        position = PositionGenerator().generate(
+            save=False, seller=self.seller, buyer=self.buyer,
+            security=self.securities[1])
+
+        try:
+
+            app = page.PositionPage(
+                self.selenium, self.live_server_url, self.operator.user)
+            app.click_open_add_position_form()
             # working data
-            position.count = 999999999
-            position.value = 11111111
+            position.count = 88888888
+            position.value = 22222222
             app.enter_new_position_data(position)
             app.click_save_position()
 
@@ -1010,7 +1373,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.refresh()
             # wait for table
             app.wait_until_visible(
-                (By.CSS_SELECTOR, '#positions table tr.panel'))
+                (By.CSS_SELECTOR, '#positions .table .position'))
             app.click_open_split_form()
             app.wait_until_visible((By.CLASS_NAME, 'alert-warning'))
             self.assertTrue(app.has_split_warning_for_numbered_shares())
@@ -1029,6 +1392,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
 
             app = page.PositionPage(
                 self.selenium, self.live_server_url, self.operator.user)
+            time.sleep(1)
             app.click_delete_position()
 
             # header, row, 2x split
@@ -1051,6 +1415,28 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.click_confirm_position()
 
             self.assertEqual(app.count_draft_mode_items(), 0)
+
+        except Exception, e:
+            self._handle_exception(e)
+
+    def test_click_detail(self):
+
+        # initial pos
+        PositionGenerator().generate(
+            seller=self.seller, buyer=self.buyer,
+            security=self.securities[0], registration_type='2')
+
+        try:
+
+            app = page.PositionPage(
+                self.selenium, self.live_server_url, self.operator.user)
+            app.click_position()
+
+            app.wait_until_visible((By.ID, "position-detail"))
+            self.assertEqual(
+                app.wait_until_visible((By.CLASS_NAME, 'registration-type'))
+                .find_elements_by_tag_name('td')[1].text,
+                _('Personal representation'))
 
         except Exception, e:
             self._handle_exception(e)

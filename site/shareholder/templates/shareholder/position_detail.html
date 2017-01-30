@@ -1,0 +1,94 @@
+{% extends "base_auth.html" %}
+{% load i18n %}
+
+{% block title %}
+  <TITLE>{% trans "Position" %} {{ position.pk }} - Das Aktienregister</TITLE>
+{% endblock %}
+
+{% block ng_app %}js.darg.app.position{% endblock %}
+
+{% block content %}
+
+<!-- required for angular API call -->
+<script>
+  var position_id = {{ position.id}};
+</script>
+
+<div ng_controller="PositionController" id="position-detail">
+
+  <h1>{% trans "Position Details" %}</h1>
+
+  {% include "_form_errors.html" %}
+
+  {# core data #}
+  <table class="table table-striped small-font-size">
+    <tr class="type">
+      <td>{% trans "Position Type" %}:</td>
+      <td>
+        {% verbatim %}{{ position.position_type}}{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="buyer">
+      <td>{% trans "Buyer" %}:</td>
+      <td>
+        {% verbatim %}<a href="/shareholder/{{position.buyer.pk}}/" >{{ position.buyer.full_name}}</a>{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="seller" ng-show="position.seller">
+      <td>{% trans "Seller" %}:</td>
+      <td>
+        {% verbatim %}<a href="/shareholder/{{position.seller.pk}}/" >{{ position.seller.full_name}}</a>{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="security-title">
+      <td>{% trans "Security" %}:</td>
+      <td>
+        {% verbatim %}{{ position.security.readable_title}}{% endverbatim %}
+        ({% trans "Valor" %}: {% verbatim %}{{ position.security.cusip }} {% endverbatim %})
+      </td>
+    </tr>
+    <tr class="count">
+      <td>{% trans "Count" %}:</td>
+      <td>
+        {% verbatim %}{{ position.count}}{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="date">
+      <td>{% trans "Date" %}:</td>
+      <td>
+        {% verbatim %}{{ position.bought_at| date : 'd.MM.yy'}}{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="value" ng-show="position.value">
+      <td>{% trans "Value" %}:</td>
+      <td>
+        {% verbatim %}{{ position.value}}{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="number-segments" ng-show="position.security.track_numbers && position.number_segments"">
+      <td>{% trans "Number Segments" %}:</td>
+      <td>
+        {% verbatim %}{{ position.number_segments}}{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="registration-type" ng-show="position.readable_registration_type">
+      <td>{% trans "Registration Type" %}:</td>
+      <td>
+        {% verbatim %}{{ position.readable_registration_type}}{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="depot-type" ng-show="position.readable_depot_type">
+      <td>{% trans "Depot Type" %}:</td>
+      <td>
+        {% verbatim %}{{ position.readable_depot_type}}{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="stock-book-id" ng-show="position.stock_book_id">
+      <td>{% trans "Stick Book ID" %}:</td>
+      <td>
+        {% verbatim %}{{ position.stock_book_id}}{% endverbatim %}
+      </td>
+    </tr>
+  </table>
+</div>
+{% endblock %}

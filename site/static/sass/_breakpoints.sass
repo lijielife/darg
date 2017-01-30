@@ -1,6 +1,5 @@
 
 @media only screen and (max-width: 960px)
-
   body.core
     .add-information-inline
       .date-field
@@ -20,15 +19,19 @@
           .auto-suggestions
             width: +zen-grid-item-width(4.5)
   .table
+    &.table-small-font
+      font-size: 0.7em
     .tr
       .td
+        a
+          font-size: 0.9em
         font-size: 0.9em
         @include align-items(baseline)
     .th
       font-size: 0.9em
 
 @media only screen and (max-width: 800px)
-  
+
   body.core
     .registration-teaser
       display: none
@@ -87,7 +90,7 @@
       padding: 0
   #auth h1
     text-align: center
-  //-- change collapse menu breakpoint 
+  //-- change collapse menu breakpoint
   .pull-right-mobile
     float: right
     margin-right: 10px
@@ -141,7 +144,7 @@
             .orange
               display: none
 
-@media only screen and (min-width: 768px)
+@media only screen and (min-width: 769px)
   /* override bootstrap default class*/
   .navbar-right
     .dropdown-menu
@@ -162,13 +165,22 @@
       @include display-flex(flex)
       @include flex-flow(row)
       .td
+        a
+          &.btn-icon
+            padding-left: 0
+          padding-left: 10px
+        &.flex-center
+          @include align-items(center) //vertical align center
+          @include justify-content(center) //horizontal align center
         &.text-right-flex
           text-align: right
-          @include justify-content(flex-end) //align right text desktop 
+          @include flex-direction(column) //display content y-axis
+          @include align-items(flex-end) //align right text (y-axis) desktop
+          @include justify-content(flex-start) //align left text (x-axis) desktop
         padding: 0.5em
 
 @media only screen and (max-width: 768px)
-  //-- custom order items 
+  //-- custom order items
   .order-1
     @include order(1)
   .order-2
@@ -177,21 +189,70 @@
     @include order(3)
   .order-4
     @include order(4)
+  .order-5
+    @include order(5)
+  .order-6
+    @include order(6)
+  .order-7
+    @include order(7)
+
   //-- responsive table mobile
+  .show-mobile
+    display: block
+  .hide-mobile
+    display: none !important //force hide on mobile
+  .meta-mobile-only
+    display: block
+  .bought-at
+    font-size: 12px
   .table
+    &.table-centered-mobile
+      .tr
+        padding: 10px
+        @include align-items(center)
+        @include flex-wrap(wrap)
+        @include flex-direction(row)
+      .td
+        padding-top: 15px
+        padding-bottom: 10px
+        margin: 5px 0
+        a
+          padding: 0 5px
+          &.btn-icon
+            font-size: 1.35em
+        &.td-border-right
+          border-right: 1px solid $color-light-gray
+          a
+            margin: 0 10px
+        &.td-flex-inline
+          width: 50%
+          text-align: center
+        .custom-typeface-mobile
+          font-weight: 400
+        @include align-items(center !important) //force align ( chrome inheritance )
+        @include justify-content(center)
+        //-- make tr looks like column
+        width: 100%
+    &.table-small-font
+      font-size: 1rem
     .tr
       min-height: 70px
       padding: 10px 75px 10px 0
       position: relative
+      border: 1px solid #f5f5f5
+      &.th
+        display: none
       &.option-holders-heading
         font-weight: 700
         background: transparent
         .note
           padding-left: 0
           font-weight: 300
-      .full-name
+      .buyer-name
         font-weight: 700
-        font-size: 1.1em
+        font-size: 1.2em
+      .td
+        @include flex-basis(auto)
         .truncate
           white-space: nowrap /* No break word */
           overflow: hidden /* truncate content */
@@ -209,8 +270,14 @@
           text-overflow: ellipsis /* truncate with ... */
       .shares-count
         display: block
-      .shareholders-count
-        value
+      .gray-circle
+        .transform-center
+          &.large
+            font-weight: 700
+            font-size: 2em
+          &.medium
+            font-weight: 700
+            font-size: 1.2em
           position: absolute
           top: 50%
           left: 50%
@@ -236,7 +303,7 @@
       .td
         word-break: normal
         padding: 0 10px
-      //-- end responsive table mobile    
+      //-- end responsive table mobile
   body.core
     .container
       .td
@@ -249,8 +316,8 @@
         li
           margin: 5px 0
       .navbar-collapse
-        border: 0 
-        box-shadow: unset 
+        border: 0
+        box-shadow: unset
         .navbar-header
           width: 100%
 
@@ -258,13 +325,13 @@
   .main-screenshot
     .screenshot
       background-position: center
-      background-size: 100% 100% 
+      background-size: 100% 100%
 
 @media only screen and (max-width: 640px)
 
   body.core
     .registration-form
-      width: 75% 
+      width: 75%
       margin-left: 15%
     .container
       h1
@@ -312,7 +379,15 @@
       .tr
         .td
           word-break: inherit
-
+@media only screen and (max-width: 600px)
+  .table
+    .tr
+      .td
+        &.buyer-name
+          padding-left: 10px
+      .bought-at-column
+        position: relative
+    position: relative
 @media only screen and (max-width: 480px)
   body.core
     .password-reset-container, .password-change-container
@@ -337,8 +412,10 @@
       @include flex-wrap(wrap)
     .tr
       font-size: 1em
-      .full-name
-        font-size: 0.75em      
+      .bought-at
+        font-size: 8px
+      .buyer-name
+        font-size: 0.75em
   .main-screenshot
     .screenshot
       height: 160px
@@ -399,6 +476,8 @@
     .screenshot
       height: 130px
       background-size: cover
+  .bold-mobile
+    font-size: 10px
 
 @media screen and (orientation:portrait)
   // ipad rotation adjustments

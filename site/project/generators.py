@@ -102,6 +102,7 @@ class CompanyGenerator(object):
             "country": country,
             "founded_at": datetime.datetime.now().date()
         }
+        kwargs2.update(**kwargs)
 
         company = Company.objects.create(**kwargs2)
 
@@ -112,7 +113,7 @@ class SecurityGenerator(object):
 
     def generate(self, **kwargs):
         company = kwargs.get('company', CompanyGenerator().generate())
-        kwargs2 = dict(title='P', company=company, count=1)
+        kwargs2 = dict(title='P', company=company, count=1, face_value=100)
         kwargs2.update(kwargs)
         s1 = Security.objects.create(**kwargs2)
 
@@ -166,11 +167,13 @@ class ShareholderGenerator(object):
         number = kwargs.get('number') or random.choice(words)+"234543"
         user = kwargs.get('user') or _make_user()
         company = kwargs.get('company') or CompanyGenerator().generate()
+        mailing_type = kwargs.get('mailing_type') or 1
 
         shareholder = Shareholder.objects.create(
             user=user,
             number=number,
             company=company,
+            mailing_type=mailing_type
         )
 
         return shareholder
@@ -229,8 +232,13 @@ class PositionGenerator(object):
 
         buyer = kwargs.get('buyer') or ShareholderGenerator().generate(
             company=company)
-        seller = kwargs.get('seller', ShareholderGenerator().generate(
-            company=company))
+
+        # seller only if not sent as kwarg
+        if 'seller' not in kwargs.keys():
+            seller = ShareholderGenerator().generate(company=company)
+        else:
+            seller = kwargs.get('seller')
+
         count = kwargs.get('count') or 3
         value = kwargs.get('value') or 2
         security = kwargs.get('security') or SecurityGenerator().generate(
@@ -248,6 +256,18 @@ class PositionGenerator(object):
         }
         if seller:
             kwargs2.update({"seller": seller})
+
+        if kwargs.get('registration_type'):
+            kwargs2.update(
+                {'registration_type': kwargs.get('registration_type')})
+
+        if kwargs.get('depot_type'):
+            kwargs2.update(
+                {'depot_type': kwargs.get('depot_type')})
+
+        if kwargs.get('stock_book_id'):
+            kwargs2.update(
+                {'stock_book_id': kwargs.get('stock_book_id')})
 
         if kwargs.get('save') == False:
             return Position(**kwargs2)
@@ -308,6 +328,22 @@ class OptionTransactionGenerator(object):
         if kwargs.get('number_segments'):
             kwargs2.update({'number_segments': kwargs.get('number_segments')})
 
+        if kwargs.get('registration_type'):
+            kwargs2.update(
+                {'registration_type': kwargs.get('registration_type')})
+
+        if kwargs.get('depot_type'):
+            kwargs2.update(
+                {'depot_type': kwargs.get('depot_type')})
+
+        if kwargs.get('stock_book_id'):
+            kwargs2.update(
+                {'stock_book_id': kwargs.get('stock_book_id')})
+
+        if kwargs.get('certificate_id'):
+            kwargs2.update(
+                {'certificate_id': kwargs.get('certificate_id')})
+
         if kwargs.get('save', True):
             position = OptionTransaction.objects.create(**kwargs2)
         else:
@@ -323,8 +359,10 @@ class TwoInitialSecuritiesGenerator(object):
             company = kwargs.get('company')
         else:
             company = CompanyGenerator().generate()
-        s1 = Security.objects.create(title='P', company=company, count=1)
-        s2 = Security.objects.create(title='C', company=company, count=2)
+        s1 = Security.objects.create(title='P', company=company, count=1,
+                                     face_value=100)
+        s2 = Security.objects.create(title='C', company=company, count=2,
+                                     face_value=10)
 
         return (s1, s2)
 
@@ -334,6 +372,7 @@ class ComplexShareholderConstellationGenerator(object):
     def generate(self, **kwargs):
 
         company = kwargs.get('company') or CompanyGenerator().generate()
+        shareholder_count = kwargs.get('shareholder_count', 10)
 
         # intial securities
         s1, s2 = TwoInitialSecuritiesGenerator().generate(company=company)
@@ -349,7 +388,7 @@ class ComplexShareholderConstellationGenerator(object):
         # random shareholder generation
         shareholders = [cs]
         # initial share seeding
-        for i in range(0, 10):
+        for i in range(0, shareholder_count):
             shareholders.append(PositionGenerator().generate(
                 company=company, security=s1, seller=cs).buyer)
 
@@ -401,7 +440,8 @@ class ComplexPositionsWithSegmentsGenerator(object):
         def buy_segment(segments, buyer, seller):
             p = PositionGenerator().generate(
                 company=company, security=s1, buyer=buyer,
-                seller=seller, number_segments=segments)
+                seller=seller, number_segments=segments, stock_book_id='12345',
+                depot_type='1')
             return p
 
         positions.append(buy_segment([u'1000-1050'], s, cs))
@@ -525,7 +565,8 @@ class ComplexOptionTransactionsWithSegmentsGenerator(object):
             p = OptionTransactionGenerator().generate(
                 company=company, security=s1, buyer=buyer,
                 seller=seller, number_segments=segments,
-                option_plan=optionplan)
+                option_plan=optionplan, stock_book_id='12345', depot_type='1',
+                certificate_id='333')
             return p
 
         positions.append(buy_segment([u'1000-1050'], s, cs))

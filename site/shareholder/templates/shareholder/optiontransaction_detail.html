@@ -1,0 +1,93 @@
+{% extends "base_auth.html" %}
+{% load i18n %}
+
+{% block title %}
+  <TITLE>{% trans "Optiontransaction" %} {{ optiontransaction.pk }} - Das Aktienregister</TITLE>
+{% endblock %}
+
+{% block ng_app %}js.darg.app.optiontransaction{% endblock %}
+
+{% block content %}
+
+<!-- required for angular API call -->
+<script>
+  var optiontransaction_id = {{ optiontransaction.id}};
+</script>
+
+<div ng_controller="OptionTransactionController" id="optiontransaction-detail">
+
+  <h1>{% trans "Optiontransaction Details" %}</h1>
+
+  {% include "_form_errors.html" %}
+
+  {# core data #}
+  <table class="table table-striped small-font-size">
+    <tr class="buyer">
+      <td>{% trans "Buyer" %}:</td>
+      <td>
+       {% verbatim %}<a href="/shareholder/{{optiontransaction.buyer.pk}}/" >{{ optiontransaction.buyer.full_name }}</a>{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="seller">
+      <td>{% trans "Seller" %}:</td>
+      <td>
+        {% verbatim %}<a href="/shareholder/{{optiontransaction.seller.pk}}/" >{{ optiontransaction.seller.full_name }}</a>{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="certificate-id" ng-show="optiontransaction.certificate_id">
+      <td>{% trans "Certificate ID" %}:</td>
+      <td>
+        {% verbatim %}{{ optiontransaction.certificate_id }} {% endverbatim %}
+      </td>
+    </tr>
+    <tr class="number-segments" ng-show="optiontransaction.option_plan.security.track_numbers && optiontransaction.number_segments"">
+      <td>{% trans "Number Segments" %}:</td>
+      <td>
+        {% verbatim %}{{ optiontransaction.number_segments}}{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="bought-at">
+      <td>{% trans "Date" %}:</td>
+      <td>
+        {% verbatim %}{{ optiontransaction.bought_at | date : 'd.MM.yy' }} {% endverbatim %}
+      </td>
+    </tr>
+    <tr class="count">
+      <td>{% trans "Count" %}:</td>
+      <td>
+        {% verbatim %}{{ optiontransaction.count }} {% endverbatim %}
+      </td>
+    </tr>
+    <tr class="option-plan">
+      <td>{% trans "Option Plan" %}:</td>
+      <td>
+        {% verbatim %}<a href="/optionsplan/{{optiontransaction.option_plan.pk}}/">{{ optiontransaction.option_plan.title }}</a>{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="vesting-months" ng-show="optiontransaction.vesting_months">
+      <td>{% trans "Vesting (in months)" %}:</td>
+      <td>
+        {% verbatim %}{{ optiontransaction.vesting_months }} {% endverbatim %}
+      </td>
+    </tr>
+    <tr class="registration-type" ng-show="optiontransaction.readable_registration_type">
+      <td>{% trans "Registration Type" %}:</td>
+      <td>
+        {% verbatim %}{{ optiontransaction.readable_registration_type}}{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="depot-type" ng-show="optiontransaction.readable_depot_type">
+      <td>{% trans "Depot Type" %}:</td>
+      <td>
+        {% verbatim %}{{ optiontransaction.readable_depot_type}}{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="stock-book-id" ng-show="optiontransaction.stock_book_id">
+      <td>{% trans "Stick Book ID" %}:</td>
+      <td>
+        {% verbatim %}{{ optiontransaction.stock_book_id}}{% endverbatim %}
+      </td>
+    </tr>
+  </table>
+</div>
+{% endblock %}

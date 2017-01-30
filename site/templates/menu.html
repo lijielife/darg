@@ -21,6 +21,7 @@
         {% url 'start' as start_url %}
         {% url 'options' as options_url %}
         {% url 'positions' as positions_url %}
+		{% url 'reports' as reports_url %}
 
         <div id="navbar" class="navbar-collapse collapse" aria-expanded="false" style="height: 1px;">
           <ul class="nav navbar-nav">
@@ -33,6 +34,9 @@
               </li>
               <li {% ifequal request.path options_url %}class="active"{% endifequal %}>
                 <a href="{{options_url}}">{% trans "Options" %}</a>
+              </li>
+              <li {% ifequal request.path reports_url %}class="active"{% endifequal %}>
+                <a href="{{reports_url}}">{% trans "Reports" %}</a>
               </li>
               {% endif %}
           </ul>

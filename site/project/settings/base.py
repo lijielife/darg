@@ -47,10 +47,6 @@ SITE_ID = 1
 
 ALLOWED_HOSTS = [
     'www.das-aktienregister.ch',
-    'app.das-aktienregister.ch',
-    'www.dasaktienregister.ch',
-    'dasaktienregister.ch',
-    'das-aktienregister.ch',
     ]
 
 # Application definition
@@ -99,6 +95,7 @@ INSTALLED_APPS = (
     'services',
     'company',
     'project',
+    'reports',
     'utils',
 )
 

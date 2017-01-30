@@ -1,6 +1,10 @@
 {% extends "base_auth.html" %}
 {% load i18n %}
 
+{% block title %}
+  <TITLE>{% trans "Shareholder" %}: {{ shareholder.get_full_name }} (#{{ shareholder.number }}) - Das Aktienregister</TITLE>
+{% endblock %}
+
 {% block ng_app %}js.darg.app.shareholder{% endblock %}
 
 {% block content %}
@@ -15,6 +19,12 @@
   <h1>{% trans "Shareholder Details" %}</h1>
 
   {% include "_form_errors.html" %}
+
+  {% if shareholder.is_dispo_shareholder %}
+  <div class="alert alert-info">
+    {% trans "This is the dispo shareholder, which does not exist in the real world. but is meant to hold all shares which were not registered by their owners. <strong>DO NOT EDIT ITS DATA.</strong>" %}
+  </div>
+  {% endif %}
 
   <h2>{% trans "Shareholder Data" %}</h2>
 
@@ -37,13 +47,29 @@
         {% verbatim %}<span editable-text="shareholder.number" onaftersave="edit_shareholder()">{{ shareholder.number || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
       </td>
     </tr>
-    <tr>
+    <tr class="title">
       <td>
-        {% trans "Shareholder Name" %}:
+        {% trans "Title" %}:
       </td>
       <td>
-        {% verbatim %}<span editable-text="shareholder.user.first_name" onaftersave="edit_shareholder()">{{ shareholder.user.first_name || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
-        {% verbatim %}<span editable-text="shareholder.user.last_name" onaftersave="edit_shareholder()">{{ shareholder.user.last_name || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
+        {% verbatim %}<span editable-text="shareholder.user.userprofile.title" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.title || 'Titel' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="salutation">
+      <td>
+        {% trans "Salutation" %}:
+      </td>
+      <td>
+        {% verbatim %}<span editable-text="shareholder.user.userprofile.salutation" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.salutation || 'Anrede' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="full-name">
+      <td>
+        {% trans "First Name, Last Name" %}:
+      </td>
+      <td>
+        {% verbatim %}<span editable-text="shareholder.user.first_name" onaftersave="edit_shareholder()">{{ shareholder.user.first_name || 'Vorname' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
+        {% verbatim %}<span editable-text="shareholder.user.last_name" onaftersave="edit_shareholder()">{{ shareholder.user.last_name || 'Nachname' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
       </td>
     </tr>
     <tr class="user-email">
@@ -52,24 +78,57 @@
         {% verbatim %}<span editable-text="shareholder.user.email" onaftersave="edit_shareholder()">{{ shareholder.user.email || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
       </td>
     </tr>
+    <tr class="legal-type">
+      <td>{% trans "Shareholder Legal Type" %}:</td>
+      <td>
+        {% verbatim %}
+        <span editable-select="shareholder.user.userprofile.legal_type" onaftersave="edit_shareholder()" e-ng-options="l as l.name for l in legal_types">
+          {{ shareholder.user.userprofile.readable_legal_type || 'Aktionaersart' }}
+          <span class="el-icon-pencil"></span>
+        </span>
+        {% endverbatim %}
+      </td>
+    </tr>
     <tr>
       <td>{% trans "Shareholder Company Name" %}:</td>
       <td>
         {% verbatim %}<span editable-text="shareholder.user.userprofile.company_name" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.company_name || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
       </td>
     </tr>
+    <tr class="company-department">
+      <td>{% trans "Shareholder Company Department" %}:</td>
+      <td>
+        {% verbatim %}<span editable-text="shareholder.user.userprofile.company_department" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.company_department || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="mailing-type">
+      <td>{% trans "Mailing Type" %}:</td>
+      <td>
+        {% verbatim %}
+        <span editable-select="shareholder.mailing_type" onaftersave="edit_shareholder()" e-ng-options="l as l.name for l in mailing_types">
+          {{ shareholder.readable_mailing_type || 'Versandart' }}
+          <span class="el-icon-pencil"></span>
+        </span>
+        {% endverbatim %}
+      </td>
+    </tr>
     <tr>
       <td>
         <strong>{% trans "Address" %}:</strong><br/>
         {% trans "Street" %}<br/>
+        {% trans "Street2" %}<br/>
         {% trans "Zip" %} {% trans "City" %}<br/>
         {% trans "Province" %}<br/>
-        {% trans "Country" %}
+        {% trans "Country" %}<br/>
+        {% trans "P.O. Box" %}<br/>
+        {% trans "c/o" %}
       </td>
       <td>
         <br/>
         {% verbatim %}
         <span editable-text="shareholder.user.userprofile.street" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.street || 'Street' }} <span class="el-icon-pencil"></span></span>
+        <br/>
+        <span editable-text="shareholder.user.userprofile.street2" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.street2 || 'Street2' }} <span class="el-icon-pencil"></span></span>
         <br/>
         <span editable-text="shareholder.user.userprofile.postal_code" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.postal_code || 'PLZ' }} <span class="el-icon-pencil"></span></span>
         <span editable-text="shareholder.user.userprofile.city" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.city || 'City' }} <span class="el-icon-pencil"></span></span>
@@ -78,6 +137,22 @@
         <br/>
         <span editable-select="shareholder.user.userprofile.country" onaftersave="edit_shareholder()" e-ng-options="c as c.name for c in countries">
           {{ shareholder.user.userprofile.country.name || 'Country' }}
+          <span class="el-icon-pencil"></span>
+        </span>
+        <br/>
+        <span editable-text="shareholder.user.userprofile.pobox" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.pobox || 'P.O. Box' }} <span class="el-icon-pencil"></span></span>
+        <br/>
+        <span editable-text="shareholder.user.userprofile.c_o" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.c_o || 'c/o' }} <span class="el-icon-pencil"></span></span>
+        <br/>
+        {% endverbatim %}
+      </td>
+    </tr>
+    <tr>
+      <td>{% trans "Nationality" %}:</td>
+      <td>
+        {% verbatim %}
+        <span editable-select="shareholder.user.userprofile.nationality" onaftersave="edit_shareholder()" e-ng-options="c as c.name for c in countries">
+          {{ shareholder.user.userprofile.nationality.name || 'Nationality' }}
           <span class="el-icon-pencil"></span>
         </span>
         {% endverbatim %}
@@ -117,29 +192,78 @@
         {% endverbatim %}
       </td>
     </tr>
+    {% if not shareholder.is_company_shareholder and not shareholder.is_dispo_shareholder %}
     <tr>
       <td>{% trans "Value of all shares according to last transaction" %}:</td>
       <td>{{ shareholder.share_value }}</td>
     </tr>
-  </table>
+    <tr>
+      <td>{% trans "Voting rights total count" %}:</td>
+      {# company shareholder does not have voting rights #}
+      <td>{{ shareholder.vote_count }}</td>
+    </tr>
+     <tr>
+      <td>{% trans "Voting rights percent" %}:</td>
+      <td>{% verbatim %}{{ shareholder.vote_percent | percentage:2 }}{% endverbatim %}</td>
+    </tr>
+    {% endif %}
+   </table>
 
+  <!-- OWNED STOCK -->
   <h2>{% trans "Owned Stock" %}</h2>
-  <p>{% trans "Count Shares Total" %}: {{ shareholder.share_count }}</p>
-  <p>{% trans "% Ownership" %}: {{ shareholder.share_percent }}% </p>
+  <p>{% trans "Count Shares Owned Total" %}: {{ shareholder.share_count }}</p>
+  {% if shareholder.share_percent %}
+    <p>{% trans "% of shares floating" %}: {{ shareholder.share_percent }}% </p>
+  {% endif %}
+  {% if shareholder.is_company_shareholder %}
+    <p>{% trans "Provisioned Capital" %}: {{shareholder.company.get_total_capital }} CHF</p>
+    {% if shareholder.company.get_total_share_count %}
+      <p>{% trans "Provisioned Share Count" %}: {{shareholder.company.get_total_share_count }}</p>
+    {% endif %}
+    {% if shareholder.company.get_total_share_count_floating %}
+      <p>{% trans "Share Count Floating" %}: {{shareholder.company.get_total_share_count_floating }}</p>
+    {% endif %}
+    <p>{% trans "Total votes count based on shares existing" %}: {{shareholder.company.get_total_votes }}</p>
+    <p>
+	  {% trans "Total votes count based on shares floating" %}: {{shareholder.company.get_total_votes_floating }}
+	  <div class="note">{% trans "Does include shares used for options. Without options it would be" %}: {{shareholder.company.get_total_votes_eligible }}</div>
+	</p>
+    <p>{% trans "Total option count based on shares dedicated to options" %}: {{shareholder.company.get_total_options }}</p>
+    <p>{% trans "Total option count based on shares dedicated to options floating" %}: {{shareholder.company.get_total_options_floating }}</p>
+  {% endif %}
   <div class="table-responsive">
     <table class="stock table table-striped">
-    <thead><tr>
-    <th>{% trans "security" %}</th>
-      <th>{% trans "count" %}</th>
-      <th>{% trans "segments" %}</th>
-    </tr></thead>
-  {% for security in securities %}
-      <tr class="security"><td>{{ security.get_title_display }}</td><td>{{ security.count }}</td>{% if security.segments %}<td>{{ security.segments }}</td>{% else %}<td></td>{% endif %}</tr>
-  {% endfor %}
-  </table>
+      <thead><tr>
+        <th>{% trans "security" %}</th>
+        <th>{% trans "cusip" %}</th>
+        {% if shareholder.is_company_shareholder %}
+          <th>{% trans "issued" %}</th> 
+        {% endif %}
+        <th>
+		  {% trans "shares owned" %}
+		  {% if shareholder.is_company_shareholder %}
+            <div class="note">{% trans "cleaned by options count" %}</div>
+		  {% endif %}
+		</th>
+        <th>
+		  {% trans "options owned" %}
+		</th>
+        {% if security.track_numbers %}<th>{% trans "share segments" %}</th>{% endif %}
+      </tr></thead>
+      {% for security in securities %}
+      <tr class="security">
+        <td class="name">{{ security }}</td>
+        <td class="cusip">{% if security.cusip %}{{ security.cusip }}{% endif %}</td>
+        {% if shareholder.is_company_shareholder %}
+          <th>{{ security.calculate_count }}</th> 
+        {% endif %}
+        <td class="count">{{ security.count }}</td>
+        <td class="count">{{ security.options_count }}</td>
+        {% if security.segments %}<td class="number-segments">{{ security.segments }}</td>{% endif %}
+	    </tr>
+      {% endfor %}
+    </table>
   </div>
-  
-
   <!-- <a class="btn btn-focus btn-danger" title="{% trans "Delete shareholder" %}" >{% trans "Delete shareholder" %}</a> -->
 
 </div>
