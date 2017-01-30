@@ -12,11 +12,11 @@ from django.db.models import Sum
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
 
-from project.generators import (DEFAULT_TEST_DATA, OperatorGenerator,
-                                PositionGenerator)
+from project.generators import (DEFAULT_TEST_DATA, OperatorGenerator,)
 from shareholder.models import (DEPOT_TYPES, REGISTRATION_TYPES, Company,
                                 Country, OptionPlan, OptionTransaction,
-                                Position, Security, Shareholder, UserProfile)
+                                Position, Security, Shareholder, UserProfile,
+                                )
 from utils.geo import COUNTRY_MAP, _get_language_iso_code
 
 SISWARE_CSV_HEADER = [
@@ -37,7 +37,7 @@ SISWARE_CSV_HEADER = [
 ]
 
 # face_value:count structure
-SECURITIES = {'10': 1000, '100': 7900, '500': 9539}
+SECURITIES = {'10': 1000, '100': 7900, '500': 8539}
 
 
 logger = logging.getLogger(__name__)
@@ -122,12 +122,15 @@ class SisWareImportBackend(BaseImportBackend):
         for face_value, count in SECURITIES.iteritems():
             s = self._get_or_create_security(face_value=face_value)
             Position.objects.get_or_create(security=s, count=count,
-                                         buyer=self.company_shareholder,
-                                         defaults={
-                                         'bought_at': datetime.datetime(2013, 1, 1),
-                                         'depot_type': '1'
-                                         }
-                                         )
+                                           buyer=self.company_shareholder,
+                                           defaults={
+                                               'bought_at': datetime.datetime(
+                                                   2013, 9, 21),
+                                               'depot_type': '1',
+                                               'registration_type': '1',
+                                               'stock_book_id': '1913,001'
+                                           }
+                                           )
 
         # and a matching operator?
         self.operator = self.company.operator_set.first()
@@ -195,13 +198,62 @@ class SisWareImportBackend(BaseImportBackend):
         check data consistency, company data, total sums to ensure the import is
         fully valid
         """
+        # now that we have all certificates loaded, add the initial transaction
+        # for options
+        for op in self.company.optionplan_set.all():
+            count = -self.company_shareholder.options_count(
+                security=op.security)
+            if count:
+                OptionTransaction.objects.get_or_create(
+                    bought_at=datetime.datetime(2013, 9, 21),
+                    option_plan=op,
+                    count=count,
+                    buyer=self.company_shareholder,
+                    depot_type='0'
+                    )
+
+        # first before summarizing
+        # create dispo shares (non registered shares placeholder)
+        self.dispo_shareholder = self._get_or_create_dispo_shareholder()
+        self.dispo_shareholder.set_dispo_shareholder()
+        self._get_or_create_dispo_shares()
+
+        # update security.count value
         for security in self.company.security_set.all():
             security.count = security.calculate_count()
             security.save()
 
+        # update company.share_count and provisioned capital
         self.company.share_count = self.company.security_set.all().aggregate(
             Sum('count'))['count__sum']
+        self.company.provisioned_capital = self.company.get_total_capital()
         self.company.save()
+
+    def _get_or_create_dispo_shares(self):
+        """
+        create positions to have dispo shares properly listed
+        """
+        for security in self.company.security_set.all():
+            count = security.calculate_dispo_share_count()
+            # during import the corp shs owned shares are imported as Position
+            # objects too. but this is invalid. We need to subscract this from
+            # the dispo share count and remove the Positions. use `get()` as it
+            # should only be one.
+            pos = Position.objects.filter(
+                buyer=self.company_shareholder, seller=self.company_shareholder,
+                security=security)
+            if pos.exists():
+                pos = pos.get()
+                count = count - pos.count
+                pos.delete()
+
+            if count < 1:  # skip if there are none
+                continue
+            self._get_or_create_position(
+                datetime.datetime.now().date().isoformat(),
+                self.dispo_shareholder, count, '0,00', None, '2',
+                '', 'Gesellschaftsdepot', security
+            )
 
     def _get_or_create_shareholder(self, shareholder_number, user,
                                    mailing_type):
@@ -218,6 +270,14 @@ class SisWareImportBackend(BaseImportBackend):
                       'mailing_type': mailing_type
                       }
         )
+        return shareholder
+
+    def _get_or_create_dispo_shareholder(self):
+        user = self._get_or_create_user(
+            '9999999999', '', _('Disposhareholder'), 'Juristische Person',
+            '', '', '', '', '', '', '', '', '', '', '', '', '', '')
+        shareholder = self._get_or_create_shareholder(
+            '9999999999', user, 'Unzustellbar')
         return shareholder
 
     def _get_or_create_security(self, face_value, cusip=None):
@@ -307,7 +367,8 @@ class SisWareImportBackend(BaseImportBackend):
         we have no email to identify duplicates and merge then. hence we are
         using the shareholder id to create new users for each shareholder id
         """
-        username = u"{}-{}".format(slugify(self.company.name), shareholder_id)
+        username = u"{}-{}".format(
+            slugify(self.company.name[:20]), shareholder_id)
         try:
             user, c_ = User.objects.get_or_create(
                 username=username[:29],
@@ -376,16 +437,6 @@ class SisWareImportBackend(BaseImportBackend):
         self._validate_language_iso_code_known()
         self._validate_country_names_mappable()
         self._validate_nationality_names_mappable()
-
-# not used
-#     def _validate_initial_positions(self):
-#         """
-#         we need to have the initial position for capital creation already
-#         entered manually
-#         """
-#         if not self.company.security_set.first().position_set.first():
-#             raise ValueError('Initial Position missing. Must be created'
-#                              'manually for any security')
 
     def _validate_file_structure(self, filename):
         """

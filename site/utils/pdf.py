@@ -22,8 +22,14 @@ def render_to_pdf(template_src, context_dict):
         link_callback=fetch_resources,
         encoding='UTF-8')
     if not pdf.err:
-        return HttpResponse(result.getvalue(), content_type='application/pdf')
-    return HttpResponse('We had some errors<pre>%s</pre>' % escape(html))
+        return result.getvalue()
+
+    raise ValueError('We had some errors<pre>%s</pre>' % escape(html))
+
+
+def render_to_pdf_response(template_src, context_dict):
+    content = render_to_pdf(template_src, context_dict)
+    return HttpResponse(content, content_type='application/pdf')
 
 
 def fetch_resources(uri, rel):

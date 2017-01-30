@@ -15,6 +15,13 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('company_pk', nargs='+', type=int)
+        parser.add_argument(
+            '--keep-operator',
+            action='store_true',
+            dest='keep_operator',
+            default=False,
+            help='Do not delete operator roles',
+        )
 
     def handle(self, *args, **options):
         """
@@ -31,7 +38,8 @@ class Command(BaseCommand):
                 shareholder.delete()
             logger.info('delete optionplans and assigned transactions...')
             company.optionplan_set.all().delete()
-            company.operator_set.all().delete()
+            if not options['keep_operator']:
+                company.operator_set.all().delete()
             company.security_set.all().delete()
 
             print('check: {} shareholders, {} optionplans, {} positions,'
@@ -45,8 +53,8 @@ class Command(BaseCommand):
                             OptionTransaction.objects.filter(
                                 Q(buyer__company=company) | Q(seller__company=company)
                             ).count(),
-                            company.operator_set.count(),
                             company.security_set.count(),
+                            company.operator_set.count(),
                         )
                 )
 

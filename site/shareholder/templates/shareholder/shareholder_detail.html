@@ -20,6 +20,12 @@
 
   {% include "_form_errors.html" %}
 
+  {% if shareholder.is_dispo_shareholder %}
+  <div class="alert alert-info">
+    {% trans "This is the dispo shareholder, which does not exist in the real world. but is meant to hold all shares which were not registered by their owners. <strong>DO NOT EDIT ITS DATA.</strong>" %}
+  </div>
+  {% endif %}
+
   <h2>{% trans "Shareholder Data" %}</h2>
 
   {# gafi warning #}
@@ -186,44 +192,75 @@
         {% endverbatim %}
       </td>
     </tr>
+    {% if not shareholder.is_company_shareholder and not shareholder.is_dispo_shareholder %}
     <tr>
       <td>{% trans "Value of all shares according to last transaction" %}:</td>
       <td>{{ shareholder.share_value }}</td>
     </tr>
     <tr>
       <td>{% trans "Voting rights total count" %}:</td>
+      {# company shareholder does not have voting rights #}
       <td>{{ shareholder.vote_count }}</td>
     </tr>
      <tr>
       <td>{% trans "Voting rights percent" %}:</td>
       <td>{% verbatim %}{{ shareholder.vote_percent | percentage:2 }}{% endverbatim %}</td>
     </tr>
+    {% endif %}
    </table>
 
   <!-- OWNED STOCK -->
   <h2>{% trans "Owned Stock" %}</h2>
-  <p>{% trans "Count Shares Total" %}: {{ shareholder.share_count }}</p>
-    <p>{% trans "% Ownership" %}: {{ shareholder.share_percent }}% </p>
-
+  <p>{% trans "Count Shares Owned Total" %}: {{ shareholder.share_count }}</p>
+  {% if shareholder.share_percent %}
+    <p>{% trans "% of shares floating" %}: {{ shareholder.share_percent }}% </p>
+  {% endif %}
+  {% if shareholder.is_company_shareholder %}
+    <p>{% trans "Provisioned Capital" %}: {{shareholder.company.get_total_capital }} CHF</p>
+    {% if shareholder.company.get_total_share_count %}
+      <p>{% trans "Provisioned Share Count" %}: {{shareholder.company.get_total_share_count }}</p>
+    {% endif %}
+    {% if shareholder.company.get_total_share_count_floating %}
+      <p>{% trans "Share Count Floating" %}: {{shareholder.company.get_total_share_count_floating }}</p>
+    {% endif %}
+    <p>{% trans "Total votes count based on shares existing" %}: {{shareholder.company.get_total_votes }}</p>
+    <p>
+	  {% trans "Total votes count based on shares floating" %}: {{shareholder.company.get_total_votes_floating }}
+	  <div class="note">{% trans "Does include shares used for options. Without options it would be" %}: {{shareholder.company.get_total_votes_eligible }}</div>
+	</p>
+    <p>{% trans "Total option count based on shares dedicated to options" %}: {{shareholder.company.get_total_options }}</p>
+    <p>{% trans "Total option count based on shares dedicated to options floating" %}: {{shareholder.company.get_total_options_floating }}</p>
+  {% endif %}
   <!-- TABLE -->
   <div class="table stock">
     <div class="tr th">
       <div class="td">{% trans "security" %}</div>
       <div class="td">{% trans "cusip" %}</div>
-      <div class="td">{% trans "shares owned" %}</div>
+      {% if shareholder.is_company_shareholder %}
+      <div class="td">{% trans "issued" %}</div>
+      {% endif %}
+      <div class="td">
+        {% trans "shares owned" %}
+        {% if shareholder.is_company_shareholder %}
+        <div class="note">{% trans "cleaned by options count" %}</div>
+        {% endif %}
+      </div>
       <div class="td">{% trans "options owned" %}</div>
       {% if security.track_numbers %}
-        <div class="td">{% trans "share segments" %}</div>
+      <div class="td">{% trans "share segments" %}</div>
       {% endif %}
     </div>
     {% for security in securities %}
     <div class="tr security">
       <div class="td name">{{ security }}</div>
       <div class="td cusip">{% if security.cusip %}{{ security.cusip }}{% endif %}</div>
+      {% if shareholder.is_company_shareholder %}
+      <div class="td">{{ security.calculate_count }}</div>
+      {% endif %}
       <div class="td count">{{ security.count }}</div>
       <div class="td count">{{ security.options_count }}</div>
       {% if security.segments %}
-        <div class="td number-segments">{{ security.segments }}</div>
+      <div class="td number-segments">{{ security.segments }}</div>
       {% endif %}
     </div>
     {% endfor %}
