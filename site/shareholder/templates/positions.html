@@ -98,12 +98,12 @@
           <div class="td hidden-xs" ng-click="goto_position(position.pk)" ng-mouseover="">{{ position.comment }}</div>
           <div class="td order-6 flex-inline flex-center">
             <div ng-show="position.is_draft">
-              <a class="btn-inline btn-icon" ng-click="delete_position(position)" data-toggle="tooltip" title="Löschen">
+              <a class="btn-inline btn-icon" ng-click="delete_position(position)" data-toggle="tooltip" title="{% endverbatim %}{% trans 'delete' %}{% verbatim %}">
                 {% endverbatim %}<i class="gray el-icon-remove-circle"></i>{% verbatim %}
               </a>
             </div>
             <div ng-show="position.is_draft">
-              <a class="btn-inline btn-icon" ng-click="confirm_position(position)" data-toggle="tooltip" title="Festschreiben">
+              <a class="btn-inline btn-icon" ng-click="confirm_position(position)" data-toggle="tooltip" title="{% endverbatim %}{% trans 'confirm' %}{% verbatim %}">
                 {% endverbatim %}<i class="el-icon-ok-circle"></i>{% verbatim %}
               </a>
             </div>
