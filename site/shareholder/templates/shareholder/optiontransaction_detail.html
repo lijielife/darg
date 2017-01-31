@@ -49,7 +49,7 @@
     <tr class="bought-at">
       <td>{% trans "Date" %}:</td>
       <td>
-        {% verbatim %}{{ optiontransaction.bought_at }} {% endverbatim %}
+        {% verbatim %}{{ optiontransaction.bought_at | date : 'd.MM.yy' }} {% endverbatim %}
       </td>
     </tr>
     <tr class="count">

@@ -76,7 +76,8 @@ app.controller 'CompanyController', ['$scope', '$http', 'Company', 'Country', 'O
     $scope.edit_company = () ->
         if $scope.company.country
             $scope.company.country = $scope.company.country.url
-        $scope.company.founded_at = $scope.company.founded_at.toISOString().substring(0, 10)
+        if $scope.company.founded_at
+            $scope.company.founded_at = $scope.company.founded_at.toISOString().substring(0, 10)
         $scope.company.$update().then (result) ->
             result.founded_at = new Date(result.founded_at)
             $scope.company = new Company(result)
@@ -92,6 +93,7 @@ app.controller 'CompanyController', ['$scope', '$http', 'Company', 'Country', 'O
             # Clear any errors
             $scope.errors = null
         , (rejection) ->
+            $scope.company.founded_at = new Date($scope.company.founded_at)
             $scope.errors = rejection.data
             Raven.captureMessage('form error: ' + rejection.statusText, {
                 level: 'warning',

@@ -56,7 +56,7 @@
     <tr class="date">
       <td>{% trans "Date" %}:</td>
       <td>
-        {% verbatim %}{{ position.bought_at}}{% endverbatim %}
+        {% verbatim %}{{ position.bought_at| date : 'd.MM.yy'}}{% endverbatim %}
       </td>
     </tr>
     <tr class="value" ng-show="position.value">

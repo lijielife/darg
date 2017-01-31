@@ -3854,7 +3854,7 @@ table.stock {
   }
   .table .tr .buyer-name {
     font-weight: 700;
-    font-size: 1.2em;
+    font-size: 1em;
   }
   .table .tr .td {
     -webkit-flex-basis: auto;
@@ -4074,7 +4074,7 @@ table.stock {
     font-size: 8px;
   }
   .table .tr .buyer-name {
-    font-size: 0.75em;
+    font-size: 1em;
   }
 
   .main-screenshot .screenshot {
