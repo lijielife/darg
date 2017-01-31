@@ -200,9 +200,11 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             start.is_properly_displayed()
             time.sleep(3)
             for shareholder in shs[1:]:  # not for company shareholder
-                row = self.selenium.find_elements_by_xpath(
+                # FIXME
+                row_xpath = (
                     '//div[./div="{}" and contains(@class, "tr")]'.format(
-                        shareholder.get_full_name()))[0]
+                        shareholder.get_full_name()))
+                row = self.selenium.find_elements_by_xpath(row_xpath)[0]
                 self.assertEqual(row.find_element_by_class_name('number').text,
                                  shareholder.number)
                 self.assertEqual(row.find_element_by_class_name('share').text,
@@ -317,7 +319,7 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             time.sleep(3)
             # wait for list entry
             xpath = (
-                u'//div[@id="shareholder_list"]/div[@class="table"]'
+                u'//div[@id="shareholder_list"]/div/div[@class="table"]'
                 u'/div[contains(@class, "tr")]'
                 u'/div/span[text()="{}"]'.format(
                     self.operator.user.shareholder_set.first().get_full_name())

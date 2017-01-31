@@ -17,20 +17,28 @@ from project.generators import (ComplexOptionTransactionsWithSegmentsGenerator,
                                 OptionTransactionGenerator, PositionGenerator,
                                 ShareholderGenerator,
                                 TwoInitialSecuritiesGenerator)
+from project.tests.mixins import StripeTestCaseMixin, SubscriptionTestMixin
 from shareholder import page
 from shareholder.models import (OptionPlan, OptionTransaction, Position,
                                 Security, Shareholder)
 
 
 # --- FUNCTIONAL TESTS
-class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
+class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
+                                          SubscriptionTestMixin,
+                                          BaseSeleniumTestCase):
 
     def setUp(self):
+        super(ShareholderDetailFunctionalTestCase, self).setUp()
+
         self.operator = OperatorGenerator().generate()
         self.buyer = ShareholderGenerator().generate(
             company=self.operator.company)
         self.seller = ShareholderGenerator().generate(
             company=self.operator.company)
+
+        # add company subscription
+        self.add_subscription(self.operator.company)
 
     def tearDown(self):
         Security.objects.all().delete()
@@ -279,13 +287,21 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
             self._handle_exception(e)
 
 
-class PositionDetailFunctionalTestCase(BaseSeleniumTestCase):
+class PositionDetailFunctionalTestCase(StripeTestCaseMixin,
+                                       SubscriptionTestMixin,
+                                       BaseSeleniumTestCase):
 
     def setUp(self):
+        super(PositionDetailFunctionalTestCase, self).setUp()
+
         self.operator = OperatorGenerator().generate()
+
+        # add company subscription
+        self.add_subscription(self.operator.company)
+
         self.poss, self.shs = ComplexPositionsWithSegmentsGenerator().generate(
             company=self.operator.company)
-        self. position = self.poss[-1]
+        self.position = self.poss[-1]
         self.page = page.PositionDetailPage(
             self.selenium, self.live_server_url, self.operator.user,
             path=reverse('position', kwargs={'pk': self.position.pk}))
@@ -327,12 +343,21 @@ class PositionDetailFunctionalTestCase(BaseSeleniumTestCase):
             self._handle_exception(e)
 
 
-class OptionTransactionDetailFunctionalTestCase(BaseSeleniumTestCase):
+class OptionTransactionDetailFunctionalTestCase(StripeTestCaseMixin,
+                                                SubscriptionTestMixin,
+                                                BaseSeleniumTestCase):
 
     def setUp(self):
+        super(OptionTransactionDetailFunctionalTestCase, self).setUp()
+
         self.operator = OperatorGenerator().generate()
-        self.poss, self.shs = ComplexOptionTransactionsWithSegmentsGenerator() \
-            .generate(company=self.operator.company)
+
+        # add company subscription
+        self.add_subscription(self.operator.company)
+
+        self.poss, self.shs = (
+            ComplexOptionTransactionsWithSegmentsGenerator().generate(
+                company=self.operator.company))
         self.optiontransaction = self.poss[-1]
         self.page = page.OptionTransactionDetailPage(
             self.selenium, self.live_server_url, self.operator.user,
@@ -349,16 +374,20 @@ class OptionTransactionDetailFunctionalTestCase(BaseSeleniumTestCase):
             time.sleep(1)
             self.assertIn(
                 self.optiontransaction.get_depot_type_display(),
-                self.page.get_field('depot-type'))
+                self.page.get_field('depot-type')
+            )
             self.assertIn(
                 self.optiontransaction.stock_book_id,
-                self.page.get_field('stock-book-id'))
+                self.page.get_field('stock-book-id')
+            )
             self.assertIn(
                 self.optiontransaction.bought_at.strftime('%d.%m.%y'),
-                self.page.get_field('bought-at'))
+                self.page.get_field('bought-at')
+            )
             self.assertIn(
                 self.optiontransaction.certificate_id,
-                self.page.get_field('certificate-id'))
+                self.page.get_field('certificate-id')
+            )
 
         except Exception, e:
             self._handle_exception(e)
@@ -372,22 +401,34 @@ class OptionTransactionDetailFunctionalTestCase(BaseSeleniumTestCase):
             # wait for angular load
             time.sleep(1)
             self.assertIn(
-                reverse('shareholder', kwargs={'pk': self.optiontransaction.seller.pk}),
-                self.page.get_url('seller'))
+                reverse('shareholder',
+                        kwargs={'pk': self.optiontransaction.seller.pk}),
+                self.page.get_url('seller')
+            )
             self.assertIn(
-                reverse('shareholder', kwargs={'pk': self.optiontransaction.buyer.pk}),
-                self.page.get_url('buyer'))
+                reverse('shareholder',
+                        kwargs={'pk': self.optiontransaction.buyer.pk}),
+                self.page.get_url('buyer')
+            )
             self.assertIn(
-                reverse('optionplan', kwargs={'optionsplan_id': self.optiontransaction.option_plan.pk}),
-                self.page.get_url('option-plan'))
+                reverse(
+                    'optionplan',
+                    kwargs={
+                        'optionsplan_id': self.optiontransaction.option_plan.pk
+                    }),
+                self.page.get_url('option-plan')
+            )
 
         except Exception, e:
             self._handle_exception(e)
 
 
-class OptionsFunctionalTestCase(BaseSeleniumTestCase):
+class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
+                                BaseSeleniumTestCase):
 
     def setUp(self):
+        super(OptionsFunctionalTestCase, self).setUp()
+
         self.operator = OperatorGenerator().generate()
         self.securities = TwoInitialSecuritiesGenerator().generate(
             company=self.operator.company)
@@ -395,6 +436,9 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             company=self.operator.company)
         self.seller = ShareholderGenerator().generate(
             company=self.operator.company)
+
+        # add company subscription
+        self.add_subscription(self.operator.company)
 
     def tearDown(self):
         Security.objects.all().delete()
@@ -627,6 +671,9 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             sec.track_numbers = True
             sec.save()
 
+        # add company subscription
+        self.add_subscription(operator.company)
+
         try:
             app = page.OptionsPage(
                 self.selenium, self.live_server_url, operator.user)
@@ -677,6 +724,9 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             sec.track_numbers = True
             sec.save()
 
+        # add company subscription
+        self.add_subscription(operator.company)
+
         try:
             path = reverse('optionplan',
                            kwargs={'optionsplan_id': optionsplan.pk})
@@ -705,6 +755,9 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
         for sec in operator.company.security_set.all():
             sec.track_numbers = True
             sec.save()
+
+        # add company subscription
+        self.add_subscription(operator.company)
 
         try:
             app = page.OptionsPage(
@@ -779,6 +832,9 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
         for sec in operator.company.security_set.all():
             sec.track_numbers = True
             sec.save()
+
+        # add company subscription
+        self.add_subscription(operator.company)
 
         try:
             app = page.OptionsPage(
@@ -884,13 +940,16 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             self._handle_exception(e)
 
 
-class PositionFunctionalTestCase(BaseSeleniumTestCase):
+class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
+                                 BaseSeleniumTestCase):
     """
     test all core position funcs
     logic is tested in api, this here covers mainly FE logic
     """
 
     def setUp(self):
+        super(PositionFunctionalTestCase, self).setUp()
+
         self.operator = OperatorGenerator().generate()
         company = self.operator.company
         self.securities = TwoInitialSecuritiesGenerator().generate(
@@ -907,6 +966,9 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             buyer=self.seller,
             security=self.securities[0], number_segments=[u'0-9999'],
             count=10000, seller=None)
+
+        # add company subscription
+        self.add_subscription(company)
 
     def test_add(self):
         """

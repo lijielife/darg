@@ -347,8 +347,7 @@ class StartPage(BasePage):
 
     def click_open_add_shareholder(self):
         time.sleep(2)  # FIXME
-        el = self.driver.find_element_by_link_text(
-            "Aktionär hinzufügen")
+        el = self.driver.find_element_by_link_text(u"Aktionär hinzufügen")
         el.click()
 
     def click_paginate_next(self):

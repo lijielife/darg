@@ -476,12 +476,18 @@ DJSTRIPE_PLANS = collections.OrderedDict((
         'interval': 'month',
         'features': {
             'shareholders': {
-                'price': 49  # 0.49
+                'price': 49,  # 0.49
+                'validators': {
+                    'create': []
+                }
             },
             'positions': {},
             'options': {},
             'securities': {
-                'price': 1500  # 15.00 CHF per month
+                'price': 1500,  # 15.00 CHF per month
+                'validators': {
+                    'create': []
+                }
             },
             'shares': {},
             'gafi': {},
@@ -502,12 +508,18 @@ DJSTRIPE_PLANS = collections.OrderedDict((
         'interval': 'month',
         'features': {
             'shareholdes': {
-                'price': 9  # 0.09
+                'price': 9,  # 0.09
+                'validators': {
+                    'create': []
+                }
             },
             'positions': {},
             'options': {},
             'securities': {
-                'price': 1500  # 15.00 CHF per month
+                'price': 1500,  # 15.00 CHF per month
+                'validators': {
+                    'create': []
+                }
             },
             'shares': {},
             'gafi': {},
