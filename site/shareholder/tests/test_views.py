@@ -6,11 +6,14 @@ from django.test import Client, TestCase
 
 from project.generators import (OperatorGenerator, OptionTransactionGenerator,
                                 PositionGenerator, ShareholderGenerator)
+from project.tests.mixins import StripeTestCaseMixin, SubscriptionTestMixin
 
 
-class BaseViewTestCase(TestCase):
+class BaseViewTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
 
     def setUp(self):
+        super(BaseViewTestCase, self).setUp()
+
         self.client = Client()
         self.shareholder1 = ShareholderGenerator().generate()
         self.company = self.shareholder1.company
@@ -22,6 +25,9 @@ class BaseViewTestCase(TestCase):
             buyer=self.shareholder1)
         self.optiontransaction2 = OptionTransactionGenerator().generate(
             buyer=self.shareholder2)
+
+        # add company subscription
+        self.add_subscription(self.company)
 
 
 class ShareholderViewTestCase(BaseViewTestCase):

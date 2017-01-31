@@ -62,7 +62,7 @@ class ShareholderViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
 
     def get_object(self):
         try:
-            self.get_queryset().get(pk=self.kwargs.get('pk'))
+            return self.get_queryset().get(pk=self.kwargs.get('pk'))
         except Shareholder.DoesNotExist:
             raise Http404
 

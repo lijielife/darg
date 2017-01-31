@@ -1211,8 +1211,21 @@ class ShareholderTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         positions, shs = ComplexPositionsWithSegmentsGenerator().generate()
         security = positions[0].security
 
-        self.client.force_authenticate(
-            shs[0].company.operator_set.all()[0].user.username)
+        res = self.client.get(reverse('shareholders-number-segments',
+                                      kwargs={'pk': shs[1].pk}))
+        self.assertEqual(res.status_code, 401)
+
+        operator = shs[0].company.operator_set.first()
+        self.client.force_authenticate(operator.user)
+
+        res = self.client.get(reverse('shareholders-number-segments',
+                                      kwargs={'pk': shs[1].pk}))
+
+        # no company subscription
+        self.assertEqual(res.status_code, 404)
+
+        # add company subscription
+        self.add_subscription(operator.company)
 
         res = self.client.get(reverse('shareholders-number-segments',
                                       kwargs={'pk': shs[1].pk}))
