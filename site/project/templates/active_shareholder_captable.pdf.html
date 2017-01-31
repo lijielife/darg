@@ -141,7 +141,7 @@
           <th align="left">{% trans "Name" %}</th>
           <th align="left">{% trans "Email" %}</th>
           <th align="right">{% trans "Shareholder Number" %}</th>
-          <th align="right">{% trans "Optionen (%)" %}</th>
+          <th align="right">{% trans "Optionen" %}</th>
         </tr>
       </thead>
     </table>
@@ -159,7 +159,7 @@
           {{ shareholder.number }}
         </td>
         <td align="right">
-          {{ shareholder.options_count|intcomma }} ({{shareholder.options_percent }})
+          {{ shareholder.options_count|intcomma }}
         </td>
       </tr>
     </table>

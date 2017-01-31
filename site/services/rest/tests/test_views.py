@@ -580,7 +580,7 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
 
         # call with perf check
         # was 55, increased to 95
-        with self.assertLessNumQueries(46):
+        with self.assertLessNumQueries(56):
             response = self.client.post(
                 u'/services/rest/position',
                 data,
@@ -1595,13 +1595,31 @@ class OptionTransactionTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             ).count())
         self.assertNotEqual(res.data['count'], 0)
 
+        optiontransaction.certificate_id = 'SOME STRANGE ID'
+        optiontransaction.stock_book_id = 'MORE TEST STRINGS'
+        optiontransaction.save()
+
+        res = self.client.get(
+            '/services/rest/optiontransaction?search={}'.format(
+                optiontransaction.certificate_id))
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['count'], 1)
+
+        res = self.client.get(
+            '/services/rest/optiontransaction?search={}'.format(
+                optiontransaction.stock_book_id))
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['count'], 1)
+
     def test_ordering(self):
         operator = OperatorGenerator().generate()
         user = operator.user
         seller = ShareholderGenerator().generate(company=operator.company)
-        OptionTransactionGenerator().generate(
+        o1 = OptionTransactionGenerator().generate(
             seller=seller)
-        OptionTransactionGenerator().generate(
+        o2 = OptionTransactionGenerator().generate(
             seller=seller)
 
         self.client.force_login(user)
@@ -1635,6 +1653,18 @@ class OptionTransactionTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         numbers = [s.get('seller')['number'] for s in res.data['results']]
         self.assertEqual(numbers, sorted(numbers, key=lambda s: s.lower(),
                          reverse=True))
+
+        # default ordering by bought_at
+        o1.bought_at = datetime.datetime(2014, 1, 1)
+        o1.save()
+        o2.bought_at = datetime.datetime(2013, 12, 31)
+        o2.save()
+
+        res = self.client.get(
+            '/services/rest/optiontransaction')
+
+        self.assertEqual(res.data['results'][0].get('pk'), o1.pk)
+        self.assertEqual(res.data['results'][1].get('pk'), o2.pk)
 
     def test_pagination(self):
         operator = OperatorGenerator().generate()

@@ -30,7 +30,7 @@ def fetch_resources(uri, rel):
 
 def render_pdf(html):
     """
-    render html to pdf (returns None if any errors occur)
+    render html to pdf (raises ValueError if any errors occur)
     """
     result = StringIO.StringIO()
 
@@ -40,22 +40,27 @@ def render_pdf(html):
         link_callback=fetch_resources,
         encoding='UTF-8')
 
-    if pdf.err:
-        return
+    if not pdf.err:
+        return result.getvalue()
 
-    return result
+    raise ValueError('We had some errors<pre>%s</pre>' % escape(html))
+
+
+def render_to_pdf(template_src, context_dict):
+    """
+    renders html template with context to pdf
+    """
+    template = get_template(template_src)
+    html = template.render(Context(context_dict))
+    return render_pdf(html)
 
 
 def render_to_pdf_response(template_src, context_dict):
     """
     render a pdf and return as HttpResponse
     """
-    template = get_template(template_src)
-    html = template.render(Context(context_dict))
-    pdf = render_pdf(html)
-    if not pdf:
-        return HttpResponse('We had some errors<pre>%s</pre>' % escape(html))
-    return HttpResponse(pdf.getvalue(), content_type='application/pdf')
+    content = render_to_pdf(template_src, context_dict)
+    return HttpResponse(content, content_type='application/pdf')
 
 
 def render_to_pdf(template_src, context_dict):

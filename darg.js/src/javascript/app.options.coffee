@@ -159,7 +159,7 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
                 $scope.total=result.data.count
             if result.data.current
                 $scope.current=result.data.current
-            $scope.search_params.query = params.query
+            $scope.search_params.query = params.search
 
     # -- LOGIC
     $scope.add_option_plan = ->

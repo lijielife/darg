@@ -39,7 +39,7 @@ class _AssertLessNumQueriesContext(CaptureQueriesContext):
             return
         executed = len(self)
         # altered here from assertEqual to assertLess
-        self.test_case.assertLess(
+        self.test_case.assertLessEqual(
             executed, self.num,
             "%d queries executed, less then %d expected\n"
             "Captured queries were:\n%s" % (

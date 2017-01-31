@@ -216,13 +216,15 @@
         });
       };
       $scope.edit_company = function() {
-        var sending_date;
         if ($scope.company.country) {
           $scope.company.country = $scope.company.country.url;
         }
-        $scope.company.founded_at = $scope.company.founded_at.toISOString().substring(0, 10);
-        sending_date = $scope.company.statement_sending_date.toISOString().substring(0, 10);
-        $scope.company.statement_sending_date = sending_date;
+        if ($scope.company.founded_at) {
+          $scope.company.founded_at = $scope.company.founded_at.toISOString().substring(0, 10);
+        }
+        if ($scope.company.statement_sending_date) {
+          $scope.company.statement_sending_date = $scope.company.statement_sending_date.toISOString().substring(0, 10);
+        }
         return $scope.company.$update().then(function(result) {
           result.founded_at = new Date(result.founded_at);
           if (result.statement_sending_date) {
@@ -237,6 +239,7 @@
         }).then(function() {
           return $scope.errors = null;
         }, function(rejection) {
+          $scope.company.founded_at = new Date($scope.company.founded_at);
           $scope.errors = rejection.data;
           return Raven.captureMessage('form error: ' + rejection.statusText, {
             level: 'warning',
@@ -547,7 +550,7 @@
           if (result.data.current) {
             $scope.current = result.data.current;
           }
-          return $scope.search_params.query = params.query;
+          return $scope.search_params.query = params.search;
         });
       };
       $scope.add_option_plan = function() {
@@ -1304,8 +1307,11 @@
           value: '2'
         }
       ];
+      $http.get('/services/rest/language').then(function(result_lang) {
+        return $scope.languages = result_lang.data;
+      });
       $http.get('/services/rest/shareholders/' + shareholder_id).then(function(result) {
-        var legal_type, mailing_type;
+        var language, legal_type, mailing_type;
         if (result.data.user.userprofile.birthday !== null) {
           result.data.user.userprofile.birthday = new Date(result.data.user.userprofile.birthday);
         }
@@ -1327,13 +1333,16 @@
         mailing_type = $scope.mailing_types.filter(function(obj) {
           return obj.value === $scope.shareholder.mailing_type;
         });
-        return $scope.shareholder.mailing_type = mailing_type[0];
+        $scope.shareholder.mailing_type = mailing_type[0];
+        if ($scope.shareholder.user.userprofile.language) {
+          language = $scope.languages.filter(function(obj) {
+            return obj.iso === $scope.shareholder.user.userprofile.language;
+          });
+          return $scope.shareholder.user.userprofile.language = language[0];
+        }
       });
       $http.get('/services/rest/country').then(function(result) {
         return $scope.countries = result.data.results;
-      });
-      $http.get('/services/rest/language').then(function(result) {
-        return $scope.languages = result.data;
       });
       $scope.edit_shareholder = function() {
         var date;
@@ -1358,6 +1367,7 @@
           $scope.shareholder.mailing_type = $scope.shareholder.mailing_type.value;
         }
         return $scope.shareholder.$update().then(function(result) {
+          var language, legal_type;
           if (result.user.userprofile.birthday !== null) {
             result.user.userprofile.birthday = new Date(result.user.userprofile.birthday);
           }
@@ -1368,9 +1378,21 @@
             });
           }
           if ($scope.shareholder.user.userprofile.nationality) {
-            return $http.get($scope.shareholder.user.userprofile.nationality).then(function(result1) {
+            $http.get($scope.shareholder.user.userprofile.nationality).then(function(result1) {
               return $scope.shareholder.user.userprofile.nationality = result1.data;
             });
+          }
+          if ($scope.shareholder.user.userprofile.legal_type) {
+            legal_type = $scope.legal_types.filter(function(obj) {
+              return obj.value === $scope.shareholder.user.userprofile.legal_type;
+            });
+            $scope.shareholder.user.userprofile.legal_type = legal_type[0];
+          }
+          if ($scope.shareholder.user.userprofile.language) {
+            language = $scope.languages.filter(function(obj) {
+              return obj.iso === $scope.shareholder.user.userprofile.language;
+            });
+            return $scope.shareholder.user.userprofile.language = language[0];
           }
         }).then(function() {
           return void 0;

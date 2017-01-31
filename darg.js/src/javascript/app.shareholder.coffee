@@ -24,35 +24,39 @@ app.controller 'ShareholderController', ['$scope', '$http', 'Shareholder', ($sco
         {name: gettext('via Email'), value: '2'},
     ]
 
-    $http.get('/services/rest/shareholders/' + shareholder_id).then (result) ->
-        # convert birthay to JS obj
-        if result.data.user.userprofile.birthday != null
-            result.data.user.userprofile.birthday = new Date(result.data.user.userprofile.birthday)
+    $http.get('/services/rest/language').then (result_lang) ->
+            $scope.languages = result_lang.data
 
-        # create Shareholder JS obj
-        $scope.shareholder = new Shareholder(result.data)
+        $http.get('/services/rest/shareholders/' + shareholder_id).then (result) ->
+            # convert birthay to JS obj
+            if result.data.user.userprofile.birthday != null
+                result.data.user.userprofile.birthday = new Date(result.data.user.userprofile.birthday)
 
-        # fetch country/nationality hyperlinked obj
-        if $scope.shareholder.user.userprofile.country
-            $http.get($scope.shareholder.user.userprofile.country).then (result1) ->
-                $scope.shareholder.user.userprofile.country = result1.data
-        if $scope.shareholder.user.userprofile.nationality
-            $http.get($scope.shareholder.user.userprofile.nationality).then (result1) ->
-                $scope.shareholder.user.userprofile.nationality = result1.data
-        # assign legal type obj
-        legal_type = $scope.legal_types.filter (obj) ->
-            return obj.value == $scope.shareholder.user.userprofile.legal_type
-        $scope.shareholder.user.userprofile.legal_type = legal_type[0]
-        # assign mailing type obj
-        mailing_type = $scope.mailing_types.filter (obj) ->
-            return obj.value == $scope.shareholder.mailing_type
-        $scope.shareholder.mailing_type = mailing_type[0]
+            # create Shareholder JS obj
+            $scope.shareholder = new Shareholder(result.data)
+
+            # fetch country/nationality hyperlinked obj
+            if $scope.shareholder.user.userprofile.country
+                $http.get($scope.shareholder.user.userprofile.country).then (result1) ->
+                    $scope.shareholder.user.userprofile.country = result1.data
+            if $scope.shareholder.user.userprofile.nationality
+                $http.get($scope.shareholder.user.userprofile.nationality).then (result1) ->
+                    $scope.shareholder.user.userprofile.nationality = result1.data
+            # assign legal type obj
+            legal_type = $scope.legal_types.filter (obj) ->
+                return obj.value == $scope.shareholder.user.userprofile.legal_type
+            $scope.shareholder.user.userprofile.legal_type = legal_type[0]
+            # assign mailing type obj
+            mailing_type = $scope.mailing_types.filter (obj) ->
+                return obj.value == $scope.shareholder.mailing_type
+            $scope.shareholder.mailing_type = mailing_type[0]
+            if $scope.shareholder.user.userprofile.language
+                language = $scope.languages.filter (obj) ->
+                    return obj.iso == $scope.shareholder.user.userprofile.language
+                $scope.shareholder.user.userprofile.language = language[0]
 
     $http.get('/services/rest/country').then (result) ->
             $scope.countries = result.data.results
-
-    $http.get('/services/rest/language').then (result) ->
-            $scope.languages = result.data
 
     # ATTENTION: django eats a url, angular eats an object.
     # hence needs conversion
@@ -83,12 +87,21 @@ app.controller 'ShareholderController', ['$scope', '$http', 'Shareholder', ($sco
             if result.user.userprofile.birthday != null
                 result.user.userprofile.birthday = new Date(result.user.userprofile.birthday)
             $scope.shareholder = new Shareholder(result)
+            # adjust local data so it can be properly displayed
             if $scope.shareholder.user.userprofile.country
                 $http.get($scope.shareholder.user.userprofile.country).then (result1) ->
                     $scope.shareholder.user.userprofile.country = result1.data
             if $scope.shareholder.user.userprofile.nationality
                 $http.get($scope.shareholder.user.userprofile.nationality).then (result1) ->
                     $scope.shareholder.user.userprofile.nationality = result1.data
+            if $scope.shareholder.user.userprofile.legal_type
+                legal_type = $scope.legal_types.filter (obj) ->
+                    return obj.value == $scope.shareholder.user.userprofile.legal_type
+                $scope.shareholder.user.userprofile.legal_type = legal_type[0]
+            if $scope.shareholder.user.userprofile.language
+                language = $scope.languages.filter (obj) ->
+                    return obj.iso == $scope.shareholder.user.userprofile.language
+                $scope.shareholder.user.userprofile.language = language[0]
         .then ->
             # Reset our editor to a new blank post
             #$scope.company = new Company()

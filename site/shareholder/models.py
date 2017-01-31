@@ -29,6 +29,8 @@ from rest_framework.authtoken.models import Token
 from sorl.thumbnail import get_thumbnail
 from dateutil.relativedelta import relativedelta
 from djstripe.models import Customer as DjStripeCustomer
+from tagging.registry import register
+from tagging.models import Tag
 
 from shareholder.validators import ShareRegisterValidator
 from utils.formatters import (deflate_segments, flatten_list,
@@ -58,7 +60,20 @@ MAILING_TYPES = [
     ('2', _('via Email')),
 ]
 
+DISPO_SHAREHOLDER_TAG = 'dispo_shareholder'
+
 logger = logging.getLogger(__name__)
+
+
+class TagMixin(object):
+    """
+    mixin to make tagging objects available inside models
+    """
+    def set_tag(self, tag):
+        Tag.objects.update_tags(self, tag)
+
+    def get_tags(self):
+        return Tag.objects.get_for_object(self)
 
 
 class Country(models.Model):
@@ -224,6 +239,19 @@ class Company(AddressModelMixin, models.Model):
         except Shareholder.DoesNotExist:
             raise ValueError('Company Shareholder does not exist')
 
+    def get_dispo_shareholder(self):
+        """
+        return shareholder obj which holds all dispo shares (shares which are
+        owned by someone but are not registered with the share register under
+        his name)
+        """
+        shareholders = Shareholder.tagged.with_all(
+            DISPO_SHAREHOLDER_TAG, self.shareholder_set.all())
+        if shareholders.count() > 1:
+            raise ValueError('too many dispo shareholders for this company')
+        elif shareholders.count() == 1:
+            return shareholders[0]
+
     def get_operators(self):
         return self.operator_set.all().distinct()
 
@@ -256,26 +284,130 @@ class Company(AddressModelMixin, models.Model):
 
         return val
 
-    def get_total_votes(self):
+    def get_total_share_count(self, security=None):
+        cap_creating_positions = Position.objects.filter(
+            buyer__company=self, seller__isnull=True)
+        if security:
+            cap_creating_positions = cap_creating_positions.filter(
+                security=security)
+        val = 0
+        for position in cap_creating_positions:
+            val += position.count
+
+        cap_destroying_positions = Position.objects.filter(
+            seller__company=self, buyer__isnull=True)
+
+        if security:
+            cap_destroying_positions = cap_destroying_positions.filter(
+                security=security)
+
+        for position in cap_destroying_positions:
+            val -= position.count
+
+        return val
+
+    def get_total_share_count_floating(self, security=None):
+        """
+        how many shares are spread among the outer world/non company shareholder
+        """
+        total_shares = self.get_total_share_count(security=security)
+        company_shareholder_count = self.get_company_shareholder().share_count(
+            security=security)
+        return total_shares - company_shareholder_count
+
+    def get_total_votes(self, security=None):
         """
         returns the total number of voting rights the company is existing
         """
         votes = 0
         vote_ratio = self.vote_ratio or 1
-        if vote_ratio:
-            for security in self.security_set.all():
-                face_value = security.face_value or 1
-                votes += face_value * security.count / vote_ratio
-
+        qs = [security] if security else self.security_set.all()
+        for security in qs:
+            face_value = security.face_value or 1
+            votes += face_value * security.count / vote_ratio
         return int(votes)
 
-    def get_total_votes_floating(self):
+    def get_total_votes_floating(self, security=None):
         """
         returns total amount of votes owned by regular shareholers. excludes
-        votes owned by company
+        votes owned by company and options
         """
-        company_votes = self.get_company_shareholder().vote_count()
-        return self.get_total_votes() - company_votes
+        company_votes = self.get_company_shareholder().vote_count(
+            security=security)
+        return self.get_total_votes(security=security) - company_votes
+
+    def get_total_votes_in_options(self, security=None):
+        option_votes = 0
+        vote_ratio = self.vote_ratio or 1
+        qs = [security] if security else self.security_set.all()
+        for security in qs:
+            face_value = security.face_value or 1
+            option_votes += (self.get_total_options(security=security) *
+                             face_value / vote_ratio)
+        return option_votes
+
+    def get_total_votes_eligible(self, date=None, security=None):
+        """
+        returns number of total votes permitted to vote
+
+        math is : total - options - dispo - company
+        """
+        total = (
+            self.get_total_votes_floating(security=security) -
+            self.get_total_votes_in_options(security=security)
+        )
+
+        # if we have a dispo shareholder, substract his votes too...
+        dsh = self.get_dispo_shareholder()
+        if dsh:
+            total = total - dsh.vote_count(date=date, security=security)
+
+        return int(total)
+
+    def get_total_options(self, security=None):
+        """
+        count of shares granted through options
+        """
+        options_created = OptionTransaction.objects.filter(
+            buyer__company=self, seller__isnull=True)
+
+        if security:
+            options_created = options_created.filter(
+                option_plan__security=security)
+
+        val = 0
+        for position in options_created:
+            val += position.count
+
+        options_destroyed = OptionTransaction.objects.filter(
+            seller__company=self, buyer__isnull=True)
+
+        if security:
+            options_destroyed = options_destroyed.filter(
+                option_plan__security=security)
+
+        for position in options_destroyed:
+            val -= position.count
+
+        return val
+
+    def get_total_options_floating(self):
+        """
+        count of shares granted through options
+        """
+        options_created = OptionTransaction.objects.filter(
+            buyer__company=self, seller=self.get_company_shareholder())
+        val = 0
+        for position in options_created:
+            val += position.count
+
+        options_returned = OptionTransaction.objects.filter(
+            seller__company=self, buyer=self.get_company_shareholder())
+
+        for position in options_returned:
+            val -= position.count
+
+        return val
 
     def get_logo_url(self):
         """ return url for logo """
@@ -310,8 +442,8 @@ class Company(AddressModelMixin, models.Model):
         # create return transactions to return old assets to company
         # create transaction to hand out new assets to shareholders with
         # new count
-        value = float(company_shareholder.last_traded_share_price(
-            date=execute_at, security=security))
+        value = company_shareholder.last_traded_share_price(
+            date=execute_at, security=security)
         partials = {}
         for shareholder in shareholders:
             count = shareholder.share_count(
@@ -329,9 +461,12 @@ class Company(AddressModelMixin, models.Model):
                                  security, execute_at.date(),
                                  int(dividend), int(divisor)),
             }
+            if value:
+                kwargs1.update({'value': float(value)})
             if shareholder.pk == company_shareholder.pk:
                 kwargs1.update(dict(buyer=None, count=self.share_count,
                                     value=shareholder.buyer.first().value))
+
             p = Position.objects.create(**kwargs1)
             logger.info('Split: share returned {}'.format(p))
 
@@ -340,7 +475,6 @@ class Company(AddressModelMixin, models.Model):
                 'buyer': shareholder,
                 'seller': company_shareholder,
                 'count': count2,
-                'value': value / divisor * dividend,
                 'security': security,
                 'bought_at': execute_at,
                 'is_split': True,
@@ -349,6 +483,8 @@ class Company(AddressModelMixin, models.Model):
                                  security, execute_at.date(),
                                  int(dividend), int(divisor)),
             }
+            if value:
+                kwargs2.update({'value': float(value) / divisor * dividend})
             if shareholder.pk == company_shareholder.pk:
                 part, count2 = math.modf(
                     self.share_count /
@@ -527,7 +663,7 @@ class UserProfile(AddressModelMixin, models.Model):
                                     'company'))
 
 
-class Shareholder(models.Model):
+class Shareholder(TagMixin, models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     company = models.ForeignKey('Company', verbose_name="Shareholders Company")
@@ -587,7 +723,23 @@ class Shareholder(models.Model):
         """
         returns bool if shareholder is company shareholder
         """
-        return self.company.shareholder_set.earliest('id').id == self.id
+        return self.company.get_company_shareholder() == self
+
+    def is_dispo_shareholder(self):
+        """
+        returns bool if shareholder is dispo shareholder
+        """
+        return self.company.get_dispo_shareholder() == self
+
+    def set_dispo_shareholder(self):
+        """ mark this shareholder as disposhareholder """
+        if (
+                self.company.get_dispo_shareholder() and
+                self.company.get_dispo_shareholder() != self
+        ):
+            raise ValueError('disposhareholder already set')
+
+        self.set_tag(DISPO_SHAREHOLDER_TAG)
 
     def share_percent(self, date=None):
         """
@@ -635,7 +787,13 @@ class Shareholder(models.Model):
         count_bought = sum(qs_bought.values_list('count', flat=True))
         count_sold = sum(qs_sold.values_list('count', flat=True))
 
-        return count_bought - count_sold
+        # clean company shareholder count by options count
+        if self.is_company_shareholder():
+            options_created = self.company.get_total_options(security=security)
+        else:
+            options_created = 0
+
+        return count_bought - count_sold - options_created
 
     def share_value(self, date=None):
         """ calculate the total values of all shares for this shareholder """
@@ -894,18 +1052,17 @@ class Shareholder(models.Model):
         segments_owning = set(counter_bought - counter_sold)
         return deflate_segments(segments_owning)
 
-    def vote_count(self, date=None):
+    def vote_count(self, date=None, security=None):
         """
         returns the total number of voting rights for this shareholder
         """
         votes = 0
         vote_ratio = self.company.vote_ratio or 1
-        if vote_ratio:
-            for security in self.company.security_set.all():
-                face_value = security.face_value or 1
-                votes += (self.share_count(security=security, date=date) *
-                          face_value / vote_ratio)
-
+        qs = [security] if security else self.company.security_set.all()
+        for security in qs:
+            face_value = security.face_value or 1
+            votes += (self.share_count(security=security, date=date) *
+                      face_value / vote_ratio)
         return int(votes)
 
     def vote_percent(self, date=None):
@@ -913,12 +1070,16 @@ class Shareholder(models.Model):
         returns percentage of the users voting rights compared to total voting
         rights existing
         """
-        if self.is_company_shareholder() or not self.company.get_total_votes_floating():
+        if (self.is_company_shareholder() or
+                not self.company.get_total_votes_floating()):
             return float(0.0)
 
-        return (self.vote_count(date) /
-                float(self.company.get_total_votes_floating()))
+        # do the math
+        total_votes_eligible = self.company.get_total_votes_eligible()
 
+        # how much percent of these eligible votes does the shareholder have?
+        return (self.vote_count(date) /
+                float(total_votes_eligible))
 
     def get_user_name(self):
         """
@@ -981,10 +1142,19 @@ class Security(models.Model):
         over all shareholders of the company and getting their
         share count. summarize it.
         """
-        count = 0
-        for shareholder in self.company.shareholder_set.all():
-            count += shareholder.share_count(security=self)
-        return count
+        return self.company.get_total_share_count(security=self)
+
+    def calculate_dispo_share_count(self):
+        """
+        caculates the number of shares which are not registered within the share
+        register for this security
+        """
+        total_shares = self.calculate_count()
+        floating_shares = self.company.get_total_share_count_floating(
+            security=self)
+        # options = self.company.get_total_options(security=self)
+
+        return total_shares - floating_shares
 
     def count_in_segments(self, segments=None):
         """
@@ -1461,8 +1631,13 @@ class ShareholderStatement(models.Model):
     pdf_download_url = property(get_pdf_download_url)
 
 
+# --------- DJANGO TAGGING ----------
+register(Shareholder)
+
+
 # --------- SIGNALS ----------
 # must be inside a file which is imported by django on startup
+# @jirsch: use apps.py for signal registration!
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:

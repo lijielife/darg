@@ -90,29 +90,31 @@
             {{ user.operator_set[0].company.share_count }}
           </div>
         </div>
-      </div><!-- /table-->
+      </div>
+    </div><!-- /table-->
 
-      <!-- OPTIONS -->
-  	<h2 ng-show="option_holders.length" >{% endverbatim %}{% trans "Option Holders" %}{% verbatim %}</h2>
-  	<div class="note" ng-show="option_holders.length" >{% endverbatim %}{% trans "Option Holders note" %}{% verbatim %}</div>
+    <!-- OPTIONS -->
+	<h2 ng-show="option_holders.length" >{% endverbatim %}{% trans "Option Holders" %}{% verbatim %}</h2>
+	<div class="note" ng-show="option_holders.length" >{% endverbatim %}{% trans "Option Holders note" %}{% verbatim %}</div>
 
-      <!-- TABLE ACTIONS -->
-  	{% endverbatim %}
-  	{% with prefix="optionholder_" %}
-  	{% include "_table_actions.html" %}
-  	{% endwith %}
-  	{% verbatim %}
+    <!-- TABLE ACTIONS -->
+	<div ng-show="option_holders.length">
+    {% endverbatim %}
+    {% with prefix="optionholder_" %}
+	{% include "_table_actions.html" %}
+	{% endwith %}
+	{% verbatim %}
+	</div>
 
-  	<!-- TABLE -->
-      <div class="table">
-        <div class="tr option-holders" ng-show="option_holders.length" ng-repeat="option_holder in option_holders  | orderBy:'-share_count'" ng-click="goto_shareholder(option_holder.pk)" ng-mouseover="">
-          <div class="td td-width-2 order-1 option-holders full-name">{{ option_holder.full_name }}</div>
-          <div class="td text-right-flex number order-2">{{ option_holder.number }}</div>
-          <div class="td text-right-flex share shareholders-count">
-            <value ng-if="option_holder.options_count != '-'">
-              {{ option_holder.options_count | number : 0}} ({{option_holder.options_percent | number : 1}}%)
-            </value>
-          </div>
+	<!-- TABLE -->
+    <div class="table">
+      <div class="tr option-holders" ng-show="option_holders.length" ng-repeat="option_holder in option_holders  | orderBy:'-share_count'" ng-click="goto_shareholder(option_holder.pk)" ng-mouseover="">
+        <div class="td td-width-2 order-1 option-holders full-name">{{ option_holder.full_name }}</div>
+        <div class="td text-right-flex number order-2">{{ option_holder.number }}</div>
+        <div class="td text-right-flex share shareholders-count">
+          <value ng-if="option_holder.options_count != '-'">
+            {{ option_holder.options_count | number : 0}} ({{option_holder.options_percent | number : 1}}%)
+          </value>
         </div>
       </div>
 

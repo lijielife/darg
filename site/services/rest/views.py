@@ -483,11 +483,12 @@ class OptionTransactionViewSet(SubscriptionViewMixin,
                      'option_plan__title',
                      'buyer__user__userprofile__company_name',
                      'seller__user__userprofile__company_name',
-                     'seller__number', 'buyer__number')
+                     'seller__number', 'buyer__number', 'certificate_id',
+                     'stock_book_id')
     ordering_fields = ('buyer__user__last_name', 'buyer__user__email',
                        'buyer__number', 'seller__user__last_name',
                        'seller__user__email', 'seller__number')
-    ordering = ('option_plan__pk',)
+    ordering = ('option_plan__pk', '-bought_at')
     subscription_features = ('positions',)
 
     def get_user_companies(self):
@@ -509,7 +510,8 @@ class OptionTransactionViewSet(SubscriptionViewMixin,
 
         # FIXME: check this
         qs = OptionTransaction.objects.filter(
-            option_plan__company_id__in=self.get_company_pks())
+            option_plan__company_id__in=self.get_company_pks()
+        )
 
         # filter if option plan is given in query params
         pk = self.request.query_params.get('optionplan_pk')
