@@ -2541,15 +2541,24 @@ blockquote p.says:before {
   margin-bottom: 15px;
 }
 .core .container.members-area .two_factor_auth {
-  max-width: 230px;
+  max-width: 245px;
   margin: 0 auto;
+}
+.core .container.members-area .two_factor_auth #id_token-otp_token {
+  width: 100%;
+  margin-top: 10px;
+}
+.core .container.members-area .two_factor_auth input {
+  padding: 10px 13px;
+  margin-bottom: 10px;
 }
 .core .container.members-area .two_factor_auth .auth {
   margin-bottom: 15px;
 }
 .core .container.members-area .two_factor_auth .auth .btn {
   width: 100%;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
+  padding: 10px 13px;
 }
 .core .container.members-area .two_factor_auth .auth .btn.btn-disabled {
   display: none;
