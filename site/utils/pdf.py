@@ -61,11 +61,3 @@ def render_to_pdf_response(template_src, context_dict):
     """
     content = render_to_pdf(template_src, context_dict)
     return HttpResponse(content, content_type='application/pdf')
-
-
-def render_to_pdf(template_src, context_dict):
-    """
-    this method is named a bit misleading as it actually returns a HttpResponse
-    instead of a suggested pdf (use render_to_pdf_response instead)
-    """
-    return render_to_pdf_response(template_src, context_dict)
