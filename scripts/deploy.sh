@@ -7,7 +7,7 @@ fi
 
 source .ve/bin/activate
 
-git pull --no-edit && pip install -r requirements.txt | grep -v "Requirement already satisfied"
+git pull --no-edit && pip install -r requirements.txt | grep -v "Requirement already satisfied" || true
 
 echo "Creating fresh DB and media backups..."
 # needs to be run from site dir

@@ -216,7 +216,9 @@
         if ($scope.company.country) {
           $scope.company.country = $scope.company.country.url;
         }
-        $scope.company.founded_at = $scope.company.founded_at.toISOString().substring(0, 10);
+        if ($scope.company.founded_at) {
+          $scope.company.founded_at = $scope.company.founded_at.toISOString().substring(0, 10);
+        }
         return $scope.company.$update().then(function(result) {
           result.founded_at = new Date(result.founded_at);
           $scope.company = new Company(result);
@@ -228,6 +230,7 @@
         }).then(function() {
           return $scope.errors = null;
         }, function(rejection) {
+          $scope.company.founded_at = new Date($scope.company.founded_at);
           $scope.errors = rejection.data;
           return Raven.captureMessage('form error: ' + rejection.statusText, {
             level: 'warning',

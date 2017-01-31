@@ -29,6 +29,27 @@ logger = logging.getLogger(__name__)
 # --- MODEL TESTS
 class CompanyTestCase(TestCase):
 
+    def setUp(self):
+        self.company = CompanyGenerator().generate(share_count=10, vote_ratio=2)
+        self.security = SecurityGenerator().generate(count=10, face_value=100,
+                                                     company=self.company)
+
+        self.shareholder1 = ShareholderGenerator().generate(
+            company=self.company)
+        self.shareholder2 = ShareholderGenerator().generate(
+            company=self.company)
+        PositionGenerator().generate(seller=None, buyer=self.shareholder1,
+                                     security=self.security, count=10)
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=self.shareholder2,
+                                     security=self.security, count=2)
+        optionplan = OptionPlanGenerator().generate(
+            company=self.company, security=self.security)
+        OptionTransactionGenerator().generate(seller=self.shareholder1,
+                                              buyer=self.shareholder2,
+                                              security=self.security, count=2,
+                                              option_plan=optionplan)
+
     def test_text_repr(self):
 
         optiontransaction, shs = \
@@ -70,21 +91,18 @@ class CompanyTestCase(TestCase):
                          [2222, u'3000-4011', u'1000-2000'])
 
     def test_get_total_votes(self):
-        self.company = CompanyGenerator().generate(share_count=10, vote_ratio=2)
-        self.security = SecurityGenerator().generate(count=10, face_value=100,
-                                                     company=self.company)
+        """
+        how many votes does a company have?
+        """
 
-        self.shareholder1 = ShareholderGenerator().generate(
-            company=self.company)
-        self.shareholder2 = ShareholderGenerator().generate(
-            company=self.company)
-        PositionGenerator().generate(seller=None, buyer=self.shareholder1,
-                                     security=self.security, count=10)
-        PositionGenerator().generate(seller=self.shareholder1,
-                                     buyer=self.shareholder2,
-                                     security=self.security, count=2)
-
+        # should be 500
         self.assertEqual(self.company.get_total_votes(), 10*100/2)
+
+    def test_get_total_votes_floating(self):
+        """
+        how many votes are owned by shareholders outside company
+        """
+        self.assertEqual(self.company.get_total_votes_floating(), 2*100/2)
 
 
 class CountryTestCase(TestCase):
@@ -166,6 +184,76 @@ class PositionTestCase(TransactionTestCase):
             u"Ihre Liste gespaltener Aktienanrechte f\xfcr das Unternehmen "
             u"'{}'".format(company.name)
         )
+
+    def test_split_shares_empty_value(self):
+        """
+        share split leaves value, percent unchanged but
+        increases share count per shareholder
+        """
+        # test data
+        company = CompanyGenerator().generate(share_count=1000)
+        OperatorGenerator().generate(company=company)
+        shareholders, security = ComplexShareholderConstellationGenerator()\
+            .generate(company=company)
+        # all positions have not value
+        for position in Position.objects.all():
+            position.value = None
+            position.save()
+
+        data = {
+            'execute_at': datetime.datetime.now(),
+            'dividend': 3,
+            'divisor': 7,
+            'comment': "Some random comment",
+            'security': security,
+        }
+        multiplier = float(data['divisor']) / float(data['dividend'])
+        company_share_count = company.share_count
+
+        # record initial shareholder asset status
+        assets = {}
+        for shareholder in shareholders:
+            assets.update({
+                shareholder.pk: {
+                    'count': shareholder.share_count(),
+                    'value': shareholder.share_value(),
+                    'percent': shareholder.share_percent()
+                }
+            })
+
+        # run
+        company.split_shares(data)
+
+        # asserts by checking overall shareholder situation
+        # means each shareholder should have now more shares but some
+        # overall stock value
+
+        for shareholder in shareholders:
+            self.assertEqual(
+                shareholder.share_count(),
+                round(assets[shareholder.pk]['count'] * multiplier)
+            )
+            self.assertEqual(
+                round(shareholder.share_value()),
+                assets[shareholder.pk]['value']
+            )
+            self.assertEqual(
+                round(float(shareholder.share_percent()), 2),
+                float(assets[shareholder.pk]['percent'])
+            )
+
+        self.assertEqual(
+            company.share_count,
+            round(company_share_count * multiplier))
+
+        self.assertEquals(len(mail.outbox), 1)
+        self.assertEquals(
+            mail.outbox[0].subject,
+            u"Ihre Liste gespaltener Aktienanrechte f\xfcr das Unternehmen "
+            u"'{}'".format(company.name)
+        )
+        for position in Position.objects.all():
+            self.assertIsNone(position.value)
 
     def test_split_shares_in_past(self):
         """
@@ -700,12 +788,29 @@ class ShareholderTestCase(TestCase):
             [2])
 
     def test_vote_count(self):
-        self.assertEqual(self.shareholder1.vote_count(), 400)
+        self.assertEqual(self.shareholder1.vote_count(), 400)  # corps sh
         self.assertEqual(self.shareholder2.vote_count(), 100)
 
     def test_vote_percent(self):
         self.assertEqual(self.shareholder1.vote_percent(), 0.0)
         self.assertEqual(self.shareholder2.vote_percent(), 1)
+
+        shareholder3 = ShareholderGenerator().generate(
+            company=self.company)
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=shareholder3,
+                                     security=self.security, count=2)
+        self.assertEqual(self.shareholder2.vote_percent(), 0.5)
+        self.assertEqual(shareholder3.vote_percent(), 0.5)
+
+        shareholder4 = ShareholderGenerator().generate(
+            company=self.company)
+        PositionGenerator().generate(seller=self.shareholder2,
+                                     buyer=shareholder4,
+                                     security=self.security, count=1)
+        self.assertEqual(self.shareholder2.vote_percent(), 0.25)
+        self.assertEqual(shareholder3.vote_percent(), 0.5)
+        self.assertEqual(shareholder4.vote_percent(), 0.25)
 
 
 class SecurityTestCase(TestCase):
