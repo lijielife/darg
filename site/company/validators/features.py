@@ -36,7 +36,7 @@ class ShareholderCountPlanValidator(BaseCompanyValidator):
                 and shareholder_count > max_shareholder_count):
             error_message = self.message.format(
                 **dict(count=shareholder_count,
-                       max_shareholder=max_shareholder_count))
+                       max_shareholders=max_shareholder_count))
             self.raise_execption(error_message, code=self.code)
 
 
