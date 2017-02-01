@@ -1,5 +1,6 @@
 
 import datetime
+import time
 
 from django.contrib.auth import get_user_model
 
@@ -91,6 +92,8 @@ class CompanyFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                 self.operator.company
             )
             p.click_remove_operator(operator)
+            time.sleep(3)
+
             xpath = (
                  u'//div[@id="company"]//table[contains(@class, "operators")]'
                  u'//tbody//tr//td[contains(text(), "{}")]'.format(
