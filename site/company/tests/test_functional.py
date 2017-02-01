@@ -241,7 +241,7 @@ class CompanyFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         test that company without numbered shares does not see anything
         """
         try:
-            page.CompanyPage(
+            p = page.CompanyPage(
                 self.selenium,
                 self.live_server_url,
                 self.operator.user,
