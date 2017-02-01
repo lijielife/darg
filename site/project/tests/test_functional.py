@@ -71,6 +71,8 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         ops.append(OperatorGenerator().generate())
         ops.append(OperatorGenerator().generate())
         ops.append(OperatorGenerator().generate())
+        for op in ops:
+            CompanyShareholderGenerator().generate(company=op.company)
         user = UserGenerator().generate()
 
         # add subscription for companies
