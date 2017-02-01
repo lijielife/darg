@@ -155,6 +155,7 @@ class CompanyFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                 self.operator.user,
                 self.operator.company
             )
+            p.wait_until_visible((By.CLASS_NAME, 'security'))
             p.click_to_edit("security")
             p.enter_string("security", "88, 99-100")
             p.save_edit("security")
@@ -187,6 +188,7 @@ class CompanyFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                 self.operator.user,
                 self.operator.company
             )
+            p.wait_until_visible((By.CLASS_NAME, 'security'))
             p.click_to_edit("security")
             p.enter_string("security", ", 88, 99-100")
             p.save_edit("security")
@@ -219,6 +221,7 @@ class CompanyFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                 self.operator.user,
                 self.operator.company
             )
+            p.wait_until_visible((By.CLASS_NAME, 'security'))
             p.click_to_edit("security")
             p.enter_string("security", ";X, 88, 99-100")
             p.save_edit("security")
