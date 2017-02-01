@@ -84,7 +84,7 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                     self.selenium, self.live_server_url, op.user)
                 # wait for list
                 start.wait_until_visible(
-                    (By.CSS_SELECTOR, '#shareholder_list'))
+                    (By.CSS_SELECTOR, u'#shareholder_list'))
                 start.is_properly_displayed()
                 self.assertEqual(start.has_shareholder_count(),
                                  Shareholder.objects.filter(
@@ -95,7 +95,7 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                 time.sleep(3)
                 # wait for list entry
                 xpath = (
-                    '//div[@id="shareholder_list"]//span[text()="{}"]'
+                    u'//div[@id="shareholder_list"]//span[text()="{}"]'
                     u''.format(
                         user.shareholder_set.first().get_full_name()
                     )
