@@ -87,15 +87,15 @@
         <div class="td td-width-2" ng-click="goto_option(optiontransaction.pk)" ng-mouseover="">
           {{ optiontransaction.seller.user.full_name }}
         </div>
-        <div class="td flex-column">
+        <div class="td flex-inline options-view">
           <div ng-show="optiontransaction.is_draft">
-            <a class="btn-inline" ng-click="delete_option_transaction(optiontransaction)" href>
-              {% endverbatim %}{% trans "delete" %}{% verbatim %}
+            <a class="btn-inline" ng-click="delete_option_transaction(optiontransaction)" data-toggle="tooltip" title="{% endverbatim %}{% trans 'delete' %}{% verbatim %}">
+              {% endverbatim %}<i class="gray el-icon-remove-circle"></i>{% verbatim %}
             </a>
           </div>
           <div ng-show="optiontransaction.is_draft" ng-click="confirm_option_transaction(optiontransaction)" href>
-            <a class="btn-inline">
-              {% endverbatim %}{% trans "confirm" %}{% verbatim %}
+            <a class="btn-inline" data-toggle="tooltip" title="{% endverbatim %}{% trans 'confirm' %}{% verbatim %}">
+              {% endverbatim %}<i class="el-icon-ok-circle"></i>{% verbatim %}
             </a>
           </div>
         </div>
