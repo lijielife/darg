@@ -2551,6 +2551,7 @@ blockquote p.says:before {
 .core .container.members-area .two_factor_auth input {
   padding: 10px 13px;
   margin-bottom: 10px;
+  min-width: 245px;
 }
 .core .container.members-area .two_factor_auth .auth {
   margin-bottom: 15px;
