@@ -2582,6 +2582,14 @@ blockquote p.says:before {
   padding: 0;
 }
 
+@media only screen and (min-width: 768px) {
+  .core .container.members-area .two_factor_auth {
+    max-width: 345px;
+  }
+  .core .container.members-area .two_factor_auth input {
+    min-width: 345px;
+  }
+}
 @font-face {
   font-family: "QuickSandLight";
   src: url("/static/compiled/fonts/Quicksand-Light.otf") format("opentype");
