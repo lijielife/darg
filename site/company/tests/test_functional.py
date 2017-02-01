@@ -251,6 +251,10 @@ class CompanyFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         except Exception, e:
             self._handle_exception(e)
 
+        p.wait_until_text_present(
+            (By.CSS_SELECTOR, 'h1'),
+            self.operator.company.name)
+
         p.wait_until_invisible((By.CLASS_NAME, 'numbered-segments'))
         self.assertFalse(self.selenium.find_element_by_class_name(
             'numbered-segments').is_displayed())
