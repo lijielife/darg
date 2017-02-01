@@ -77,7 +77,7 @@
             <span class="truncate">{{ shareholder.full_name }}</span>
           </div>
           <div class="td text-right-flex order-2 number">{{ shareholder.number }}</div>
-          <div class="td text-right-flex order-4 gray-circle">
+          <div class="td text-right-flex order-4 gray-circle share">
             <value class='transform-center' ng-if="shareholder.share_count != '-'">
               {{ shareholder.share_count | number : 0}}
               <span class="shares-count" ng-hide="shareholder.is_company">
@@ -116,7 +116,7 @@
       </div>
 
       <!-- TABLE -->
-      <div class="table">
+      <div class="table options">
         <div class="tr option-holders" ng-show="option_holders.length"
              ng-repeat="option_holder in option_holders  | orderBy:'-share_count'"
              ng-click="goto_shareholder(option_holder.pk)" ng-mouseover="">
