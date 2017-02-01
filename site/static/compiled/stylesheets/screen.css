@@ -2541,15 +2541,24 @@ blockquote p.says:before {
   margin-bottom: 15px;
 }
 .core .container.members-area .two_factor_auth {
-  max-width: 230px;
+  max-width: 245px;
   margin: 0 auto;
+}
+.core .container.members-area .two_factor_auth #id_token-otp_token {
+  width: 100%;
+  margin-top: 10px;
+}
+.core .container.members-area .two_factor_auth input {
+  padding: 10px 13px;
+  margin-bottom: 10px;
 }
 .core .container.members-area .two_factor_auth .auth {
   margin-bottom: 15px;
 }
 .core .container.members-area .two_factor_auth .auth .btn {
   width: 100%;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
+  padding: 10px 13px;
 }
 .core .container.members-area .two_factor_auth .auth .btn.btn-disabled {
   display: none;
@@ -2573,6 +2582,14 @@ blockquote p.says:before {
   padding: 0;
 }
 
+@media only screen and (min-width: 768px) {
+  .core .container.members-area .two_factor_auth {
+    max-width: 345px;
+  }
+  .core .container.members-area .two_factor_auth input {
+    min-width: 345px;
+  }
+}
 @font-face {
   font-family: "QuickSandLight";
   src: url("/static/compiled/fonts/Quicksand-Light.otf") format("opentype");
@@ -3845,7 +3862,7 @@ table.stock {
   }
   .table .tr .buyer-name {
     font-weight: 700;
-    font-size: 1.2em;
+    font-size: 1em;
   }
   .table .tr .td {
     -webkit-flex-basis: auto;
@@ -4065,7 +4082,7 @@ table.stock {
     font-size: 8px;
   }
   .table .tr .buyer-name {
-    font-size: 0.75em;
+    font-size: 1em;
   }
 
   .main-screenshot .screenshot {

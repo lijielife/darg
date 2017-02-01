@@ -7,13 +7,20 @@
       a
         margin-bottom: 15px
     .two_factor_auth
-      max-width: 230px
+      max-width: 245px
       margin: 0 auto
+      #id_token-otp_token
+        width: 100%
+        margin-top: 10px
+      input
+        padding: 10px 13px
+        margin-bottom: 10px
       .auth
         margin-bottom: 15px
         .btn
           width: 100%
-          margin-bottom: 5px
+          margin-bottom: 10px
+          padding: 10px 13px
           &.btn-disabled
             display: none
           &.btn-link
@@ -28,3 +35,12 @@
         list-style: none
     ul.errorlist
       padding: 0
+
+@media only screen and (min-width: 768px)
+  .core
+    .container.members-area
+      .two_factor_auth
+        max-width: 345px
+
+        input
+          min-width: 345px

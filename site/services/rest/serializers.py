@@ -399,13 +399,23 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
 
         return shareholder
 
+    def is_valid(self, raise_exception=False):
+
+        res = super(ShareholderSerializer, self).is_valid(raise_exception)
+
+        # FIXME place validation code here...
+        # initial_data = self.initial_data
+
+        return res
+
     def update(self, instance, validated_data):
 
         shareholder = instance
         user = shareholder.user
 
-        # don't create duplicate users with same email
+        # don't create duplicate users with same email if email is set:
         if (
+                validated_data['user']['email'] and
                 User.objects.filter(
                     email=validated_data['user']['email']
                 ).exists() and User.objects.get(

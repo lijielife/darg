@@ -354,7 +354,7 @@ class OptionTransactionDetailFunctionalTestCase(BaseSeleniumTestCase):
                 self.optiontransaction.stock_book_id,
                 self.page.get_field('stock-book-id'))
             self.assertIn(
-                self.optiontransaction.bought_at.strftime('%Y-%m-%d'),
+                self.optiontransaction.bought_at.strftime('%d.%m.%y'),
                 self.page.get_field('bought-at'))
             self.assertIn(
                 self.optiontransaction.certificate_id,
@@ -991,7 +991,6 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
                 self.selenium, self.live_server_url, self.operator.user)
             app.click_open_add_position_form()
             app.enter_new_position_data(position)
-            self._screenshot()
             app.click_save_position()
 
             # wait for form to disappear
@@ -1209,7 +1208,6 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             position.count = 99999999991
             position.value = 99999599999
             app.enter_new_position_data(position)
-            self._screenshot()
             app.click_save_position()
             time.sleep(3)
             self.assertTrue(

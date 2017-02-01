@@ -95,11 +95,13 @@
 	<div class="note" ng-show="option_holders.length" >{% endverbatim %}{% trans "Option Holders note" %}{% verbatim %}</div>
 
     <!-- TABLE ACTIONS -->
-	{% endverbatim %}
-	{% with prefix="optionholder_" %}
+	<div ng-show="option_holders.length">
+    {% endverbatim %}
+    {% with prefix="optionholder_" %}
 	{% include "_table_actions.html" %}
 	{% endwith %}
 	{% verbatim %}
+	</div>
 
 	<!-- TABLE -->
     <div class="table">

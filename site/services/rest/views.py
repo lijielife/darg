@@ -57,6 +57,11 @@ class ShareholderViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        
+        # no company setup yet
+        if not user.operator_set.first():
+          return Shareholder.objects.none()
+        
         company = user.operator_set.first().company
         return Shareholder.objects.filter(company=company)\
             .select_related('company', 'user', 'user__userprofile') \
@@ -453,16 +458,18 @@ class OptionTransactionViewSet(viewsets.ModelViewSet):
                      'option_plan__title',
                      'buyer__user__userprofile__company_name',
                      'seller__user__userprofile__company_name',
-                     'seller__number', 'buyer__number')
+                     'seller__number', 'buyer__number', 'certificate_id',
+                     'stock_book_id')
     ordering_fields = ('buyer__user__last_name', 'buyer__user__email',
                        'buyer__number', 'seller__user__last_name',
                        'seller__user__email', 'seller__number')
-    ordering = ('option_plan__pk',)
+    ordering = ('option_plan__pk', '-bought_at')
 
     def get_queryset(self):
         user = self.request.user
         qs = OptionTransaction.objects.filter(
-            option_plan__company__operator__user=user)
+            option_plan__company__operator__user=user
+        )
 
         # filter if option plan is given in query params
         if self.request.query_params.get('optionplan_pk', None):
