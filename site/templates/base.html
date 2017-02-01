@@ -19,7 +19,10 @@
   <META NAME="country" CONTENT="Schweiz">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
+  {# bock required to disable css bootstrap in pdf rendering #}
+  {% block head_links %}
   {% include "_html_head_links.html" %}
+  {% endblock %}
 
   {% block inline_styles %}{% endblock %}
 

@@ -71,6 +71,8 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         ops.append(OperatorGenerator().generate())
         ops.append(OperatorGenerator().generate())
         ops.append(OperatorGenerator().generate())
+        for op in ops:
+            CompanyShareholderGenerator().generate(company=op.company)
         user = UserGenerator().generate()
 
         # add subscription for companies
@@ -82,7 +84,7 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                     self.selenium, self.live_server_url, op.user)
                 # wait for list
                 start.wait_until_visible(
-                    (By.CSS_SELECTOR, '#shareholder_list'))
+                    (By.CSS_SELECTOR, u'#shareholder_list'))
                 start.is_properly_displayed()
                 self.assertEqual(start.has_shareholder_count(),
                                  Shareholder.objects.filter(
@@ -93,7 +95,7 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                 time.sleep(3)
                 # wait for list entry
                 xpath = (
-                    '//div[@id="shareholder_list"]//span[text()="{}"]'
+                    u'//div[@id="shareholder_list"]//span[text()="{}"]'
                     u''.format(
                         user.shareholder_set.first().get_full_name()
                     )
@@ -202,8 +204,9 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             for shareholder in shs[1:]:  # not for company shareholder
                 # FIXME
                 row_xpath = (
-                    '//div[./div="{}" and contains(@class, "tr")]'.format(
-                        shareholder.get_full_name()))
+                    #'//div[contains(@class, "options")]/div[./div/span="{}" and contains(@class, "tr")]'.format(
+                    #    shareholder.get_full_name()))
+                    '//div[contains(@class, "options")]/div[contains(@class, "tr")]')
                 row = self.selenium.find_elements_by_xpath(row_xpath)[0]
                 self.assertEqual(row.find_element_by_class_name('number').text,
                                  shareholder.number)

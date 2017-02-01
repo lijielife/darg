@@ -398,7 +398,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
         is_loggedin = self.client.login(username=user.username,
                                         password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(is_loggedin)
-        with self.assertLessNumQueries(12):
+        with self.assertLessNumQueries(20):
             response = self.client.get(
                 reverse('captable_pdf', kwargs={"company_id": company.id}))
 

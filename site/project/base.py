@@ -65,9 +65,12 @@ class BaseSeleniumTestCase(LiveServerTestCase):
             logger.warn(u'Could not get browser log: {}'.format(ex))
 
         # print python exception
-        logger.error(
-            u"\nPython Exception: {}\n{}".format(e, traceback.format_exc()))
-        # print(u"Python Exception: {}".format(e), traceback.format_exc())
+        try:
+            logger.error(
+                u"\nPython Exception: {}\n{}".format(e, traceback.format_exc()))
+            # print(u"Python Exception: {}".format(e), traceback.format_exc())
+        except:
+            logger.exception('failed to render error stack')
 
         try:
             self._screenshot()  # make screenshot

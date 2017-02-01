@@ -381,7 +381,7 @@ class OptionTransactionDetailFunctionalTestCase(StripeTestCaseMixin,
                 self.page.get_field('stock-book-id')
             )
             self.assertIn(
-                self.optiontransaction.bought_at.strftime('%d.%m.%y'),
+                self.optiontransaction.bought_at.strftime('%-d.%m.%y'),
                 self.page.get_field('bought-at')
             )
             self.assertIn(
