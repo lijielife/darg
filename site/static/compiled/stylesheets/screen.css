@@ -3818,6 +3818,13 @@ table.stock {
     -webkit-flex-basis: auto;
     flex-basis: auto;
   }
+  .table .tr .td.options-view {
+    margin-top: 10px;
+  }
+  .table .tr .td [class*="el-icon-"] {
+    padding: 0 10px 0 0;
+    font-size: 20px;
+  }
   .table .tr .td .truncate {
     white-space: nowrap;
     overflow: hidden;
