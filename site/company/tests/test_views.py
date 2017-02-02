@@ -1,9 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from django.test import TestCase, Client, override_settings
+from django.test import TestCase, Client, modify_settings
 from django.core.urlresolvers import reverse
 from django.utils.translation import gettext as _
+
+import mock
+
+from two_factor.admin import AdminSiteOTPRequiredMixin
 
 from project.generators import (
     CompanyGenerator, SecurityGenerator,
@@ -17,14 +21,20 @@ class CompanyAdminDetailViewTestCase(TestCase):
         self.company = CompanyGenerator().generate()
         self.user = UserGenerator().generate()
 
-    @override_settings(DEBUG=True)
-    def test_view(self):
+    # disable two-factor authentication
+    @modify_settings(MIDDLEWARE_CLASSES={
+        'remove': ['django_otp.middleware.OTPMiddleware']
+    })
+    @mock.patch.object(AdminSiteOTPRequiredMixin, 'has_permission',
+                       return_value=True)
+    def test_view(self, mock_permission):
 
         self.user.is_superuser = True
         self.user.is_staff = True
         self.user.save()
 
         self.client.force_login(self.user)
+
         res = self.client.get(reverse('admin:shareholder_company_change',
                                       args=[self.company.pk]))
 
