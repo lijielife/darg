@@ -60,7 +60,8 @@ class AddressModelMixin(models.Model):
     """
     add fields street, postal_code, city, province, country to model
     """
-
+    ADDRESS_FIELDS = ('street', 'street2', 'city', 'province', 'pobox', 'c_o',
+                      'postal_code', 'country')
     REQUIRED_ADDRESS_FIELDS = ('street', 'city', 'postal_code', 'country')
     STRIPE_FIELD_MAPPING = {
         'address_line1': 'street',
@@ -88,21 +89,6 @@ class AddressModelMixin(models.Model):
 
     class Meta:
         abstract = True
-
-    def get_address_fields(self):
-        # FIXME: is there a way to get all fields from abstract model (self)?
-        return (
-            'street',
-            'street2',
-            'city',
-            'province',
-            'pobox',
-            'c_o',
-            'postal_code',
-            'country'
-        )
-
-    ADDRESS_FIELDS = property(get_address_fields)
 
     @property
     def has_address(self):
