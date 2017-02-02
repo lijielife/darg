@@ -9,7 +9,7 @@ class Command(BaseCommand):
 
     help = _('(Re)Generate PDF for invoice')
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser):  # pragma: no cover
         parser.add_argument('invoice_id', nargs='+', type=int)
 
         parser.add_argument(
@@ -22,7 +22,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        for pk in options.get('invoice_id'):
+        for pk in options.get('invoice_id', []):
             obj = Invoice.objects.filter(pk=pk).first()
             if obj is None:
                 error_message = _(
