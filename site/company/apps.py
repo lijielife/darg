@@ -237,7 +237,7 @@ class CompanyAppConfig(AppConfig):
 
         Invoice._generate_invoice_pdf = _generate_invoice_pdf
 
-        def _get_invoice_pdf_path_for_company(self, company):
+        def _get_invoice_pdf_dir_for_company(self, company):
             """
             returns a unique directory path to for the charge
             """
@@ -248,14 +248,14 @@ class CompanyAppConfig(AppConfig):
                 os.makedirs(path)
             return path
 
-        Invoice._get_invoice_pdf_path_for_company = (
-            _get_invoice_pdf_path_for_company)
+        Invoice._get_invoice_pdf_dir_for_company = (
+            _get_invoice_pdf_dir_for_company)
 
         def _get_pdf_filepath(self):
             """
             return complete filepath to PDF
             """
-            pdf_dir = self._get_invoice_pdf_path_for_company(
+            pdf_dir = self._get_invoice_pdf_dir_for_company(
                 self.customer.subscriber)
             pdf_filename = u'{}-{}.pdf'.format(
                 settings.COMPANY_INVOICE_FILENAME, self.pk)
