@@ -250,8 +250,13 @@
           font-weight: 300
       .buyer-name
         font-weight: 700
-        font-size: 1.2em
+        font-size: 1em
       .td
+        &.options-view
+          margin-top: 10px
+        [class*="el-icon-"]
+          padding: 0 10px 0 0
+          font-size: 20px
         @include flex-basis(auto)
         .truncate
           white-space: nowrap /* No break word */
@@ -415,7 +420,7 @@
       .bought-at
         font-size: 8px
       .buyer-name
-        font-size: 0.75em
+        font-size: 1em
   .main-screenshot
     .screenshot
       height: 160px

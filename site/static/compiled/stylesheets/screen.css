@@ -3812,11 +3812,18 @@ table.stock {
   }
   .table .tr .buyer-name {
     font-weight: 700;
-    font-size: 1.2em;
+    font-size: 1em;
   }
   .table .tr .td {
     -webkit-flex-basis: auto;
     flex-basis: auto;
+  }
+  .table .tr .td.options-view {
+    margin-top: 10px;
+  }
+  .table .tr .td [class*="el-icon-"] {
+    padding: 0 10px 0 0;
+    font-size: 20px;
   }
   .table .tr .td .truncate {
     white-space: nowrap;
@@ -4032,7 +4039,7 @@ table.stock {
     font-size: 8px;
   }
   .table .tr .buyer-name {
-    font-size: 0.75em;
+    font-size: 1em;
   }
 
   .main-screenshot .screenshot {
