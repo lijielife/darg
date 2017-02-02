@@ -1,5 +1,6 @@
 
 import datetime
+import time
 
 from django.contrib.auth import get_user_model
 
@@ -91,12 +92,15 @@ class CompanyFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                 self.operator.company
             )
             p.click_remove_operator(operator)
-            p.wait_until_invisible(
-                (By.XPATH,
+            time.sleep(3)
+
+            xpath = (
                  u'//div[@id="company"]//table[contains(@class, "operators")]'
                  u'//tbody//tr//td[contains(text(), "{}")]'.format(
                      operator.user.email))
-            )
+            if self.selenium.find_elements_by_xpath(xpath):
+                p.wait_until_invisible((By.XPATH, xpath))
+
             self.assertFalse(
                 p.is_operator_displayed(operator.user.email)
             )
