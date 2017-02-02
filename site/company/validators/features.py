@@ -83,7 +83,9 @@ class ShareholderCreateMaxCountValidator(BaseCompanyValidator):
             self.company.get_current_subscription_plan(), {})
         shareholders_feature = plan.get('features', {}).get('shareholders', {})
         max_shareholders = shareholders_feature.get('max')
-        return MaxValueValidator(max_shareholders)(company_shareholders + 1)
+        if max_shareholders:
+            validator = MaxValueValidator(max_shareholders)
+            return validator(company_shareholders + 1)
 
 
 class SecurityCreateMaxCountValidator(BaseCompanyValidator):
@@ -98,4 +100,5 @@ class SecurityCreateMaxCountValidator(BaseCompanyValidator):
             self.company.get_current_subscription_plan(), {})
         security_feature = plan.get('features', {}).get('securities', {})
         max_securities = security_feature.get('max')
-        return MaxValueValidator(max_securities)(company_securities + 1)
+        if max_securities:
+            return MaxValueValidator(max_securities)(company_securities + 1)

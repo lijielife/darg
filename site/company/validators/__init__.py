@@ -18,7 +18,7 @@ class CompanyEmailRequired(BaseCompanyValidator):
 
     code = 'email'
 
-    def __call__(self, plan):
+    def __call__(self, plan=None):
         # check for validity
         EmailValidator(code=self.code)(self.company.email)
 

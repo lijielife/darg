@@ -99,7 +99,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
                 $scope.current=result.data.current
 
     $scope.load_all_shareholders()
-          
+
 
     $http.get('/services/rest/user').then (result) ->
         $scope.user = result.data.results[0]
@@ -110,9 +110,10 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
                 $scope.user.operator_set[key].company = result1.data
                 # fetch option holders for this company
                 $scope.load_option_holders(result1.data.pk)
+
         # update option holders if we have the company id
-        if $scope.user.operator_set && $scope.user.operator_set[0].company.pk
-           $scope.load_option_holders($scope.user.operator_set[0].company.pk)
+        # if $scope.user.operator_set && $scope.user.operator_set[0].company.pk
+        #    $scope.load_option_holders($scope.user.operator_set[0].company.pk)
 
     .finally ->
         $scope.loading = false

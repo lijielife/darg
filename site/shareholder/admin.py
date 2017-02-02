@@ -79,7 +79,7 @@ class CompanyAdmin(VersionAdmin):
     fieldsets = (
         ('', {'fields': ('name', 'founded_at', 'share_count',
                          'provisioned_capital', 'logo', 'email')}),
-        (_('Address'), {'fields': Company.STREET_FIELDS}),
+        (_('Address'), {'fields': Company.ADDRESS_FIELDS}),
         (_('Statements'), {'fields': ('is_statement_sending_enabled',
                                       'statement_sending_date')})
     )

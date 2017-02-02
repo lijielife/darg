@@ -1560,15 +1560,12 @@
       $scope.load_all_shareholders();
       $http.get('/services/rest/user').then(function(result) {
         $scope.user = result.data.results[0];
-        angular.forEach($scope.user.operator_set, function(item, key) {
+        return angular.forEach($scope.user.operator_set, function(item, key) {
           return $http.get(item.company).then(function(result1) {
             $scope.user.operator_set[key].company = result1.data;
             return $scope.load_option_holders(result1.data.pk);
           });
         });
-        if ($scope.user.operator_set && $scope.user.operator_set[0].company.pk) {
-          return $scope.load_option_holders($scope.user.operator_set[0].company.pk);
-        }
       })["finally"](function() {
         return $scope.loading = false;
       });

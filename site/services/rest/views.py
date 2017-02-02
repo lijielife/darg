@@ -99,7 +99,7 @@ class ShareholderViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
 
     @list_route(methods=['get'])
     def company_number_segments(self, request):
-        operator = request.user.operator_set.first()
+        operator = request.user.operator_set.first()  # FIXME
         shareholder = operator.company.get_company_shareholder()
         kwargs = {}
 
@@ -208,7 +208,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
 class AddCompanyView(APIView):
     """ view to initially setup a company """
 
-    queryset = Company.objects.none()
+    # queryset = Company.objects.none()
     permission_classes = [
         UserCanAddCompanyPermission,
     ]
