@@ -77,7 +77,8 @@ def _make_user():
         province="Some Province",
         postal_code="12345",
         birthday=datetime.datetime.now(),
-        company_name="SomeCorp"
+        company_name="SomeCorp",
+        initial_registration_at=datetime.datetime.now()
         )
     )
 
