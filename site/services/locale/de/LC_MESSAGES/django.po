@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-29 22:29+0000\n"
+"POT-Creation-Date: 2017-02-03 21:21+0000\n"
 "PO-Revision-Date: 2017-01-06 09:34+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -134,7 +134,7 @@ msgstr ""
 "Aktiennummer(n) {} ist nicht reserviert für einen Optionsplan and kann nicht "
 "an einen Optionsinhaber transferiert werden. Verfügbar sind aber: {}."
 
-#: services/rest/tests/test_serializers.py:392
+#: services/rest/tests/test_serializers.py:393
 msgid "Human Being"
 msgstr "Natürliche Person"
 
@@ -145,12 +145,12 @@ msgstr ""
 "Die Felder {field_names} müssen gemeinsam leer sein oder gleichzeitig Werte "
 "haben."
 
-#: services/rest/views.py:229 services/rest/views.py:231
-#: services/rest/views.py:233 services/rest/views.py:235
+#: services/rest/views.py:234 services/rest/views.py:236
+#: services/rest/views.py:238 services/rest/views.py:240
 msgid "Field may not be empty."
 msgstr "Das Feld darf nicht leer sein."
 
-#: services/rest/views.py:392 services/rest/views.py:497
+#: services/rest/views.py:397 services/rest/views.py:502
 msgid "Confirmed position cannot be deleted."
 msgstr ""
 "Festgeschriebene Transaktionen können nicht gelöscht werden. Verwenden Sie "

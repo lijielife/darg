@@ -93,6 +93,9 @@ class BaseSeleniumTestCase(LiveServerTestCase):
 
         chrome_options = webdriver.chrome.options.Options()
         chrome_options.add_argument("--start-maximized")
+        # avoid TimeoutException https://goo.gl/sSxERk
+        # - approach did not work...
+        # chrome_options.add_argument('--dns-prefetch-disable')
         cls.selenium = webdriver.Chrome(
             settings.TEST_CHROMEDRIVER_EXECUTABLE,
             chrome_options=chrome_options

@@ -233,6 +233,8 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
         for x in range(1, 6):  # don't statt with 0, Generators 'if' will fail
             shareholder_list.append(ShareholderGenerator().generate(
                 company=company, number=str(x)))
+        shareholder_list = sorted(
+            shareholder_list, key=lambda t: t.user.last_name)
 
         # initial share creation
         PositionGenerator().generate(
@@ -263,7 +265,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
         is_loggedin = self.client.login(username=user.username,
                                         password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(is_loggedin)
-        with self.assertNumQueries(34):
+        with self.assertLessNumQueries(59):
             response = self.client.get(reverse('captable_csv',
                                        kwargs={"company_id": company.id}))
 
@@ -274,7 +276,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
         lines = content.split('\r\n')
         lines.pop()  # remove last element based on final '\r\n'
         for row in lines:
-            self.assertEqual(row.count(','), 6)
+            self.assertEqual(row.count(','), 7)
         self.assertEqual(len(lines), 3)  # ensure we have the right data
         # assert company itself
         self.assertEqual(shareholder_list[0].number, lines[1].split(',')[0])
@@ -398,7 +400,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
         is_loggedin = self.client.login(username=user.username,
                                         password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(is_loggedin)
-        with self.assertLessNumQueries(12):
+        with self.assertLessNumQueries(13):
             response = self.client.get(
                 reverse('captable_pdf', kwargs={"company_id": company.id}))
 

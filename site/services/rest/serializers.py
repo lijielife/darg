@@ -185,7 +185,7 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
                   'birthday', 'company_name', 'language', 'readable_language',
                   'readable_legal_type', 'legal_type', 'company_department',
                   'title', 'salutation', 'street2', 'pobox', 'c_o',
-                  'nationality')
+                  'nationality', 'initial_registration_at')
 
     def get_readable_language(self, obj):
         return obj.get_language_display()

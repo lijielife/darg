@@ -343,6 +343,7 @@ class ShareholderSerializerTestCase(TestCase):
         profile.title = 'some title'
         profile.pobox = '12345'
         profile.c_o = 'ddd'
+        profile.initial_registration_at = datetime.datetime.now()
         profile.nationality = Country.objects.last()
         profile.save()
         request = self.factory.get('/services/rest/shareholders')

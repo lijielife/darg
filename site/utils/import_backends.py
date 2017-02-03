@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
+import os
 import csv
 import datetime
 import logging
@@ -229,6 +229,9 @@ class SisWareImportBackend(BaseImportBackend):
         self.company.provisioned_capital = self.company.get_total_capital()
         self.company.save()
 
+        # update day of first share register occurence of user
+        self._get_or_update_init_date()
+
     def _get_or_create_dispo_shares(self):
         """
         create positions to have dispo shares properly listed
@@ -417,6 +420,29 @@ class SisWareImportBackend(BaseImportBackend):
             UserProfile.objects.create(user=user, **kwargs)
 
         return user
+
+    def _get_or_update_init_date(self):
+        """ add initial registration date from another file """
+
+        filename = os.path.join('/'.join(self.filename.split('/')[:-1]),
+                                'initial_registration.csv')
+
+        with open(filename,) as f:
+            reader = csv.reader(f, delimiter=';', dialect=csv.excel)
+            reader.next()  # skip first line
+            for row in reader:
+                qs = Shareholder.objects.filter(
+                    company=self.company, number=row[0])
+                if qs.exists():
+                    shareholder = qs.get()
+                    if shareholder.user.userprofile.initial_registration_at:
+                        logger.warning('initial registration already set. '
+                                       'Skipping...', extra={'number': row[0]})
+                    else:
+                        profile = shareholder.user.userprofile
+                        profile.initial_registration_at = (
+                            parse(row[7]))
+                        profile.save()
 
     def _match_registration_type(self, registration_type):
         if registration_type == u'Eigene Rechnung':

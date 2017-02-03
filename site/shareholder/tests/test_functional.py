@@ -57,6 +57,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                 p.get_field('legal-type'))
 
             profile = self.buyer.user.userprofile
+            profile.initial_registration_at = datetime.date(2013, 1, 13)
             profile.legal_type = 'C'
             profile.save()
             p.refresh()
@@ -64,6 +65,8 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                 (By.CSS_SELECTOR, 'tr.shareholder-number span.el-icon-pencil'))
             self.assertIn(profile.get_legal_type_display(),
                           p.get_field('legal-type'))
+            self.assertIn(profile.initial_registration_at.strftime('%-d.%m.%y'),
+                          p.get_field('initial_registration_at'))
 
         except Exception, e:
             self._handle_exception(e)
@@ -354,8 +357,9 @@ class OptionTransactionDetailFunctionalTestCase(BaseSeleniumTestCase):
                 self.optiontransaction.stock_book_id,
                 self.page.get_field('stock-book-id'))
             self.assertIn(
-                self.optiontransaction.bought_at.strftime('%d.%m.%y'),
-                self.page.get_field('bought-at'))
+                self.optiontransaction.bought_at.strftime('%-d.%m.%y'),
+                self.page.get_field('bought-at')
+            )
             self.assertIn(
                 self.optiontransaction.certificate_id,
                 self.page.get_field('certificate-id'))
