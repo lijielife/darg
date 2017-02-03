@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-03 13:14+0000\n"
+"POT-Creation-Date: 2017-02-03 21:21+0000\n"
 "PO-Revision-Date: 2017-02-03 13:14+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,8 +23,8 @@ msgstr ""
 msgid "Personal ownership"
 msgstr "Eigenbestand"
 
-#: shareholder/models.py:34 shareholder/tests/test_functional.py:881
-#: shareholder/tests/test_functional.py:1439
+#: shareholder/models.py:34 shareholder/tests/test_functional.py:885
+#: shareholder/tests/test_functional.py:1443
 msgid "Personal representation"
 msgstr "Eigene Rechnung"
 
@@ -48,7 +48,7 @@ msgstr "Unzustellbar"
 msgid "Postal Mail"
 msgstr "Briefversand"
 
-#: shareholder/models.py:46 shareholder/tests/test_functional.py:174
+#: shareholder/models.py:46 shareholder/tests/test_functional.py:177
 msgid "via Email"
 msgstr "Emailversand"
 
@@ -72,12 +72,14 @@ msgstr "Ihre Liste gespaltener Aktienanrechte für das Unternehmen '{}'"
 msgid ""
 "Dear Operator,\n"
 "\n"
-"Your share split has been successful. Please find the list of partial shares below:\n"
+"Your share split has been successful. Please find the list of partial shares "
+"below:\n"
 "\n"
 msgstr ""
 "Lieber Operator,\n"
 "\n"
-"Der Aktiensplit war erfolgreich. Sie finden die Daten zu den teilweisen Aktienanrechten wie folgt:\n"
+"Der Aktiensplit war erfolgreich. Sie finden die Daten zu den teilweisen "
+"Aktienanrechten wie folgt:\n"
 "\n"
 
 #: shareholder/models.py:118
@@ -91,16 +93,19 @@ msgstr "--- Keine partiellen Splitbeträge ---\n"
 #: shareholder/models.py:128
 msgid ""
 "\n"
-"These shareholders are eligible to either sell their partial shares or get compensated.\n"
+"These shareholders are eligible to either sell their partial shares or get "
+"compensated.\n"
 "\n"
 "Please handle them accordingly and update the share register.\n"
 "\n"
 "Your Share Register Team"
 msgstr ""
 "\n"
-"Diese Gesellschafter sind berechtigt Ihre Anrechte zu verschenken, verkaufen oder eine entsprechende Kompensation für die Nichtverwendung zu erhalten.\n"
+"Diese Gesellschafter sind berechtigt Ihre Anrechte zu verschenken, verkaufen "
+"oder eine entsprechende Kompensation für die Nichtverwendung zu erhalten.\n"
 "\n"
-"Bitte handhaben Sie diese Anteile entsprechend und tragen Sie die durchgeführten Transaktionen nach.\n"
+"Bitte handhaben Sie diese Anteile entsprechend und tragen Sie die "
+"durchgeführten Transaktionen nach.\n"
 "\n"
 "Mit besten Grüßen\n"
 "\n"
@@ -108,8 +113,7 @@ msgstr ""
 
 #: shareholder/models.py:427
 msgid "Share split of {} on {} with ratio {}:{}. Return of old shares."
-msgstr ""
-"Aktiensplit von {} für {} mit Verhältnis {}:{}. Rückgabe alter Aktien."
+msgstr "Aktiensplit von {} für {} mit Verhältnis {}:{}. Rückgabe alter Aktien."
 
 #: shareholder/models.py:449
 msgid "Share split of {} on {} with ratio {}:{}. Provisioning of new shares."
@@ -119,7 +123,7 @@ msgstr "Aktiensplit von {} für {} mit Verhältnis {}:{}. Ausgabe neuer Aktien."
 msgid "Human Being"
 msgstr "Natürliche Person"
 
-#: shareholder/models.py:487 shareholder/tests/test_functional.py:145
+#: shareholder/models.py:487 shareholder/tests/test_functional.py:148
 msgid "Corporate"
 msgstr "Juristische Person"
 
@@ -194,8 +198,8 @@ msgid ""
 "App needs to track IDs of shares. WARNING: update initial transaction with "
 "segments on enabling."
 msgstr ""
-"Aktiennummern sollen verfolgt werden. WARNUNG: bei Aktivierung aktualisieren"
-" sie bitte auch alle vorhandenen Transaktionen für dieses Wertpapier!"
+"Aktiennummern sollen verfolgt werden. WARNUNG: bei Aktivierung aktualisieren "
+"sie bitte auch alle vorhandenen Transaktionen für dieses Wertpapier!"
 
 #: shareholder/models.py:1000
 msgid "{} ({} CHF)"
@@ -533,7 +537,6 @@ msgid "Shareholder Number"
 msgstr "Aktionärsnummer"
 
 #: shareholder/templates/shareholder/shareholder_detail.html:52
-#| msgid "Registration Type"
 msgid "Initial Registration Date"
 msgstr "Datum der Ersteintragung ins Register"
 
@@ -665,8 +668,8 @@ msgstr "Stimmrechte gesamt basierend auf ausgegebenen Aktien"
 #: shareholder/templates/shareholder/shareholder_detail.html:237
 msgid "Does include shares used for options. Without options it would be"
 msgstr ""
-"Beinhaltet Aktien welche für Optionen/Urkunden verwendet wurden. Rechnet man"
-" diese heraus ergibt dies"
+"Beinhaltet Aktien welche für Optionen/Urkunden verwendet wurden. Rechnet man "
+"diese heraus ergibt dies"
 
 #: shareholder/templates/shareholder/shareholder_detail.html:239
 msgid "Total option count based on shares dedicated to options"
@@ -708,7 +711,7 @@ msgstr "Aktiennummern"
 msgid "Delete shareholder"
 msgstr "Gesellschafter löschen"
 
-#: shareholder/tests/test_functional.py:275
+#: shareholder/tests/test_functional.py:278
 msgid "This email is already taken by another user/shareholder."
 msgstr ""
 "Diese E-Mail wird bereits von einem anderen Nutzer/Gesellschafter verwendet."
@@ -728,15 +731,16 @@ msgstr ""
 "Transaktionen: {}"
 
 #: shareholder/validators.py:78
-msgid "Company share count \"{}\" does not match security count from positions \"{}\""
+msgid ""
+"Company share count \"{}\" does not match security count from positions "
+"\"{}\""
 msgstr ""
 "Aktienzahl des Unternehmens \"{}\" ist nicht identisch mit der Anzahl der "
 "Aktion in den Transaktionen \"{}\""
 
 #: shareholder/validators.py:93
 msgid "Address of some shareholders is not reachable via postal mail: {}"
-msgstr ""
-"Die Adresse einiger Gesellschafter ist postalisch nicht erreichbar: {}"
+msgstr "Die Adresse einiger Gesellschafter ist postalisch nicht erreichbar: {}"
 
 #: shareholder/validators.py:111
 msgid "Initial position for security {} is invalid"
