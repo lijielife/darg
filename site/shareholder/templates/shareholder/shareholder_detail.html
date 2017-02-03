@@ -47,6 +47,14 @@
         {% verbatim %}<span editable-text="shareholder.number" onaftersave="edit_shareholder()">{{ shareholder.number || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
       </td>
     </tr>
+    {% verbatim %}
+    <tr class="initial_registration_at" ng-show="shareholder.user.userprofile.initial_registration_at">
+      <td>{% endverbatim %}{% trans "Initial Registration Date" %}{% verbatim %}:</td>
+      <td>
+        {{ (shareholder.user.userprofile.initial_registration_at|date:"dd.MM.yy") }}
+      </td>
+    </tr>
+    {% endverbatim %}
     <tr class="title">
       <td>
         {% trans "Title" %}:

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-29 22:29+0000\n"
+"POT-Creation-Date: 2017-02-03 13:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,7 +40,7 @@ msgstr ""
 msgid "PDF Captable/Active Shareholders"
 msgstr ""
 
-#: project/tasks.py:88 project/tests/test_views.py:473 project/views.py:35
+#: project/tasks.py:88 project/tests/test_views.py:487 project/views.py:35
 msgid "shareholder number"
 msgstr ""
 
@@ -309,7 +309,7 @@ msgstr ""
 msgid "Gratis Aktienbuch-Muster"
 msgstr ""
 
-#: project/templates/index.html:36 project/tests/test_views.py:78
+#: project/templates/index.html:36 project/tests/test_views.py:80
 msgid "My Dashboard"
 msgstr ""
 
@@ -463,13 +463,13 @@ msgstr ""
 msgid "Option Holders note"
 msgstr ""
 
-#: project/tests/test_views.py:136 project/views.py:199
+#: project/tests/test_views.py:138 project/views.py:199
 msgid ""
 "You have already an existing user account. Please login or reset your "
 "password."
 msgstr ""
 
-#: project/tests/test_views.py:517 project/views.py:92
+#: project/tests/test_views.py:531 project/views.py:92
 msgid "date"
 msgstr ""
 

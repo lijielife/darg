@@ -510,6 +510,9 @@ class UserProfile(models.Model):
     company_name = models.CharField(max_length=255, blank=True, null=True)
     company_department = models.CharField(max_length=255, blank=True, null=True)
     birthday = models.DateField(blank=True, null=True)
+    initial_registration_at = models.DateField(
+        _('when did the user register with the share register 1st time.'),
+        blank=True, null=True)
 
     ip = models.GenericIPAddressField(blank=True, null=True)
     tnc_accepted = models.BooleanField(default=False)
