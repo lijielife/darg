@@ -1,4 +1,6 @@
 
+import collections
+import logging
 import re
 import time
 
@@ -7,7 +9,43 @@ from django.utils.timezone import now
 from model_mommy import random_gen
 
 
-class FakeStripeResponse(object):
+# https://stackoverflow.com/questions/899067
+# /how-should-i-verify-a-log-message-when-testing-python-code-under-nose
+class TestLoggingHandler(logging.Handler):
+    """Mock logging handler to check for expected logs.
+
+    Messages are available from an instance's ``messages`` dict, in order,
+    indexed by a lowercase log level string (e.g., 'debug', 'info', etc.).
+    """
+
+    def __init__(self, *args, **kwargs):
+        self.messages = {
+            'debug': collections.deque(),
+            'info': collections.deque(),
+            'warning': collections.deque(),
+            'error': collections.deque(),
+            'critical': collections.deque()
+        }
+        super(TestLoggingHandler, self).__init__(*args, **kwargs)
+
+    def emit(self, record):
+        "Store a message from ``record`` in the instance's ``messages`` dict."
+        self.acquire()
+        try:
+            self.messages[record.levelname.lower()].append(record.getMessage())
+        finally:
+            self.release()
+
+    def reset(self):
+        self.acquire()
+        try:
+            for message_list in self.messages.values():
+                message_list.clear()
+        finally:
+            self.release()
+
+
+class FakeStripeResponser(object):
     """
     handle (fake) stripe responses
     """
@@ -20,7 +58,7 @@ class FakeStripeResponse(object):
         """
         return api endpoint from url
 
-        e.g. customer from /v1/customer/
+        e.g. customer from /v1/customers/
         """
         regex = r'^/v\d+/(?P<endpoint>\w+)/?.*'
         match = re.match(regex, self.url)

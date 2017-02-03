@@ -13,8 +13,7 @@ import stripe
 
 from djstripe import settings as djstripe_settings
 
-from utils.mail import is_valid_email
-from utils.pdf import render_pdf
+import utils
 
 
 # logger = logging.getLogger(__name__)
@@ -62,7 +61,7 @@ class CompanyAppConfig(AppConfig):
                     # get email address from stripe data
                     recipient = (data.get('email') or data.get('name') or
                                  data.get('active_card', {}).get('name'))
-                    if is_valid_email(recipient):
+                    if utils.mail.is_valid_email(recipient):
                         subscriber.email = recipient
                         subscriber.save()
 
@@ -174,8 +173,7 @@ class CompanyAppConfig(AppConfig):
             )
 
             if context['include_vat']:
-                net = self.amount / (100 + settings.COMPANY_INVOICE_VAT) * 100
-                vat_value = self.amount - net
+                vat_value = utils.get_vat(self.amount)
                 context.update(dict(
                     vat=settings.COMPANY_INVOICE_VAT,
                     vat_value=vat_value
@@ -220,7 +218,7 @@ class CompanyAppConfig(AppConfig):
 
             activate_lang(settings.LANGUAGE_CODE)
             template = get_template(self.customer.subscriber.invoice_template)
-            pdf = render_pdf(template.render(context))
+            pdf = utils.pdf.render_pdf(template.render(context))
 
             if not pdf:
                 error_message = _(
@@ -298,8 +296,7 @@ class CompanyAppConfig(AppConfig):
             )
 
             if context['include_vat']:
-                net = self.total / (100 + settings.COMPANY_INVOICE_VAT) * 100
-                vat_value = self.total - net
+                vat_value = utils.get_vat(self.total)
                 context.update(dict(
                     vat=settings.COMPANY_INVOICE_VAT,
                     vat_value=vat_value

@@ -20,7 +20,7 @@ import stripe
 from djstripe.models import CurrentSubscription
 from model_mommy import random_gen
 
-from .helper import FakeStripeResponse
+from .helper import FakeStripeResponser
 
 
 # stolen here https://goo.gl/IdWkTr
@@ -148,7 +148,7 @@ class StripeTestCaseMixin(object):
         mock_request = mock.Mock(return_value=(res, 'reskey'))
 
         def side_effect(method, url, params=None, headers=None):
-            res = FakeStripeResponse(method, url).get_response()
+            res = FakeStripeResponser(method, url).get_response()
             return (res, 'reskey')
 
         mock_request.side_effect = side_effect

@@ -205,6 +205,11 @@ LOGGING = {
             'level': 'WARNING',
             'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler'
         },
+        'test_logging_handler': {
+            'level': 'DEBUG',
+            'class': 'project.tests.helper.TestLoggingHandler',
+            'formatter': 'simple'
+        },
     },
     'loggers': {
         'django.db.backends': {
