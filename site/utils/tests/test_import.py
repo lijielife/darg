@@ -223,7 +223,11 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
 
         ShareholderGenerator().generate(company=self.company, number='1913')
         ShareholderGenerator().generate(company=self.company, number='1157')
-        ShareholderGenerator().generate(company=self.company, number='1914')
+        sx = ShareholderGenerator().generate(
+            company=self.company, number='1914')
+        profile = sx.user.userprofile
+        profile.initial_registration_at = None
+        profile.save()
 
         self.backend.company = self.company
         self.backend._get_or_update_init_date()
@@ -233,7 +237,7 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
             ).values_list(
                 'user__userprofile__initial_registration_at', flat=True
             )),
-            [datetime.date(2013, 12, 31), datetime.date(2013, 12, 31)]
+            [datetime.datetime.now().date(), datetime.datetime.now().date()]
         )
 
     def test__init_import(self):
