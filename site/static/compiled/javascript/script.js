@@ -1210,6 +1210,39 @@
       $scope.show_transaction_form = false;
       $scope.enable_transaction_download = false;
       $scope.transaction_download_url = '';
+      $scope.show_captable_form = false;
+      $scope.captable_orderings = [
+        {
+          title: gettext('Last Name'),
+          value: 'user__last_name'
+        }, {
+          title: gettext('Last Name (descending)'),
+          value: 'user__last_name_desc'
+        }, {
+          title: gettext('Share Count'),
+          value: 'share_count'
+        }, {
+          title: gettext('Share Count (descending)'),
+          value: 'share_count_desc'
+        }, {
+          title: gettext('Shareholder Number'),
+          value: 'number'
+        }, {
+          title: gettext('Shareholder Number (descending)'),
+          value: 'number_desc'
+        }, {
+          title: gettext('Share Percent Ownership'),
+          value: 'share_percent'
+        }, {
+          title: gettext('Share Percent Ownership (descending)'),
+          value: 'share_percent_desc'
+        }
+      ];
+      $scope.captable_report = {
+        ordering: $scope.captable_orderings[6]
+      };
+      $scope.captable_csv_url = '';
+      $scope.captable_pdf_url = '';
       $http.get('/services/rest/security').then(function(result) {
         return angular.forEach(result.data.results, function(item) {
           return $scope.securities.push(item);
@@ -1221,11 +1254,27 @@
           return $scope.transaction_download_url = '/company/' + company_id + '/download/transactions?from=' + $scope.transactions_download_params.from.toISOString() + '&to=' + $scope.transactions_download_params.to.toISOString() + '&security=' + $scope.transactions_download_params.security.pk;
         }
       });
+      $scope.$watchCollection('captable_report', function(captable_report) {
+        var ext;
+        ext = '';
+        if (captable_report.ordering) {
+          ext = '?ordering=' + captable_report.ordering.value;
+        }
+        $scope.captable_csv_url = '/company/' + company_id + '/download/pdf' + ext;
+        return $scope.captable_pdf_url = '/company/' + company_id + '/download/csv' + ext;
+      });
       $scope.toggle_transaction_form = function() {
         if ($scope.show_transaction_form) {
           return $scope.show_transaction_form = false;
         } else {
           return $scope.show_transaction_form = true;
+        }
+      };
+      $scope.toggle_captable_form = function() {
+        if ($scope.show_captable_form) {
+          return $scope.show_captable_form = false;
+        } else {
+          return $scope.show_captable_form = true;
         }
       };
       $scope.datepicker1 = {

@@ -16,6 +16,61 @@ from utils.pdf import render_to_pdf
 from utils.formatters import human_readable_segments
 
 
+def _get_captable_pdf_context(company, ordering):
+    """
+    isolated code to make for better testing
+    """
+    option_ordering = ordering.replace('share', 'options')
+    context = {
+            'pagesize': 'A4',
+            'company': company,
+            'today': datetime.datetime.now().date(),
+            'total_capital': company.get_total_capital(),
+            'currency': 'CHF',
+            'provisioned_capital': company.get_provisioned_capital(),
+            'securities_with_track_numbers': company.security_set.filter(
+                track_numbers=True),
+            'active_shareholders': _order_queryset(
+                company.get_active_shareholders(), ordering),
+            'active_option_holders': _order_queryset(
+                company.get_active_option_holders(), option_ordering),
+        }
+    return context
+
+
+def _parse_ordering(ordering):
+    """
+    parse ordering from js:
+    name -> 'name'
+    name_desc -> '-name'
+    """
+    if not ordering:
+        return 'user__last_name'
+    if ordering.endswith('_desc'):
+        return u'-' + ordering[:-5]
+    else:
+        return ordering
+
+
+def _order_queryset(queryset, ordering):
+    """
+    if the ordering is a field name, order by this one. otherwise check if the
+    ordering is a function and then evaluate the QS and order by function
+    """
+    reverse = False
+    funcname = ordering
+    if ordering.startswith('-'):
+        funcname = ordering[1:]
+        reverse = True
+    if hasattr(queryset.first(), funcname):
+        unsorted_results = queryset.all()
+        return sorted(
+            unsorted_results, key=lambda t: getattr(t, funcname)(),
+            reverse=reverse)
+
+    return queryset.order_by(ordering)
+
+
 @app.task
 def send_initial_password_mail(user, password):
     """
@@ -37,22 +92,14 @@ def send_initial_password_mail(user, password):
 
 
 @app.task
-def send_captable_pdf(user_id, company_id):
+def send_captable_pdf(user_id, company_id, ordering=None):
     user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
-
+    ordering = _parse_ordering(ordering)
+    context = _get_captable_pdf_context(company, ordering)
     content = render_to_pdf(
         'active_shareholder_captable.pdf.html',
-        {
-            'pagesize': 'A4',
-            'company': company,
-            'today': datetime.datetime.now().date(),
-            'total_capital': company.get_total_capital(),
-            'currency': 'CHF',
-            'provisioned_capital': company.get_provisioned_capital(),
-            'securities_with_track_numbers': company.security_set.filter(
-                track_numbers=True)
-        }
+        context,
     )
 
     filename = u'{}_captable_{}.pdf'.format(
@@ -73,12 +120,13 @@ def send_captable_pdf(user_id, company_id):
 
 
 @app.task
-def send_captable_csv(user_id, company_id):
+def send_captable_csv(user_id, company_id, ordering=None):
     user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
     track_numbers_secs = company.security_set.filter(track_numbers=True)
     filename = u'{}_captable_{}.csv'.format(
         time.strftime("%Y-%m-%d"), company.name)
+    ordering = _parse_ordering(ordering)
 
     csvfile = StringIO.StringIO()
     writer = csv.writer(csvfile)
@@ -86,7 +134,7 @@ def send_captable_csv(user_id, company_id):
     # shareholder count
     header = [
         _(u'shareholder number'), _(u'last name'), _(u'first name'),
-        _(u'email'), _(u'share count'),  # _(u'votes share percent'),
+        _(u'email'), _(u'share count'),  _(u'votes share percent'),
         _(u'language ISO'), _('language full')]
 
     has_track_numbers = track_numbers_secs.exists()
@@ -97,14 +145,16 @@ def send_captable_csv(user_id, company_id):
 
     # removed share percent due to heavy sql impact. killed perf for higher
     # shareholder count
-    for shareholder in company.get_active_shareholders():
+    queryset = company.get_active_shareholders()
+    queryset = _order_queryset(queryset, ordering)
+    for shareholder in queryset:
         row = [
             shareholder.number,
             shareholder.user.last_name,
             shareholder.user.first_name,
             shareholder.user.email,
             shareholder.share_count(),
-            # shareholder.share_percent() or '--',
+            shareholder.share_percent() or '--',
             shareholder.user.userprofile.language,
             shareholder.user.userprofile.get_language_display(),
         ]

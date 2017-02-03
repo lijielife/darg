@@ -297,7 +297,9 @@ def captable_csv(request, company_id):
         return HttpResponseForbidden()
 
     company = get_object_or_404(Company, id=company_id)
-    send_captable_csv.apply_async(args=[request.user.pk, company.pk])
+    send_captable_csv.apply_async(args=[request.user.pk, company.pk],
+                                  kwargs={
+                                      'ordering': request.GET.get('ordering')})
     messages.info(request, _('csv file is being generated and will be sent '
                              'by email to you'))
 
@@ -314,9 +316,9 @@ def captable_pdf(request, company_id):
         return HttpResponseForbidden()
 
     company = get_object_or_404(Company, id=company_id)
-
-    send_captable_pdf.apply_async(args=[request.user.pk, company.pk])
-
+    send_captable_pdf.apply_async(args=[request.user.pk, company.pk],
+                                  kwargs={
+                                    'ordering': request.GET.get('ordering')})
     messages.info(request, _('pdf file is being generated and will be sent '
                              'by email to you'))
 

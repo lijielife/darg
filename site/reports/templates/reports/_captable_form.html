@@ -1,0 +1,20 @@
+{% load i18n %}
+
+
+{% verbatim %}
+<div ng-show="show_captable_form">
+  <form class="form-inline add-information-inline form">
+    <div class="form-group block-level">
+      {% endverbatim %}{% trans "Sort by:" %}{% verbatim %}
+      <span class="input-group date-field">
+        <select class="form-control security" 
+                ng-model="captable_report.ordering" 
+                ng-options="ordering as ordering.title for ordering in captable_orderings" 
+                translate 
+                translate-attr-placeholder="Sort by">
+        </select>
+      </span>
+    </div>
+  </form>
+</div>
+{% endverbatim %}
