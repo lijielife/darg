@@ -117,13 +117,17 @@ def send_statement_generation_operator_notify():
         )
         preview_html = loader.render_to_string(
             company.statement_template.template.name, preview_context)
-        preview_pdf = render_pdf(preview_html)
+        try:
+            preview_pdf = render_pdf(preview_html)
+        except:
+            preview_pdf = None
+
         if preview_pdf:
             preview_file_name = u'{}-statement-preview.pdf'.format(
                 slugify(company.name))
             msg.attach(
                 preview_file_name,
-                preview_pdf.getvalue(),
+                preview_pdf,
                 'application/pdf'
             )
         else:

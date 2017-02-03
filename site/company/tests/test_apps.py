@@ -1,7 +1,6 @@
 
 import os
 import shutil
-import StringIO
 import tempfile
 
 from django.conf import settings
@@ -15,7 +14,7 @@ from model_mommy import mommy, random_gen
 
 from project.tests.helper import TestLoggingHandler, FakeStripeResponser
 from project.tests.mixins import StripeTestCaseMixin
-from shareholder.models import Company
+# from shareholder.models import Company
 
 from ..apps import logger
 
@@ -82,10 +81,10 @@ class ChargeTweakTestCase(StripeTestCaseMixin, TestCase):
         self.charge.save()
 
         # create subscriber (with no email)
-        company = mommy.make(Company)  # subscriber
-        self.charge.customer.subscriber = company
+        subscriber = mommy.make(settings.DJSTRIPE_SUBSCRIBER_MODEL)
+        self.charge.customer.subscriber = subscriber
         self.charge.customer.save()
-        self.assertFalse(bool(company.email))
+        self.assertFalse(bool(subscriber.email))
 
         with patch.object(self.charge, '_get_customer_data') as mock_data:
             mock_data.return_value = self.fake_responser.get_response()
@@ -110,17 +109,17 @@ class ChargeTweakTestCase(StripeTestCaseMixin, TestCase):
                 self.assertEqual(emails_sent, 1)
 
         # add company address and email
-        for fieldname in Company.REQUIRED_ADDRESS_FIELDS:
-            field = Company._meta.get_field(fieldname)
+        for fieldname in subscriber.REQUIRED_ADDRESS_FIELDS:
+            field = subscriber._meta.get_field(fieldname)
             if isinstance(field, ForeignKey):
                 val = mommy.make(
-                    Company._meta.get_field(fieldname).related_model)
+                    subscriber._meta.get_field(fieldname).related_model)
             else:
                 val = random_gen.gen_string(10)
-            setattr(company, fieldname, val)
+            setattr(subscriber, fieldname, val)
 
-        company.email = random_gen.gen_email()
-        company.save()
+        subscriber.email = random_gen.gen_email()
+        subscriber.save()
         self.assertTrue(self.charge.customer.subscriber.has_address)
         self.assertTrue(bool(self.charge.customer.subscriber.email))
 
@@ -252,8 +251,8 @@ class InvoiceTweakTestCase(StripeTestCaseMixin, TestCase):
     def test_generate_invoice_pdf(self, mock_render_pdf):
 
         # create subscriber
-        company = mommy.make(Company)
-        self.invoice.customer.subscriber = company
+        subscriber = mommy.make(settings.DJSTRIPE_SUBSCRIBER_MODEL)
+        self.invoice.customer.subscriber = subscriber
 
         # test pdf exists (and not override_existing)
         test_filepath = os.path.join(
@@ -270,14 +269,16 @@ class InvoiceTweakTestCase(StripeTestCaseMixin, TestCase):
 
         # test pdf generation failed
         mock_render_pdf.return_value = False
+        mock_render_pdf.side_effect = ValueError()
         pdf_filepath = self.invoice._generate_invoice_pdf()
         self.assertIsNone(pdf_filepath)
-        # test for 2 errors: no address, no pdf
-        self.assertEqual(len(self._log_messages.get('error')), 2)
+        # test for 3 errors: no address, no pdf (2x)
+        self.assertEqual(len(self._log_messages.get('error')), 3)
         self._test_logging_handler.reset()
 
         # mock pdf generation
-        mock_render_pdf.return_value = StringIO.StringIO()
+        mock_render_pdf.return_value = '<PDF CONTENT>'
+        mock_render_pdf.side_effect = None
         pdf_filepath = self.invoice._generate_invoice_pdf()
         self.assertTrue(os.path.exists(pdf_filepath))
 
@@ -285,9 +286,9 @@ class InvoiceTweakTestCase(StripeTestCaseMixin, TestCase):
 
     @override_settings(COMPANY_INVOICES_ROOT=COMPANY_INVOICES_ROOT)
     def test_get_invoice_pdf_dir_for_company(self):
-        company = mommy.make(Company)
-        pdf_dir = self.invoice._get_invoice_pdf_dir_for_company(company)
-        self.assertIn('{}{}{}'.format(company.pk, os.sep, self.invoice.pk),
+        subscriber = mommy.make(settings.DJSTRIPE_SUBSCRIBER_MODEL)
+        pdf_dir = self.invoice._get_invoice_pdf_dir_for_company(subscriber)
+        self.assertIn('{}{}{}'.format(subscriber.pk, os.sep, self.invoice.pk),
                       pdf_dir)
 
     def test_get_pdf_filepath(self):

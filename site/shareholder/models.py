@@ -1528,13 +1528,13 @@ class ShareholderStatementReport(models.Model):
         """
         activate_lang(settings.LANGUAGE_CODE)
         # check for a custom company template
-        pdf = render_pdf(self.company.statement_template.render(context))
-
-        if not pdf:
+        try:
+            pdf = render_pdf(self.company.statement_template.render(context))
+        except:
             return False
 
         with open(filepath, 'w') as f:
-            f.write(pdf.getvalue())
+            f.write(pdf)
 
         return True
 

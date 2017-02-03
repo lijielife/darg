@@ -218,7 +218,11 @@ class CompanyAppConfig(AppConfig):
 
             activate_lang(settings.LANGUAGE_CODE)
             template = get_template(self.customer.subscriber.invoice_template)
-            pdf = utils.pdf.render_pdf(template.render(context))
+            try:
+                pdf = utils.pdf.render_pdf(template.render(context))
+            except Exception as ex:
+                logger.exception(ex)
+                pdf = None
 
             if not pdf:
                 error_message = _(
@@ -229,7 +233,7 @@ class CompanyAppConfig(AppConfig):
                 return None
 
             with open(pdf_filepath, 'w') as f:
-                f.write(pdf.getvalue())
+                f.write(pdf)
 
             return pdf_filepath
 
