@@ -1534,7 +1534,7 @@ class ShareholderStatementReport(models.Model):
             return False
 
         with open(filepath, 'w') as f:
-            f.write(pdf.getvalue())
+            f.write(pdf)
 
         return True
 

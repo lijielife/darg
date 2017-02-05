@@ -305,8 +305,17 @@ class ShareholderStatementAdmin(admin.ModelAdmin):
     _letter_sent.short_description = _('letter sent')
     _letter_sent.allow_tags = True
 
+    def _file_link(self, instance):
+        if instance.pdf_file:
+            return "<a href='%s'>download</a>" % (instance.pdf_download_url,)
+        else:
+            return "No PDF"
+    _file_link.short_description = _('Download PDF')
+    _file_link.allow_tags = True
+
     list_display = ('_user', '_company', '_report_date', '_email_sent',
-                    '_email_opened', '_pdf_downloaded', '_letter_sent')
+                    '_email_opened', '_pdf_downloaded', '_letter_sent',
+                    '_file_link')
     list_filter = ('report__report_date', EmailSentAtListFilter,
                    EmailOpenedAtListFilter, PdfDownloadedAtListFilter,
                    LetterSentAtListFilter)
