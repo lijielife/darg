@@ -1,6 +1,4 @@
 
-import collections
-
 from django.apps import apps
 from django.conf import settings
 from django.shortcuts import get_object_or_404
@@ -61,7 +59,8 @@ class SubscriptionMixin(object):
         if not features:
             return subscriber.get_customer().has_active_subscription()
 
-        if not isinstance(features, collections.Iterable):
+        if not (isinstance(features, list) or isinstance(features, set) or
+                isinstance(features, tuple)):
             features = [features]
 
         return all(subscriber.has_feature_enabled(f) for f in features)
@@ -89,10 +88,14 @@ class SubscriptionViewMixin(SubscriptionMixin):
             query_params = self.request.query_params
         else:
             query_params = getattr(self.request, self.request.method)
-        q_cpks = query_params.getlist(self.COMPANY_QUERY_VAR)
-        query_companies = map(int, [cpk for cpk in q_cpks if cpk.isdigit()])
-        if query_companies:
-            company_qs = company_qs.filter(pk__in=query_companies)
+
+        if self.COMPANY_QUERY_VAR in query_params:
+            q_cpks = [pk for pk in query_params.getlist(self.COMPANY_QUERY_VAR)
+                      if pk]  # remove empty
+            if q_cpks:
+                query_companies = map(
+                    int, [cpk for cpk in q_cpks if cpk.isdigit()])
+                company_qs = company_qs.filter(pk__in=query_companies)
 
         company_pks = []
         for company in company_qs:
