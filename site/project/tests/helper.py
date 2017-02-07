@@ -102,9 +102,7 @@ class FakeStripeResponser(object):
             },
             "subscriptions": {
                 "object": "list",
-                "data": [
-
-                ],
+                "data": [],
                 "has_more": False,
                 "total_count": 0,
                 "url": "/v1/customers/{}/subscriptions".format(customer_id)

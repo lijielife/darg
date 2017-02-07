@@ -1,8 +1,9 @@
 
+import collections
 import decimal
 
 from django.contrib import messages
-from django.contrib.auth import logout as auth_logout
+# from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, Http404
@@ -17,8 +18,8 @@ from braces.views import CsrfExemptMixin
 from djstripe.forms import PlanForm
 from djstripe.models import Customer, CurrentSubscription, Invoice
 from djstripe.settings import (PAYMENT_PLANS, subscriber_request_callback,
-                               CANCELLATION_AT_PERIOD_END, PLAN_LIST,
-                               PRORATION_POLICY_FOR_UPGRADES)
+                               # CANCELLATION_AT_PERIOD_END,
+                               PLAN_LIST, PRORATION_POLICY_FOR_UPGRADES)
 from djstripe.sync import sync_subscriber
 from djstripe.views import (
     AccountView as DjStripeAccountView,
@@ -28,14 +29,15 @@ from djstripe.views import (
     ConfirmFormView as DjStripeConfirmFormView,
     SubscribeView as DjStripeSubscribeView,
     ChangePlanView as DjStripeChangePlanView,
-    CancelSubscriptionView as DjStripeCancelSubscriptionView
+    # CancelSubscriptionView as DjStripeCancelSubscriptionView
 )
 from sendfile import sendfile
 
+import utils
 from shareholder.models import Company
-from utils.mail import is_valid_email
-from utils.subscriptions import (stripe_company_shareholder_invoice_item,
-                                 stripe_company_security_invoice_item)
+# from utils.mail import is_valid_email
+# from utils.subscriptions import (stripe_company_shareholder_invoice_item,
+#                                  stripe_company_security_invoice_item)
 
 from .mixins import (CompanyOperatorPermissionRequiredViewMixin,
                      SubscriptionViewCompanyObjectMixin)
@@ -120,7 +122,7 @@ class ConfirmFormView(CompanyOperatorPermissionRequiredViewMixin,
     success_url = None
 
     def get(self, request, *args, **kwargs):
-        plan_slug = self.kwargs['plan']
+        plan_slug = self.kwargs.get('plan')
         if plan_slug not in PAYMENT_PLANS:
             return redirect("djstripe:subscribe",
                             company_id=kwargs.get('company_id'))
@@ -143,7 +145,7 @@ class ConfirmFormView(CompanyOperatorPermissionRequiredViewMixin,
     def get_context_data(self, *args, **kwargs):
         context = super(ConfirmFormView, self).get_context_data(
             *args, **kwargs)
-        customer, plan = context.get('customer'), context.get('plan')
+        customer, plan = context.get('customer'), context.get('plan', {})
         # check if plan is subscribable
         is_subscribable, errors = customer.subscriber.validate_plan(
             plan.get('plan'))
@@ -168,7 +170,8 @@ class ConfirmFormView(CompanyOperatorPermissionRequiredViewMixin,
 
                 # update customer email (if necessary)
                 email = post_data.get('email')
-                if is_valid_email(email) and not customer.subscriber.email:
+                if (utils.mail.is_valid_email(email) and
+                        not customer.subscriber.email):
                     customer.subscriber.email = email
                     customer.subscriber.save()
 
@@ -178,15 +181,18 @@ class ConfirmFormView(CompanyOperatorPermissionRequiredViewMixin,
                 is_subscribable, errors = customer.subscriber.validate_plan(
                     plan)
                 if not is_subscribable:
-                    for error in errors:
-                        form.add_error(None, error.messages[0])
+                    # for error in errors:
+                    #     form.add_error(None, error.messages[0])
+                    [form.add_error(None, err.messages[0]) for err in errors]
                     return self.form_invalid(form)
 
                 # create invoiceitem for shareholders if necessary
-                stripe_company_shareholder_invoice_item(customer, plan)
+                utils.subscriptions.stripe_company_shareholder_invoice_item(
+                    customer, plan)
 
                 # create invoiceitem for securities if necessary
-                stripe_company_security_invoice_item(customer, plan)
+                utils.subscriptions.stripe_company_security_invoice_item(
+                    customer, plan)
 
                 # subscribe customer to selected plan
                 customer.subscribe(plan)
@@ -225,8 +231,9 @@ class ChangePlanView(CompanyOperatorPermissionRequiredViewMixin,
             is_subscribable, errors = customer.subscriber.validate_plan(
                 plan_name)
             if not is_subscribable:
-                for error in errors:
-                    form.add_error(None, error.messages[0])
+                # for error in errors:
+                #     form.add_error(None, error.messages[0])
+                [form.add_error(None, err.messages[0]) for err in errors]
                 return self.form_invalid(form)
 
             try:
@@ -249,10 +256,12 @@ class ChangePlanView(CompanyOperatorPermissionRequiredViewMixin,
                         prorate = True
 
                 # create invoiceitem for shareholders if necessary
-                stripe_company_shareholder_invoice_item(customer, plan_name)
+                utils.subscriptions.stripe_company_shareholder_invoice_item(
+                    customer, plan_name)
 
                 # create invoiceitem for securities if necessary
-                stripe_company_security_invoice_item(customer, plan_name)
+                utils.subscriptions.stripe_company_security_invoice_item(
+                    customer, plan_name)
 
                 customer.subscribe(plan_name, prorate=prorate)
             except stripe.StripeError as exc:
@@ -267,40 +276,41 @@ class ChangePlanView(CompanyOperatorPermissionRequiredViewMixin,
                        kwargs=dict(company_id=self.kwargs.get('company_id')))
 
 
-class CancelSubscriptionView(CompanyOperatorPermissionRequiredViewMixin,
-                             SubscriptionViewCompanyObjectMixin,
-                             DjStripeCancelSubscriptionView):
-
-    success_url = None
-
-    def get_success_url(self):
-        return reverse('djstripe:account',
-                       kwargs=dict(company_id=self.kwargs.get('company_id')))
-
-    def form_valid(self, form):
-        customer, created = Customer.get_or_create(
-            subscriber=subscriber_request_callback(self.request))
-        current_subscription = customer.cancel_subscription(
-            at_period_end=CANCELLATION_AT_PERIOD_END)
-
-        if (current_subscription.status ==
-                current_subscription.STATUS_CANCELLED):
-            # If no pro-rate, they get kicked right out.
-            messages.info(self.request, "Your subscription is now cancelled.")
-            # logout the user
-            auth_logout(self.request)
-            return redirect("start")
-        else:
-            # If pro-rate, they get some time to stay.
-            messages.info(
-                self.request,
-                _("Your subscription status is now '{status}' until "
-                  "'{period_end}'").format(
-                    status=current_subscription.status,
-                    period_end=current_subscription.current_period_end)
-            )
-
-        return super(CancelSubscriptionView, self).form_valid(form)
+# class CancelSubscriptionView(CompanyOperatorPermissionRequiredViewMixin,
+#                              SubscriptionViewCompanyObjectMixin,
+#                              DjStripeCancelSubscriptionView):
+#
+#     success_url = None
+#
+#     def get_success_url(self):
+#         return reverse('djstripe:account',
+#                        kwargs=dict(company_id=self.kwargs.get('company_id')))
+#
+#     def form_valid(self, form):
+#         customer, created = Customer.get_or_create(
+#             subscriber=subscriber_request_callback(self.request))
+#         current_subscription = customer.cancel_subscription(
+#             at_period_end=CANCELLATION_AT_PERIOD_END)
+#
+#         if (current_subscription.status ==
+#                 current_subscription.STATUS_CANCELLED):
+#             # If no pro-rate, they get kicked right out.
+#             messages.info(self.request,
+#                           _("Your subscription is now cancelled."))
+#             # logout the user
+#             # auth_logout(self.request)
+#             return redirect("start")
+#         else:
+#             # If pro-rate, they get some time to stay.
+#             messages.info(
+#                 self.request,
+#                 _("Your subscription status is now '{status}' until "
+#                   "'{period_end}'").format(
+#                     status=current_subscription.status,
+#                     period_end=current_subscription.current_period_end)
+#             )
+#
+#         return super(CancelSubscriptionView, self).form_valid(form)
 
 
 class HistoryView(CompanyOperatorPermissionRequiredViewMixin,
@@ -327,7 +337,7 @@ class SubscribeView(CompanyOperatorPermissionRequiredViewMixin,
     def get_context_data(self, *args, **kwargs):
         context = super(SubscribeView, self).get_context_data(*args, **kwargs)
         customer = context.get('customer')
-        plans = context.get('PAYMENT_PLANS', [])
+        plans = context.get('PAYMENT_PLANS', collections.OrderedDict())
         for plan in plans:
             is_subscribable, errors = customer.subscriber.validate_plan(plan)
             if not is_subscribable:
