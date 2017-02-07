@@ -24,20 +24,6 @@ class StripeWebhookHandlerTestCase(TestCase):
     def test_invoice_created_webhook_handler(self, mock_security_invoice_item,
                                              mock_shareholder_invoice_item):
 
-        global add_shareholder_item
-        global add_security_item
-        add_shareholder_item, add_security_item = 0, 0
-
-        def shareholder_side_effect(*args, **kwargs):
-            globals()['add_shareholder_item'] += 1
-
-        mock_shareholder_invoice_item.side_effect = shareholder_side_effect
-
-        def security_side_effect(*args, **kwargs):
-            globals()['add_security_item'] += 1
-
-        mock_security_invoice_item.side_effect = security_side_effect
-
         handler = invoice_created_webhook_handler
         event = mommy.make(Event,
                            stripe_id='evt_{}'.format(
@@ -54,8 +40,8 @@ class StripeWebhookHandlerTestCase(TestCase):
 
         # 'closed' not in invoice data
         handler(None, event)
-        self.assertEqual(add_shareholder_item, 0)
-        self.assertEqual(add_security_item, 0)
+        mock_shareholder_invoice_item.assert_not_called()
+        mock_security_invoice_item.assert_not_called()
 
         event.validated_message['data'] = {'object': {
             'id': 'in_{}'.format(random_gen.gen_uuid().hex[-24:]),
@@ -65,16 +51,16 @@ class StripeWebhookHandlerTestCase(TestCase):
 
         # 'closed' is True in invoice data
         handler(None, event)
-        self.assertEqual(add_shareholder_item, 0)
-        self.assertEqual(add_security_item, 0)
+        mock_shareholder_invoice_item.assert_not_called()
+        mock_security_invoice_item.assert_not_called()
 
         event.validated_message['data']['object']['closed'] = False
         event.save()
 
         # 'closed' is False but customer has no active subscription
         handler(None, event)
-        self.assertEqual(add_shareholder_item, 0)
-        self.assertEqual(add_security_item, 0)
+        mock_shareholder_invoice_item.assert_not_called()
+        mock_security_invoice_item.assert_not_called()
 
         # add (fake) subscription
         event.customer.current_subscription = mommy.make(CurrentSubscription)
@@ -83,8 +69,9 @@ class StripeWebhookHandlerTestCase(TestCase):
                           return_value=True):
 
             handler(None, event)
-            self.assertEqual(add_shareholder_item, 1)
-            self.assertEqual(add_security_item, 1)
+
+        mock_shareholder_invoice_item.assert_called()
+        mock_security_invoice_item.assert_called()
 
     def tests_invoice_payment_succeeded_webhook_handler(self):
         handler = invoice_payment_succeeded_webhook_handler
@@ -107,18 +94,8 @@ class StripeWebhookHandlerTestCase(TestCase):
         event.validated_message['data'] = {'object': {'id': stripe_id}}
 
         with patch.object(Invoice, '_generate_invoice_pdf') as mock_pdf_gen:
-
-            global pdf_generated
-            pdf_generated = 0
-
-            def side_effect(*args, **kwargs):
-                globals()['pdf_generated'] += 1
-
-            mock_pdf_gen.side_effect = side_effect
-
             handler(None, event)
-
-            self.assertEqual(pdf_generated, 1)
+            mock_pdf_gen.assert_called()
 
     def test_customer_webhook_handler(self):
         handler = customer_webhook_handler
@@ -167,16 +144,9 @@ class StripeWebhookHandlerTestCase(TestCase):
         # test read address call
         mock_read_address = MagicMock()
 
-        global address_read
-        address_read = 0
-
-        def side_effect(*args, **kwargs):
-            globals()['address_read'] += 1
-
-        mock_read_address.side_effect = side_effect
         event.customer.subscriber.read_address_from_stripe_object = (
             mock_read_address)
 
         handler(event, event_data, event_type, event_subtype)
 
-        self.assertEqual(address_read, 1)
+        mock_read_address.assert_called()

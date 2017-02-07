@@ -17,22 +17,14 @@ class GenerateInvoicePDFManagementCommandTestCase(TestCase):
     def test_handle(self, mock_generate_invoice_pdf):
         cmd = GenerateInvoicePDFCommand()
 
-        global called
-        called = 0
-
-        def _side_effect(override_existing=False):
-            globals()['called'] += 1
-
-        mock_generate_invoice_pdf.side_effect = _side_effect
-
         cmd.handle()
-        self.assertEqual(called, 0)
+        mock_generate_invoice_pdf.assert_not_called()
 
         options = {'invoice_id': [-1]}
         cmd.handle(**options)
-        self.assertEqual(called, 0)
+        mock_generate_invoice_pdf.assert_not_called()
 
         invoice = mommy.make(Invoice)
         options['invoice_id'].append(invoice.pk)
         cmd.handle(**options)
-        self.assertEqual(called, 1)
+        mock_generate_invoice_pdf.assert_called()

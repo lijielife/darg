@@ -44,28 +44,13 @@ class ChargeTweakTestCase(StripeTestCaseMixin, TestCase):
     @patch.object(EmailMultiAlternatives, 'attach')
     def test_send_receipt(self, mock_attach, mock_send):
 
-        global emails_sent
-        global email_attachments
-        emails_sent, email_attachments = 0, 0
-
-        def send_side_effect():
-            globals()['emails_sent'] += 1
-
-        mock_send.side_effect = send_side_effect
-        mock_send.return_value = 1
-
-        def attach_side_effect(*args, **kwargs):
-            globals()['email_attachments'] += 1
-
-        mock_attach.side_effect = attach_side_effect
-
         self.assertFalse(self.charge.receipt_sent)
         self.assertIsNone(self.charge.amount)
 
         # don't send receipt if no amount
         self.charge.send_receipt()
         self.assertFalse(self.charge.receipt_sent)
-        self.assertEqual(emails_sent, 0)
+        mock_send.assert_not_called()
 
         # don't send receipt if already sent
         self.charge.amount = abs(random_gen.gen_float())
@@ -75,7 +60,7 @@ class ChargeTweakTestCase(StripeTestCaseMixin, TestCase):
         self.assertTrue(self.charge.receipt_sent)
         self.assertIsNotNone(self.charge.amount)
         self.charge.send_receipt()
-        self.assertEqual(emails_sent, 0)
+        mock_send.assert_not_called()
 
         self.charge.receipt_sent = False
         self.charge.save()
@@ -90,7 +75,7 @@ class ChargeTweakTestCase(StripeTestCaseMixin, TestCase):
             mock_data.return_value = self.fake_responser.get_response()
 
             self.charge.send_receipt()
-            self.assertEqual(emails_sent, 1)
+            mock_send.assert_called()
             self.assertTrue(bool(self.charge.customer.subscriber.email))
             # check postal error
             self.assertEqual(len(self._log_messages.get('error')), 1)
@@ -100,13 +85,15 @@ class ChargeTweakTestCase(StripeTestCaseMixin, TestCase):
             self.charge.customer.subscriber.email = ''
             self.charge.customer.subscriber.save()
 
+            mock_send.reset_mock()
+
             with patch('utils.mail.is_valid_email', return_value=False):
                 self.charge.send_receipt()
                 # check log error
                 self.assertEqual(len(self._log_messages.get('error')), 1)
                 self._test_logging_handler.reset()
                 # no email sent
-                self.assertEqual(emails_sent, 1)
+                mock_send.assert_not_called()
 
         # add company address and email
         for fieldname in subscriber.REQUIRED_ADDRESS_FIELDS:
@@ -124,7 +111,9 @@ class ChargeTweakTestCase(StripeTestCaseMixin, TestCase):
         self.assertTrue(bool(self.charge.customer.subscriber.email))
 
         self.charge.send_receipt()
-        self.assertEqual(emails_sent, 2)
+        mock_send.assert_called()
+
+        mock_send.reset_mock()
 
         # reset sent
         self.charge.receipt_sent = False
@@ -134,26 +123,26 @@ class ChargeTweakTestCase(StripeTestCaseMixin, TestCase):
         self.charge.save()
 
         # check attachments
-        self.assertEqual(email_attachments, 0)
+        mock_attach.assert_not_called()
 
         example_invoice = os.path.join(
             os.path.dirname(__file__), 'files', 'example.pdf')
         with patch.object(self.charge.invoice, '_generate_invoice_pdf',
                           return_value=example_invoice):
             self.charge.send_receipt()
-            self.assertEqual(emails_sent, 3)
-            self.assertEqual(email_attachments, 1)
+            mock_send.assert_called()
+            mock_attach.assert_called()
+
+        mock_send.reset_mock()
 
         # check receipt_sent when email fails
         self.charge.receipt_sent = False
         self.charge.invoice = None
         self.charge.save()
 
-        mock_send.return_value = 0
-        mock_send.side_effect = None
         self.charge.send_receipt()
         self.assertFalse(self.charge.receipt_sent)
-        self.assertEqual(emails_sent, 3)
+        mock_send.assert_called()
 
     @patch('stripe.Customer.retrieve')
     def test_get_customer_data(self, mock_retrieve):
