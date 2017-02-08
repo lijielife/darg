@@ -1,14 +1,14 @@
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.db.models import ForeignKey
 from django.test import TestCase
 
-from model_mommy import mommy, random_gen
+from model_mommy import random_gen
 
 from project.generators import (CompanyGenerator, ShareholderGenerator,
                                 SecurityGenerator)
 from project.tests.mixins import StripeTestCaseMixin, SubscriptionTestMixin
+from shareholder.tests.mixins import AddressTestMixin
 
 from ..validators import CompanyEmailRequired, CompanyAddressRequired
 from ..validators.base import BaseCompanyValidator
@@ -41,7 +41,7 @@ class CompanyEmailRequiredTestCase(TestCase):
         self.assertIsNone(self.validator())
 
 
-class CompanyAddressRequiredTestCase(TestCase):
+class CompanyAddressRequiredTestCase(AddressTestMixin, TestCase):
 
     def setUp(self):
         super(CompanyAddressRequiredTestCase, self).setUp()
@@ -54,18 +54,15 @@ class CompanyAddressRequiredTestCase(TestCase):
         with self.assertRaises(ValidationError):
             self.validator()
 
-        address_fields = self.validator.company.REQUIRED_ADDRESS_FIELDS
-        for fieldname in address_fields:
-            field = self.validator.company._meta.get_field(fieldname)
-            if isinstance(field, ForeignKey):
-                value = mommy.make(field.related_model)
-            else:
-                value = random_gen.gen_string(10)
-            setattr(self.validator.company, fieldname, value)
+        self.add_address(self.validator.company)
 
         self.assertIsNone(self.validator())
 
-        setattr(self.validator.company, address_fields[0], None)
+        setattr(
+            self.validator.company,
+            self.validator.company.REQUIRED_ADDRESS_FIELDS[0],
+            None
+        )
 
         with self.assertRaises(ValidationError):
             self.validator()

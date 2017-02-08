@@ -106,24 +106,24 @@ class AddressModelMixinTestCase(TestCase):
         self.assertEqual(self.company.city, stripe_data['address_city'])
         self.assertEqual(self.company.province, stripe_data['address_state'])
 
-        db_company = Company.objects.get(pk=self.company.pk)
-        self.assertFalse(bool(db_company.street))
-        self.assertFalse(bool(db_company.street2))
-        self.assertFalse(bool(db_company.postal_code))
-        self.assertFalse(bool(db_company.city))
-        self.assertFalse(bool(db_company.province))
+        self.company.refresh_from_db()
+        self.assertFalse(bool(self.company.street))
+        self.assertFalse(bool(self.company.street2))
+        self.assertFalse(bool(self.company.postal_code))
+        self.assertFalse(bool(self.company.city))
+        self.assertFalse(bool(self.company.province))
 
         # check country
         stripe_data.update(dict(address_country='__foo__'))
         self.company.read_address_from_stripe_object(stripe_data)
 
-        db_company = Company.objects.get(pk=self.company.pk)
-        self.assertFalse(bool(db_company.country))
-        self.assertTrue(bool(db_company.street))
-        self.assertTrue(bool(db_company.street2))
-        self.assertTrue(bool(db_company.postal_code))
-        self.assertTrue(bool(db_company.city))
-        self.assertTrue(bool(db_company.province))
+        self.company.refresh_from_db()
+        self.assertFalse(bool(self.company.country))
+        self.assertTrue(bool(self.company.street))
+        self.assertTrue(bool(self.company.street2))
+        self.assertTrue(bool(self.company.postal_code))
+        self.assertTrue(bool(self.company.city))
+        self.assertTrue(bool(self.company.province))
 
         stripe_data.update(dict(
             address_country=Country.objects.first().name.lower()

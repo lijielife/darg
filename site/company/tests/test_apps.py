@@ -5,7 +5,6 @@ import tempfile
 
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
-from django.db.models import ForeignKey
 from django.test import TestCase, override_settings
 
 from djstripe.models import Charge, Invoice, InvoiceItem
@@ -14,12 +13,13 @@ from model_mommy import mommy, random_gen
 
 from project.tests.helper import TestLoggingHandler, FakeStripeResponser
 from project.tests.mixins import StripeTestCaseMixin
+from shareholder.tests.mixins import AddressTestMixin
 # from shareholder.models import Company
 
 from ..apps import logger
 
 
-class ChargeTweakTestCase(StripeTestCaseMixin, TestCase):
+class ChargeTweakTestCase(StripeTestCaseMixin, AddressTestMixin, TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -96,14 +96,7 @@ class ChargeTweakTestCase(StripeTestCaseMixin, TestCase):
                 mock_send.assert_not_called()
 
         # add company address and email
-        for fieldname in subscriber.REQUIRED_ADDRESS_FIELDS:
-            field = subscriber._meta.get_field(fieldname)
-            if isinstance(field, ForeignKey):
-                val = mommy.make(
-                    subscriber._meta.get_field(fieldname).related_model)
-            else:
-                val = random_gen.gen_string(10)
-            setattr(subscriber, fieldname, val)
+        self.add_address(subscriber)
 
         subscriber.email = random_gen.gen_email()
         subscriber.save()
