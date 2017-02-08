@@ -72,7 +72,7 @@ class MoreAssertsTestCaseMixin(object):
             func(*args, **kwargs)
 
 
-class FakeResponseMixin(object):
+class FakeResponseMixin(object):  # pragma: nocover
     """
     mixin to mock responses for requests calls
     """
@@ -91,7 +91,7 @@ class FakeResponseMixin(object):
         return response
 
 
-class StripeTestCaseMixin(object):
+class StripeTestCaseMixin(object):  # pragma: nocover
 
     RESTORE_ATTRIBUTES = ('api_version', 'api_key')
 
@@ -156,7 +156,7 @@ class StripeTestCaseMixin(object):
         self.requestor_mock.request = mock_request
 
 
-class SubscriptionTestMixin(object):
+class SubscriptionTestMixin(object):  # pragma: nocover
 
     def add_subscription(self, company):
         """

@@ -1,15 +1,27 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 import datetime
 import logging
+import os
+import shutil
+import tempfile
+
 from decimal import Decimal
 
+from django.conf import settings
+from django.contrib.sites.models import Site
 from django.core import mail
 from django.core.urlresolvers import reverse
 from django.db.models import Q
-from django.test import TestCase, TransactionTestCase
+from django.test import TestCase, TransactionTestCase, override_settings
 from django.test.client import Client, RequestFactory
 from django.utils.encoding import force_text
+
+import mock
+
+from dateutil.relativedelta import relativedelta
+from model_mommy import mommy
 
 from project.generators import (CompanyGenerator, CompanyShareholderGenerator,
                                 ComplexOptionTransactionsWithSegmentsGenerator,
@@ -21,15 +33,20 @@ from project.generators import (CompanyGenerator, CompanyShareholderGenerator,
                                 SecurityGenerator, ShareholderGenerator,
                                 TwoInitialSecuritiesGenerator, UserGenerator,
                                 DEFAULT_TEST_DATA)
-from shareholder.models import Country, Position, Security, Shareholder
+from project.tests.mixins import StripeTestCaseMixin, SubscriptionTestMixin
+from shareholder.models import (Country, Position, Security, Shareholder,
+                                Company, ShareholderStatementReport,
+                                ShareholderStatement)
 
 logger = logging.getLogger(__name__)
 
 
 # --- MODEL TESTS
-class CompanyTestCase(TestCase):
+class CompanyTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
 
     def setUp(self):
+        super(CompanyTestCase, self).setUp()
+
         self.company = CompanyGenerator().generate(share_count=10, vote_ratio=2)
         self.security = SecurityGenerator().generate(count=10, face_value=100,
                                                      company=self.company)
@@ -103,6 +120,102 @@ class CompanyTestCase(TestCase):
         how many votes are owned by shareholders outside company
         """
         self.assertEqual(self.company.get_total_votes_floating(), 2*100/2)
+
+    @mock.patch('shareholder.models.select_template')
+    def test_statement_template(self, mock_select_template):
+        """
+        get template for shareholder statements
+        """
+        self.company.get_statement_template()
+        mock_select_template.assert_called_with([
+            'pdf/statement.{}.pdf.html'.format(self.company.pk),
+            'pdf/statement.pdf.html'
+        ])
+
+    def test_has_feature_enabled(self):
+        self.assertFalse(self.company.has_feature_enabled('foo'))
+
+        # add company subscription
+        self.add_subscription(self.company)
+        self.assertFalse(self.company.has_feature_enabled('foo'))
+        self.assertTrue(self.company.has_feature_enabled('shareholders'))
+
+    def test_get_current_subscription_plan(self):
+        self.assertIsNone(self.company.get_current_subscription_plan())
+
+        # add company subscription
+        self.add_subscription(self.company)
+
+        plan = self.company.get_current_subscription_plan()
+        self.assertIsNotNone(plan)
+        self.assertEqual(plan, 'test')
+
+        plan_display = self.company.get_current_subscription_plan(display=True)
+        self.assertEqual(plan_display, 'Test Plan')
+
+    def test_get_current_subscription_plan_display(self):
+        self.assertIsNone(self.company.get_current_subscription_plan_display())
+
+        # add company subscription
+        self.add_subscription(self.company)
+
+        plan_display = self.company.get_current_subscription_plan_display()
+        self.assertEqual(plan_display, 'Test Plan')
+
+    def test_validate_plan(self):
+        self.assertEqual(self.company.validate_plan('test'), (True, []))
+        self.assertTrue(
+            self.company.validate_plan('test', include_errors=False))
+
+        plans = settings.DJSTRIPE_PLANS
+        plans['test']['validators'] = [
+            'company.validators.features.ShareholderCountPlanValidator'
+        ]
+        plans['test']['features']['shareholders']['max'] = 1
+        with self.settings(DJSTRIPE_PLANS=plans):
+            self.assertFalse(
+                self.company.validate_plan('test', include_errors=False))
+
+    def test_can_subscribe_plan(self):
+
+        with mock.patch.object(self.company, 'validate_plan',
+                               return_value=True):
+            self.assertTrue(self.company.can_subscribe_plan('test'))
+
+        with mock.patch.object(self.company, 'validate_plan',
+                               return_value=False):
+            self.assertFalse(self.company.can_subscribe_plan('test'))
+
+    def test_subscription_features(self):
+        self.assertEqual(self.company.subscription_features, [])
+
+        # add company subscription
+        self.add_subscription(self.company)
+
+        self.assertEqual(self.company.subscription_features,
+                         settings.ALL_FEATURES.keys())
+
+    def test_subscription_permissions(self):
+        self.assertEqual(self.company.subscription_permissions, [])
+
+        # add company subscription
+        self.add_subscription(self.company)
+
+        plans = settings.DJSTRIPE_PLANS
+        plans['test']['features']['shareholders']['max'] = 1
+        plans['test']['features']['shareholders']['validators']['create'] = [
+            'company.validators.features.ShareholderCreateMaxCountValidator'
+        ]
+
+        with self.settings(DJSTRIPE_PLANS=plans):
+            self.assertNotIn('create_shareholders',
+                             self.company.subscription_permissions)
+
+        plans['test']['features']['shareholders']['max'] = 10
+
+        with self.settings(DJSTRIPE_PLANS=plans):
+            self.assertIn('create_shareholders',
+                          self.company.subscription_permissions)
 
 
 class CountryTestCase(TestCase):
@@ -857,3 +970,246 @@ class SecurityTestCase(TestCase):
                                      security=security, seller=p1.buyer)
 
         self.assertEqual(security.calculate_count(), 10)
+
+
+class ShareholderStatementReportTestCase(StripeTestCaseMixin,
+                                         SubscriptionTestMixin, TestCase):
+
+    TEST_DIR = os.path.join(tempfile.gettempdir(), '.dargtests')
+    SHAREHOLDER_STATEMENT_ROOT = os.path.join(TEST_DIR, 'statements')
+
+    @classmethod
+    def tearDownClass(cls):
+        super(ShareholderStatementReportTestCase, cls).tearDownClass()
+
+        # remove tempdir
+        shutil.rmtree(cls.TEST_DIR)
+
+    def setUp(self):
+        super(ShareholderStatementReportTestCase, self).setUp()
+
+        self.company = CompanyGenerator().generate()
+        self.report = mommy.make(ShareholderStatementReport,
+                                 company=self.company)
+
+    def test_statement_count(self):
+        self.assertEqual(self.report.statement_count, 0)
+
+        mommy.make(ShareholderStatement, report=self.report,
+                   pdf_file='example.pdf', _quantity=3)
+
+        self.assertEqual(self.report.statement_count, 3)
+
+    def test_get_statement_sent_count(self):
+        self.assertEqual(self.report.statement_sent_count, 0)
+
+        now = datetime.datetime.now()
+        mommy.make(ShareholderStatement, report=self.report,
+                   pdf_file='example.pdf', email_sent_at=now, _quantity=2)
+
+        self.assertEqual(self.report.statement_sent_count, 2)
+
+    def test_get_statement_letter_count(self):
+        self.assertEqual(self.report.statement_letter_count, 0)
+
+        now = datetime.datetime.now()
+        mommy.make(ShareholderStatement, report=self.report,
+                   pdf_file='example.pdf', letter_sent_at=now, _quantity=2)
+
+        self.assertEqual(self.report.statement_letter_count, 2)
+
+    def test_get_statement_opened_count(self):
+        self.assertEqual(self.report.statement_opened_count, 0)
+
+        now = datetime.datetime.now()
+        mommy.make(ShareholderStatement, report=self.report,
+                   pdf_file='example.pdf', email_opened_at=now, _quantity=2)
+
+        self.assertEqual(self.report.statement_opened_count, 2)
+
+    def test_get_statement_downloaded_count(self):
+        self.assertEqual(self.report.statement_downloaded_count, 0)
+
+        now = datetime.datetime.now()
+        mommy.make(ShareholderStatement, report=self.report,
+                   pdf_file='example.pdf', pdf_downloaded_at=now, _quantity=2)
+
+        self.assertEqual(self.report.statement_downloaded_count, 2)
+
+    @mock.patch(
+        'shareholder.models.ShareholderStatement.send_email_notification')
+    def test_generate_statements(self, mock_email_notify):
+        self.assertIsNone(self.company.statement_sending_date)
+
+        with mock.patch.object(
+                self.report, '_create_shareholder_statement_for_user') \
+                as mock_statment_create:
+
+            self.assertIsNone(self.report.generate_statements())
+            mock_statment_create.assert_not_called()
+
+            # add subscription
+            self.add_subscription(self.company)
+
+            today = datetime.datetime.today()
+            self.company.statement_sending_date = today
+            self.company.save()
+
+            def side_effect(user):
+                statement = mommy.make(ShareholderStatement, user=user,
+                                       pdf_file='example.pdf')
+                return (statement, True)
+
+            mock_statment_create.side_effect = side_effect
+
+            self.report.generate_statements()
+            # no shareholders
+            mock_statment_create.assert_not_called()
+            company = Company.objects.get(pk=self.company.pk)
+            self.assertEqual(
+                company.statement_sending_date,
+                (today + relativedelta(year=today.year + 1)).date()
+            )
+
+            mommy.make(Shareholder, company=self.company, _quantity=3)
+
+            self.report.generate_statements()
+            mock_statment_create.assert_called()
+            mock_email_notify.assert_called()
+
+            company = Company.objects.get(pk=self.company.pk)
+            self.assertEqual(
+                company.statement_sending_date,
+                (today + relativedelta(year=today.year + 2)).date()
+            )
+
+    @override_settings(SHAREHOLDER_STATEMENT_ROOT=SHAREHOLDER_STATEMENT_ROOT)
+    def test_get_statement_pdf_path_for_user(self):
+        shareholder = ShareholderGenerator().generate(company=self.company)
+        path = self.report._get_statement_pdf_path_for_user(shareholder.user)
+        self.assertIn(str(shareholder.user_id), path)
+        self.assertIn(str(self.company.pk), path)
+        self.assertIn(str(self.report.report_date.year), path)
+        self.assertTrue(os.path.exists(path))
+        self.assertTrue(os.path.isdir(path))
+
+    @override_settings(SHAREHOLDER_STATEMENT_ROOT=SHAREHOLDER_STATEMENT_ROOT)
+    def test_create_shareholder_statement_for_user(self):
+        user = UserGenerator().generate()
+
+        # no shareholders
+        self.assertEqual(
+            self.report._create_shareholder_statement_for_user(user),
+            (None, False))
+
+        # add shareholers for user
+        shareholders = mommy.make(Shareholder, user=user, _quantity=2)
+
+        # no shares/options
+        self.assertEqual(
+            self.report._create_shareholder_statement_for_user(user),
+            (None, False))
+
+        # add shares/options
+        PositionGenerator().generate(company=self.company,
+                                     buyer=shareholders[0])
+
+        with mock.patch.object(self.report, '_create_statement_pdf',
+                               return_value=False):
+            with self.assertRaises(Exception):
+                self.report._create_shareholder_statement_for_user(user)
+
+        statement, created = (
+            self.report._create_shareholder_statement_for_user(user))
+        self.assertIsNotNone(statement)
+        self.assertTrue(created)
+
+        # test existing
+        statement, created = (
+            self.report._create_shareholder_statement_for_user(user))
+        self.assertFalse(created)
+
+        # test recreation
+        filepath = statement.pdf_file
+        statement.delete()
+
+        statement, created = (
+            self.report._create_shareholder_statement_for_user(user))
+        self.assertIsNotNone(statement)
+        self.assertTrue(created)
+        self.assertEqual(filepath, statement.pdf_file)
+
+        os.remove(filepath)
+        self.assertFalse(os.path.isfile(statement.pdf_file))
+
+        statement, created = (
+            self.report._create_shareholder_statement_for_user(user))
+        self.assertIsNotNone(statement)
+        self.assertFalse(created)
+        self.assertTrue(os.path.isfile(statement.pdf_file))
+
+    @mock.patch('shareholder.models.render_pdf')
+    def test_create_statement_pdf(self, mock_render_pdf):
+
+        mock_render_pdf.side_effect = Exception()
+
+        tfile = tempfile.NamedTemporaryFile(delete=False)
+
+        self.assertFalse(self.report._create_statement_pdf(tfile.name, dict()))
+        mock_render_pdf.assert_called()
+
+        mock_render_pdf.reset_mock()
+        mock_render_pdf.side_effect = None
+        mock_render_pdf.return_value = 'PDFCONTENT'
+
+        self.assertTrue(self.report._create_statement_pdf(tfile.name, dict()))
+        self.assertTrue(os.path.isfile(tfile.name))
+
+        # cleanup
+        os.remove(tfile.name)
+
+
+class ShareholderStatementTestCase(TestCase):
+
+    def setUp(self):
+        super(ShareholderStatementTestCase, self).setUp()
+
+        self.user = UserGenerator().generate()
+        self.company = CompanyGenerator().generate()
+        self.report = mommy.make(ShareholderStatementReport,
+                                 company=self.company)
+        self.statement = mommy.make(ShareholderStatement, pdf_file='test.pdf',
+                                    user=self.user, report=self.report)
+
+    @mock.patch('shareholder.tasks.send_statement_email.delay')
+    def test_send_email_notification(self, mock_send_statement_email):
+        self.assertIsNotNone(self.statement.user.email)
+        self.statement.send_email_notification()
+        mock_send_statement_email.assert_called()
+
+        mock_send_statement_email.reset_mock()
+
+        self.statement.user.email = ''
+        with mock.patch.object(self.statement, 'send_letter') as mock_letter:
+            self.statement.send_email_notification()
+            mock_send_statement_email.assert_not_called()
+            mock_letter.assert_called()
+
+    @mock.patch('shareholder.tasks.send_statement_letter.delay')
+    def test_send_letter(self, mock_send_statement_letter):
+        self.statement.send_letter()
+        mock_send_statement_letter.assert_called_with(self.statement.pk)
+
+    def test_get_pdf_download_url(self):
+        domain = Site.objects.get_current().domain
+
+        url = self.statement.pdf_download_url
+        self.assertIn('file=', url)
+        self.assertIn(domain, url)
+        self.assertNotIn('&token=', url)
+
+        url = self.statement.get_pdf_download_url(
+            absolute=False, with_auth_token=True)
+        self.assertIn('?file=', url)
+        self.assertNotIn(domain, url)
+        self.assertIn('&token=', url)

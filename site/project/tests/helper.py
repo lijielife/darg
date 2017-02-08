@@ -11,7 +11,7 @@ from model_mommy import random_gen
 
 # https://stackoverflow.com/questions/899067
 # /how-should-i-verify-a-log-message-when-testing-python-code-under-nose
-class TestLoggingHandler(logging.Handler):
+class TestLoggingHandler(logging.Handler):  # pragma: nocover
     """Mock logging handler to check for expected logs.
 
     Messages are available from an instance's ``messages`` dict, in order,
@@ -45,7 +45,7 @@ class TestLoggingHandler(logging.Handler):
             self.release()
 
 
-class FakeStripeResponser(object):
+class FakeStripeResponser(object):  # pragma: nocover
     """
     handle (fake) stripe responses
     """

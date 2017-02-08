@@ -1377,7 +1377,7 @@ class ShareholderStatementReport(models.Model):
         verbose_name = _('shareholder statement report')
         verbose_name_plural = _('shareholder statement reports')
 
-    def __unicode__(self):
+    def __unicode__(self):  # pragma: nocover
         return u'{} - {}'.format(self.company, date_format(self.report_date))
 
     def get_statement_count(self):
@@ -1429,8 +1429,12 @@ class ShareholderStatementReport(models.Model):
         """
         generate statements for shareholder users of company,
         then set the statement_sending_date on company to next year
-        TODO: check subscription
         """
+
+        # check company subscription
+        if not self.company.has_feature_enabled('shareholder_statements'):
+            return
+
         shareholders = self.company.shareholder_set.all()
         users = get_user_model().objects.filter(
             pk__in=shareholders.values_list('user_id', flat=True))
@@ -1446,14 +1450,14 @@ class ShareholderStatementReport(models.Model):
                 year=self.company.statement_sending_date.year + 1)
             self.company.save()
 
-    def _get_statement_pdf_path_for_user(self, user, report):
+    def _get_statement_pdf_path_for_user(self, user):
         """
         returns a unique directory path to for the user
         """
         path = os.path.join(settings.SHAREHOLDER_STATEMENT_ROOT,
                             str(user.pk),
-                            str(report.company.pk),
-                            str(report.report_date.year))
+                            str(self.company_id),
+                            str(self.report_date.year))
         if not os.path.exists(path):
             os.makedirs(path)
         return path
@@ -1485,7 +1489,7 @@ class ShareholderStatementReport(models.Model):
             # FIXME: what to do? for now we don't change any existing entries
             statement = self.shareholderstatement_set.filter(user=user).get()
 
-        pdf_dir = self._get_statement_pdf_path_for_user(user, self)
+        pdf_dir = self._get_statement_pdf_path_for_user(user)
         pdf_filename = u'{}-{}-{}.pdf'.format(
             slugify(user.get_full_name() or user.email),
             slugify(self.company),
@@ -1578,7 +1582,7 @@ class ShareholderStatement(models.Model):
         verbose_name_plural = _('shareholder statements')
         unique_together = ('report', 'user')
 
-    def __unicode__(self):
+    def __unicode__(self):  # pragma: nocover
         return u'{}: {}'.format(self.user, self.report)
 
     def send_email_notification(self):

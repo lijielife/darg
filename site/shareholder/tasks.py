@@ -48,7 +48,10 @@ def send_statement_generation_operator_notify():
     activate_lang(settings.LANGUAGE_CODE)
 
     for company in queryset:
-        # TODO: check subscription
+
+        # check subscription
+        if not company.has_feature_enabled('shareholder_statements'):
+            continue
 
         operators = [op.user.email for op in company.get_operators()
                      if op.user.is_active and op.user.email]
@@ -256,12 +259,16 @@ def send_statement_report_operator_notify():
 def generate_statements_report():
     """
     generate shareholder statement report and statements
-    TODO: check subscription
     """
     today = now().date()
     company_qs = Company.objects.filter(is_statement_sending_enabled=True,
                                         statement_sending_date=today)
     for company in company_qs:
+
+        # check subscription
+        if not company.has_feature_enabled('shareholder_statements'):
+            continue
+
         report, created = company.shareholderstatementreport_set.get_or_create(
             report_date=today)
 
