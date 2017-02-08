@@ -17,9 +17,8 @@ def fetch_resources(uri, rel):
         path = os.path.join(settings.MEDIA_ROOT, filepath)
     elif uri.startswith(settings.STATIC_URL):
         filepath = uri.split(settings.STATIC_URL, 1)[1]
-        try:
-            path = finders.find(filepath)
-        except:
+        path = finders.find(filepath)
+        if path is None:
             # maybe we get lucky
             path = os.path.join(settings.STATIC_ROOT, filepath)
     else:

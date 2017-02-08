@@ -6,6 +6,9 @@ import logging
 
 from django.test import TestCase
 
+from model_mommy import random_gen
+
+from utils import get_vat
 from utils.formatters import (deflate_segments, flatten_list, inflate_segments,
                               string_list_to_json)
 from utils.math import substract_list
@@ -142,3 +145,9 @@ class UtilsTestCase(TestCase):
         res = substract_list(l1, l2)
 
         self.assertEqual(res, [])
+
+    def test_get_vat(self):
+        amount = abs(random_gen.gen_integer())
+        vat = get_vat(amount)
+        net_value = get_vat(amount, net_value=True)
+        self.assertEqual(amount - net_value, vat)

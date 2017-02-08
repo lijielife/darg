@@ -450,6 +450,7 @@ class SubscribeViewTestCase(StripeTestCaseMixin, TestCase):
         company = CompanyGenerator().generate()
         customer = company.get_customer()
 
+        # FIXME: somehow, settings can be modified
         plans = settings.DJSTRIPE_PLANS
         if 'unsubscribable' in plans['test']:
             del plans['test']['unsubscribable']
