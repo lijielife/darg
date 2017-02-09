@@ -87,6 +87,7 @@ class SubscriptionsListViewTestCase(TestCase):
 
         self.factory = RequestFactory()
         self.view = SubscriptionsListView()
+        self.view.kwargs = dict()
 
     def test_get_queryset(self):
         self.view.request = self.factory.get('/')
@@ -125,6 +126,14 @@ class SubscriptionsListViewTestCase(TestCase):
 
         res = self.view.get(self.view.request)
         self.assertEqual(res.status_code, 200)
+
+        # test allow_empty False
+        self.view.allow_empty = False
+        self.view.get_paginate_by = mock.Mock(return_value=True)
+        with mock.patch.object(self.view, 'get_queryset',
+                               return_value=Company.objects.none()):
+            with self.assertRaises(Http404):
+                self.view.get(self.view.request)
 
 
 class AccountViewTestCase(StripeTestCaseMixin, TestCase):
