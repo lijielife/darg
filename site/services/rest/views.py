@@ -7,17 +7,14 @@ from django.utils.translation import ugettext as _
 from rest_framework import status, viewsets
 from rest_framework.decorators import detail_route, list_route
 from services.rest.pagination import SmallPagePagination
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import filters
 
 from company.mixins import SubscriptionViewMixin
-from services.rest.permissions import (SafeMethodsOnlyPermission,
-                                       UserCanAddCompanyPermission,
-                                       UserCanEditCompanyPermission,
-                                       UserIsOperatorPermission,
-                                       SubscriptionPermission)
+from services.rest.permissions import (IsOperatorPermission,
+                                       HasSubscriptionPermission)
 from services.rest.serializers import (AddCompanySerializer, CompanySerializer,
                                        CountrySerializer, OperatorSerializer,
                                        OptionHolderSerializer,
@@ -45,8 +42,8 @@ class ShareholderViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
     serializer_class = ShareholderSerializer
     pagination_class = SmallPagePagination
     permission_classes = [
-        UserIsOperatorPermission,
-        SubscriptionPermission
+        IsOperatorPermission,
+        HasSubscriptionPermission
     ]
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('user__first_name', 'user__last_name', 'user__email',
@@ -56,15 +53,16 @@ class ShareholderViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
     subscription_features = ('shareholders',)
 
     def get_user_companies(self):
-        if not self.request.user.is_authenticated():
-            return Company.objects.none()
         return Company.objects.filter(operator__user=self.request.user)
 
     def get_object(self):
-        try:
-            return self.get_queryset().get(pk=self.kwargs.get('pk'))
-        except Shareholder.DoesNotExist:
-            raise Http404
+        # try:
+        #     return self.get_queryset().get(pk=self.kwargs.get('pk'))
+        # except Shareholder.DoesNotExist:
+        #     raise Http404
+        qs = self.get_queryset()
+        print(qs.values_list('pk', flat=True), self.kwargs.get('pk'))
+        return super(ShareholderViewSet, self).get_object()
 
     def get_queryset(self):
         self.subscription_features = ['shareholders']
@@ -143,28 +141,23 @@ class OperatorViewSet(viewsets.ModelViewSet):
     # FIXME filter by user perms
     serializer_class = OperatorSerializer
     permission_classes = [
-        UserIsOperatorPermission,
+        IsOperatorPermission
     ]
-
-    def get_object(self, pk):
-        try:
-            return Operator.objects.get(pk=pk)
-        except Operator.DoesNotExist:
-            raise Http404
+    queryset = Operator.objects.none()
 
     def get_queryset(self):
-        user = self.request.user
-        return Operator.objects.filter(company__operator__user=user)\
-            .distinct()
+        return Operator.objects.filter(
+            company__operator__user=self.request.user).distinct()
 
     def destroy(self, request, pk=None):
-        operator = self.get_object(pk)
-        company_ids = request.user.operator_set.all().values_list(
-            'company__id', flat=True).distinct()
+        operator = self.get_object()
+        user_operators = request.user.operator_set.all()
         # cannot remove himself
-        if operator not in request.user.operator_set.all():
+        if operator not in user_operators:
             # user can only edit corps he manages
-            if operator.company.id in company_ids:
+            company_ids = user_operators.values_list(
+                'company_id', flat=True).distinct()
+            if operator.company_id in company_ids:
                 operator.delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)
         # else:
@@ -180,7 +173,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
     pagination_class = SmallPagePagination
     serializer_class = CompanySerializer
     permission_classes = [
-        UserCanEditCompanyPermission,
+        IsOperatorPermission
     ]
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('user__first_name', 'user__last_name', 'user__email',
@@ -188,13 +181,12 @@ class CompanyViewSet(viewsets.ModelViewSet):
     ordering_fields = ('user__last_name', 'user__email', 'number')
 
     def get_queryset(self):
-        user = self.request.user
-        return Company.objects.filter(operator__user=user)
+        return Company.objects.filter(operator__user=self.request.user)
 
-    # FIXME add perms like that to decor. permission_classes=[IsAdminOrIsSelf]
     @detail_route(methods=['post'])
     def upload(self, request, pk=None):
         obj = self.get_object()
+        # FIXME: probably need some validation!
         obj.logo = request.FILES['logo']
         obj.save()
         return Response(CompanySerializer(
@@ -210,7 +202,7 @@ class AddCompanyView(APIView):
 
     # queryset = Company.objects.none()
     permission_classes = [
-        UserCanAddCompanyPermission,
+        IsAuthenticated
     ]
 
     def post(self, request, format=None):
@@ -221,13 +213,15 @@ class AddCompanyView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class AddShareSplit(APIView):
+class AddShareSplit(SubscriptionViewMixin, APIView):
     """ creates a share split. danger: can be set to be in the past and ALL
     following transactions must be adjusted
     """
     permission_classes = [
-        UserCanAddCompanyPermission,
+        IsOperatorPermission,
+        HasSubscriptionPermission
     ]
+    subscription_features = ('positions',)
 
     def _validate_data(self, data):
         errors = {}
@@ -250,6 +244,7 @@ class AddShareSplit(APIView):
         is_valid, errors = self._validate_data(data)
         if is_valid:
             # get company and run company.split_shares(data)
+            # FIXME
             company = request.user.operator_set.earliest('id').company
             data.update({
                 'execute_at': dateutil.parser.parse(data['execute_at']),
@@ -272,20 +267,24 @@ class AddShareSplit(APIView):
 
 class AvailableOptionSegmentsView(APIView):
 
-    permission_classes = [UserIsOperatorPermission]
+    permission_classes = [
+        IsOperatorPermission
+    ]
+
+    def get_user_companies(self):
+        return Company.objects.filter(operator__user=self.request.user)
 
     def get(self, request, optionsplan_id, shareholder_id):
         """
         returns available option segments from shareholder X and
         optionplan Y
         """
-        optionplan = get_object_or_404(OptionPlan, pk=optionsplan_id)
-        # permission check
-        self.check_object_permissions(request, optionplan)
-
-        shareholder = get_object_or_404(Shareholder, pk=shareholder_id)
-        # permission check
-        self.check_object_permissions(request, shareholder)
+        user_companies = self.get_user_companies()
+        optionplan = get_object_or_404(OptionPlan, pk=optionsplan_id,
+                                       company__in=user_companies)
+        shareholder = get_object_or_404(Shareholder, pk=shareholder_id,
+                                        # company__in=user_companies)
+                                        company=optionplan.company)
 
         # FIXME: subscription check required?
 
@@ -317,36 +316,33 @@ class LanguageView(APIView):
         return Response(languages)
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
     """ API endpoint to get user base info """
     serializer_class = UserSerializer
     permission_classes = [
-        SafeMethodsOnlyPermission,
+        IsAuthenticated
     ]
 
     def get_queryset(self):
-        user = self.request.user
-        return User.objects.filter(id=user.id)
+        return User.objects.filter(id=self.request.user.pk)
 
 
-class CountryViewSet(viewsets.ModelViewSet):
+class CountryViewSet(viewsets.ReadOnlyModelViewSet):
     """ API endpoint to get user base info """
     serializer_class = CountrySerializer
+    queryset = Country.objects.all()
     permission_classes = [
-        SafeMethodsOnlyPermission,
+        IsAuthenticated
     ]
-
-    def get_queryset(self):
-        countries = Country.objects.all()
-        return countries
 
 
 class InviteeUpdateView(APIView):
     """ API endpoint to get user base info """
-    permission_classes = (AllowAny,)
+    permission_classes = [
+        AllowAny
+    ]
 
     def post(self, request, format=None):
-
         serializer = UserWithEmailOnlySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(username=serializer.validated_data['email'])
@@ -359,7 +355,8 @@ class PositionViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
     serializer_class = PositionSerializer
     pagination_class = SmallPagePagination
     permission_classes = [
-        UserIsOperatorPermission,
+        IsOperatorPermission,
+        HasSubscriptionPermission
     ]
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('buyer__user__first_name', 'buyer__user__last_name',
@@ -376,8 +373,6 @@ class PositionViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
     subscription_features = ('positions',)
 
     def get_user_companies(self):
-        if not self.request.user.is_authenticated():
-            return Company.objects.none()
         return Company.objects.filter(operator__user=self.request.user)
 
     def get_queryset(self):
@@ -387,8 +382,7 @@ class PositionViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
             Q(seller__company_id__in=company_pks)
         ).distinct().order_by('-bought_at', '-pk')
 
-    @detail_route(
-        methods=['post'], permission_classes=[UserIsOperatorPermission])
+    @detail_route(methods=['post'])
     def confirm(self, request, pk=None):
         """ confirm position and make it unchangable """
         position = self.get_object()
@@ -417,14 +411,12 @@ class SecurityViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
     """ API endpoint to get options """
     serializer_class = SecuritySerializer
     permission_classes = [
-        UserIsOperatorPermission,
-        SubscriptionPermission
+        IsOperatorPermission,
+        HasSubscriptionPermission
     ]
     subscription_features = ('securities',)
 
     def get_user_companies(self):
-        if not self.request.user.is_authenticated():
-            return Company.objects.none()
         return Company.objects.filter(operator__user=self.request.user)
 
     def get_queryset(self):
@@ -435,12 +427,12 @@ class OptionPlanViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
     """ API endpoint to get options """
     serializer_class = OptionPlanSerializer
     permission_classes = [
-        # UserCanAddOptionPlanPermission,
+        IsOperatorPermission,
+        HasSubscriptionPermission
     ]
+    subscription_features = ('options',)
 
     def get_user_companies(self):
-        if not self.request.user.is_authenticated():
-            return Company.objects.none()
         return Company.objects.filter(operator__user=self.request.user)
 
     def get_queryset(self):
@@ -454,6 +446,7 @@ class OptionPlanViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
         serializer = OptionPlanSerializer(data=request.data)
         # add file to serializer
         if serializer.is_valid():
+            # FIXME: probably need some validation!
             op.pdf_file = request.FILES['pdf_file']
             op.save()
             op.generate_pdf_file_preview()
@@ -473,7 +466,8 @@ class OptionTransactionViewSet(SubscriptionViewMixin,
     serializer_class = OptionTransactionSerializer
     pagination_class = SmallPagePagination
     permission_classes = [
-        UserIsOperatorPermission
+        IsOperatorPermission,
+        HasSubscriptionPermission
     ]
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('buyer__user__first_name', 'buyer__user__last_name',
@@ -492,36 +486,22 @@ class OptionTransactionViewSet(SubscriptionViewMixin,
     subscription_features = ('positions',)
 
     def get_user_companies(self):
-        if not self.request.user.is_authenticated():
-            return Company.objects.none()
         return Company.objects.filter(operator__user=self.request.user)
 
     def get_queryset(self):
-        # user = self.request.user
-        # qs = OptionTransaction.objects.filter(
-        #     option_plan__company__operator__user=user)
-        #
-        # # filter if option plan is given in query params
-        # if self.request.query_params.get('optionplan_pk', None):
-        #     qs = qs.filter(
-        #         option_plan__pk=self.request.query_params.get('optionplan_pk'))
-        #
-        # return qs
-
-        # FIXME: check this
         qs = OptionTransaction.objects.filter(
             option_plan__company_id__in=self.get_company_pks()
         )
 
         # filter if option plan is given in query params
+        # FIXME: why no use filter or detail route???
         pk = self.request.query_params.get('optionplan_pk')
         if pk:
             qs = qs.filter(option_plan_id=pk)
 
         return qs
 
-    @detail_route(
-        methods=['post'], permission_classes=[UserIsOperatorPermission])
+    @detail_route(methods=['post'])
     def confirm(self, request, pk=None):
         """ confirm position and make it unchangable """
         position = self.get_object()
@@ -531,7 +511,6 @@ class OptionTransactionViewSet(SubscriptionViewMixin,
 
     def destroy(self, request, pk=None):
         """ delete position. but not if is_draft-False"""
-
         position = self.get_object()
         if position.is_draft is True:
             position.delete()

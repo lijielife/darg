@@ -63,9 +63,8 @@ class CompanyPage(BasePage):
         button.click()
 
     def click_remove_operator(self, operator):
-        table = self.driver.find_element_by_class_name(
-            'operators'
-        )
+        table = self.driver.find_element_by_class_name('operators')
+        # table = self.driver.find_element_by_css_selector('table.operators')
         self.driver.execute_script(
             "return arguments[0].scrollIntoView();", table)
         rows = table.find_elements_by_tag_name('tr')

@@ -176,7 +176,7 @@ class OptionTransactionAdmin(VersionAdmin):
 
 
 class OptionPlanAdmin(VersionAdmin):
-    list_display = ('title',)
+    list_display = ('title', 'company')
     list_filter = ('company',)
 
 

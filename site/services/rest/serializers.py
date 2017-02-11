@@ -715,7 +715,7 @@ class OptionPlanSerializer(serializers.HyperlinkedModelSerializer):
         # prepare data
         kwargs = {}
         user = self.context.get("request").user
-        company = user.operator_set.all()[0].company
+        company = user.operator_set.all()[0].company  # FIXME
         security = Security.objects.get(
             company=company,
             title=validated_data.get("security").get('title'),

@@ -140,9 +140,9 @@ class AvailableOptionSegmentsViewTestCase(APITestCase):
         foreign_operator = OperatorGenerator().generate()
         self.client.force_authenticate(foreign_operator.user)
         res1 = self.client.get(url1)
-        self.assertEqual(res1.status_code, 403)
+        self.assertEqual(res1.status_code, 404)
         res2 = self.client.get(url2)
-        self.assertEqual(res2.status_code, 403)
+        self.assertEqual(res2.status_code, 404)
 
 
 class CompanyViewSetTestCase(TestCase):
@@ -359,6 +359,17 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
             **{'HTTP_AUTHORIZATION': 'Token {}'.format(
                 user.auth_token.key), 'format': 'json'})
 
+        # no company subscription (feature not enabled)
+        self.assertEqual(response.status_code, 403)
+
+        self.add_subscription(operator.company)
+
+        response = self.client.post(
+            '/services/rest/position',
+            data,
+            **{'HTTP_AUTHORIZATION': 'Token {}'.format(
+                user.auth_token.key), 'format': 'json'})
+
         self.assertEqual(response.status_code, 201)
         self.assertTrue('sdfg' in response.content)
 
@@ -473,6 +484,17 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
             **{'HTTP_AUTHORIZATION': 'Token {}'.format(
                 user.auth_token.key), 'format': 'json'})
 
+        # no company subscription (feature not enabled)
+        self.assertEqual(response.status_code, 403)
+
+        self.add_subscription(operator.company)
+
+        response = self.client.post(
+            '/services/rest/position',
+            data,
+            **{'HTTP_AUTHORIZATION': 'Token {}'.format(
+                user.auth_token.key), 'format': 'json'})
+
         self.assertEqual(response.status_code, 201)
         self.assertTrue('sdfg' in response.content)
         self.assertEqual(response.data['number_segments'], [u'1-5'])
@@ -578,9 +600,22 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
             "comment": "Large Transaction"
         }
 
+        response = self.client.post(
+            u'/services/rest/position',
+            data,
+            **{u'HTTP_AUTHORIZATION': u'Token {}'.format(
+                user.auth_token.key), u'format': u'json'})
+
+        # no company subscription (feature not enabled)
+        self.assertEqual(response.status_code, 403)
+
+        self.add_subscription(operator.company)
+
         # call with perf check
         # was 55, increased to 95
-        with self.assertLessNumQueries(60):
+        # with self.assertLessNumQueries(60):
+        # NOTE: increased queries due to subscription check
+        with self.assertLessNumQueries(62):
             response = self.client.post(
                 u'/services/rest/position',
                 data,
@@ -615,8 +650,8 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
         res = self.client.delete(
             '/services/rest/position/{}'.format(position.pk))
 
-        # company has not subscription
-        self.assertEqual(res.status_code, 404)
+        # company has not subscription (feature not enabled)
+        self.assertEqual(res.status_code, 403)
 
         # add company subscription
         self.add_subscription(operator.company)
@@ -662,8 +697,8 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
         res = self.client.delete(
             '/services/rest/position/{}'.format(position.pk))
 
-        # company has no subscription
-        self.assertEqual(res.status_code, 404)
+        # no company subscription (feature not enabled)
+        self.assertEqual(res.status_code, 403)
 
         # add company subscription
         self.add_subscription(operator.company)
@@ -693,8 +728,8 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
             '/services/rest/position/{}'.format(position.pk),
             format='json')
 
-        # no company subscription
-        self.assertEqual(res.status_code, 404)
+        # no company subscription (feature not enabled)
+        self.assertEqual(res.status_code, 403)
 
         # update data
         res = self.client.post(
@@ -703,8 +738,8 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
             format='json'
             )
 
-        # no company subscription
-        self.assertEqual(res.status_code, 404)
+        # no company subscription (feature not enabled)
+        self.assertEqual(res.status_code, 403)
 
         # add company subscription
         self.add_subscription(operator.company)
@@ -740,6 +775,17 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
             **{'HTTP_AUTHORIZATION': 'Token {}'.format(
                 user.auth_token.key), 'format': 'json'})
 
+        # no company subscription (feature not enabled)
+        self.assertEqual(response.status_code, 403)
+
+        self.add_subscription(operator.company)
+
+        response = self.client.get(
+            '/services/rest/split/', {},
+            **{'HTTP_AUTHORIZATION': 'Token {}'.format(
+                user.auth_token.key), 'format': 'json'})
+
+        # method not allowed
         self.assertEqual(response.status_code, 405)
 
     def test_split_shares_POST(self):
@@ -773,6 +819,16 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
             **{'HTTP_AUTHORIZATION': 'Token {}'.format(
                 user.auth_token.key), 'format': 'json'})
 
+        # no company subscription (feature not enabled)
+        self.assertEqual(response.status_code, 403)
+
+        self.add_subscription(company)
+
+        response = self.client.post(
+            '/services/rest/split/', data,
+            **{'HTTP_AUTHORIZATION': 'Token {}'.format(
+                user.auth_token.key), 'format': 'json'})
+
         self.assertEqual(response.status_code, 201)
 
     def test_split_shares_empty_payload(self):
@@ -794,6 +850,16 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
             **{'HTTP_AUTHORIZATION': 'Token {}'.format(
                 user.auth_token.key), 'format': 'json'})
 
+        # no company subscription (feature not enabled)
+        self.assertEqual(response.status_code, 403)
+
+        self.add_subscription(operator.company)
+
+        response = self.client.post(
+            '/services/rest/split/', data,
+            **{'HTTP_AUTHORIZATION': 'Token {}'.format(
+                user.auth_token.key), 'format': 'json'})
+
         self.assertEqual(response.status_code, 400)
         self.assertTrue(len(response.data), 3)
 
@@ -808,12 +874,9 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
         res = self.client.get(
             '/services/rest/position?search={}'.format(query))
 
-        self.assertEqual(res.status_code, 200)
+        # no company subscription (feature not enabled)
+        self.assertEqual(res.status_code, 403)
 
-        # no company subscription
-        self.assertEqual(res.data['count'], 0)
-
-        # add company subscription
         self.add_subscription(operator.company)
 
         res = self.client.get(
@@ -838,10 +901,8 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
         res = self.client.get(
             '/services/rest/position?ordering=buyer__user__last_name')
 
-        self.assertEqual(res.status_code, 200)
-
-        # no company subscription
-        self.assertEqual(res.data['count'], 0)
+        # no company subscription (feature not enabled)
+        self.assertEqual(res.status_code, 403)
 
         # add company subscription
         self.add_subscription(operator.company)
@@ -881,10 +942,8 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
 
         res = self.client.get('/services/rest/position')
 
-        self.assertEqual(res.status_code, 200)
-
-        # no company subscription
-        self.assertEqual(res.data['count'], 0)
+        # no company subscription (feature not enabled)
+        self.assertEqual(res.status_code, 403)
 
         # add company subscription
         self.add_subscription(operator.company)
@@ -968,8 +1027,8 @@ class ShareholderTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                'format': 'json'
                })
 
-        # no company subscription
-        self.assertEqual(len(response.data['results']), 0)
+        # no company subscription (feature not enabled)
+        self.assertEqual(response.status_code, 403)
 
         # add company subscription
         self.add_subscription(operator.company)
@@ -979,6 +1038,7 @@ class ShareholderTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             **{'HTTP_AUTHORIZATION': 'Token {}'.format(token.key),
                'format': 'json'
                })
+        self.assertEqual(response.status_code, 200)
         self.assertTrue(len(response.data.get('results')) == 1)
         self.assertEqual(
             response.data['results'][0].get('full_name'),
@@ -1008,6 +1068,18 @@ class ShareholderTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             **{'HTTP_AUTHORIZATION': 'Token {}'.format(
                 user.auth_token.key), 'format': 'json'})
 
+        # no company subscription (feature not enabled)
+        self.assertEqual(response.status_code, 403)
+
+        self.add_subscription(operator.company)
+
+        response = self.client.post(
+            '/services/rest/shareholders',
+            data,
+            **{'HTTP_AUTHORIZATION': 'Token {}'.format(
+                user.auth_token.key), 'format': 'json'})
+
+        self.assertEqual(response.status_code, 201)
         self.assertNotEqual(response.data.get('pk'), None)
         self.assertTrue(isinstance(response.data.get('user'), dict))
         self.assertEqual(response.data.get('number'), u'10002')
@@ -1035,6 +1107,17 @@ class ShareholderTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                 u"email": u"mike.hildebrand2@darg.com",
             },
             u"number": shareholder.number}
+
+        response = self.client.post(
+            '/services/rest/shareholders',
+            data,
+            **{'HTTP_AUTHORIZATION': 'Token {}'.format(
+                user.auth_token.key), 'format': 'json'})
+
+        # no company subscription (feature not enabled)
+        self.assertEqual(response.status_code, 403)
+
+        self.add_subscription(operator.company)
 
         response = self.client.post(
             '/services/rest/shareholders',
@@ -1077,6 +1160,18 @@ class ShareholderTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             **{'HTTP_AUTHORIZATION': 'Token {}'.format(
                 user.auth_token.key), 'format': 'json'})
 
+        # no company subscription (feature not enabled)
+        self.assertEqual(response.status_code, 403)
+
+        self.add_subscription(operator.company)
+
+        response = self.client.post(
+            '/services/rest/shareholders',
+            data,
+            **{'HTTP_AUTHORIZATION': 'Token {}'.format(
+                user.auth_token.key), 'format': 'json'})
+
+        self.assertEqual(response.status_code, 201)
         self.assertNotEqual(response.data.get('pk'), None)
         self.assertTrue(isinstance(response.data.get('user'), dict))
         self.assertEqual(response.data.get('number'), u'1000')
@@ -1161,8 +1256,8 @@ class ShareholderTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             **{'HTTP_AUTHORIZATION': 'Token {}'.format(
                 user.auth_token.key), 'format': 'json'})
 
-        # no company subscription
-        self.assertEqual(response.status_code, 404)
+        # no company subscription (feature not enabled)
+        self.assertEqual(response.status_code, 403)
 
         # add company subscription
         self.add_subscription(company)
@@ -1221,8 +1316,8 @@ class ShareholderTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         res = self.client.get(reverse('shareholders-number-segments',
                                       kwargs={'pk': shs[1].pk}))
 
-        # no company subscription
-        self.assertEqual(res.status_code, 404)
+        # no company subscription (feature not enabled)
+        self.assertEqual(res.status_code, 403)
 
         # add company subscription
         self.add_subscription(operator.company)
@@ -1230,6 +1325,7 @@ class ShareholderTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         res = self.client.get(reverse('shareholders-number-segments',
                                       kwargs={'pk': shs[1].pk}))
 
+        self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data[security.pk], [u'1000-1200', 1666])
 
     def test_get_list(self):
@@ -1245,10 +1341,8 @@ class ShareholderTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
 
         res = self.client.get('/services/rest/shareholders')
 
-        self.assertEqual(res.status_code, 200)
-
-        # no company subscription
-        self.assertEqual(len(res.data['results']), 0)
+        # no company subscription (feature not enabled)
+        self.assertEqual(res.status_code, 403)
 
         # add company subscription
         self.add_subscription(operator.company)
@@ -1262,6 +1356,41 @@ class ShareholderTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         # must have pagination
         self.assertEqual(len(res.data['results']), 20)
 
+    def test_get_detail(self):
+        """
+        check shareholder detail
+        """
+        operator = OperatorGenerator().generate()
+        s1 = ShareholderGenerator().generate(company=operator.company)
+        s2 = ShareholderGenerator().generate()
+
+        self.client.force_login(operator.user)
+
+        url = '/services/rest/shareholders/{}'.format(s1.pk)
+
+        res = self.client.get(url)
+
+        # no company subscription (feature not enabled)
+        self.assertEqual(res.status_code, 403)
+
+        # add company subscription
+        self.add_subscription(operator.company)
+
+        res = self.client.get(url)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data.get('pk'), s1.pk)
+
+        # test not found
+        url = '/services/rest/shareholders/{}'.format(0)
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, 404)
+
+        # test not in queryset
+        url = '/services/rest/shareholders/{}'.format(s2.pk)
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, 404)
+
     def test_search(self):
         operator = OperatorGenerator().generate()
         user = operator.user
@@ -1274,10 +1403,8 @@ class ShareholderTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         res = self.client.get(
             '/services/rest/shareholders?search={}'.format(query))
 
-        self.assertEqual(res.status_code, 200)
-
-        # no company subscription
-        self.assertEqual(res.data['count'], 0)
+        # no company subscription (feature not enabled)
+        self.assertEqual(res.status_code, 403)
 
         # add company subscription
         self.add_subscription(operator.company)
@@ -1293,7 +1420,8 @@ class ShareholderTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         profile.save()
 
         res = self.client.get(
-            '/services/rest/shareholders?search={}'.format(profile.company_name)
+            '/services/rest/shareholders?search={}'.format(
+                profile.company_name)
         )
 
         self.assertEqual(res.status_code, 200)
@@ -1310,10 +1438,8 @@ class ShareholderTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         res = self.client.get(
             '/services/rest/shareholders?ordering=user__last_name')
 
-        self.assertEqual(res.status_code, 200)
-
-        # no company subscription
-        self.assertEqual(res.data['count'], 0)
+        # no company subscription (feature not enabled)
+        self.assertEqual(res.status_code, 403)
 
         # add company subscription
         self.add_subscription(operator.company)
@@ -1348,11 +1474,8 @@ class ShareholderTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         res = self.client.get(
             '/services/rest/shareholders')
 
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.data['current'], 1)
-
-        # no company subscription
-        self.assertEqual(len(res.data['results']), 0)
+        # no company subscription (feature not enabled)
+        self.assertEqual(res.status_code, 403)
 
         # add company subscription
         self.add_subscription(operator.company)
@@ -1382,10 +1505,8 @@ class ShareholderTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         res = self.client.get(reverse(
             'shareholders-option-holder'), {'company': op.company.pk})
 
-        self.assertEqual(res.status_code, 200)
-
-        # no company subscription
-        self.assertEqual(len(res.data['results']), 0)
+        # no company subscription (feature not enabled)
+        self.assertEqual(res.status_code, 403)
 
         # add company subscription
         self.add_subscription(op.company)
@@ -1421,10 +1542,8 @@ class ShareholderTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                 'company': op.company.pk,
                 'search': query})
 
-        self.assertEqual(res.status_code, 200)
-
-        # no company subscription
-        self.assertEqual(len(res.data['results']), 0)
+        # no company subscription (feature not enabled)
+        self.assertEqual(res.status_code, 403)
 
         # add company subscription
         self.add_subscription(op.company)
@@ -1437,7 +1556,6 @@ class ShareholderTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         self.assertEqual(res.status_code, 200)
         self.assertEqual(len(res.data['results']), 1)
         self.assertIn(query, res.data['results'][0]['full_name'])
-
 
 class OptionTransactionTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                                 APITestCase):
@@ -1458,8 +1576,8 @@ class OptionTransactionTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         res = self.client.delete(
             '/services/rest/optiontransaction/{}'.format(optiontransaction.pk))
 
-        # no company subscription
-        self.assertEqual(res.status_code, 404)
+        # no company subscription (feature not enabled)
+        self.assertEqual(res.status_code, 403)
 
         # add company subscription
         self.add_subscription(operator.company)
@@ -1508,8 +1626,8 @@ class OptionTransactionTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         res = self.client.delete(
             '/services/rest/optiontransaction/{}'.format(optiontransaction.pk))
 
-        # no company subscription
-        self.assertEqual(res.status_code, 404)
+        # no company subscription (feature not enabled)
+        self.assertEqual(res.status_code, 403)
 
         # add company subscription
         self.add_subscription(operator.company)
@@ -1536,12 +1654,12 @@ class OptionTransactionTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                                 password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(res)
 
-        # no company subscription
+        # no company subscription (feature not enabled)
 
         res = self.client.get(
             '/services/rest/optiontransaction/{}'.format(optiontransaction.pk),
             format='json')
-        self.assertEqual(res.status_code, 404)
+        self.assertEqual(res.status_code, 403)
 
         # update data
         res = self.client.post(
@@ -1550,7 +1668,7 @@ class OptionTransactionTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             {},
             format='json'
             )
-        self.assertEqual(res.status_code, 404)
+        self.assertEqual(res.status_code, 403)
 
         # add company subscription
         self.add_subscription(operator.company)
@@ -1583,10 +1701,9 @@ class OptionTransactionTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         query = optiontransaction.buyer.user.first_name
         res = self.client.get(
             '/services/rest/optiontransaction?search={}'.format(query))
-        self.assertEqual(res.status_code, 200)
 
-        # no company subscription
-        self.assertEqual(res.data['count'], 0)
+        # no company subscription (feature not enabled)
+        self.assertEqual(res.status_code, 403)
 
         # add company subscription
         self.add_subscription(operator.company)
@@ -1640,10 +1757,8 @@ class OptionTransactionTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         res = self.client.get('/services/rest/optiontransaction'
                               '?ordering=seller__user__last_name')
 
-        self.assertEqual(res.status_code, 200)
-
-        # no company subscription
-        self.assertEqual(res.data['count'], 0)
+        # no company subscription (feature not enabled)
+        self.assertEqual(res.status_code, 403)
 
         # add company subscription
         self.add_subscription(operator.company)
@@ -1692,10 +1807,8 @@ class OptionTransactionTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
 
         res = self.client.get('/services/rest/optiontransaction')
 
-        self.assertEqual(res.status_code, 200)
-
-        # no company subscription
-        self.assertEqual(res.data['count'], 0)
+        # no company subscription (feature not enabled)
+        self.assertEqual(res.status_code, 403)
 
         # add company subscription
         self.add_subscription(operator.company)
@@ -1731,8 +1844,9 @@ class SecurityTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         self.client.force_authenticate(user=operator.user)
 
         res = self.client.put(url, data=data)
-        # no subscription
-        self.assertEqual(res.status_code, 404)
+
+        # no company subscription (feature not enabled)
+        self.assertEqual(res.status_code, 403)
 
         # add company subscription
         self.add_subscription(company)
