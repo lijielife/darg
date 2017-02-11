@@ -165,16 +165,19 @@ class PositionTestCase(TransactionTestCase):
         leftover = 0
         shareholders.reverse()
         for shareholder in shareholders:
-            part, count2 = math.modf(
-                assets[shareholder.pk]['count'] * multiplier)
             if shareholder == shareholders[-1]:
-                count2 = count2 + leftover
+                pt, count2 = math.modf(assets[shareholder.pk]['count'] *
+                                       multiplier)
+                count2 += round(leftover)
+            else:
+                part, count2 = math.modf(
+                    assets[shareholder.pk]['count'] * multiplier)
+                leftover += part
+
             self.assertEqual(
                 shareholder.share_count(),
                 count2
             )
-            if part > 0.5:
-                leftover += 1
 
         self.assertEqual(
             company.share_count,
