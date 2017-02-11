@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 import logging
+import math
 from decimal import Decimal
 
 from django.core import mail
@@ -160,19 +161,20 @@ class PositionTestCase(TransactionTestCase):
         # means each shareholder should have now more shares but some
         # overall stock value
 
+        # company shareholder last...
+        leftover = 0
+        shareholders.reverse()
         for shareholder in shareholders:
+            part, count2 = math.modf(
+                assets[shareholder.pk]['count'] * multiplier)
+            if shareholder == shareholders[-1]:
+                count2 = count2 + leftover
             self.assertEqual(
                 shareholder.share_count(),
-                round(assets[shareholder.pk]['count'] * multiplier)
+                count2
             )
-            self.assertEqual(
-                round(shareholder.share_value()),
-                assets[shareholder.pk]['value']
-            )
-            self.assertEqual(
-                round(float(shareholder.share_percent()), 2),
-                float(assets[shareholder.pk]['percent'])
-            )
+            if part > 0.5:
+                leftover += 1
 
         self.assertEqual(
             company.share_count,
@@ -228,18 +230,21 @@ class PositionTestCase(TransactionTestCase):
         # means each shareholder should have now more shares but some
         # overall stock value
 
+        leftover = 0
+        shareholders.reverse()
         for shareholder in shareholders:
+            if shareholder == shareholders[-1]:
+                pt, count2 = math.modf(assets[shareholder.pk]['count'] *
+                                       multiplier)
+                count2 += round(leftover)
+            else:
+                part, count2 = math.modf(
+                    assets[shareholder.pk]['count'] * multiplier)
+                leftover += part
+
             self.assertEqual(
                 shareholder.share_count(),
-                round(assets[shareholder.pk]['count'] * multiplier)
-            )
-            self.assertEqual(
-                round(shareholder.share_value()),
-                assets[shareholder.pk]['value']
-            )
-            self.assertEqual(
-                round(float(shareholder.share_percent()), 2),
-                float(assets[shareholder.pk]['percent'])
+                count2
             )
 
         self.assertEqual(

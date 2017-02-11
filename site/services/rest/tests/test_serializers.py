@@ -8,6 +8,7 @@ from django.utils.translation import ugettext as _
 from dateutil.parser import parse
 from rest_framework.exceptions import ValidationError
 
+from project.tests.mixins import MoreAssertsTestCaseMixin
 from project.generators import (ComplexShareholderConstellationGenerator,
                                 OperatorGenerator, OptionPlanGenerator,
                                 OptionTransactionGenerator, PositionGenerator,
@@ -286,7 +287,7 @@ class PositionSerializerTestCase(TestCase):
         self.assertIsNotNone(position_data['depot_type'])
 
 
-class ShareholderSerializerTestCase(TestCase):
+class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin, TestCase):
 
     def setUp(self):
         self.factory = RequestFactory()
@@ -309,7 +310,7 @@ class ShareholderSerializerTestCase(TestCase):
         request.user = operator.user
 
         # make sure we don't issue more then one additional query per obj
-        with self.assertNumQueries(130):  # should be < 12
+        with self.assertLessNumQueries(130):  # should be < 12
             # queryset with prefetch to reduce db load
             qs = operator.company.shareholder_set.all() \
                 .select_related('company', 'user', 'user__userprofile',

@@ -62,12 +62,19 @@ def _order_queryset(queryset, ordering):
     if ordering.startswith('-'):
         funcname = ordering[1:]
         reverse = True
+
+    # handle empyyt QS
+    if not queryset:
+        return queryset.model.objects.none()
+
+    # handle sort by function result
     if hasattr(queryset.first(), funcname):
         unsorted_results = queryset.all()
         return sorted(
-            unsorted_results, key=lambda t: getattr(t, funcname)(),
+            unsorted_results, key=lambda t: float(getattr(t, funcname)()),
             reverse=reverse)
 
+    # use conventional ordering
     return queryset.order_by(ordering)
 
 
