@@ -15,13 +15,35 @@ from shareholder.models import Shareholder
 class TaskTestCase(TestCase):
 
     def setUp(self):
-        self.shs, self.sec = ComplexShareholderConstellationGenerator().generate()
+        self.shs, self.sec = (
+            ComplexShareholderConstellationGenerator().generate())
 
     def test_get_captable_pdf_context(self):
 
         res = _get_captable_pdf_context(self.shs[0].company,
                                         ordering='-share_count')
         self.assertEqual(len(res), 9)
+
+        res = _get_captable_pdf_context(self.shs[0].company,
+                                        ordering='-share_percent')
+        self.assertEqual(len(res), 9)
+        for idx, sh in enumerate(res['active_shareholders']):
+            if idx == 0:
+                continue
+            self.assertLessEqual(
+                float(sh.share_percent()),
+                float(res['active_shareholders'][idx-1].share_percent()))
+
+        res = _get_captable_pdf_context(self.shs[0].company,
+                                        ordering='-share_count')
+        self.assertEqual(len(res), 9)
+        for idx, sh in enumerate(res['active_shareholders']):
+            if idx == 0:
+                continue
+            self.assertLessEqual(
+                int(sh.share_count(security=self.sec)),
+                int(res['active_shareholders'][idx-1].share_count(
+                    security=self.sec)))
 
     def test_order_queryset(self):
 

@@ -190,7 +190,7 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
                 self.assertEqual(row.find_element_by_class_name('number').text,
                                  shareholder.number)
                 self.assertEqual(row.find_element_by_class_name('share').text,
-                                 u'6 (200,0%)')
+                                 u'6 (6,0%)')
                 self.assertEqual(
                     row.find_element_by_class_name('full-name').text,
                     shareholder.get_full_name())
@@ -214,7 +214,7 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
             start.wait_until_visible((By.CSS_SELECTOR, '#shareholder_list'))
             start.is_properly_displayed()
             # self.assertEqual(start.get_total_share_count(), 3)
-            self.assertEqual(start.get_company_share_count(), 3)
+            self.assertEqual(start.get_company_share_count(), 100)
             self.assertEqual(start.get_total_share_count(),
                              start.get_company_share_count())
 
