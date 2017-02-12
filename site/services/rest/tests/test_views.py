@@ -1014,6 +1014,7 @@ class ShareholderTestCase(TestCase):
                 },
             },
             "number": "00333e",
+            "is_management": False,
             "company": {
                 "pk": 5,
                 "name": "LieblingzWaldCompany AG",
