@@ -543,6 +543,26 @@ nav.navbar
       font-size: 0.8em
       padding-top: 6px
 
+//override bootstrap styles
+.form-group
+  input
+    margin: 5px 0
+.modal-content
+  box-shadow: none
+.modal-backdrop
+  background-color: $color-gray-lighten
+  &.in
+    opacity: .85
+.custom-form-group
+  @include display-flex(flex)
+  @include align-items(center)
+  @include justify-content(space-between)
+  @include flex-flow(row-reverse)
+  .btn-focus
+    width: 75%
+  .btn-default
+    width: 20%
+
 // -- responsive table
 .show-mobile
   display: none

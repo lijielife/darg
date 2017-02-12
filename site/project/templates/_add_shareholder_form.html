@@ -3,7 +3,7 @@
 {% trans "Please enter your shareholder data:" %}
 {% verbatim %}
 <div>
-  <form class="form-inline form">
+  <form class="form">
     <div class="form-group block-level">
       <input type="text" class="form-control" ng-model="newShareholder.user.first_name" translate translate-attr-placeholder="First Name"/>
       <input type="text" class="form-control" ng-model="newShareholder.user.last_name" translate translate-attr-placeholder="Last Name"/>
@@ -11,8 +11,8 @@
       <input type="text" class="form-control" ng-model="newShareholder.number" translate translate-attr-placeholder="Shareholder Number"/>
       <input type="hidden" class="form-control" ng-model="newShareholder.company.id" value="{{user.company[0].id}}"/>
     </div>
-    <div class="form-group">
-      <button class="btn btn-default" ng-click="hide_form()">{% endverbatim %}{% trans "Cancel" %}{% verbatim %}</button>
+    <div class="form-group custom-form-group">
+      <button class="btn btn-default" data-dismiss="modal" ng-click="hide_form()">{% endverbatim %}{% trans "Cancel" %}{% verbatim %}</button>
       <button class="btn btn-focus" ng-click="add_shareholder()">{% endverbatim %}{% trans "Add Shareholder" %}{% verbatim %}</button>
     </div>
   </form>
