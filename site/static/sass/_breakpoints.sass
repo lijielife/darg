@@ -382,6 +382,22 @@
         .td
           word-break: inherit
 @media only screen and (max-width: 600px)
+  .table-actions
+    .row
+      [class*="col-"]
+        width: 100%
+        margin-bottom: 10px
+        nav.pull-right //remove float right
+          float: none !important
+        .pagination
+          width: 100%
+          text-align: center
+        .input-group
+          width: 100%
+        .full-width-mobile
+          width: calc(100% - 66px)
+      @include flex-flow(column)
+      @include display-flex(flex)
   .table
     .tr
       .td
