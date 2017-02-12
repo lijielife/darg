@@ -345,7 +345,7 @@ def option_pdf(request, option_id):
         {
             'pagesize': 'A4',
             'company': company,
-            'today': datetime.datetime.now().date(),
+            'today': datetime.datetime.now(),
             'currency': 'CHF',
             'option': option,
         }
