@@ -69,8 +69,10 @@
   {% block content %}
 
     <!-- Content for Static Frame 'header_frame' -->
-    <div id="header_content">
+    <div id="header_content"> 
+      {% if company.pdf_header_image %}
       <img src="{{ company.pdf_header_image.url }}" alt="header-img" />
+      {% endif %}
     </div>
 
     <!-- Content for Static Frame 'footer_frame' -->
@@ -110,20 +112,21 @@
           <strong>
           {% trans "of each" %} {{ currency }} {{option.option_plan.security.face_value|floatformat:"0"|intcomma}} {% trans "with total value of" %} {{ currency }} {{ option.get_total_face_value|floatformat:"0"|intcomma }}<br />
           </strong>
-          {% trans "cusip" %}: {{ option.option_plan.security.cusip }}<br />
-          {% trans "ISIN" %}: {{ option.option_plan.security.get_isin }}
+          {% if option.option_plan.security.cusip %}{% trans "cusip" %}: {{ option.option_plan.security.cusip }}{% endif %}<br />
+          {% if option.option_plan.security.get_isin %}{% trans "ISIN" %}: {{ option.option_plan.security.get_isin }}{% endif %}
         </p>
         <p class="top-spacing">
-          {{option.buyer.user.userprofile.salutation}} {{ option.buyer.get_full_name }} <br />
-          {{ option.buyer.user.userprofile.street }}<br />
-          {{ option.buyer.user.userprofile.postal_code }} {{ option.buyer.user.userprofile.city }} <br />
-          {{ option.buyer.user.userprofile.country }}
+          {% if option.buyer.user.userprofile.salutation %}{{option.buyer.user.userprofile.salutation}}{% endif %}
+		  {{ option.buyer.get_full_name }} <br />
+          {% if option.buyer.user.userprofile.street %}{{ option.buyer.user.userprofile.street }}<br />{% endif %}
+          {% if option.buyer.user.userprofile.postal_code %}{{ option.buyer.user.userprofile.postal_code }}{% endif %} {% if option.buyer.user.userprofile.city %}{{ option.buyer.user.userprofile.city }}{% endif %} <br />
+          {% if option.buyer.user.userprofile.country %}{{ option.buyer.user.userprofile.country }}{% endif %}
         </p>
         <p class="top-spacing">
           {% trans "is as owner of the certificate with all legal and statuary rights shareholder of our company." %}
         </p>
         <p class="top-spacing">
-          {{ company.get_company_shareholder.user.userprofile.city }}, 
+          {% if company.get_company_shareholder.user.userprofile.city %}{{ company.get_company_shareholder.user.userprofile.city }}{% else %} _________________{% endif %}, 
           {% if option.printed_at %}
             {{ option.printed_at.date }}
           {% else %}
@@ -140,15 +143,17 @@
             <td class="top-spacing board-member">
               {{ member }}
             </td>
+			{% empty %}
+			__________________________
             {% endfor %}
           </tr>
         </table>
         </p>
         <div class="company-signature">
           {{ company.get_company_shareholder.get_full_name }}<br />
-          {{ company.get_company_shareholder.user.userprofile.pobox }}, {{company.get_company_shareholder.user.userprofile.postal_code}}, {{ company.get_company_shareholder.user.userprofile.city }}<br />
-          {{ company.get_company_shareholder.user.email }}<br />
-          {{ company.get_company_shareholder.user.userprofile.url }}<br />
+          {% if company.get_company_shareholder.user.userprofile.pobox %}{{ company.get_company_shareholder.user.userprofile.pobox }}{% endif %}, {% if company.get_company_shareholder.user.userprofile.postal_code %}{{company.get_company_shareholder.user.userprofile.postal_code}}{% endif %}, {% if company.get_company_shareholder.user.userprofile.city %}{{ company.get_company_shareholder.user.userprofile.city }}{% endif %}<br />
+          {% if company.get_company_shareholder.user.email %}{{ company.get_company_shareholder.user.email }}<br />{% endif %}
+          {% if company.get_company_shareholder.user.userprofile.url %}{{ company.get_company_shareholder.user.userprofile.url }}<br />{% endif %}
         </div>
     </div>
 
