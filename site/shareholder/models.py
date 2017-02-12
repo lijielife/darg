@@ -79,6 +79,7 @@ def get_company_logo_upload_path(instance, filename):
     return os.path.join(
         "public", "company", "%d" % instance.id, "logo", filename)
 
+
 def get_company_header_image_upload_path(instance, filename):
     return os.path.join(
         "public", "company", "%d" % instance.id, "header_image", filename)
@@ -559,6 +560,8 @@ class Shareholder(TagMixin, models.Model):
     mailing_type = models.CharField(
         _('how should the shareholder be approached by the corp'), max_length=1,
         choices=MAILING_TYPES, blank=True, null=True)
+    is_management = models.BooleanField(
+        _('user is management/board member of company'), default=False)
 
     def __unicode__(self):
         return u'{} {} (#{})'.format(
@@ -1099,6 +1102,7 @@ class Position(models.Model):
     depot_type = models.CharField(
         _('What kind of depot is this position stored within'), max_length=1,
         choices=DEPOT_TYPES, blank=True, null=True)
+    vesting_months = models.PositiveIntegerField(blank=True, null=True)
     comment = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

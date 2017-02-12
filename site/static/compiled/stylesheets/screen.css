@@ -3354,6 +3354,10 @@ div#optionplan .pdf_upload_preview {
   font-size: 14px;
 }
 
+.is-management .el-icon-minus-sign, .is-management .el-icon-ok-sign {
+  font-size: 14px !important;
+}
+
 table.stock {
   display: table !important;
 }

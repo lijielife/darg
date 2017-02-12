@@ -337,7 +337,8 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
             'full_name',
             'mailing_type',
             'readable_mailing_type',
-            'vote_count', 'vote_percent'
+            'vote_count', 'vote_percent',
+            'is_management',
         )
 
     def create(self, validated_data):
@@ -456,6 +457,7 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
             userprofile.save()
 
         shareholder.number = validated_data['number']
+        shareholder.is_management = validated_data['is_management']
         if 'mailing_type' in validated_data.keys():
             shareholder.mailing_type = validated_data['mailing_type']
         shareholder.save()
@@ -494,7 +496,7 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
             'security', 'comment', 'is_split', 'is_draft', 'number_segments',
             'readable_number_segments', 'registration_type',
             'readable_registration_type', 'position_type', 'depot_type',
-            'readable_depot_type', 'stock_book_id',)
+            'readable_depot_type', 'stock_book_id', 'vesting_months')
 
     def get_readable_number_segments(self, obj):
         """
@@ -668,6 +670,10 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
         if validated_data.get("depot_type"):
             kwargs.update({
                 'depot_type': validated_data.get("depot_type")})
+
+        if validated_data.get("vesting_months"):
+            kwargs.update({
+                'vesting_months': validated_data.get("vesting_months")})
 
         position = Position.objects.create(**kwargs)
 
