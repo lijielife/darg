@@ -1,6 +1,7 @@
 # coding=utf-8
 import datetime
 import logging
+import unittest
 
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
@@ -9,6 +10,8 @@ from django.test import RequestFactory, TestCase
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
+import mock
+
 from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
                                 CompanyShareholderGenerator,
                                 ComplexOptionTransactionsWithSegmentsGenerator,
@@ -16,11 +19,12 @@ from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
                                 ComplexShareholderConstellationGenerator,
                                 OperatorGenerator, OptionTransactionGenerator,
                                 PositionGenerator, SecurityGenerator,
-                                ShareholderGenerator,
+                                ShareholderGenerator, OptionPlanGenerator,
                                 TwoInitialSecuritiesGenerator, UserGenerator)
 from project.tests.mixins import (MoreAssertsTestCaseMixin,
                                   StripeTestCaseMixin, SubscriptionTestMixin)
 from services.rest.serializers import SecuritySerializer
+from services.rest.views import CompanyViewSet, UserViewSet, OptionPlanViewSet
 from shareholder.models import (Operator, OptionTransaction, Position,
                                 Security, Shareholder)
 
@@ -54,6 +58,10 @@ class AddCompanyTestCase(APITestCase):
         self.assertEqual(res.status_code, 201)
         company = user.operator_set.all()[0].company
         self.assertEqual(company.security_set.all()[0].title, 'C')
+
+        # test invalid data
+        res = self.client.post(reverse('add_company'), dict())
+        self.assertEqual(res.status_code, 400)
 
     def test_add_company_saving_twice(self):
         """
@@ -149,7 +157,21 @@ class CompanyViewSetTestCase(TestCase):
 
     def setUp(self):
         self.client = APIClient()
+        self.factory = RequestFactory()
         self.site = Site.objects.get_current()
+
+    def test_get_queryset(self):
+        view = CompanyViewSet()
+        view.request = self.factory.get('/')
+        view.request.user = UserGenerator().generate()
+        self.assertEqual(view.get_queryset().count(), 0)
+
+        OperatorGenerator().generate(user=view.request.user)
+        self.assertEqual(view.get_queryset().count(), 1)
+
+    @unittest.skip('TODO: CompanyViewSet.upload')
+    def test_upload(self):
+        pass
 
 
 class OperatorTestCase(TestCase):
@@ -1866,3 +1888,63 @@ class SecurityTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
 
         security = Security.objects.get(id=security.id)
         self.assertEqual(security.number_segments, [u'1-4', u'8-10'])
+
+
+class UserViewSetTestCase(TestCase):
+
+    def setUp(self):
+        super(UserViewSetTestCase, self).setUp()
+
+        self.factory = RequestFactory()
+        self.view = UserViewSet()
+
+    def test_get_queryset(self):
+        self.view.request = self.factory.get('/')
+        user = UserGenerator().generate()
+        self.view.request.user = user
+
+        self.assertEqual(self.view.get_queryset().count(), 1)
+        self.assertIn(user, self.view.get_queryset())
+
+
+class OptionPlanViewSetTestCase(TestCase):
+
+    def setUp(self):
+        super(OptionPlanViewSetTestCase, self).setUp()
+
+        self.factory = RequestFactory()
+        self.view = OptionPlanViewSet()
+
+    def test_get_user_companies(self):
+        self.view.request = self.factory.get('/')
+        self.view.request.user = UserGenerator().generate()
+
+        self.assertEqual(self.view.get_user_companies().count(), 0)
+
+        # add operator
+        OperatorGenerator().generate(user=self.view.request.user)
+        self.assertEqual(self.view.get_user_companies().count(), 1)
+
+        # add another operator
+        OperatorGenerator().generate(user=self.view.request.user)
+        self.assertEqual(self.view.get_user_companies().count(), 2)
+
+        # add another operator but not for user
+        OperatorGenerator().generate()
+        self.assertEqual(self.view.get_user_companies().count(), 2)
+
+    def test_get_queryset(self):
+        company = CompanyGenerator().generate()
+
+        self.view.get_company_pks = mock.Mock(return_value=[])
+        self.assertEqual(self.view.get_queryset().count(), 0)
+
+        self.view.get_company_pks.return_value = [company.pk]
+        self.assertEqual(self.view.get_queryset().count(), 0)
+
+        OptionPlanGenerator().generate(company=company)
+        self.assertEqual(self.view.get_queryset().count(), 1)
+
+    @unittest.skip('TODO: OptionPlanViewSet.upload')
+    def test_upload(self):
+        pass

@@ -1,7 +1,6 @@
 import dateutil.parser
 from django.contrib.auth import get_user_model
 from django.db.models import Q
-from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from rest_framework import status, viewsets
@@ -84,6 +83,7 @@ class ShareholderViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
         kwargs = {}
 
         if request.GET.get('date'):
+            # FIXME: parse date(time) properly
             kwargs.update({'date': request.GET.get('date')[:10]})
 
         data = {}
@@ -102,6 +102,7 @@ class ShareholderViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
         kwargs = {}
 
         if request.GET.get('date'):
+            # FIXME: parse date(time) properly
             kwargs.update({'date': request.GET.get('date')[:10]})
 
         data = {}
@@ -294,6 +295,7 @@ class AvailableOptionSegmentsView(APIView):
         }
 
         if request.GET.get('date'):
+            # FIXME: parse date(time) properly
             kwargs.update({'date': request.GET.get('date')[:10]})
 
         return Response(shareholder.current_options_segments(**kwargs))
