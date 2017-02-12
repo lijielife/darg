@@ -89,5 +89,19 @@
       </td>
     </tr>
   </table>
+
+  {% verbatim %}
+  <div>
+    <a class="btn btn-focus" ng-hide="optiontransaction.printed_at" href="{% endverbatim %}{% url "option_pdf" option_id=optiontransaction.pk %}{% verbatim %}" target="_blank">
+	  {% endverbatim %}{% trans "Print certificate" %}{% verbatim %}
+	</a>
+    <a class="btn btn-focus" ng-show="optiontransaction.printed_at" href="{% endverbatim %}{% url "option_pdf" option_id=optiontransaction.pk %}{% verbatim %}" target="_blank">
+	  {% endverbatim %}{% trans "Print certificate copy" %}{% verbatim %}
+	</a>
+    <div class="note" ng-show="optiontransaction.printed_at" style="display: inline">
+      {% endverbatim %}{% trans "first printed at" %}{% verbatim %}: {{ optiontransaction.printed_at  | date : 'd.MM.yy' }}
+    </div>
+  </div>
+  {% endverbatim %}
 </div>
 {% endblock %}

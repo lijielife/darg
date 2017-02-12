@@ -827,7 +827,7 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
                   'is_draft', 'number_segments', 'readable_number_segments',
                   'readable_registration_type', 'registration_type',
                   'depot_type', 'readable_depot_type', 'stock_book_id',
-                  'certificate_id')
+                  'certificate_id', 'printed_at')
 
     def is_valid(self, raise_exception=False):
         """
