@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import datetime
+import unittest
 
 from django.core.urlresolvers import reverse
 from django.test import RequestFactory, TestCase
@@ -8,12 +9,15 @@ from django.utils.translation import ugettext as _
 from dateutil.parser import parse
 from rest_framework.exceptions import ValidationError
 
+import mock
+
 from project.generators import (ComplexShareholderConstellationGenerator,
                                 OperatorGenerator, OptionPlanGenerator,
                                 OptionTransactionGenerator, PositionGenerator,
-                                ShareholderGenerator,
+                                ShareholderGenerator, SecurityGenerator,
                                 TwoInitialSecuritiesGenerator, UserGenerator,
-                                ComplexPositionsWithSegmentsGenerator)
+                                ComplexPositionsWithSegmentsGenerator,
+                                CompanyGenerator)
 from project.tests.mixins import StripeTestCaseMixin
 from services.rest.serializers import (AddCompanySerializer,
                                        OptionPlanSerializer,
@@ -21,7 +25,11 @@ from services.rest.serializers import (AddCompanySerializer,
                                        PositionSerializer,
                                        ShareholderSerializer,
                                        ShareholderListSerializer,
-                                       UserProfileSerializer)
+                                       UserProfileSerializer,
+                                       SecuritySerializer,
+                                       CompanySerializer,
+                                       OperatorSerializer,
+                                       UserSerializer)
 from shareholder.models import OptionPlan, OptionTransaction, Country, Position
 from utils.formatters import human_readable_segments
 
@@ -104,6 +112,24 @@ class OptionPlanSerializerTestCase(TestCase):
         res = serializer.is_valid()
         self.assertEqual(res, True)
 
+    def test_validate_pdf_file(self):
+        serializer, option_plan = self.__serialize([1, 3, 4, u'6-9', 33])
+        self.assertIsNone(serializer.validate_pdf_file(None))
+        self.assertIsNone(serializer.validate_pdf_file(False))
+        self.assertIsNone(serializer.validate_pdf_file(''))
+
+        value = mock.Mock()
+        content_type_mock = mock.PropertyMock(return_value='text/plain')
+        type(value).content_type = content_type_mock
+
+        with self.assertRaises(ValidationError):
+            serializer.validate_pdf_file(value)
+
+        content_type_mock = mock.PropertyMock(return_value='application/pdf')
+        type(value).content_type = content_type_mock
+
+        self.assertIsNotNone(serializer.validate_pdf_file(value))
+
 
 class OptionTransactionSerializerTestCase(TestCase):
 
@@ -173,6 +199,16 @@ class OptionTransactionSerializerTestCase(TestCase):
         self.assertTrue(isinstance(res, OptionTransaction))
         self.assertEqual(res.number_segments, [1, u'3-4', u'6-9', 33])
         self.assertEqual(res.registration_type, '2')
+
+    def test_get_readable_number_segments(self):
+
+        serializer, position = self.__serialize([1, 3, 4, u'6-9', 33])
+        result = serializer.get_readable_number_segments(position)
+        self.assertNotIn('[', result)
+        self.assertNotIn(']', result)
+        self.assertNotIn('u', result)
+        self.assertNotIn('{', result)
+        self.assertNotIn('}', result)
 
 
 class PositionSerializerTestCase(TestCase):
@@ -380,6 +416,18 @@ class ShareholderSerializerTestCase(StripeTestCaseMixin, TestCase):
         for k in profile_data.keys():
             self.assertIsNotNone(profile_data[k])
 
+    @unittest.skip('TODO: ShareholderSerializer.create')
+    def test_create(self):
+        pass
+
+    @unittest.skip('TODO: ShareholderSerializer.is_valid')
+    def test_is_valid(self):
+        pass
+
+    @unittest.skip('TODO: ShareholderSerializer.update')
+    def test_update(self):
+        pass
+
 
 class UserProfileSerializerTestCase(TestCase):
 
@@ -394,3 +442,105 @@ class UserProfileSerializerTestCase(TestCase):
         self.assertEqual(self.serializer.data.get('readable_legal_type'),
                          _('Human Being'))
         self.assertEqual(self.serializer.data.get('legal_type'), 'H')
+
+
+class SecuritySerializerTestCase(TestCase):
+
+    def setUp(self):
+        super(SecuritySerializerTestCase, self).setUp()
+
+        self.serializer = SecuritySerializer()
+
+    def test_get_get_readable_title(self):
+        obj = SecurityGenerator().generate()
+
+        obj.face_value = 100
+        self.assertIn(obj.get_title_display(),
+                      self.serializer.get_readable_title(obj))
+        self.assertIn(str(obj.face_value),
+                      self.serializer.get_readable_title(obj))
+
+        obj.face_value = 0
+        self.assertEqual(self.serializer.get_readable_title(obj),
+                         obj.get_title_display())
+
+    def test_get_readable_number_segments(self):
+        obj = SecurityGenerator().generate()
+
+        obj.number_segments = u'[1,2,4-10, {}]'
+        result = self.serializer.get_readable_number_segments(obj)
+        self.assertNotIn('[', result)
+        self.assertNotIn(']', result)
+        self.assertNotIn('u', result)
+        self.assertNotIn('{', result)
+        self.assertNotIn('}', result)
+
+    def test_update(self):
+        obj = SecurityGenerator().generate()
+
+        obj = self.serializer.update(obj, dict())
+        self.assertEqual(obj.number_segments, list())
+
+        data = dict(number_segments='[1,2,4-10]')
+        obj = self.serializer.update(obj, data)
+        self.assertEqual(obj.number_segments, data.get('number_segments'))
+
+
+class CompanySerializerTestCase(TestCase):
+
+    def setUp(self):
+        super(CompanySerializerTestCase, self).setUp()
+
+        self.serializer = CompanySerializer()
+        self.instance = CompanyGenerator().generate()
+
+    def test_get_profile_url(self):
+        url = self.serializer.get_profile_url(self.instance)
+        self.assertEqual(url, reverse('company',
+                                      kwargs={'company_id': self.instance.id}))
+
+    def test_get_captable_pdf_url(self):
+        url = self.serializer.get_captable_pdf_url(self.instance)
+        self.assertEqual(url, reverse('captable_pdf',
+                                      kwargs={'company_id': self.instance.id}))
+
+    def test_get_captable_csv_url(self):
+        url = self.serializer.get_captable_csv_url(self.instance)
+        self.assertEqual(url, reverse('captable_csv',
+                                      kwargs={'company_id': self.instance.id}))
+
+
+class OperatorSerializerTestCase(TestCase):
+
+    def setUp(self):
+        super(OperatorSerializerTestCase, self).setUp()
+
+        self.serializer = OperatorSerializer()
+        self.instance = OperatorGenerator().generate()
+        self.factory = RequestFactory()
+
+    def test_get_is_myself(self):
+        req = self.factory.get('/')
+        req.user = UserGenerator().generate()
+        self.serializer.context = dict(request=req)
+        self.assertFalse(self.serializer.get_is_myself(self.instance))
+
+        req.user = self.instance.user
+        self.serializer.context = dict(request=req)
+        self.assertTrue(self.serializer.get_is_myself(self.instance))
+
+    @unittest.skip('TODO: OperatorSerializer.create')
+    def test_create(self):
+        pass
+
+
+class UserSerializerTestCase(TestCase):
+
+    def setUp(self):
+        super(UserSerializerTestCase, self).setUp()
+
+        self.serializer = UserSerializer()
+
+    @unittest.skip('TODO: UserSerializer.create')
+    def test_create(self):
+        pass
