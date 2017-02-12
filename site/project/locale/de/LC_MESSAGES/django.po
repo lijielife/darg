@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-03 21:21+0000\n"
-"PO-Revision-Date: 2017-01-30 07:20+0000\n"
+"POT-Creation-Date: 2017-02-12 20:31+0000\n"
+"PO-Revision-Date: 2017-02-12 11:52+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -31,67 +31,67 @@ msgstr ""
 "\"Nutzungsbedingungen Das-Aktienregister.ch\" target=\"_blank\" class=\"link "
 "tos\">Datenschutzerklärung</a> gelesen und stimme zu."
 
-#: project/tasks.py:81
+#: project/tasks.py:88
 msgid "Welcome to Das Aktienregister - Your new password"
 msgstr "Willkommen zu Das Aktienregister - Ihr neues Passwort"
 
-#: project/tasks.py:109
+#: project/tasks.py:116
 msgid "Your pdf captable file"
 msgstr "Ihre Liste der aktiven Gesellschafter als PDF"
 
-#: project/tasks.py:111 project/tasks.py:175
+#: project/tasks.py:118 project/tasks.py:182
 msgid "Your file is attached to this email"
 msgstr "Die Datei befindet sich im Anhang dieser Email"
 
-#: project/tasks.py:116
+#: project/tasks.py:123
 msgid "PDF Captable/Active Shareholders"
 msgstr "Download Liste der aktiven Aktionäre als PDF"
 
-#: project/tasks.py:136 project/tests/test_views.py:489 project/views.py:35
+#: project/tasks.py:143 project/tests/test_views.py:489 project/views.py:38
 msgid "shareholder number"
 msgstr "Aktieninhabernummer"
 
-#: project/tasks.py:136 project/views.py:35
+#: project/tasks.py:143 project/views.py:38
 msgid "last name"
 msgstr "Nachname"
 
-#: project/tasks.py:136 project/views.py:35
+#: project/tasks.py:143 project/views.py:38
 msgid "first name"
 msgstr "Vorname"
 
-#: project/tasks.py:137 project/views.py:36
+#: project/tasks.py:144 project/views.py:39
 msgid "email"
 msgstr "Email"
 
-#: project/tasks.py:137
+#: project/tasks.py:144
 msgid "share count"
 msgstr "Anzahl Aktien"
 
-#: project/tasks.py:137
+#: project/tasks.py:144
 msgid "votes share percent"
 msgstr "% Stimmrechte"
 
-#: project/tasks.py:138 project/views.py:37
+#: project/tasks.py:145 project/views.py:40
 msgid "language ISO"
 msgstr "Sprache ISO"
 
-#: project/tasks.py:138 project/views.py:37
+#: project/tasks.py:145 project/views.py:40
 msgid "language full"
 msgstr "Sprache"
 
-#: project/tasks.py:142
+#: project/tasks.py:149
 msgid "Share IDs"
 msgstr "Aktiennummern"
 
-#: project/tasks.py:167
+#: project/tasks.py:174
 msgid "None"
 msgstr "Keine"
 
-#: project/tasks.py:173
+#: project/tasks.py:180
 msgid "Your csv captable file"
 msgstr "Ihre Liste der aktiven Gesellschafter als CSV"
 
-#: project/tasks.py:180
+#: project/tasks.py:187
 msgid "CSV Captable/Active Shareholders"
 msgstr "Download Liste der aktiven Aktionäre als CSV"
 
@@ -114,14 +114,14 @@ msgstr "Aktienart"
 #: project/templates/_add_capital_form.html:33
 #: project/templates/_add_option_plan_form.html:34
 #: project/templates/_add_option_transaction_form.html:62
-#: project/templates/_add_position_form.html:67
+#: project/templates/_add_position_form.html:68
 #: project/templates/_add_shareholder_form.html:15
 #: project/templates/_split_shares_form.html:36
 msgid "Cancel"
 msgstr "Abbrechen"
 
 #: project/templates/_add_capital_form.html:34
-#: project/templates/_add_position_form.html:70
+#: project/templates/_add_position_form.html:71
 msgid "Add Position"
 msgstr "Position hinzufügen"
 
@@ -274,14 +274,17 @@ msgid "Das Aktienregister"
 msgstr "Das Aktienregister"
 
 #: project/templates/active_shareholder_captable.pdf.html:80
+#: project/templates/option.pdf.html:80
 msgid "Page"
 msgstr "Seite"
 
 #: project/templates/active_shareholder_captable.pdf.html:81
+#: project/templates/option.pdf.html:81
 msgid "of"
 msgstr "von"
 
 #: project/templates/active_shareholder_captable.pdf.html:82
+#: project/templates/option.pdf.html:82
 msgid "Date generated"
 msgstr "Datum der Erstellung des Dokuments"
 
@@ -469,6 +472,66 @@ msgstr "Aktion"
 msgid "No Log Entries yet."
 msgstr "Noch keine Einträge"
 
+#: project/templates/option.pdf.html:80
+msgid "www.das-aktienregister.ch"
+msgstr "www.das-aktienregister.ch"
+
+#: project/templates/option.pdf.html:89
+msgid "Total capital"
+msgstr "Aktienkapital"
+
+#: project/templates/option.pdf.html:91
+msgid "based on"
+msgstr "eingeteilt in "
+
+#: project/templates/option.pdf.html:95
+msgid "with face value of"
+msgstr "im Nominalwert von je"
+
+#: project/templates/option.pdf.html:99
+msgid "share certificate "
+msgstr "AKTIENZERTIFIKAT"
+
+#: project/templates/option.pdf.html:101
+msgid "Nr."
+msgstr "Nr."
+
+#: project/templates/option.pdf.html:104
+msgid "representing"
+msgstr "über"
+
+#: project/templates/option.pdf.html:110
+msgid "with face value"
+msgstr "zum Nennwert"
+
+#: project/templates/option.pdf.html:113
+msgid "of each"
+msgstr "von je"
+
+#: project/templates/option.pdf.html:113
+msgid "with total value of"
+msgstr "im Gesamtwert von"
+
+#: project/templates/option.pdf.html:115
+msgid "cusip"
+msgstr "Valoren-Nr."
+
+#: project/templates/option.pdf.html:116
+msgid "ISIN"
+msgstr "ISIN"
+
+#: project/templates/option.pdf.html:126
+msgid ""
+"is as owner of the certificate with all legal and statuary rights "
+"shareholder of our company."
+msgstr ""
+"ist als Eigentümer dieses Zertifikates mit allen gesetzlichen und "
+"statutarischen Rechten und Pflichten an unserer Gesellschaft beteiligt."
+
+#: project/templates/option.pdf.html:137
+msgid " in the name of the supervisory board"
+msgstr "Namens des Verwaltungsrates"
+
 #: project/templates/start.html:6
 msgid "Captable"
 msgstr "Übersicht Aktienbuch"
@@ -505,7 +568,7 @@ msgstr "Optionsinhaber/Zertifikate"
 msgid "Option Holders note"
 msgstr "Zugrundeliegende Aktien sind bei der AG hinterlegt."
 
-#: project/tests/test_views.py:138 project/views.py:199
+#: project/tests/test_views.py:138 project/views.py:202
 msgid ""
 "You have already an existing user account. Please login or reset your "
 "password."
@@ -513,7 +576,7 @@ msgstr ""
 "Sie haben bereits ein Nutzerkonto. Bitte loggen Sie sich ein oder setzen Sie "
 "Ihr Passwort zurück."
 
-#: project/tests/test_views.py:533 project/views.py:92
+#: project/tests/test_views.py:534 project/views.py:95
 msgid "date"
 msgstr "Datum"
 
@@ -541,96 +604,96 @@ msgstr ""
 msgid "You didn't press any keys. Good bye."
 msgstr "Sie haben keine Taste gedrückt. Auf Wiedersehen."
 
-#: project/views.py:37
+#: project/views.py:40
 msgid "street"
 msgstr "Strasse"
 
-#: project/views.py:37
+#: project/views.py:40
 msgid "street 2"
 msgstr "Strasse 2"
 
-#: project/views.py:38
+#: project/views.py:41
 msgid "c/o"
 msgstr "c/o"
 
-#: project/views.py:38
+#: project/views.py:41
 msgid "city"
 msgstr "Ort"
 
-#: project/views.py:38
+#: project/views.py:41
 msgid "zip"
 msgstr "PLZ"
 
-#: project/views.py:38
+#: project/views.py:41
 msgid "country"
 msgstr "Land"
 
-#: project/views.py:39
+#: project/views.py:42
 msgid "pobox"
 msgstr "Postfach"
 
-#: project/views.py:39
+#: project/views.py:42
 msgid "mailing type"
 msgstr "Versandart"
 
-#: project/views.py:39
+#: project/views.py:42
 msgid "nationality"
 msgstr "Nationalität"
 
-#: project/views.py:92
+#: project/views.py:95
 msgid "buyer"
 msgstr "Käufer"
 
-#: project/views.py:92
+#: project/views.py:95
 msgid "seller"
 msgstr "Verkäufer"
 
-#: project/views.py:93
+#: project/views.py:96
 msgid "count"
 msgstr "Anzahl"
 
-#: project/views.py:94
+#: project/views.py:97
 msgid "value"
 msgstr "Wert"
 
-#: project/views.py:94
+#: project/views.py:97
 msgid "security"
 msgstr "Aktienart"
 
-#: project/views.py:94
+#: project/views.py:97
 msgid "comment"
 msgstr "Kommentar"
 
-#: project/views.py:94
+#: project/views.py:97
 msgid "depot type"
 msgstr "Depotart"
 
-#: project/views.py:95
+#: project/views.py:98
 msgid "stock book id"
 msgstr "Valor"
 
-#: project/views.py:95
+#: project/views.py:98
 msgid "vesting period (options only"
 msgstr "Vesting in Monaten"
 
-#: project/views.py:96
+#: project/views.py:99
 msgid "cert id (options only)"
 msgstr "Zertifikatsnummer"
 
-#: project/views.py:117 project/views.py:119
+#: project/views.py:120 project/views.py:122
 msgid "----------------------------------------"
 msgstr "--------------------- 8<----------------------------"
 
-#: project/views.py:118
+#: project/views.py:121
 msgid "Transactions for options:"
 msgstr "Transaktionen von Optionen/Urkunden"
 
-#: project/views.py:303
+#: project/views.py:306
 msgid "csv file is being generated and will be sent by email to you"
 msgstr ""
 "Die CSV Datei wird generiert und anschliessend per Email an Sie gesendet."
 
-#: project/views.py:322
+#: project/views.py:325
 msgid "pdf file is being generated and will be sent by email to you"
 msgstr ""
 "Die PDF Datei wird generiert und anschliessend per Email an Sie gesendet."

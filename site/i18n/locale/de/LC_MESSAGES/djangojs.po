@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-03 21:21+0000\n"
-"PO-Revision-Date: 2017-02-03 21:23+0000\n"
+"POT-Creation-Date: 2017-02-12 20:31+0000\n"
+"PO-Revision-Date: 2017-02-12 20:34+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -194,6 +194,11 @@ msgstr "Valor/WKN/CUSIP"
 msgid "Certificate ID"
 msgstr "Zertifikats ID"
 
+#: static/compiled/javascript/i18n_noop.js:48
+#| msgid "Vesting Period (months)"
+msgid "Vesting period in months"
+msgstr "Sperrfrist/Vesting (in Monaten)"
+
 #: static/compiled/javascript/script.js:372
 #: static/compiled/javascript/script.js:844
 msgid "Sperrdepot"
@@ -244,12 +249,10 @@ msgid "Last Name (descending)"
 msgstr "Nachname (absteigend)"
 
 #: static/compiled/javascript/script.js:1225
-#| msgid "Share Count"
 msgid "Share Count (descending)"
 msgstr "Anzahl Aktien (absteigend)"
 
 #: static/compiled/javascript/script.js:1231
-#| msgid "Shareholder Number"
 msgid "Shareholder Number (descending)"
 msgstr "Gesellschafter Nummer (absteigend)"
 
