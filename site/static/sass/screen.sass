@@ -595,6 +595,11 @@ nav.navbar
   @include flex-grow(1)
   @include flex-basis(0)
   @include align-items(baseline)
+  &:before
+    content: attr(data-header)
+    width: 65%
+    font-weight: 700
+    margin-top: 10px
   word-wrap: break-word
   padding: 0.8em
   font-size: 0.9em

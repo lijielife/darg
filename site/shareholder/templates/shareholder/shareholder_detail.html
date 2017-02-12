@@ -252,15 +252,15 @@
     </div>
     {% for security in securities %}
     <div class="tr security">
-      <div class="td name">{{ security }}</div>
-      <div class="td cusip">{% if security.cusip %}{{ security.cusip }}{% endif %}</div>
+      <div class="td name" data-header="{% trans 'security' %}">{{ security }}</div>
+      <div class="td cusip" data-header="{% trans 'cusip' %}">{% if security.cusip %}{{ security.cusip }}{% endif %}</div>
       {% if shareholder.is_company_shareholder %}
-      <div class="td">{{ security.calculate_count }}</div>
+      <div class="td" data-header="{% trans 'issued' %}">{{ security.calculate_count }}</div>
       {% endif %}
-      <div class="td count">{{ security.count }}</div>
-      <div class="td count">{{ security.options_count }}</div>
+      <div class="td count" data-header="{% trans 'shares owned' %}">{{ security.count }}</div>
+      <div class="td count" data-header="{% trans 'options owned' %}">{{ security.options_count }}</div>
       {% if security.segments %}
-      <div class="td number-segments">{{ security.segments }}</div>
+      <div class="td number-segments" data-header="{% trans 'share segments' %}" >{{ security.segments }}</div>
       {% endif %}
     </div>
     {% endfor %}
