@@ -1761,9 +1761,7 @@
                 return $scope.user.operator_set[key].company = result1.data;
               });
             });
-          }).then(function() {
-            return $scope.load_all_shareholders();
-          });
+          }).then(function() {});
         }).then(function() {
           $scope.company = new Company();
           return $window.ga('send', 'event', 'form-send', 'add-company');
