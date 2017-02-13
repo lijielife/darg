@@ -431,8 +431,8 @@ PINGEN_API_URL = 'https://api.pingen.com'  # can't upload to stage api!
 # see pingen/conf.py for more options
 
 # stripe
-STRIPE_PUBLIC_KEY = get_env_variable('STRIPE_PUBLIC_KEY', fail_on_error=False)
-STRIPE_SECRET_KEY = get_env_variable('STRIPE_SECRET_KEY', fail_on_error=False)
+STRIPE_PUBLIC_KEY = get_env_variable('STRIPE_PUBLIC_KEY')
+STRIPE_SECRET_KEY = get_env_variable('STRIPE_SECRET_KEY')
 DJSTRIPE_INVOICE_FROM_EMAIL = DEFAULT_FROM_EMAIL
 DJSTRIPE_SUBSCRIBER_MODEL = 'shareholder.Company'
 DJSTRIPE_CURRENCIES = (('chf', _('Swiss franc'),),)
@@ -574,7 +574,7 @@ SUBSCRIPTION_FEATURES = collections.OrderedDict((
 DEFAULT_HTTP_PROTOCOL = 'https'  # used by djstripe when sending emails
 
 COMPANY_INVOICES_ROOT = os.path.join(SENDFILE_ROOT, 'company', 'invoices')
-# NOTE: charge id will be added to invoice filename
+# NOTE: invoice id will be added to invoice filename
 COMPANY_INVOICE_FILENAME = u'das-aktienregister-rechnung'
 # whether to include VAT in company (pdf) invoices or not
 COMPANY_INVOICE_INCLUDE_VAT = True

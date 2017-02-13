@@ -125,6 +125,8 @@ Pingen Settings:
 
    set this in local settings
 
+   **NOTE:** set this to `'test' not in sys.argv and '<TOKEN>' or ''`
+
 :python:`PINGEN_SEND_ON_UPLOAD`
 :python:`False`
 

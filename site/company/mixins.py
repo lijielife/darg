@@ -80,7 +80,7 @@ class SubscriptionViewMixin(SubscriptionMixin):
 
     def get_company_pks(self):
         """
-        return a list of
+        return a list of company ids that have subscription (to use feature)
         """
         company_qs = self.get_user_companies()
 
