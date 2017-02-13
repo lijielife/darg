@@ -3433,6 +3433,10 @@ div#optionplan .pdf_upload_preview {
   font-size: 14px;
 }
 
+.is-management .el-icon-minus-sign, .is-management .el-icon-ok-sign {
+  font-size: 14px !important;
+}
+
 table.stock {
   display: table !important;
 }
@@ -3896,6 +3900,13 @@ table.stock {
   .table .tr .td {
     -webkit-flex-basis: auto;
     flex-basis: auto;
+  }
+  .table .tr .td.options-view {
+    margin-top: 10px;
+  }
+  .table .tr .td [class*="el-icon-"] {
+    padding: 0 10px 0 0;
+    font-size: 20px;
   }
   .table .tr .td .truncate {
     white-space: nowrap;

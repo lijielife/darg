@@ -65,6 +65,7 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
                 p.get_field('legal-type'))
 
             profile = self.buyer.user.userprofile
+            profile.initial_registration_at = datetime.date(2013, 1, 13)
             profile.legal_type = 'C'
             profile.save()
             p.refresh()
@@ -72,6 +73,8 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
                 (By.CSS_SELECTOR, 'tr.shareholder-number span.el-icon-pencil'))
             self.assertIn(profile.get_legal_type_display(),
                           p.get_field('legal-type'))
+            self.assertIn(profile.initial_registration_at.strftime('%-d.%m.%y'),
+                          p.get_field('initial_registration_at'))
 
         except Exception, e:
             self._handle_exception(e)

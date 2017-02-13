@@ -54,15 +54,6 @@ class ShareholderViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
     def get_user_companies(self):
         return Company.objects.filter(operator__user=self.request.user)
 
-    def get_object(self):
-        # try:
-        #     return self.get_queryset().get(pk=self.kwargs.get('pk'))
-        # except Shareholder.DoesNotExist:
-        #     raise Http404
-        qs = self.get_queryset()
-        print(qs.values_list('pk', flat=True), self.kwargs.get('pk'))
-        return super(ShareholderViewSet, self).get_object()
-
     def get_queryset(self):
         self.subscription_features = ['shareholders']
         qs = Shareholder.objects.filter(company_id__in=self.get_company_pks())

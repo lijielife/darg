@@ -1,9 +1,11 @@
 import csv
 import logging
 import time
+import datetime
 
 import dateutil.parser
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -24,6 +26,7 @@ from project.tasks import (send_initial_password_mail, send_captable_pdf,
 from services.instapage import InstapageSubmission as Instapage
 from shareholder.models import (Company, Operator, Position, OptionTransaction,
                                 Security)
+from utils.pdf import render_to_pdf_response
 
 logger = logging.getLogger(__name__)
 
@@ -297,7 +300,9 @@ def captable_csv(request, company_id):
         return HttpResponseForbidden()
 
     company = get_object_or_404(Company, id=company_id)
-    send_captable_csv.apply_async(args=[request.user.pk, company.pk])
+    send_captable_csv.apply_async(args=[request.user.pk, company.pk],
+                                  kwargs={
+                                      'ordering': request.GET.get('ordering')})
     messages.info(request, _('csv file is being generated and will be sent '
                              'by email to you'))
 
@@ -314,10 +319,49 @@ def captable_pdf(request, company_id):
         return HttpResponseForbidden()
 
     company = get_object_or_404(Company, id=company_id)
-
-    send_captable_pdf.apply_async(args=[request.user.pk, company.pk])
-
+    send_captable_pdf.apply_async(args=[request.user.pk, company.pk],
+                                  kwargs={
+                                    'ordering': request.GET.get('ordering')})
     messages.info(request, _('pdf file is being generated and will be sent '
                              'by email to you'))
 
     return redirect(reverse('reports'))
+
+
+@login_required
+def option_pdf(request, option_id):
+
+    # perm check
+    if not Operator.objects.filter(
+        user=request.user, company__optionplan__optiontransaction__id=option_id
+    ).exists():
+        return HttpResponseForbidden()
+
+    option = get_object_or_404(OptionTransaction, id=option_id)
+    company = option.option_plan.company
+
+    response = render_to_pdf_response(
+        'option.pdf.html',
+        {
+            'pagesize': 'A4',
+            'company': company,
+            'today': datetime.datetime.now(),
+            'currency': 'CHF',
+            'option': option,
+        }
+    )
+
+    # Create the HttpResponse object with the appropriate PDF header.
+    # if not DEBUG
+    if not settings.DEBUG:
+        response['Content-Disposition'] = (
+            u'attachment; filename="'
+            u'{}_option_{}_ID{}.pdf"'.format(
+                time.strftime("%Y-%m-%d"), company.name, option.certificate_id)
+        )
+
+    if not option.printed_at:
+        option.printed_at = datetime.datetime.now()
+        option.save()
+
+    return response

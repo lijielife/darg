@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import datetime
 import logging
 
 from dateutil.parser import parse
@@ -9,7 +10,7 @@ from django.core.exceptions import ValidationError
 from django.core.management import call_command
 from django.test import TestCase
 
-from project.generators import CompanyGenerator
+from project.generators import CompanyGenerator, ShareholderGenerator
 from shareholder.models import OptionTransaction, Position, Shareholder
 from utils.import_backends import SisWareImportBackend, SECURITIES
 
@@ -217,6 +218,27 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
         self.assertEqual(user.userprofile.company_name, 'Large Corp')
         self.assertEqual(user.userprofile.company_department,
                          'Management and IT')
+
+    def test_get_or_update_init_date(self):
+
+        ShareholderGenerator().generate(company=self.company, number='1913')
+        ShareholderGenerator().generate(company=self.company, number='1157')
+        sx = ShareholderGenerator().generate(
+            company=self.company, number='1914')
+        profile = sx.user.userprofile
+        profile.initial_registration_at = None
+        profile.save()
+
+        self.backend.company = self.company
+        self.backend._get_or_update_init_date()
+        self.assertEqual(list(Shareholder.objects.filter(
+            company=self.backend.company,
+            user__userprofile__initial_registration_at__isnull=False
+            ).values_list(
+                'user__userprofile__initial_registration_at', flat=True
+            )),
+            [datetime.datetime.now().date(), datetime.datetime.now().date()]
+        )
 
     def test__init_import(self):
 

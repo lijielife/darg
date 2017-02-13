@@ -18,7 +18,7 @@ from project.generators import (ComplexShareholderConstellationGenerator,
                                 TwoInitialSecuritiesGenerator, UserGenerator,
                                 ComplexPositionsWithSegmentsGenerator,
                                 CompanyGenerator)
-from project.tests.mixins import StripeTestCaseMixin
+from project.tests.mixins import MoreAssertsTestCaseMixin, StripeTestCaseMixin
 from services.rest.serializers import (AddCompanySerializer,
                                        OptionPlanSerializer,
                                        OptionTransactionSerializer,
@@ -323,7 +323,8 @@ class PositionSerializerTestCase(TestCase):
         self.assertIsNotNone(position_data['depot_type'])
 
 
-class ShareholderSerializerTestCase(StripeTestCaseMixin, TestCase):
+class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin,
+                                    StripeTestCaseMixin, TestCase):
 
     def setUp(self):
         super(ShareholderSerializerTestCase, self).setUp()
@@ -348,7 +349,7 @@ class ShareholderSerializerTestCase(StripeTestCaseMixin, TestCase):
         request.user = operator.user
 
         # make sure we don't issue more then one additional query per obj
-        with self.assertNumQueries(130):  # should be < 12
+        with self.assertLessNumQueries(130):  # should be < 12
             # queryset with prefetch to reduce db load
             qs = operator.company.shareholder_set.all() \
                 .select_related('company', 'user', 'user__userprofile',
@@ -382,6 +383,7 @@ class ShareholderSerializerTestCase(StripeTestCaseMixin, TestCase):
         profile.title = 'some title'
         profile.pobox = '12345'
         profile.c_o = 'ddd'
+        profile.initial_registration_at = datetime.datetime.now()
         profile.nationality = Country.objects.last()
         profile.save()
         request = self.factory.get('/services/rest/shareholders')

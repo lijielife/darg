@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load humanize %}
+{% load staticfiles %}
+
+{% block inline_styles %}
+<style>
+    @page {
+        size: a4 portrait;
+        background-image: url('/media{% static "compiled/images/Kopie.pdf" %}');
+        @frame header_frame {           /* Static Frame */
+            -pdf-frame-content: header_content;
+        }
+
+        @frame content_frame {          /* Content Frame */
+            left: 50pt; top: 171pt; height: 629pt; width:100%; margin-right:50pt; position: relative;
+        }
+        @frame footer_frame {           /* Another static Frame */
+            -pdf-frame-content: footer_content;
+            left: 50pt; top: 800pt; height: 20pt; margin-right:50pt;
+        }
+
+    }
+
+    table, thead, tr, td, div, span, p {
+      font-size: 10pt;
+    }
+
+    h1 {
+      font-size: 2em;
+      line-height: 0.5em;
+      padding: 0px;
+      margin-bottom: 0px;
+    }
+
+    div.main-content {
+      text-align: center;
+    }
+
+    div#footer_content {
+      font-size: 8pt;
+      text-align: center;
+    }
+    div.company-signature {
+      width: 100%;
+      text-align: right;
+      color: darkred;
+      margin-top: 3em;
+      font-size: 0.75em;
+    }
+    p {
+      /*border: 1px solid red;*/
+      margin: 0px;
+    }
+    p.count {
+      font-size: 2em;
+      font-weight: bold;
+    }
+    p.top-spacing {
+      margin-top: 1.5em;
+    }
+    .board-member {
+      width: 20%;
+    }
+</style>
+{% endblock %}
+
+{% block body_block %}
+  {% block content %}
+
+    <!-- Content for Static Frame 'header_frame' -->
+    <div id="header_content"> 
+      {% if company.pdf_header_image %}
+      <img src="{{ company.pdf_header_image.url }}" alt="header-img" />
+      {% endif %}
+    </div>
+
+    <!-- Content for Static Frame 'footer_frame' -->
+    <div id="footer_content">
+        {% trans "www.das-aktienregister.ch" %} - {% trans "Page" %} <pdf:pagenumber>
+        {% trans "of" %} <pdf:pagecount> -
+        {% trans "Date generated" %}: {{ today }}
+    </div>
+
+    <!-- HTML Content -->
+    <div class="main-content">
+        <h2>{{ company.name }}</h2>
+        <p>
+          {% trans "Total capital" %} {{ currency }}
+          {{ company.get_total_capital|floatformat:"0"|intcomma }}
+          {% trans "based on" %}
+        </p>
+        {% for security in company.security_set.all %}
+        <p>
+          {{ security.count|floatformat:"0"|intcomma }} {{ security.get_title_display }} {% trans "with face value of" %} {{ currency }} {{ security.face_value|floatformat:"0"|intcomma }}
+        </p>
+        {% endfor %}
+        <h1>
+          {% trans "share certificate " %}<br />
+          <br/>
+          {% trans "Nr." %} {{ option.certificate_id }}
+        </h1>
+        <p>
+          {% trans "representing" %}
+        </p>
+        <p class="count">
+          **{{ option.count }}**
+        </p>
+        <p><strong>
+          {{ option.option_plan.security.get_title_display }} {% trans "with face value" %}<br />
+          </strong>
+          <strong>
+          {% trans "of each" %} {{ currency }} {{option.option_plan.security.face_value|floatformat:"0"|intcomma}} {% trans "with total value of" %} {{ currency }} {{ option.get_total_face_value|floatformat:"0"|intcomma }}<br />
+          </strong>
+          {% if option.option_plan.security.cusip %}{% trans "cusip" %}: {{ option.option_plan.security.cusip }}{% endif %}<br />
+          {% if option.option_plan.security.get_isin %}{% trans "ISIN" %}: {{ option.option_plan.security.get_isin }}{% endif %}
+        </p>
+        <p class="top-spacing">
+          {% if option.buyer.user.userprofile.salutation %}{{option.buyer.user.userprofile.salutation}}{% endif %}
+		  {{ option.buyer.get_full_name }} <br />
+          {% if option.buyer.user.userprofile.street %}{{ option.buyer.user.userprofile.street }}<br />{% endif %}
+          {% if option.buyer.user.userprofile.postal_code %}{{ option.buyer.user.userprofile.postal_code }}{% endif %} {% if option.buyer.user.userprofile.city %}{{ option.buyer.user.userprofile.city }}{% endif %} <br />
+          {% if option.buyer.user.userprofile.country %}{{ option.buyer.user.userprofile.country }}{% endif %}
+        </p>
+        <p class="top-spacing">
+          {% trans "is as owner of the certificate with all legal and statuary rights shareholder of our company." %}
+        </p>
+        <p class="top-spacing">
+          {% if company.get_company_shareholder.user.userprofile.city %}{{ company.get_company_shareholder.user.userprofile.city }}{% else %} _________________{% endif %}, 
+          {% if option.printed_at %}
+            {{ option.printed_at.date }}
+          {% else %}
+            {{ today.date }}
+          {% endif %}
+        </p>
+        <p class="top-spacing">
+          {% trans " in the name of the supervisory board" %}
+        </p>
+        <p class="top-spacing">
+        <table>
+          <tr>
+            {% for member in company.get_board_members %}
+            <td class="top-spacing board-member">
+              {{ member }}
+            </td>
+			{% empty %}
+			__________________________
+            {% endfor %}
+          </tr>
+        </table>
+        </p>
+        <div class="company-signature">
+          {{ company.get_company_shareholder.get_full_name }}<br />
+          {% if company.get_company_shareholder.user.userprofile.pobox %}{{ company.get_company_shareholder.user.userprofile.pobox }}{% endif %}, {% if company.get_company_shareholder.user.userprofile.postal_code %}{{company.get_company_shareholder.user.userprofile.postal_code}}{% endif %}, {% if company.get_company_shareholder.user.userprofile.city %}{{ company.get_company_shareholder.user.userprofile.city }}{% endif %}<br />
+          {% if company.get_company_shareholder.user.email %}{{ company.get_company_shareholder.user.email }}<br />{% endif %}
+          {% if company.get_company_shareholder.user.userprofile.url %}{{ company.get_company_shareholder.user.userprofile.url }}<br />{% endif %}
+        </div>
+    </div>
+
+  {% endblock %}
+{% endblock %}

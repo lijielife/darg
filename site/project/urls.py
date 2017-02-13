@@ -77,6 +77,8 @@ urlpatterns = [
     url(r'^options/$', 'shareholder.views.options', name='options'),
     url(r'^options/(?P<pk>[0-9]+)/$',
         OptionTransactionView.as_view(), name='optiontransaction'),
+    url(r'^options/(?P<option_id>[0-9]+)/download/pdf$',
+        'project.views.option_pdf', name='option_pdf'),
 
     url(r'^optionsplan/(?P<optionsplan_id>[0-9]+)/$',
         'shareholder.views.optionsplan', name='optionplan'),

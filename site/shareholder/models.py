@@ -95,6 +95,11 @@ def get_company_logo_upload_path(instance, filename):
         "public", "company", "%d" % instance.id, "logo", filename)
 
 
+def get_company_header_image_upload_path(instance, filename):
+    return os.path.join(
+        "public", "company", "%d" % instance.id, "header_image", filename)
+
+
 class Company(AddressModelMixin, models.Model):
 
     name = models.CharField(max_length=255)
@@ -108,9 +113,16 @@ class Company(AddressModelMixin, models.Model):
     logo = models.ImageField(
         blank=True, null=True,
         upload_to=get_company_logo_upload_path,)
+    pdf_header_image = models.ImageField(
+        blank=True, null=True,
+        upload_to=get_company_header_image_upload_path,)
     vote_ratio = models.PositiveIntegerField(
         _('Voting rights calculation: one vote per X of security.face_value'),
         blank=True, null=True, default=1)
+    signatures = models.CharField(
+        _('comma separated list of board members permitted to sign in the name '
+          'of the company'),
+        max_length=255, blank=True)
     email = models.EmailField(_('Email'), blank=True)  # required by djstripe
 
     is_statement_sending_enabled = models.BooleanField(
@@ -229,6 +241,9 @@ class Company(AddressModelMixin, models.Model):
         segments = self.optionplan_set.all().values_list(
             'number_segments', flat=True)
         return flatten_list(segments)
+
+    def get_board_members(self):
+        return self.signatures.split(',')
 
     def get_company_shareholder(self):
         """
@@ -633,6 +648,7 @@ class UserProfile(AddressModelMixin, models.Model):
     language = language_fields.LanguageField(blank=True, null=True)
     nationality = models.ForeignKey(Country, blank=True, null=True,
                                     related_name='nationality')
+    url = models.URLField(blank=True, null=True)
 
     legal_type = models.CharField(
         max_length=1, choices=LEGAL_TYPES, default='H',
@@ -640,6 +656,9 @@ class UserProfile(AddressModelMixin, models.Model):
     company_name = models.CharField(max_length=255, blank=True, null=True)
     company_department = models.CharField(max_length=255, blank=True, null=True)
     birthday = models.DateField(blank=True, null=True)
+    initial_registration_at = models.DateField(
+        _('when did the user register with the share register 1st time.'),
+        blank=True, null=True)
 
     ip = models.GenericIPAddressField(blank=True, null=True)
     tnc_accepted = models.BooleanField(default=False)
@@ -671,6 +690,8 @@ class Shareholder(TagMixin, models.Model):
     mailing_type = models.CharField(
         _('how should the shareholder be approached by the corp'), max_length=1,
         choices=MAILING_TYPES, blank=True, null=True)
+    is_management = models.BooleanField(
+        _('user is management/board member of company'), default=False)
 
     def __unicode__(self):
         return u'{} {} (#{})'.format(
@@ -1178,6 +1199,13 @@ class Security(models.Model):
 
         return count
 
+    def get_isin(self):
+
+        if self.cusip:
+            return 'CH0{}1'.format(self.cusip)
+
+        return ''
+
 
 class Position(models.Model):
     """
@@ -1211,6 +1239,7 @@ class Position(models.Model):
     depot_type = models.CharField(
         _('What kind of depot is this position stored within'), max_length=1,
         choices=DEPOT_TYPES, blank=True, null=True)
+    vesting_months = models.PositiveIntegerField(blank=True, null=True)
     comment = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -1335,6 +1364,8 @@ class OptionTransaction(models.Model):
         _('What kind of depot is this position stored within'), max_length=1,
         choices=DEPOT_TYPES, blank=True, null=True)
     is_draft = models.BooleanField(default=True)
+    printed_at = models.DateTimeField(_('was this printed at least once?'),
+                                      blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -1361,6 +1392,9 @@ class OptionTransaction(models.Model):
             return True
 
         return False
+
+    def get_total_face_value(self):
+        return self.count * self.option_plan.security.face_value
 
 
 class ShareholderStatementReport(models.Model):

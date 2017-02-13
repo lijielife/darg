@@ -3,6 +3,7 @@
 
 import datetime
 import logging
+import math
 import os
 import shutil
 import tempfile
@@ -273,18 +274,22 @@ class PositionTestCase(TransactionTestCase):
         # means each shareholder should have now more shares but some
         # overall stock value
 
+        # company shareholder last...
+        leftover = 0
+        shareholders.reverse()
         for shareholder in shareholders:
+            if shareholder == shareholders[-1]:
+                pt, count2 = math.modf(assets[shareholder.pk]['count'] *
+                                       multiplier)
+                count2 += round(leftover)
+            else:
+                part, count2 = math.modf(
+                    assets[shareholder.pk]['count'] * multiplier)
+                leftover += part
+
             self.assertEqual(
                 shareholder.share_count(),
-                round(assets[shareholder.pk]['count'] * multiplier)
-            )
-            self.assertEqual(
-                round(shareholder.share_value()),
-                assets[shareholder.pk]['value']
-            )
-            self.assertEqual(
-                round(float(shareholder.share_percent()), 2),
-                float(assets[shareholder.pk]['percent'])
+                count2
             )
 
         self.assertEqual(
@@ -341,18 +346,21 @@ class PositionTestCase(TransactionTestCase):
         # means each shareholder should have now more shares but some
         # overall stock value
 
+        leftover = 0
+        shareholders.reverse()
         for shareholder in shareholders:
+            if shareholder == shareholders[-1]:
+                pt, count2 = math.modf(assets[shareholder.pk]['count'] *
+                                       multiplier)
+                count2 += round(leftover)
+            else:
+                part, count2 = math.modf(
+                    assets[shareholder.pk]['count'] * multiplier)
+                leftover += part
+
             self.assertEqual(
                 shareholder.share_count(),
-                round(assets[shareholder.pk]['count'] * multiplier)
-            )
-            self.assertEqual(
-                round(shareholder.share_value()),
-                assets[shareholder.pk]['value']
-            )
-            self.assertEqual(
-                round(float(shareholder.share_percent()), 2),
-                float(assets[shareholder.pk]['percent'])
+                count2
             )
 
         self.assertEqual(

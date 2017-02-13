@@ -101,7 +101,7 @@
           <th align="left">{% trans "Name" %}</th>
           <th align="left">{% trans "Email" %}</th>
           <th align="right">{% trans "Shareholder Number" %}</th>
-          <th align="right">{% trans "Shares" %}</th>
+          <th align="right">{% trans "Shares (%)" %}</th>
           {% if securities_with_track_numbers.exists %}
           <th align="left">
             {% trans "Aktiennummern" %}
@@ -110,7 +110,7 @@
       </thead>
     </table>
 
-    {% for shareholder in company.get_active_shareholders %}
+    {% for shareholder in active_shareholders %}
     <table>
       <tr class="panel {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
         <td>
@@ -123,7 +123,7 @@
           {{ shareholder.number }}
         </td>
         <td align="right">
-          {{ shareholder.share_count|intcomma }}
+          {{ shareholder.share_count|intcomma }} {% if shareholder.share_percent %}({{shareholder.share_percent }}){% endif %}
         </td>
         {% if securities_with_track_numbers.exists %}
         <td>
@@ -144,12 +144,12 @@
           <th align="left">{% trans "Name" %}</th>
           <th align="left">{% trans "Email" %}</th>
           <th align="right">{% trans "Shareholder Number" %}</th>
-          <th align="right">{% trans "Optionen" %}</th>
+          <th align="right">{% trans "Optionen (%)" %}</th>
         </tr>
       </thead>
     </table>
 
-    {% for shareholder in company.get_active_option_holders %}
+    {% for shareholder in active_option_holders %}
     <table>
       <tr class="panel">
         <td>
@@ -162,7 +162,7 @@
           {{ shareholder.number }}
         </td>
         <td align="right">
-          {{ shareholder.options_count|intcomma }}
+          {{ shareholder.options_count|intcomma }} ({{shareholder.options_percent }})
         </td>
       </tr>
     </table>
