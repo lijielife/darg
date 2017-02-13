@@ -16,13 +16,13 @@ We are using `Token based authentication <http://www.django-rest-framework.org/a
 Please note that for authentication the header must be sent with any request. e.g.:
 
     Authorization: Token 9944b09199c62bc22418ad846dd0e4bbdfc6ee4b
-    
+
 Authentication can be tested and validated as follows:
 
 .. code-block :: shell
 
     curl -X GET http://127.0.0.1:8000/api/example/ -H 'Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b'
-    
+
 To obtain the toke a dedicated view view will return a JSON response when valid username and password fields are POSTed to the view using form data or JSON:
 
 .. code-block :: json
@@ -30,6 +30,22 @@ To obtain the toke a dedicated view view will return a JSON response when valid 
     { "token" : "9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b" }
 
 The view is under ``services/rest/api-token-auth/`` and requires a ``POST`` with username and password attributes.
+
+
+Permissions
+-----------
+
+Most of the api endpoints require an operator permission
+(user must be authenticated and operator of at least one company).
+
+Some enpoints also require an active company subscription
+
+    - shareholders
+    - share splits
+    - positions
+    - securities
+    - optionplans
+    - optiontransactions
 
 
 Shareholder list and details
@@ -49,7 +65,7 @@ will return this payload
     Content-Type: application/json
     Vary: Accept
     Allow: GET, POST, HEAD, OPTIONS
-    
+
     {
         "count": 10,
         "next": null,
@@ -74,5 +90,5 @@ will return this payload
             },
         ]
     }
-    
+
 This call returns all shareholders for the currently managed company. As of now only one company can be managed per user accounts. Shareholders cannot use the API to call for their shareholder data.
