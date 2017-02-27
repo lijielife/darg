@@ -48,8 +48,22 @@
             <span class="el-icon-download-alt"></span>
           </a>
         </li>
-        <!--<li><a href="" title="">{% trans "Printed Certificates" %}</a></li>-->
-        <!--<li><a href="" title="">{% trans "Vested Shares" %}</a></li>-->
+		{% if operator.company.has_printed_certificates %}
+        <li>
+		  {% trans "Printed Certificates" %}
+		  <a href="{% url "printed_certificates_csv" company_id=operator.company.id %}" title="">
+		    <span class="el-icon-download-alt"></span>
+	      </a>
+		</li>
+		{% endif %}
+		{% if operator.company.has_vested_positions %}
+        <li>
+		  {% trans "Vested Shares" %}
+		  <a href="{% url "vested_csv" company_id=operator.company.id %}" title="">
+		    <span class="el-icon-download-alt"></span>
+		  </a>
+	    </li>
+		{% endif %}
         <!-- <li><a href="" title="">{% trans "Depot Statement per Shareholder" %}</a></li> -->
       </ul>
     </div>
