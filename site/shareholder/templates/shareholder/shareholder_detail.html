@@ -106,13 +106,13 @@
         {% endverbatim %}
       </td>
     </tr>
-    <tr>
+    <tr ng-hide="shareholder.user.userprofile.legal_type.value=='H'">
       <td>{% trans "Shareholder Company Name" %}:</td>
       <td>
         {% verbatim %}<span editable-text="shareholder.user.userprofile.company_name" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.company_name || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
       </td>
     </tr>
-    <tr class="company-department">
+    <tr class="company-department" ng-hide="shareholder.user.userprofile.legal_type.value=='H'">
       <td>{% trans "Shareholder Company Department" %}:</td>
       <td>
         {% verbatim %}<span editable-text="shareholder.user.userprofile.company_department" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.company_department || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
