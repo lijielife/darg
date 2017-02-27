@@ -309,6 +309,86 @@ def captable_csv(request, company_id):
     return redirect(reverse('reports'))
 
 
+def printed_certificates_csv(request, company_id):
+    """
+    return csv with list of printed certificates
+    """
+    # perm check
+    if not Operator.objects.filter(
+        user=request.user, company__id=company_id
+    ).exists():
+        return HttpResponseForbidden()
+
+    company = get_object_or_404(Company, id=company_id)
+
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = (
+        u'attachment; '
+        u'filename="{}_printed_certificates_{}.csv"'.format(
+            time.strftime("%Y-%m-%d"), slugify(company.name)
+        ))
+
+    writer = csv.writer(response)
+
+    ots = OptionTransaction.objects.filter(
+        option_plan__company=company,
+        printed_at__isnull=False,
+        certificate_id__isnull=False,
+        ).distinct()
+    rows = [
+        [ot.buyer.get_full_name(),
+         ot.count,
+         unicode(ot.option_plan.security),
+         ot.certificate_id,
+         ot.printed_at]
+        for ot in ots]
+    for row in rows:
+        writer.writerow([unicode(s).encode("utf-8") for s in row])
+
+    return response
+
+
+def vested_csv(request, company_id):
+    """
+    return csv with list of vested shareholders and positions
+    """
+    # perm check
+    if not Operator.objects.filter(
+        user=request.user, company__id=company_id
+    ).exists():
+        return HttpResponseForbidden()
+
+    company = get_object_or_404(Company, id=company_id)
+
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = (
+        u'attachment; '
+        u'filename="{}_vested_{}.csv"'.format(
+            time.strftime("%Y-%m-%d"), slugify(company.name)
+        ))
+
+    writer = csv.writer(response)
+
+    positions = Position.objects.filter(
+        Q(buyer__company=company) | Q(seller__company=company),
+        vesting_months__gt=0).distinct()
+    ots = OptionTransaction.objects.filter(
+        option_plan__company=company,
+        vesting_months__gt=0).distinct()
+    rows = [
+        [p.buyer.get_full_name(), p.count, unicode(p.security),
+         p.buyer.is_management, p.vesting_months] for p in positions]
+    rows += [[ot.buyer.get_full_name(), ot.count,
+              unicode(ot.option_plan.security), ot.is_management,
+              ot.vesting_months] for ot in ots]
+    for row in rows:
+        writer.writerow([unicode(s).encode("utf-8") for s in row])
+
+    return response
+
+
 @login_required
 def captable_pdf(request, company_id):
 

@@ -72,6 +72,11 @@ urlpatterns = [
         'project.views.contacts_csv', name='contacts_csv'),
     url(r'^company/(?P<company_id>[0-9]+)/download/transactions$',
         'project.views.transactions_csv', name='transactions_csv'),
+    url(r'^company/(?P<company_id>[0-9]+)/download/vested$',
+        'project.views.vested_csv', name='vested_csv'),
+    url(r'^company/(?P<company_id>[0-9]+)/download/printed_certificates_csv$',
+        'project.views.printed_certificates_csv',
+        name='printed_certificates_csv'),
 
     url(r'^options/$', 'shareholder.views.options', name='options'),
     url(r'^options/(?P<pk>[0-9]+)/$',

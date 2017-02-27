@@ -12,7 +12,7 @@ from django.core.mail import send_mail
 from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import ugettext as _
@@ -409,6 +409,27 @@ class Company(models.Model):
 
         kwargs = {'crop': 'center', 'quality': 99, 'format': "PNG"}
         return get_thumbnail(self.logo.file, 'x40', **kwargs).url
+
+    # --- CHECKS
+    def has_printed_certificates(self):
+        """ returns bool if at least one certificate was printed/has printed
+        date
+        """
+        return OptionTransaction.objects.filter(option_plan__company=self,
+                                                printed_at__isnull=False
+                                                ).exists()
+
+    def has_vested_positions(self):
+        """ returns bool if company has at least one position (option/
+        transaction) which vesting_months
+        """
+        return (Position.objects.filter(
+            Q(seller__company=self) | Q(buyer__company=self),
+            vesting_months__gt=0).exists() or
+            OptionTransaction.objects.filter(
+                option_plan__company=self,
+                vesting_months__gt=0).exists()
+            )
 
     # --- LOGIC
     def split_shares(self, data):
