@@ -102,6 +102,10 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
         """
         edit company department
         """
+        profile = self.buyer.user.userprofile
+        profile.legal_type = 'C'
+        profile.save()
+
         try:
 
             p = page.ShareholderDetailPage(
