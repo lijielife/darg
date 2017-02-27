@@ -105,6 +105,21 @@ class CompanyTestCase(TestCase):
         """
         self.assertEqual(self.company.get_total_votes_floating(), 2*100/2)
 
+    def test_has_printed_certificates(self):
+        ot = OptionTransactionGenerator().generate()
+        self.assertFalse(ot.option_plan.company.has_printed_certificates())
+        ot.printed_at = datetime.datetime.now()
+        ot.save()
+        self.assertTrue(ot.option_plan.company.has_printed_certificates())
+
+    def test_has_vested_positions(self):
+        ot = OptionTransactionGenerator().generate()
+        self.assertFalse(ot.option_plan.company.has_vested_positions())
+        ot.vesting_months = 22
+        ot.save()
+        self.assertTrue(ot.option_plan.company.has_vested_positions())
+
+
 
 class CountryTestCase(TestCase):
 
