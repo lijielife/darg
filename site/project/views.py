@@ -337,8 +337,8 @@ def printed_certificates_csv(request, company_id):
         printed_at__isnull=False,
         certificate_id__isnull=False,
         ).distinct()
-    rows = [['full name', 'share count', 'security name', 'certificate id',
-            'certificate printed at']]
+    rows = [[_('full name'), _('share count'), _('security name'),
+             _('certificate id'), _('certificate printed at')]]
     rows += [
         [ot.buyer.get_full_name(),
          ot.count,
@@ -381,15 +381,15 @@ def vested_csv(request, company_id):
     ots = OptionTransaction.objects.filter(
         option_plan__company=company,
         vesting_months__gt=0).distinct()
-    rows = [['full name', 'count', 'security', 'is management member',
-            'vesting in months', 'asset type']]
+    rows = [[_('full name'), _('count'), _('security'), _('is management member'),
+            _('vesting in months'), _('asset type')]]
     rows += [
         [p.buyer.get_full_name(), p.count, unicode(p.security),
-         p.buyer.is_management, p.vesting_months, 'stock'] for p in positions]
+         p.buyer.is_management, p.vesting_months, _('stock')] for p in positions]
     rows += [[ot.buyer.get_full_name(), ot.count,
               unicode(ot.option_plan.security),
               ot.buyer.is_management,
-              ot.vesting_months, 'certificate'] for ot in ots]
+              ot.vesting_months, _('certificate')] for ot in ots]
     for row in rows:
         writer.writerow([unicode(s).encode("utf-8") for s in row])
 

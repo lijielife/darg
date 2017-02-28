@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-12 20:31+0000\n"
+"POT-Creation-Date: 2017-02-28 10:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,7 +40,7 @@ msgstr ""
 msgid "PDF Captable/Active Shareholders"
 msgstr ""
 
-#: project/tasks.py:143 project/tests/test_views.py:489 project/views.py:38
+#: project/tasks.py:143 project/tests/test_views.py:540 project/views.py:38
 msgid "shareholder number"
 msgstr ""
 
@@ -56,7 +56,7 @@ msgstr ""
 msgid "email"
 msgstr ""
 
-#: project/tasks.py:144
+#: project/tasks.py:144 project/views.py:340
 msgid "share count"
 msgstr ""
 
@@ -318,7 +318,7 @@ msgstr ""
 msgid "Gratis Aktienbuch-Muster"
 msgstr ""
 
-#: project/templates/index.html:36 project/tests/test_views.py:80
+#: project/templates/index.html:36 project/tests/test_views.py:82
 msgid "My Dashboard"
 msgstr ""
 
@@ -530,13 +530,13 @@ msgstr ""
 msgid "Option Holders note"
 msgstr ""
 
-#: project/tests/test_views.py:138 project/views.py:202
+#: project/tests/test_views.py:140 project/views.py:202
 msgid ""
 "You have already an existing user account. Please login or reset your "
 "password."
 msgstr ""
 
-#: project/tests/test_views.py:534 project/views.py:95
+#: project/tests/test_views.py:585 project/views.py:95
 msgid "date"
 msgstr ""
 
@@ -604,7 +604,7 @@ msgstr ""
 msgid "seller"
 msgstr ""
 
-#: project/views.py:96
+#: project/views.py:96 project/views.py:384
 msgid "count"
 msgstr ""
 
@@ -612,7 +612,7 @@ msgstr ""
 msgid "value"
 msgstr ""
 
-#: project/views.py:97
+#: project/views.py:97 project/views.py:384
 msgid "security"
 msgstr ""
 
@@ -648,6 +648,42 @@ msgstr ""
 msgid "csv file is being generated and will be sent by email to you"
 msgstr ""
 
-#: project/views.py:325
+#: project/views.py:340 project/views.py:384
+msgid "full name"
+msgstr ""
+
+#: project/views.py:340
+msgid "security name"
+msgstr ""
+
+#: project/views.py:341
+msgid "certificate id"
+msgstr ""
+
+#: project/views.py:341
+msgid "certificate printed at"
+msgstr ""
+
+#: project/views.py:384
+msgid "is management member"
+msgstr ""
+
+#: project/views.py:385
+msgid "vesting in months"
+msgstr ""
+
+#: project/views.py:385
+msgid "asset type"
+msgstr ""
+
+#: project/views.py:388
+msgid "stock"
+msgstr ""
+
+#: project/views.py:392
+msgid "certificate"
+msgstr ""
+
+#: project/views.py:412
 msgid "pdf file is being generated and will be sent by email to you"
 msgstr ""
