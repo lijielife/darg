@@ -734,6 +734,7 @@ class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
             '/services/rest/position?search={}'.format(query))
 
         self.assertEqual(res.status_code, 200)
+        print 'REMOVEME:', res.data  # instable on CI, print to understand the cause
         self.assertEqual(res.data['count'], 1)
 
     def test_ordering(self):
