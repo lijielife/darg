@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-05 20:08+0000\n"
+"POT-Creation-Date: 2017-03-05 21:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -335,7 +335,7 @@ msgid "Blog"
 msgstr ""
 
 #: project/templates/index.html:50 project/templates/index.html:61
-#: project/templates/index.html:62 project/templates/index.html:107
+#: project/templates/index.html:62 project/templates/index.html:101
 msgid "Try for free"
 msgstr ""
 
@@ -387,83 +387,72 @@ msgid ""
 "transparent and can be reproduced."
 msgstr ""
 
-#: project/templates/index.html:94
-msgid "Automatische Validierung der Daten."
-msgstr ""
-
-#: project/templates/index.html:95
-msgid ""
-"We are validating any data change you trigger for plausibility and against "
-"the legal rules. It's really hard to break you data with das-aktienregister."
-"ch"
-msgstr ""
-
-#: project/templates/index.html:99
+#: project/templates/index.html:93
 msgid "10 Jahre Datengarantie."
 msgstr ""
 
-#: project/templates/index.html:100
+#: project/templates/index.html:94
 msgid ""
 "Data security is our most important concern. Duplicate daily backups, "
 "encrypted storage and constant reviews provide a highly secure environment "
 "for your critical data."
 msgstr ""
 
-#: project/templates/index.html:103
+#: project/templates/index.html:97
 msgid "Aktienbuch als PDF herunterladen."
 msgstr ""
 
-#: project/templates/index.html:104
+#: project/templates/index.html:98
 msgid ""
 "Insert your data of your shareholders and your past transactions. Click a "
 "button and easily download your Captable PDF for any review or assessment. "
 "Anytime at your fingertips."
 msgstr ""
 
-#: project/templates/index.html:108
+#: project/templates/index.html:102
 msgid "Try for free now"
 msgstr ""
 
-#: project/templates/index.html:116
+#: project/templates/index.html:110
 msgid ""
 "Die Automatische Validierung verhindert Fehler und sichert maximale "
 "Gesetzeskonformitaet. Das Online-Aktienbuch macht die Pflege schnell und "
 "effizient, damit Zeit frei wird fuer die wirklichen Herausforderungen"
 msgstr ""
 
-#: project/templates/index.html:125
+#: project/templates/index.html:119
 msgid "Do you know our Blog?"
 msgstr ""
 
-#: project/templates/index.html:130 project/templates/index.html:131
+#: project/templates/index.html:124 project/templates/index.html:125
 msgid "Read our Blog"
 msgstr ""
 
-#: project/templates/index.html:138
+#: project/templates/index.html:132
 msgid "Subscribe to our newsletter!"
 msgstr ""
 
-#: project/templates/index.html:139
+#: project/templates/index.html:133
 msgid "Stay up to date about our work and latest share register industry news"
 msgstr ""
 
-#: project/templates/index.html:146
+#: project/templates/index.html:140
 msgid "Geben Sie Ihre Email-Adresse ein"
 msgstr ""
 
-#: project/templates/index.html:175 project/templates/index.html:176
+#: project/templates/index.html:169 project/templates/index.html:170
 msgid "Read our blog"
 msgstr ""
 
-#: project/templates/index.html:180 project/templates/index.html:181
+#: project/templates/index.html:174 project/templates/index.html:175
 msgid "Service Status"
 msgstr ""
 
-#: project/templates/index.html:185 project/templates/index.html:186
+#: project/templates/index.html:179 project/templates/index.html:180
 msgid "AGB"
 msgstr ""
 
-#: project/templates/index.html:190 project/templates/index.html:191
+#: project/templates/index.html:184 project/templates/index.html:185
 msgid "A service provided by KKD Komm. GmbH"
 msgstr ""
 
