@@ -1122,7 +1122,7 @@ class ShareholderTestCase(TestCase):
         self.assertEqual(res.data['count'], 1)
 
         profile = operator.company.shareholder_set.first().user.userprofile
-        profile.company_name = 'some corp 888'
+        profile.company_name = 'UniqueCompanyName88A'
         profile.save()
 
         res = self.client.get(
