@@ -3105,13 +3105,7 @@ nav.navbar .navbar-text {
 }
 .intro .benefits ul > li {
   list-style: none;
-  display: inline-block;
-  width: 48%;
-  text-align: center;
-  padding-bottom: 2em;
-}
-.intro .benefits ul > li .title {
-  font-weight: bold;
+  font-size: 2em;
 }
 .intro .benefits a.btn-focus {
   background-color: #337ab7;
