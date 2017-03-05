@@ -3962,7 +3962,9 @@ table.stock {
     font-size: 1.4em;
   }
   body .intro .benefits ul > li {
-    font-size: 1.4em;
+    display: block;
+    padding-bottom: 1em;
+    width: 100%;
   }
   body header {
     min-height: 180px;
