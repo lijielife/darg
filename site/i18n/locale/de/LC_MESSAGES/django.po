@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-05 21:45+0000\n"
-"PO-Revision-Date: 2017-03-05 21:51+0000\n"
+"POT-Creation-Date: 2017-03-05 22:49+0000\n"
+"PO-Revision-Date: 2017-03-05 22:57+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -202,6 +202,16 @@ msgstr "Depotauszug pro Gesellschafter"
 #: templates/_messages.html:7
 msgid "Important:"
 msgstr "Wichtig:"
+
+#: templates/base.html:10
+msgid ""
+"Das Aktienregister - Perfekte Aktionariatsverwaltung: Schnelligkeit und "
+"Effizienz fuer kleine AGs, vollumfaengliches Aktienregister fuer "
+"Publikumsgesellschaften"
+msgstr ""
+"Willkommen bei Das-Aktienregister.ch - Die besten Aktienbuch Vorlagen/Muster"
+" (Excel) herunterladen oder effizient Aktienbuch online führen & PDF "
+"herunterladen."
 
 #: templates/base_auth.html:15
 msgid "The Share Register, 2016"
