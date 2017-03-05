@@ -1129,6 +1129,8 @@ class ShareholderTestCase(TestCase):
             '/services/rest/shareholders?search={}'.format(profile.company_name)
         )
 
+        # FIXME assert failing randomly on CI. print for understandung the cause
+        print res.data
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['count'], 1)
 
