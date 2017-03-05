@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-28 10:02+0000\n"
+"POT-Creation-Date: 2017-03-05 20:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,23 +40,23 @@ msgstr ""
 msgid "PDF Captable/Active Shareholders"
 msgstr ""
 
-#: project/tasks.py:143 project/tests/test_views.py:540 project/views.py:38
+#: project/tasks.py:143 project/tests/test_views.py:540 project/views.py:37
 msgid "shareholder number"
 msgstr ""
 
-#: project/tasks.py:143 project/views.py:38
+#: project/tasks.py:143 project/views.py:37
 msgid "last name"
 msgstr ""
 
-#: project/tasks.py:143 project/views.py:38
+#: project/tasks.py:143 project/views.py:37
 msgid "first name"
 msgstr ""
 
-#: project/tasks.py:144 project/views.py:39
+#: project/tasks.py:144 project/views.py:38
 msgid "email"
 msgstr ""
 
-#: project/tasks.py:144 project/views.py:340
+#: project/tasks.py:144 project/views.py:341
 msgid "share count"
 msgstr ""
 
@@ -64,11 +64,11 @@ msgstr ""
 msgid "votes share percent"
 msgstr ""
 
-#: project/tasks.py:145 project/views.py:40
+#: project/tasks.py:145 project/views.py:39
 msgid "language ISO"
 msgstr ""
 
-#: project/tasks.py:145 project/views.py:40
+#: project/tasks.py:145 project/views.py:39
 msgid "language full"
 msgstr ""
 
@@ -335,8 +335,7 @@ msgid "Blog"
 msgstr ""
 
 #: project/templates/index.html:50 project/templates/index.html:61
-#: project/templates/index.html:62 project/templates/index.html:89
-#: project/templates/index.html:90
+#: project/templates/index.html:62 project/templates/index.html:107
 msgid "Try for free"
 msgstr ""
 
@@ -360,66 +359,111 @@ msgstr ""
 msgid "CHF/mtl."
 msgstr ""
 
-#: project/templates/index.html:83
-msgid "Eingabe alle Daten mit maximaler Effizienz."
+#: project/templates/index.html:82
+msgid "Companies and"
 msgstr ""
 
-#: project/templates/index.html:84
-msgid "Revisionssichere Ablage."
+#: project/templates/index.html:82
+msgid "shareholders do trust www.das-aktienregister.ch because of:"
 msgstr ""
 
 #: project/templates/index.html:85
-msgid "Automatische Validierung der Daten."
+msgid "Eingabe alle Daten mit maximaler Effizienz."
 msgstr ""
 
 #: project/templates/index.html:86
+msgid ""
+"Latest Cloud-Technology, fast servers, modern user interface - the share "
+"register is made for it's users efficiency and time saving."
+msgstr ""
+
+#: project/templates/index.html:89
+msgid "Revisionssichere Ablage."
+msgstr ""
+
+#: project/templates/index.html:90
+msgid ""
+"Every change to any data is recorded and saved. Hence any data change is "
+"transparent and can be reproduced."
+msgstr ""
+
+#: project/templates/index.html:94
+msgid "Automatische Validierung der Daten."
+msgstr ""
+
+#: project/templates/index.html:95
+msgid ""
+"We are validating any data change you trigger for plausibility and against "
+"the legal rules. It's really hard to break you data with das-aktienregister."
+"ch"
+msgstr ""
+
+#: project/templates/index.html:99
 msgid "10 Jahre Datengarantie."
 msgstr ""
 
-#: project/templates/index.html:87
+#: project/templates/index.html:100
+msgid ""
+"Data security is our most important concern. Duplicate daily backups, "
+"encrypted storage and constant reviews provide a highly secure environment "
+"for your critical data."
+msgstr ""
+
+#: project/templates/index.html:103
 msgid "Aktienbuch als PDF herunterladen."
 msgstr ""
 
-#: project/templates/index.html:98
+#: project/templates/index.html:104
+msgid ""
+"Insert your data of your shareholders and your past transactions. Click a "
+"button and easily download your Captable PDF for any review or assessment. "
+"Anytime at your fingertips."
+msgstr ""
+
+#: project/templates/index.html:108
+msgid "Try for free now"
+msgstr ""
+
+#: project/templates/index.html:116
 msgid ""
 "Die Automatische Validierung verhindert Fehler und sichert maximale "
 "Gesetzeskonformitaet. Das Online-Aktienbuch macht die Pflege schnell und "
 "effizient, damit Zeit frei wird fuer die wirklichen Herausforderungen"
 msgstr ""
 
-#: project/templates/index.html:107
+#: project/templates/index.html:125
 msgid "Do you know our Blog?"
 msgstr ""
 
-#: project/templates/index.html:112 project/templates/index.html:113
+#: project/templates/index.html:130 project/templates/index.html:131
 msgid "Read our Blog"
 msgstr ""
 
-#: project/templates/index.html:120
+#: project/templates/index.html:138
 msgid "Subscribe to our newsletter!"
 msgstr ""
 
-#: project/templates/index.html:121
+#: project/templates/index.html:139
 msgid "Stay up to date about our work and latest share register industry news"
 msgstr ""
 
-#: project/templates/index.html:128
+#: project/templates/index.html:146
 msgid "Geben Sie Ihre Email-Adresse ein"
 msgstr ""
 
-#: project/templates/index.html:157 project/templates/index.html:158
+#: project/templates/index.html:175 project/templates/index.html:176
 msgid "Read our blog"
 msgstr ""
 
-#: project/templates/index.html:162 project/templates/index.html:163
+#: project/templates/index.html:180 project/templates/index.html:181
 msgid "Service Status"
 msgstr ""
 
-#: project/templates/index.html:167 project/templates/index.html:168
+#: project/templates/index.html:185 project/templates/index.html:186
 msgid "AGB"
 msgstr ""
 
-#: project/templates/index.html:172 project/templates/index.html:173
+#: project/templates/index.html:190 project/templates/index.html:191
 msgid "A service provided by KKD Komm. GmbH"
 msgstr ""
 
@@ -530,13 +574,13 @@ msgstr ""
 msgid "Option Holders note"
 msgstr ""
 
-#: project/tests/test_views.py:140 project/views.py:202
+#: project/tests/test_views.py:140 project/views.py:203
 msgid ""
 "You have already an existing user account. Please login or reset your "
 "password."
 msgstr ""
 
-#: project/tests/test_views.py:585 project/views.py:95
+#: project/tests/test_views.py:585 project/views.py:94
 msgid "date"
 msgstr ""
 
@@ -560,130 +604,130 @@ msgstr ""
 msgid "You didn't press any keys. Good bye."
 msgstr ""
 
-#: project/views.py:40
+#: project/views.py:39
 msgid "street"
 msgstr ""
 
-#: project/views.py:40
+#: project/views.py:39
 msgid "street 2"
 msgstr ""
 
-#: project/views.py:41
+#: project/views.py:40
 msgid "c/o"
 msgstr ""
 
-#: project/views.py:41
+#: project/views.py:40
 msgid "city"
 msgstr ""
 
-#: project/views.py:41
+#: project/views.py:40
 msgid "zip"
 msgstr ""
 
-#: project/views.py:41
+#: project/views.py:40
 msgid "country"
 msgstr ""
 
-#: project/views.py:42
+#: project/views.py:41
 msgid "pobox"
 msgstr ""
 
-#: project/views.py:42
+#: project/views.py:41
 msgid "mailing type"
 msgstr ""
 
-#: project/views.py:42
+#: project/views.py:41
 msgid "nationality"
 msgstr ""
 
-#: project/views.py:95
+#: project/views.py:94
 msgid "buyer"
 msgstr ""
 
-#: project/views.py:95
+#: project/views.py:94
 msgid "seller"
 msgstr ""
 
-#: project/views.py:96 project/views.py:384
+#: project/views.py:95 project/views.py:385
 msgid "count"
 msgstr ""
 
-#: project/views.py:97
+#: project/views.py:96
 msgid "value"
 msgstr ""
 
-#: project/views.py:97 project/views.py:384
+#: project/views.py:96 project/views.py:385
 msgid "security"
 msgstr ""
 
-#: project/views.py:97
+#: project/views.py:96
 msgid "comment"
 msgstr ""
 
-#: project/views.py:97
+#: project/views.py:96
 msgid "depot type"
 msgstr ""
 
-#: project/views.py:98
+#: project/views.py:97
 msgid "stock book id"
 msgstr ""
 
-#: project/views.py:98
+#: project/views.py:97
 msgid "vesting period (options only"
 msgstr ""
 
-#: project/views.py:99
+#: project/views.py:98
 msgid "cert id (options only)"
 msgstr ""
 
-#: project/views.py:120 project/views.py:122
+#: project/views.py:119 project/views.py:121
 msgid "----------------------------------------"
 msgstr ""
 
-#: project/views.py:121
+#: project/views.py:120
 msgid "Transactions for options:"
 msgstr ""
 
-#: project/views.py:306
+#: project/views.py:307
 msgid "csv file is being generated and will be sent by email to you"
 msgstr ""
 
-#: project/views.py:340 project/views.py:384
+#: project/views.py:341 project/views.py:385
 msgid "full name"
 msgstr ""
 
-#: project/views.py:340
+#: project/views.py:341
 msgid "security name"
 msgstr ""
 
-#: project/views.py:341
+#: project/views.py:342
 msgid "certificate id"
 msgstr ""
 
-#: project/views.py:341
+#: project/views.py:342
 msgid "certificate printed at"
 msgstr ""
 
-#: project/views.py:384
+#: project/views.py:386
 msgid "is management member"
 msgstr ""
 
-#: project/views.py:385
+#: project/views.py:387
 msgid "vesting in months"
 msgstr ""
 
-#: project/views.py:385
+#: project/views.py:387
 msgid "asset type"
 msgstr ""
 
-#: project/views.py:388
+#: project/views.py:390
 msgid "stock"
 msgstr ""
 
-#: project/views.py:392
+#: project/views.py:395
 msgid "certificate"
 msgstr ""
 
-#: project/views.py:412
+#: project/views.py:415
 msgid "pdf file is being generated and will be sent by email to you"
 msgstr ""
