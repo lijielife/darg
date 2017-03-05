@@ -82,7 +82,8 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 }
 #flatpage .tagline {
   text-align: center;
-  padding: 0 7em;
+  padding: 1em;
+  width: 96%;
 }
 
 #pricing {
@@ -92,7 +93,6 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 }
 #pricing .box {
   border: 1px solid #aaa;
-  width: 30%;
   float: left;
   margin-right: 1em;
 }
@@ -135,6 +135,12 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 #pricing .box .btn-focus {
   font-size: 1.2em;
   border-radius: 0px;
+}
+#pricing .box1 {
+  width: 31%;
+}
+#pricing .box2 {
+  width: 48%;
 }
 
 #auth p.tos label {
@@ -3099,7 +3105,13 @@ nav.navbar .navbar-text {
 }
 .intro .benefits ul > li {
   list-style: none;
-  font-size: 2em;
+  display: inline-block;
+  width: 48%;
+  text-align: center;
+  padding-bottom: 2em;
+}
+.intro .benefits ul > li .title {
+  font-weight: bold;
 }
 .intro .benefits a.btn-focus {
   background-color: #337ab7;
@@ -3951,7 +3963,9 @@ table.stock {
     font-size: 1.4em;
   }
   body .intro .benefits ul > li {
-    font-size: 1.4em;
+    display: block;
+    padding-bottom: 1em;
+    width: 100%;
   }
   body header {
     min-height: 180px;

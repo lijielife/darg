@@ -1,10 +1,9 @@
 import csv
+import datetime
 import logging
 import time
-import datetime
 
 import dateutil.parser
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
@@ -21,11 +20,11 @@ from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from zinnia.models.entry import Entry
 
-from project.tasks import (send_initial_password_mail, send_captable_pdf,
-                           send_captable_csv)
+from project.tasks import (send_captable_csv, send_captable_pdf,
+                           send_initial_password_mail)
 from services.instapage import InstapageSubmission as Instapage
-from shareholder.models import (Company, Operator, Position, OptionTransaction,
-                                Security)
+from shareholder.models import (Company, Operator, OptionTransaction, Position,
+                                Security, Shareholder)
 from utils.pdf import render_to_pdf_response
 
 logger = logging.getLogger(__name__)
@@ -152,6 +151,8 @@ def index(request):
     if Entry.published.all().exists():
         context['latest_blog_entry'] = Entry.published.all()[0]
     context['flatpages'] = FlatPage.objects.all()
+    context['company_count'] = Company.objects.count()
+    context['shareholder_count'] = Shareholder.objects.count()
     return HttpResponse(template.render(context))
 
 
@@ -381,11 +382,13 @@ def vested_csv(request, company_id):
     ots = OptionTransaction.objects.filter(
         option_plan__company=company,
         vesting_months__gt=0).distinct()
-    rows = [[_('full name'), _('count'), _('security'), _('is management member'),
+    rows = [[_('full name'), _('count'), _('security'),
+             _('is management member'),
             _('vesting in months'), _('asset type')]]
     rows += [
         [p.buyer.get_full_name(), p.count, unicode(p.security),
-         p.buyer.is_management, p.vesting_months, _('stock')] for p in positions]
+         p.buyer.is_management, p.vesting_months, _('stock')
+         ] for p in positions]
     rows += [[ot.buyer.get_full_name(), ot.count,
               unicode(ot.option_plan.security),
               ot.buyer.is_management,
