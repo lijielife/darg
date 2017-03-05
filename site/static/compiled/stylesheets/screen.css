@@ -82,7 +82,8 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 }
 #flatpage .tagline {
   text-align: center;
-  padding: 0 7em;
+  padding: 1em;
+  width: 96%;
 }
 
 #pricing {
@@ -136,7 +137,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   border-radius: 0px;
 }
 #pricing .box1 {
-  width: 30%;
+  width: 31%;
 }
 #pricing .box2 {
   width: 48%;
