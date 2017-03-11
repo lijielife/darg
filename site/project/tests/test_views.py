@@ -17,7 +17,8 @@ from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
                                 ComplexShareholderConstellationGenerator,
                                 OperatorGenerator, PositionGenerator,
                                 SecurityGenerator, ShareholderGenerator,
-                                TwoInitialSecuritiesGenerator, UserGenerator)
+                                TwoInitialSecuritiesGenerator, UserGenerator,
+                                OptionTransactionGenerator)
 from project.tests.mixins import MoreAssertsTestCaseMixin
 from project.views import _get_contacts, _get_transactions
 from shareholder.models import (Company, OptionTransaction, Security,
@@ -410,8 +411,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
         self.assertEqual(response.status_code, 302)
         # assert proper csv
         f_, content = self._get_attachment_content()
-        self.assertTrue(content.startswith('%PDF-1.4\r\n'))
-        self.assertTrue(content.endswith('EOF\r\n'))
+        self.assertTrue(content.startswith('%PDF'))
 
     def test_pdf_download_with_number_segments(self):
         """ test download of captable pdf """
@@ -434,8 +434,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
         self.assertEqual(response.status_code, 302)
         # assert proper csv
         f_, content = self._get_attachment_content()
-        self.assertTrue(content.startswith('%PDF-1.4\r\n'))
-        self.assertTrue(content.endswith('EOF\r\n'))
+        self.assertTrue(content.startswith('%PDF'))
 
     def test_pdf_download_with_missing_operator(self):
         """ test download of captable pdf """
@@ -469,6 +468,10 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
         other_operator = OperatorGenerator().generate()
         operator = shs[0].company.operator_set.first()
         company = operator.company
+        pos = PositionGenerator().generate(company=company)
+        pos.printed_at = datetime.datetime.now()
+        pos.certificate_id = '88888'
+        pos.save()
 
         # run test for unauth'd user
         response = self.client.get(
@@ -489,7 +492,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
         # company operator can access data
         is_loggedin = self.client.login(username=operator.user.username,
                                         password=DEFAULT_TEST_DATA['password'])
-        with self.assertLessNumQueries(35):
+        with self.assertLessNumQueries(41):
             response = self.client.get(
                 reverse('printed_certificates_csv',
                         kwargs={"company_id": company.id}))
@@ -500,8 +503,8 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
         lines = content.split('\r\n')
         lines.pop()  # remove last element based on final '\r\n'
         for row in lines[1:]:
-            self.assertEqual(row.count(','), 4)
-        self.assertEqual(len(lines), 7)  # ensure we have the right data
+            self.assertEqual(row.count(','), 5)
+        self.assertEqual(len(lines), 8)  # ensure we have the right data
         # assert company itself
         self.assertIn(shs[0].get_full_name(), [f.split(',')[0] for f in lines])
         # assert share owner
@@ -635,3 +638,59 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
         self.assertIn(shs[0].get_full_name(), [f.split(',')[0] for f in lines])
         # assert share owner
         self.assertIn(shs[1].get_full_name(), [f.split(',')[0] for f in lines])
+
+    def test_option_pdf(self):
+        """ test printable certificate """
+        ot = OptionTransactionGenerator().generate()
+        company = ot.option_plan.company
+        # run test
+        response = self.client.get(
+            reverse('option_pdf', kwargs={"option_id": ot.pk}))
+
+        # not logged in user
+        self.assertEqual(response.status_code, 302)
+
+        # login and retest
+        user = UserGenerator().generate()
+        OperatorGenerator().generate(user=user, company=company)
+        is_loggedin = self.client.login(username=user.username,
+                                        password=DEFAULT_TEST_DATA['password'])
+        self.assertTrue(is_loggedin)
+        with self.assertLessNumQueries(53):
+            response = self.client.get(
+                reverse('option_pdf', kwargs={"option_id": ot.pk}))
+
+        # assert response code
+        self.assertEqual(response.status_code, 200)
+        # assert proper csv
+        content = response.content
+        self.assertTrue(content.startswith('%PDF'))
+        self.assertTrue(content.endswith('EOF\n'))
+
+    def test_position_option_pdf(self):
+        """ test printable certificate """
+        pos = PositionGenerator().generate()
+        company = pos.buyer.company
+        # run test
+        response = self.client.get(
+            reverse('position_option_pdf', kwargs={"option_id": pos.pk}))
+
+        # not logged in user
+        self.assertEqual(response.status_code, 302)
+
+        # login and retest
+        user = UserGenerator().generate()
+        OperatorGenerator().generate(user=user, company=company)
+        is_loggedin = self.client.login(username=user.username,
+                                        password=DEFAULT_TEST_DATA['password'])
+        self.assertTrue(is_loggedin)
+        with self.assertLessNumQueries(55):
+            response = self.client.get(
+                reverse('position_option_pdf', kwargs={"option_id": pos.pk}))
+
+        # assert response code
+        self.assertEqual(response.status_code, 200)
+        # assert proper csv
+        content = response.content
+        self.assertTrue(content.startswith('%PDF-1'))
+        self.assertTrue(content.endswith('EOF\n'))

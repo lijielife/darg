@@ -338,15 +338,31 @@ def printed_certificates_csv(request, company_id):
         printed_at__isnull=False,
         certificate_id__isnull=False,
         ).distinct()
+    pos = Position.objects.filter(
+        Q(buyer__company=company) | Q(seller__company=company),
+        printed_at__isnull=False,
+        certificate_id__isnull=False,
+        ).distinct()
     rows = [[_('full name'), _('share count'), _('security name'),
-             _('certificate id'), _('certificate printed at')]]
+             _('certificate id'), _('certificate printed at'),
+             _('security type')]]
+    # add option transactions
     rows += [
         [ot.buyer.get_full_name(),
          ot.count,
          unicode(ot.option_plan.security),
          ot.certificate_id,
-         ot.printed_at]
+         ot.printed_at, _('option')]
         for ot in ots]
+    # add positions
+    rows += [
+        [ot.buyer.get_full_name(),
+         ot.count,
+         unicode(ot.security),
+         ot.certificate_id,
+         ot.printed_at, _('stock')]
+        for ot in pos]
+    # render csv
     for row in rows:
         writer.writerow([unicode(s).encode("utf-8") for s in row])
 
@@ -420,7 +436,9 @@ def captable_pdf(request, company_id):
 
 @login_required
 def option_pdf(request, option_id):
-
+    """
+    generate pdf for option transaction/urkunde
+    """
     # perm check
     if not Operator.objects.filter(
         user=request.user, company__optionplan__optiontransaction__id=option_id
@@ -453,5 +471,51 @@ def option_pdf(request, option_id):
     if not option.printed_at:
         option.printed_at = datetime.datetime.now()
         option.save()
+
+    return response
+
+
+@login_required
+def position_option_pdf(request, option_id):
+    """
+    print pdf for certificate depot for stocks
+    """
+
+    # perm check
+    operator_qs = Operator.objects.filter(
+        Q(company__shareholder__seller__id=option_id) |
+        Q(company__shareholder__buyer__id=option_id),
+        user=request.user
+    )
+    if not operator_qs.exists():
+        return HttpResponseForbidden()
+
+    position = get_object_or_404(Position, id=option_id)
+    company = operator_qs.first().company
+
+    response = render_to_pdf_response(
+        'certificate.pdf.html',
+        {
+            'pagesize': 'A4',
+            'company': company,
+            'today': datetime.datetime.now(),
+            'currency': 'CHF',
+            'position': position,
+        }
+    )
+
+    # Create the HttpResponse object with the appropriate PDF header.
+    # if not DEBUG
+    if not settings.DEBUG:
+        response['Content-Disposition'] = (
+            u'attachment; filename="'
+            u'{}_option_{}_ID{}.pdf"'.format(
+                time.strftime("%Y-%m-%d"), company.name,
+                position.certificate_id)
+        )
+
+    if not position.printed_at:
+        position.printed_at = datetime.datetime.now()
+        position.save()
 
     return response

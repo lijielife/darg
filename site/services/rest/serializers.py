@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.core.mail import mail_managers, send_mail
 from django.core.urlresolvers import reverse
 from django.db import transaction
+from django.db.models import Q
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from rest_framework import serializers
@@ -496,7 +497,14 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
             'security', 'comment', 'is_split', 'is_draft', 'number_segments',
             'readable_number_segments', 'registration_type',
             'readable_registration_type', 'position_type', 'depot_type',
-            'readable_depot_type', 'stock_book_id', 'vesting_months')
+            'readable_depot_type', 'stock_book_id', 'vesting_months',
+            'certificate_id', 'printed_at')
+
+    def _get_company(self):
+        user = self.context.get("request").user
+        company = user.operator_set.first().company
+        return company
+
 
     def get_readable_number_segments(self, obj):
         """
@@ -675,9 +683,38 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
             kwargs.update({
                 'vesting_months': validated_data.get("vesting_months")})
 
+        if validated_data.get("certificate_id"):
+            kwargs.update({
+                'certificate_id': validated_data.get("certificate_id")})
+
         position = Position.objects.create(**kwargs)
 
         return position
+
+    def validate_certificate_id(self, value):
+        """
+        ensure that its unique
+        """
+        if not value:
+            return value
+
+        company = self._get_company()
+        ot_queryset = OptionTransaction.objects.filter(
+            option_plan__company=company, certificate_id=value)
+        pos_queryset = Position.objects.filter(
+            Q(buyer__company=company) | Q(seller__company=company),
+            certificate_id=value)
+        # exclude self on update operation
+        if self.instance is not None and self.instance.pk:
+            pos_queryset = pos_queryset.exclude(pk=self.instance.pk).exists()
+
+        # if not yet existing
+        if not ot_queryset.exists() and not pos_queryset.exists():
+            return value
+        else:
+            raise ValidationError(
+                _("Certificate ID {} is already used in transaction or option "
+                  "transaction").format(value))
 
 
 class OptionPlanSerializer(serializers.HyperlinkedModelSerializer):
@@ -835,6 +872,15 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
                   'depot_type', 'readable_depot_type', 'stock_book_id',
                   'certificate_id', 'printed_at')
 
+    def _get_optionplan(self):
+        op_serialized = self.initial_data.get('option_plan')
+        if isinstance(op_serialized, dict):
+            pk = op_serialized.get('pk')
+        else:
+            pk = int(op_serialized.split('/')[-1])
+        option_plan = OptionPlan.objects.get(id=pk)
+        return option_plan
+
     def is_valid(self, raise_exception=False):
         """
         validate cross data relations
@@ -843,13 +889,7 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
 
         initial_data = self.initial_data
 
-        op_serialized = initial_data.get('option_plan')
-        if isinstance(op_serialized, dict):
-            pk = op_serialized.get('pk')
-        else:
-            pk = int(op_serialized.split('/')[-1])
-
-        option_plan = OptionPlan.objects.get(id=pk)
+        option_plan = self._get_optionplan()
         security = option_plan.security
 
         if not security.track_numbers:
@@ -982,6 +1022,31 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
         change make it readable
         """
         return obj.get_depot_type_display()
+
+    def validate_certificate_id(self, value):
+        """
+        ensure that its unique
+        """
+        if not value:
+            return value
+
+        company = self._get_optionplan().company
+        ot_queryset = OptionTransaction.objects.filter(
+            option_plan__company=company, certificate_id=value)
+        pos_queryset = Position.objects.filter(
+            Q(buyer__company=company) | Q(seller__company=company),
+            certificate_id=value)
+        # exclude self on update operation
+        if self.instance is not None and self.instance.pk:
+            ot_queryset = ot_queryset.exclude(pk=self.instance.pk).exists()
+
+        # if not yet existing
+        if not ot_queryset.exists() and not pos_queryset.exists():
+            return value
+        else:
+            raise ValidationError(
+                _("Certificate ID {} is already used in transaction or option "
+                  "transaction").format(value))
 
 
 class OptionHolderSerializer(serializers.HyperlinkedModelSerializer):

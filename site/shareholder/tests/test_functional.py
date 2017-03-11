@@ -293,6 +293,8 @@ class PositionDetailFunctionalTestCase(BaseSeleniumTestCase):
         self.poss, self.shs = ComplexPositionsWithSegmentsGenerator().generate(
             company=self.operator.company)
         self. position = self.poss[-1]
+        self.position.certificate_id = '8888'
+        self.position.save()
         self.page = page.PositionDetailPage(
             self.selenium, self.live_server_url, self.operator.user,
             path=reverse('position', kwargs={'pk': self.position.pk}))
@@ -311,6 +313,10 @@ class PositionDetailFunctionalTestCase(BaseSeleniumTestCase):
             self.assertIn(
                 self.position.stock_book_id,
                 self.page.get_field('stock-book-id'))
+            self.assertIn(
+                self.position.certificate_id,
+                self.page.get_field('certificate-id'))
+
 
         except Exception, e:
             self._handle_exception(e)
@@ -959,7 +965,8 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
         """
         position = PositionGenerator().generate(
             save=False, seller=self.seller, buyer=self.buyer,
-            security=self.securities[1], stock_book_id='444', depot_type='1')
+            security=self.securities[1], stock_book_id='444', depot_type='1',
+            certificate_id='88888')
 
         try:
 
@@ -981,6 +988,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             position = Position.objects.last()
             self.assertEqual(position.stock_book_id, '444')
             self.assertEqual(position.depot_type, '1')
+            self.assertEqual(position.certificate_id, '88888')
 
         except Exception, e:
             self._handle_exception(e)

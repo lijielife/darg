@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-11 10:45+0000\n"
+"POT-Creation-Date: 2017-03-11 13:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,7 +40,7 @@ msgstr ""
 msgid "PDF Captable/Active Shareholders"
 msgstr ""
 
-#: project/tasks.py:143 project/tests/test_views.py:540 project/views.py:37
+#: project/tasks.py:143 project/tests/test_views.py:545 project/views.py:37
 msgid "shareholder number"
 msgstr ""
 
@@ -56,7 +56,7 @@ msgstr ""
 msgid "email"
 msgstr ""
 
-#: project/tasks.py:144 project/views.py:341
+#: project/tasks.py:144 project/views.py:346
 msgid "share count"
 msgstr ""
 
@@ -107,14 +107,14 @@ msgstr ""
 #: project/templates/_add_capital_form.html:33
 #: project/templates/_add_option_plan_form.html:34
 #: project/templates/_add_option_transaction_form.html:62
-#: project/templates/_add_position_form.html:68
+#: project/templates/_add_position_form.html:69
 #: project/templates/_add_shareholder_form.html:15
 #: project/templates/_split_shares_form.html:36
 msgid "Cancel"
 msgstr ""
 
 #: project/templates/_add_capital_form.html:34
-#: project/templates/_add_position_form.html:71
+#: project/templates/_add_position_form.html:72
 msgid "Add Position"
 msgstr ""
 
@@ -256,16 +256,19 @@ msgid "Das Aktienregister"
 msgstr ""
 
 #: project/templates/active_shareholder_captable.pdf.html:80
+#: project/templates/certificate.pdf.html:80
 #: project/templates/option.pdf.html:80
 msgid "Page"
 msgstr ""
 
 #: project/templates/active_shareholder_captable.pdf.html:81
+#: project/templates/certificate.pdf.html:81
 #: project/templates/option.pdf.html:81
 msgid "of"
 msgstr ""
 
 #: project/templates/active_shareholder_captable.pdf.html:82
+#: project/templates/certificate.pdf.html:82
 #: project/templates/option.pdf.html:82
 msgid "Date generated"
 msgstr ""
@@ -317,11 +320,83 @@ msgstr ""
 msgid "Optionen (%%)"
 msgstr ""
 
+#: project/templates/certificate.pdf.html:80
+#: project/templates/option.pdf.html:80
+msgid "www.das-aktienregister.ch"
+msgstr ""
+
+#: project/templates/certificate.pdf.html:89
+#: project/templates/option.pdf.html:89
+msgid "Total capital"
+msgstr ""
+
+#: project/templates/certificate.pdf.html:91
+#: project/templates/option.pdf.html:91
+msgid "based on"
+msgstr ""
+
+#: project/templates/certificate.pdf.html:95
+#: project/templates/option.pdf.html:95
+msgid "with face value of"
+msgstr ""
+
+#: project/templates/certificate.pdf.html:99
+#: project/templates/option.pdf.html:99
+msgid "share certificate "
+msgstr ""
+
+#: project/templates/certificate.pdf.html:101
+#: project/templates/option.pdf.html:101
+msgid "Nr."
+msgstr ""
+
+#: project/templates/certificate.pdf.html:104
+#: project/templates/option.pdf.html:104
+msgid "representing"
+msgstr ""
+
+#: project/templates/certificate.pdf.html:110
+#: project/templates/option.pdf.html:110
+msgid "with face value"
+msgstr ""
+
+#: project/templates/certificate.pdf.html:113
+#: project/templates/option.pdf.html:113
+msgid "of each"
+msgstr ""
+
+#: project/templates/certificate.pdf.html:113
+#: project/templates/option.pdf.html:113
+msgid "with total value of"
+msgstr ""
+
+#: project/templates/certificate.pdf.html:115
+#: project/templates/option.pdf.html:115
+msgid "cusip"
+msgstr ""
+
+#: project/templates/certificate.pdf.html:116
+#: project/templates/option.pdf.html:116
+msgid "ISIN"
+msgstr ""
+
+#: project/templates/certificate.pdf.html:126
+#: project/templates/option.pdf.html:126
+msgid ""
+"is as owner of the certificate with all legal and statuary rights "
+"shareholder of our company."
+msgstr ""
+
+#: project/templates/certificate.pdf.html:137
+#: project/templates/option.pdf.html:137
+msgid " in the name of the supervisory board"
+msgstr ""
+
 #: project/templates/index.html:32
 msgid "Gratis Aktienbuch-Muster"
 msgstr ""
 
-#: project/templates/index.html:36 project/tests/test_views.py:82
+#: project/templates/index.html:36 project/tests/test_views.py:83
 msgid "My Dashboard"
 msgstr ""
 
@@ -475,64 +550,6 @@ msgstr ""
 msgid "No Log Entries yet."
 msgstr ""
 
-#: project/templates/option.pdf.html:80
-msgid "www.das-aktienregister.ch"
-msgstr ""
-
-#: project/templates/option.pdf.html:89
-msgid "Total capital"
-msgstr ""
-
-#: project/templates/option.pdf.html:91
-msgid "based on"
-msgstr ""
-
-#: project/templates/option.pdf.html:95
-msgid "with face value of"
-msgstr ""
-
-#: project/templates/option.pdf.html:99
-msgid "share certificate "
-msgstr ""
-
-#: project/templates/option.pdf.html:101
-msgid "Nr."
-msgstr ""
-
-#: project/templates/option.pdf.html:104
-msgid "representing"
-msgstr ""
-
-#: project/templates/option.pdf.html:110
-msgid "with face value"
-msgstr ""
-
-#: project/templates/option.pdf.html:113
-msgid "of each"
-msgstr ""
-
-#: project/templates/option.pdf.html:113
-msgid "with total value of"
-msgstr ""
-
-#: project/templates/option.pdf.html:115
-msgid "cusip"
-msgstr ""
-
-#: project/templates/option.pdf.html:116
-msgid "ISIN"
-msgstr ""
-
-#: project/templates/option.pdf.html:126
-msgid ""
-"is as owner of the certificate with all legal and statuary rights "
-"shareholder of our company."
-msgstr ""
-
-#: project/templates/option.pdf.html:137
-msgid " in the name of the supervisory board"
-msgstr ""
-
 #: project/templates/start.html:6
 msgid "Captable"
 msgstr ""
@@ -566,13 +583,13 @@ msgstr ""
 msgid "Option Holders note"
 msgstr ""
 
-#: project/tests/test_views.py:140 project/views.py:203
+#: project/tests/test_views.py:141 project/views.py:203
 msgid ""
 "You have already an existing user account. Please login or reset your "
 "password."
 msgstr ""
 
-#: project/tests/test_views.py:585 project/views.py:94
+#: project/tests/test_views.py:590 project/views.py:94
 msgid "date"
 msgstr ""
 
@@ -640,7 +657,7 @@ msgstr ""
 msgid "seller"
 msgstr ""
 
-#: project/views.py:95 project/views.py:385
+#: project/views.py:95 project/views.py:401
 msgid "count"
 msgstr ""
 
@@ -648,7 +665,7 @@ msgstr ""
 msgid "value"
 msgstr ""
 
-#: project/views.py:96 project/views.py:385
+#: project/views.py:96 project/views.py:401
 msgid "security"
 msgstr ""
 
@@ -684,42 +701,50 @@ msgstr ""
 msgid "csv file is being generated and will be sent by email to you"
 msgstr ""
 
-#: project/views.py:341 project/views.py:385
+#: project/views.py:346 project/views.py:401
 msgid "full name"
 msgstr ""
 
-#: project/views.py:341
+#: project/views.py:346
 msgid "security name"
 msgstr ""
 
-#: project/views.py:342
+#: project/views.py:347
 msgid "certificate id"
 msgstr ""
 
-#: project/views.py:342
+#: project/views.py:347
 msgid "certificate printed at"
 msgstr ""
 
-#: project/views.py:386
-msgid "is management member"
+#: project/views.py:348
+msgid "security type"
 msgstr ""
 
-#: project/views.py:387
-msgid "vesting in months"
+#: project/views.py:355
+msgid "option"
 msgstr ""
 
-#: project/views.py:387
-msgid "asset type"
-msgstr ""
-
-#: project/views.py:390
+#: project/views.py:363 project/views.py:406
 msgid "stock"
 msgstr ""
 
-#: project/views.py:395
+#: project/views.py:402
+msgid "is management member"
+msgstr ""
+
+#: project/views.py:403
+msgid "vesting in months"
+msgstr ""
+
+#: project/views.py:403
+msgid "asset type"
+msgstr ""
+
+#: project/views.py:411
 msgid "certificate"
 msgstr ""
 
-#: project/views.py:415
+#: project/views.py:431
 msgid "pdf file is being generated and will be sent by email to you"
 msgstr ""
