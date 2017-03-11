@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-05 22:49+0000\n"
+"POT-Creation-Date: 2017-03-11 10:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -179,15 +179,27 @@ msgstr ""
 msgid "Address data of all shareholders"
 msgstr ""
 
-#: reports/templates/reports/index.html:53
+#: reports/templates/reports/index.html:52
 msgid "Printed Certificates"
 msgstr ""
 
-#: reports/templates/reports/index.html:61
+#: reports/templates/reports/index.html:59
+msgid ""
+"No printed certificates are available. Please print a certificate via a "
+"transaction or option transaction"
+msgstr ""
+
+#: reports/templates/reports/index.html:64
 msgid "Vested Shares"
 msgstr ""
 
-#: reports/templates/reports/index.html:67
+#: reports/templates/reports/index.html:71
+msgid ""
+"no vested positions yet. please add vesting data to either transaction or "
+"option transaction"
+msgstr ""
+
+#: reports/templates/reports/index.html:75
 msgid "Depot Statement per Shareholder"
 msgstr ""
 

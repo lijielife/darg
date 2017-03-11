@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-05 22:49+0000\n"
+"POT-Creation-Date: 2017-03-11 10:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -171,8 +171,7 @@ msgid "Seller"
 msgstr ""
 
 #: project/templates/_add_option_transaction_form.html:33
-#: project/templates/_add_position_form.html:37
-msgid "to"
+msgid "transferred to"
 msgstr ""
 
 #: project/templates/_add_option_transaction_form.html:36
@@ -200,6 +199,10 @@ msgstr ""
 
 #: project/templates/_add_position_form.html:3
 msgid "Please enter your position data:"
+msgstr ""
+
+#: project/templates/_add_position_form.html:37
+msgid "to"
 msgstr ""
 
 #: project/templates/_add_shareholder_form.html:3

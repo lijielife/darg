@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-05 22:49+0000\n"
-"PO-Revision-Date: 2017-03-05 22:00+0000\n"
+"POT-Creation-Date: 2017-03-11 10:45+0000\n"
+"PO-Revision-Date: 2017-03-11 10:46+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -21,14 +21,15 @@ msgstr ""
 
 #: project/forms.py:23
 msgid ""
-"I have read and agree to the <a href=\"http://www1.das-aktienregister.ch/agb"
-"\" alt=\"Darg Terms of Service\" target=\"_blank\" class=\"link tos\">Terms "
-"of Service</a>"
+"I have read and agree to the <a href=\"http://www1.das-"
+"aktienregister.ch/agb\" alt=\"Darg Terms of Service\" target=\"_blank\" "
+"class=\"link tos\">Terms of Service</a>"
 msgstr ""
-"Ich habe die <a href=\"http://www1.das-aktienregister.ch/agb\" alt="
-"\"Nutzungsbedingungen Das-Aktienregister.ch\" target=\"_blank\" class=\"link "
-"tos\">Nutzungsbedingungen</a> und <a href=\"/impressum/#datenschutz\" alt="
-"\"Nutzungsbedingungen Das-Aktienregister.ch\" target=\"_blank\" class=\"link "
+"Ich habe die <a href=\"http://www1.das-aktienregister.ch/agb\" "
+"alt=\"Nutzungsbedingungen Das-Aktienregister.ch\" target=\"_blank\" "
+"class=\"link tos\">Nutzungsbedingungen</a> und <a "
+"href=\"/impressum/#datenschutz\" alt=\"Nutzungsbedingungen Das-"
+"Aktienregister.ch\" target=\"_blank\" class=\"link "
 "tos\">Datenschutzerklärung</a> gelesen und stimme zu."
 
 #: project/tasks.py:88
@@ -184,8 +185,8 @@ msgid "Seller"
 msgstr "Verkäufer"
 
 #: project/templates/_add_option_transaction_form.html:33
-#: project/templates/_add_position_form.html:37
-msgid "to"
+#| msgid "Transfer Shares"
+msgid "transferred to"
 msgstr "an"
 
 #: project/templates/_add_option_transaction_form.html:36
@@ -214,6 +215,10 @@ msgstr "Option hinzufügen"
 #: project/templates/_add_position_form.html:3
 msgid "Please enter your position data:"
 msgstr "Bitte geben Sie die Daten für die Übertragung der Aktien an:"
+
+#: project/templates/_add_position_form.html:37
+msgid "to"
+msgstr "an"
 
 #: project/templates/_add_shareholder_form.html:3
 msgid "Please enter your shareholder data:"
@@ -450,12 +455,8 @@ msgid ""
 "Gesetzeskonformitaet. Das Online-Aktienbuch macht die Pflege schnell und "
 "effizient, damit Zeit frei wird fuer die wirklichen Herausforderungen"
 msgstr ""
-"Die Automatische Validierung verhindert Fehler und sichert maximale "
-"Gesetzeskonformität. Das Online-Aktienbuch macht die Pflege schnell und "
-"effizient, damit Zeit frei wird für die wirklichen Herausforderungen. <br/"
-"><br/>\n"
-"<strong>PLUS: der rechtlichen Verantwortung des Verwaltungsrates ist Sorge "
-"getragen.</strong>"
+"Die Automatische Validierung verhindert Fehler und sichert maximale Gesetzeskonformität. Das Online-Aktienbuch macht die Pflege schnell und effizient, damit Zeit frei wird für die wirklichen Herausforderungen. <br/><br/>\n"
+"<strong>PLUS: der rechtlichen Verantwortung des Verwaltungsrates ist Sorge getragen.</strong>"
 
 #: project/templates/index.html:119
 msgid "Do you know our Blog?"
@@ -614,8 +615,8 @@ msgid ""
 "You have already an existing user account. Please login or reset your "
 "password."
 msgstr ""
-"Sie haben bereits ein Nutzerkonto. Bitte loggen Sie sich ein oder setzen Sie "
-"Ihr Passwort zurück."
+"Sie haben bereits ein Nutzerkonto. Bitte loggen Sie sich ein oder setzen Sie"
+" Ihr Passwort zurück."
 
 #: project/tests/test_views.py:585 project/views.py:94
 msgid "date"
@@ -840,11 +841,11 @@ msgstr ""
 #~ msgstr "Datenexport als CSV für Excel etc."
 
 #~ msgid ""
-#~ "We are currently in private Beta. Please leave your email address to "
-#~ "receive an invitation soon!"
+#~ "We are currently in private Beta. Please leave your email address to receive"
+#~ " an invitation soon!"
 #~ msgstr ""
-#~ "Wir sind aktuell in geschlossender Beta. Bitte hinterlassen Sie ihre "
-#~ "Email, um eine Einladung zu erhalten."
+#~ "Wir sind aktuell in geschlossender Beta. Bitte hinterlassen Sie ihre Email, "
+#~ "um eine Einladung zu erhalten."
 
 #~ msgid "Your Email"
 #~ msgstr "Email"
@@ -858,9 +859,6 @@ msgstr ""
 #~ msgid "Positions"
 #~ msgstr "Transaktionen"
 
-#~ msgid "Transfer Shares"
-#~ msgstr "Aktien übertragen"
-
 #~ msgid "Increase Kapital"
 #~ msgstr "Kapitalerhöhung"
 
@@ -872,8 +870,8 @@ msgstr ""
 
 #~ msgid "GAFI Standard compliant"
 #~ msgstr ""
-#~ "Entspricht <a href=\"http://www.fatf-gafi.org/\" title=\"GAFI\" class="
-#~ "\"regular\">GAFI Standards</a>"
+#~ "Entspricht <a href=\"http://www.fatf-gafi.org/\" title=\"GAFI\" "
+#~ "class=\"regular\">GAFI Standards</a>"
 
 #~ msgid "Extensive data validation to ensure you cannot make a mistake"
 #~ msgstr "Umfangreiche Datenvalidierung  - Garantiert korrekte Daten"
