@@ -325,6 +325,12 @@ class OptionsPage(BasePage):
                     return True
         return False
 
+    def is_shareholder_name_displayed(self, shareholder):
+        """
+        does the shareholders full name exist inside the markup
+        """
+        return shareholder.get_full_name() in self.driver.page_source
+
     # --  aggregations of logic
     def prepare_optionplan_fixtures(self):
         """ setup options plan """

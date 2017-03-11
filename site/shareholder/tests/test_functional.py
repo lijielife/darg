@@ -467,6 +467,8 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             self.assertTrue(app.is_option_date_equal('13.05.16'))
             self.assertTrue(app.is_option_plan_displayed(
                 ot.option_plan.security))
+            self.assertTrue(app.is_shareholder_name_displayed(self.seller))
+            self.assertTrue(app.is_shareholder_name_displayed(self.buyer))
 
         except Exception, e:
             self._handle_exception(e)
