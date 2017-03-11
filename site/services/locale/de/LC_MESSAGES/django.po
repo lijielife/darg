@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-05 22:49+0000\n"
+"POT-Creation-Date: 2017-03-11 10:45+0000\n"
 "PO-Revision-Date: 2017-01-06 09:34+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -134,7 +134,11 @@ msgstr ""
 "Aktiennummer(n) {} ist nicht reserviert für einen Optionsplan and kann nicht "
 "an einen Optionsinhaber transferiert werden. Verfügbar sind aber: {}."
 
-#: services/rest/tests/test_serializers.py:394
+#: services/rest/serializers.py:1003
+msgid "Certificate ID {} is already used"
+msgstr ""
+
+#: services/rest/tests/test_serializers.py:405
 msgid "Human Being"
 msgstr "Natürliche Person"
 

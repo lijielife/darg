@@ -48,22 +48,30 @@
             <span class="el-icon-download-alt"></span>
           </a>
         </li>
-		{% if operator.company.has_printed_certificates %}
         <li>
-		  {% trans "Printed Certificates" %}
-		  <a href="{% url "printed_certificates_csv" company_id=operator.company.id %}" title="">
-		    <span class="el-icon-download-alt"></span>
-	      </a>
-		</li>
+    	  {% trans "Printed Certificates" %}
+          {% if operator.company.has_printed_certificates %}
+    	  <a href="{% url "printed_certificates_csv" company_id=operator.company.id %}" title="">
+    	    <span class="el-icon-download-alt"></span>
+          </a>
+          {% else %}
+          <div class="note">
+            {% trans "No printed certificates are available. Please print a certificate via a transaction or option transaction" %}
+          </div>
 		{% endif %}
-		{% if operator.company.has_vested_positions %}
+        </li>
         <li>
 		  {% trans "Vested Shares" %}
+          {% if operator.company.has_vested_positions %}
 		  <a href="{% url "vested_csv" company_id=operator.company.id %}" title="">
 		    <span class="el-icon-download-alt"></span>
 		  </a>
-	    </li>
+          {% else %}
+          <div class="note">
+            {% trans "no vested positions yet. please add vesting data to either transaction or option transaction" %}
+          </div>
 		{% endif %}
+        </li>
         <!-- <li><a href="" title="">{% trans "Depot Statement per Shareholder" %}</a></li> -->
       </ul>
     </div>
