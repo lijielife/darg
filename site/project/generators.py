@@ -270,6 +270,10 @@ class PositionGenerator(object):
             kwargs2.update(
                 {'stock_book_id': kwargs.get('stock_book_id')})
 
+        if kwargs.get('certificate_id'):
+            kwargs2.update(
+                {'certificate_id': kwargs.get('certificate_id')})
+
         if kwargs.get('save') == False:
             return Position(**kwargs2)
 

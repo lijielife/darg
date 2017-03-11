@@ -58,6 +58,8 @@ urlpatterns = [
     url(r'^positions/$', 'shareholder.views.positions', name='positions'),
     url(r'^positions/(?P<pk>[0-9]+)/$',
         PositionView.as_view(), name='position'),
+    url(r'^positions/(?P<option_id>[0-9]+)/download/pdf$',
+        'project.views.position_option_pdf', name='position_option_pdf'),
 
     url(r'^shareholder/(?P<pk>[0-9]+)/$',
         ShareholderView.as_view(), name='shareholder'),

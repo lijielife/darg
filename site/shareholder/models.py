@@ -62,6 +62,20 @@ class TagMixin(object):
         return Tag.objects.get_for_object(self)
 
 
+class CertificateMixin(models.Model):
+    """
+    bundling common certificate logic for transaction and optiontransaction
+    """
+    certificate_id = models.CharField(
+        max_length=255, blank=True, null=True,
+        help_text=_('id of the issued certificate'))
+    printed_at = models.DateTimeField(_('was this printed at least once?'),
+                                      blank=True, null=True)
+
+    class Meta:
+        abstract = True
+
+
 class Country(models.Model):
     """Model for countries"""
     iso_code = models.CharField(max_length=2, primary_key=True)
@@ -415,9 +429,14 @@ class Company(models.Model):
         """ returns bool if at least one certificate was printed/has printed
         date
         """
-        return OptionTransaction.objects.filter(option_plan__company=self,
-                                                printed_at__isnull=False
-                                                ).exists()
+        ots = OptionTransaction.objects.filter(option_plan__company=self,
+                                               printed_at__isnull=False
+                                               )
+        poss = Position.objects.filter(
+            Q(buyer__company=self) | Q(seller__company=self),
+            printed_at__isnull=False)
+
+        return ots.exists() or poss.exists()
 
     def has_vested_positions(self):
         """ returns bool if company has at least one position (option/
@@ -1091,7 +1110,7 @@ class Security(models.Model):
         return ''
 
 
-class Position(models.Model):
+class Position(CertificateMixin):
     """
     aka Transaction
     """
@@ -1160,6 +1179,9 @@ class Position(models.Model):
             return _('Share issue')
         return _('Regular Ownership change')
 
+    def get_total_face_value(self):
+        return self.count * self.security.face_value
+
 
 def get_option_plan_upload_path(instance, filename):
     return os.path.join(
@@ -1223,7 +1245,7 @@ class OptionPlan(models.Model):
         return "/optionsplan/{}/download/pdf/".format(self.pk)
 
 
-class OptionTransaction(models.Model):
+class OptionTransaction(CertificateMixin):
     """ Transfer of options from someone to anyone """
     bought_at = models.DateField()
     buyer = models.ForeignKey('Shareholder', related_name="option_buyer")
@@ -1232,9 +1254,6 @@ class OptionTransaction(models.Model):
     seller = models.ForeignKey('Shareholder', blank=True, null=True,
                                related_name="option_seller")
     vesting_months = models.PositiveIntegerField(blank=True, null=True)
-    certificate_id = models.CharField(
-        max_length=255, blank=True, null=True,
-        help_text=_('id of the issued certificate'))
     number_segments = JSONField(
         _('JSON list of segments of ids for securities. can be 1, 2, 3, 4-10'),
         default=list, blank=True, null=True)
@@ -1248,8 +1267,6 @@ class OptionTransaction(models.Model):
         _('What kind of depot is this position stored within'), max_length=1,
         choices=DEPOT_TYPES, blank=True, null=True)
     is_draft = models.BooleanField(default=True)
-    printed_at = models.DateTimeField(_('was this printed at least once?'),
-                                      blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

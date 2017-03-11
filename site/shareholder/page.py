@@ -471,6 +471,10 @@ class PositionPage(BasePage):
             inputs[7].clear()
             inputs[7].send_keys(position.stock_book_id)
 
+        if position.certificate_id:
+            inputs[9].clear()
+            inputs[9].send_keys(position.certificate_id)
+
     def show_optional_fields(self):
         self.driver.find_element_by_class_name('el-icon-plus-sign').click()
 
