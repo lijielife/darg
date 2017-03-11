@@ -411,8 +411,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
         self.assertEqual(response.status_code, 302)
         # assert proper csv
         f_, content = self._get_attachment_content()
-        self.assertTrue(content.startswith('%PDF-1.4\r\n'))
-        self.assertTrue(content.endswith('EOF\r\n'))
+        self.assertTrue(content.startswith('%PDF'))
 
     def test_pdf_download_with_number_segments(self):
         """ test download of captable pdf """
@@ -435,8 +434,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
         self.assertEqual(response.status_code, 302)
         # assert proper csv
         f_, content = self._get_attachment_content()
-        self.assertTrue(content.startswith('%PDF-1.4\r\n'))
-        self.assertTrue(content.endswith('EOF\r\n'))
+        self.assertTrue(content.startswith('%PDF'))
 
     def test_pdf_download_with_missing_operator(self):
         """ test download of captable pdf """
