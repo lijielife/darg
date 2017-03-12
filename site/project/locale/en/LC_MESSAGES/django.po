@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-11 13:27+0000\n"
+"POT-Creation-Date: 2017-03-12 08:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,7 +40,7 @@ msgstr ""
 msgid "PDF Captable/Active Shareholders"
 msgstr ""
 
-#: project/tasks.py:143 project/tests/test_views.py:545 project/views.py:37
+#: project/tasks.py:143 project/tests/test_views.py:543 project/views.py:37
 msgid "shareholder number"
 msgstr ""
 
@@ -589,7 +589,7 @@ msgid ""
 "password."
 msgstr ""
 
-#: project/tests/test_views.py:590 project/views.py:94
+#: project/tests/test_views.py:588 project/views.py:94
 msgid "date"
 msgstr ""
 

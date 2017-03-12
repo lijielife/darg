@@ -772,11 +772,20 @@ class Shareholder(TagMixin, models.Model):
             result['errors'].append(_("Missing all data required for #GAFI."))
             return result
 
-        if not (self.user.first_name and self.user.last_name) or not \
-                self.user.userprofile.company_name:
+        # humans need names
+        if (self.user.userprofile.legal_type == 'H' and
+            not self.user.first_name or not self.user.last_name
+            ):
             result['is_valid'] = False
             result['errors'].append(_(
-                'Shareholder first name, last name or company name missing.'))
+                'Shareholder first name or last name missing.'))
+
+        if (self.user.userprofile.legal_type == 'C' and
+            not self.user.userprofile.company_name
+            ):
+            result['is_valid'] = False
+            result['errors'].append(_(
+                'Company name or last name missing.'))
 
         if not self.user.userprofile.birthday:
             result['is_valid'] = False
