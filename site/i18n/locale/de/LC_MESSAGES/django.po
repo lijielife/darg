@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-12 08:14+0000\n"
-"PO-Revision-Date: 2017-03-11 10:41+0000\n"
+"POT-Creation-Date: 2017-03-12 22:28+0000\n"
+"PO-Revision-Date: 2017-03-12 22:29+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -152,11 +152,11 @@ msgstr "Downloads für"
 
 #: reports/templates/reports/index.html:20
 msgid ""
-"Use CSV for Excel like Downloads. Follow this <a href='https://goo.gl/"
-"aQ2gVx'>guide for instructions</a>."
+"Use CSV for Excel like Downloads. Follow this <a "
+"href='https://goo.gl/aQ2gVx'>guide for instructions</a>."
 msgstr ""
-"Verwenden Sie CSV für Excel-Downloads. Folgen Sie  <a href='https://goo.gl/"
-"aQ2gVx'>diesen Guide für das Öffnen in Excel</a>."
+"Verwenden Sie CSV für Excel-Downloads. Folgen Sie  <a "
+"href='https://goo.gl/aQ2gVx'>diesen Guide für das Öffnen in Excel</a>."
 
 #: reports/templates/reports/index.html:27
 msgid "Download active Shareholders as"
@@ -197,8 +197,9 @@ msgid ""
 "transaction or option transaction"
 msgstr ""
 "Keine Urkunden/Zertifikate bisher gedruckt. Bitte drucken Sie vorher "
-"mindestens eine Urkunde über die Detailansicht einer <a href=\"/positions/"
-"\">Transaktion</a> oder <a href=\"/options/\">Optionstransaktion</a>."
+"mindestens eine Urkunde über die Detailansicht einer <a "
+"href=\"/positions/\">Transaktion</a> oder <a "
+"href=\"/options/\">Optionstransaktion</a>."
 
 #: reports/templates/reports/index.html:64
 msgid "Vested Shares"
@@ -210,8 +211,9 @@ msgid ""
 "option transaction"
 msgstr ""
 "Keine Positionen mit Sperrfristen vorhanden. Bitte legen Sie vorher "
-"mindestens eine Position mit Sperrfrist unter <a href=\"/positions/"
-"\">Transaktion</a> oder <a href=\"/options/\">Optionstransaktion</a> an."
+"mindestens eine Position mit Sperrfrist unter <a "
+"href=\"/positions/\">Transaktion</a> oder <a "
+"href=\"/options/\">Optionstransaktion</a> an."
 
 #: reports/templates/reports/index.html:75
 msgid "Depot Statement per Shareholder"
@@ -221,14 +223,22 @@ msgstr "Depotauszug pro Gesellschafter"
 msgid "Important:"
 msgstr "Wichtig:"
 
+#: templates/base.html:9
+msgid "Das Aktienregister title content"
+msgstr "Online-Aktienbuch - Aktionäre beeindrucken"
+
+#: templates/base.html:9
+msgid "brand name"
+msgstr "das-aktienregister.ch"
+
 #: templates/base.html:10
 msgid ""
 "Das Aktienregister - Perfekte Aktionariatsverwaltung: Schnelligkeit und "
 "Effizienz fuer kleine AGs, vollumfaengliches Aktienregister fuer "
 "Publikumsgesellschaften"
 msgstr ""
-"Willkommen bei Das-Aktienregister.ch - Die besten Aktienbuch Vorlagen/Muster "
-"(Excel) herunterladen oder effizient Aktienbuch online führen & PDF "
+"Willkommen bei Das-Aktienregister.ch - Die besten Aktienbuch Vorlagen/Muster"
+" (Excel) herunterladen oder effizient Aktienbuch online führen & PDF "
 "herunterladen."
 
 #: templates/base_auth.html:15
@@ -286,12 +296,12 @@ msgstr "Sicherheitseinstellungen"
 msgid "Logout"
 msgstr "Logout"
 
-#: templates/menu.html:80 templates/two_factor/core/login.html:55
+#: templates/menu.html:80 templates/two_factor/core/login.html:61
 msgid "Register"
 msgstr "Registrieren"
 
 #: templates/menu.html:83 templates/registration/registration_form.html:26
-#: templates/two_factor/core/login.html:6
+#: templates/two_factor/core/login.html:12
 msgid "Login"
 msgstr "Login"
 
@@ -349,8 +359,8 @@ msgid ""
 "The password reset link was invalid, possibly because it has already been "
 "used.  Please request a new password reset."
 msgstr ""
-"Der Link zum Passwort-zurücksetzen ist nicht gültig. Wahrscheinlich wurde er "
-"bereits benutzt. Bitte fragen Sie diesen erneut an."
+"Der Link zum Passwort-zurücksetzen ist nicht gültig. Wahrscheinlich wurde er"
+" bereits benutzt. Bitte fragen Sie diesen erneut an."
 
 #: templates/registration/password_reset_done.html:4
 #: templates/registration/password_reset_done.html:14
@@ -360,14 +370,12 @@ msgstr "Passwort zurücksetzen"
 #: templates/registration/password_reset_done.html:17
 msgid ""
 "\n"
-"    We have sent you an email with a link to reset your password.  Please "
-"check\n"
+"    We have sent you an email with a link to reset your password.  Please check\n"
 "    your email and click the link to continue.\n"
 "    "
 msgstr ""
 "\n"
-"Wir haben Ihnen eine Email mit einem Link zum Zurücksetzen Ihres Passwortes "
-"gesendet. Bitte öffnen Sie Ihre Email und klicken Sie diesen Link."
+"Wir haben Ihnen eine Email mit einem Link zum Zurücksetzen Ihres Passwortes gesendet. Bitte öffnen Sie Ihre Email und klicken Sie diesen Link."
 
 #: templates/registration/password_reset_email.html:3
 msgid "Greetings"
@@ -378,25 +386,20 @@ msgstr "Mit besten Grüssen"
 msgid ""
 "\n"
 "You are receiving this email because you (or someone pretending to be you)\n"
-"requested that your password be reset on the %(domain)s site.  If you do "
-"not\n"
+"requested that your password be reset on the %(domain)s site.  If you do not\n"
 "wish to reset your password, please ignore this message.\n"
 msgstr ""
 "\n"
-"Sie erhalten diese Email da Sie (oder jemand der vorgibt Sie zu sein) das "
-"Zurücksetzen des Passworts auf der Seite %(domain)s angefragt haben. Falls "
-"Sie dies nicht waren, ignorieren Sie bitte diese Email.\n"
+"Sie erhalten diese Email da Sie (oder jemand der vorgibt Sie zu sein) das Zurücksetzen des Passworts auf der Seite %(domain)s angefragt haben. Falls Sie dies nicht waren, ignorieren Sie bitte diese Email.\n"
 
 #: templates/registration/password_reset_email.html:11
 msgid ""
 "\n"
-"To reset your password, please click the following link, or copy and paste "
-"it\n"
+"To reset your password, please click the following link, or copy and paste it\n"
 "into your web browser:\n"
 msgstr ""
 "\n"
-"Um ihr Passwort zurückzusetzen, klicken Sie bitte den folgenden Link oder "
-"kopieren Sie diesen in die Adress-Leiste Ihres Browsers:\n"
+"Um ihr Passwort zurückzusetzen, klicken Sie bitte den folgenden Link oder kopieren Sie diesen in die Adress-Leiste Ihres Browsers:\n"
 
 #: templates/registration/password_reset_email.html:18
 msgid "Your username, in case you've forgotten:"
@@ -413,14 +416,11 @@ msgstr "Team"
 #: templates/registration/password_reset_form.html:17
 msgid ""
 "\n"
-"    Forgot your password?  Enter your email in the form below and we'll send "
-"you instructions for creating a new one.\n"
+"    Forgot your password?  Enter your email in the form below and we'll send you instructions for creating a new one.\n"
 "    "
 msgstr ""
 "\n"
-"Sie haben Ihr Passwort vergessen? Geben Sie Ihre Email in das Formular unten "
-"ein. Wir senden Ihnen genauere Instruktionen für die Erstellung eines neuen "
-"zu."
+"Sie haben Ihr Passwort vergessen? Geben Sie Ihre Email in das Formular unten ein. Wir senden Ihnen genauere Instruktionen für die Erstellung eines neuen zu."
 
 #: templates/registration/registration_complete.html:11
 msgid "Registration Complete"
@@ -444,12 +444,12 @@ msgid "Already registered?"
 msgstr "Bereits registriert?"
 
 #: templates/registration/registration_form.html:29
-#: templates/two_factor/core/login.html:62
+#: templates/two_factor/core/login.html:68
 msgid "Do you know our "
 msgstr "Kennen Sie unseren"
 
 #: templates/registration/registration_form.html:29
-#: templates/two_factor/core/login.html:63
+#: templates/two_factor/core/login.html:69
 msgid "Blog"
 msgstr "Blog"
 
@@ -487,27 +487,25 @@ msgstr "Zurück zu Sicherheitseinstellungen"
 msgid "Generate Tokens"
 msgstr "Token erstellen"
 
-#: templates/two_factor/core/login.html:9
+#: templates/two_factor/core/login.html:15
 msgid "Enter your credentials."
 msgstr "Bitte geben Sie Ihre Zugangsdaten ein"
 
-#: templates/two_factor/core/login.html:12
-msgid ""
-"We are calling your phone right now, please enter the\n"
-"        digits you hear."
+#: templates/two_factor/core/login.html:18
+msgid "We are calling your phone right now, please enter the digits you hear."
 msgstr ""
 "Wir rufen Sie gerade an. Bitte geben Sie die Zahlenkombination ein, welche "
 "Ihnen am Telefon angesagt wird."
 
-#: templates/two_factor/core/login.html:15
+#: templates/two_factor/core/login.html:20
 msgid ""
 "We sent you a text message, please enter the tokens we\n"
-"        sent."
+"      sent."
 msgstr ""
 "Wir haben Ihnen eine Text-Nachricht gesendet. Bitte geben Sie den "
 "zugesendeten Token ein."
 
-#: templates/two_factor/core/login.html:18
+#: templates/two_factor/core/login.html:23
 msgid ""
 "Please enter the tokens generated by your token\n"
 "        generator."
@@ -515,38 +513,37 @@ msgstr ""
 "Bitte geben Sie den Token ein, welchen Ihr Token-Generator (Google "
 "Authenticator) erzeugt hat."
 
-#: templates/two_factor/core/login.html:22
+#: templates/two_factor/core/login.html:27
 msgid ""
 "Use this form for entering backup tokens for logging in.\n"
-"      These tokens have been generated for you to print and keep safe. "
-"Please\n"
+"      These tokens have been generated for you to print and keep safe. Please\n"
 "      enter one of these backup tokens to login to your account."
 msgstr ""
 "Verwenden Sie dieses Formular um Backup-Token für das Login einzugeben. "
 "Diese Token wurden von Ihnen vorab generiert und ausgedruckt. Bitte geben "
 "Sie jetzt einen dieser Backup-Token ein, um sich in Ihr Konto einzuloggen."
 
-#: templates/two_factor/core/login.html:34
+#: templates/two_factor/core/login.html:39
 msgid "Or, alternatively, use one of your backup phones:"
 msgstr "Oder verwenden Sie alternativ eine Ihrer Backup-Telefonnummern:"
 
-#: templates/two_factor/core/login.html:44
+#: templates/two_factor/core/login.html:49
 msgid "As a last resort, you can use a backup token:"
 msgstr "Als letzte Sicherheit können Sie Backup-Token verwenden:"
 
-#: templates/two_factor/core/login.html:47
+#: templates/two_factor/core/login.html:52
 msgid "Use Backup Token"
 msgstr "Verwenden Sie die Backup-Token"
 
-#: templates/two_factor/core/login.html:54
+#: templates/two_factor/core/login.html:60
 msgid "Not  a member?"
 msgstr "Noch nicht registriert?"
 
-#: templates/two_factor/core/login.html:58
+#: templates/two_factor/core/login.html:64
 msgid "Password lost?"
 msgstr "Passwort vergessen?"
 
-#: templates/two_factor/core/login.html:59
+#: templates/two_factor/core/login.html:65
 msgid "Reset Password"
 msgstr "Passwort zurücksetzen"
 
