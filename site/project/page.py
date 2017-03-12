@@ -94,7 +94,14 @@ class BasePage(object):
 
     def refresh(self):
         """ reload page """
-        self.driver.refresh()
+        # if TimeoutException happens keep trying
+        attempts = 0
+        while attempts < 10:
+            try:
+                self.driver.refresh()
+                break
+            except TimeoutException:
+                attempts += 1
 
     def use_datepicker(self, class_name, date=None):
         """
