@@ -65,7 +65,7 @@ class BasePage(object):
         attempts = 0
         while attempts < 10:
             try:
-                self.get(url)
+                self.driver.get(url)
                 break
             except TimeoutException:
                 attempts += 1
