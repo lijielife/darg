@@ -57,18 +57,22 @@ class BasePage(object):
 
         return False
 
-    def login(self, username, password):
-        """ log the user in """
+    def get(self, url):
+        """
+        run x attempts to fetch url. url must be absolute
+        """
         # if TimeoutException happens keep trying
         attempts = 0
         while attempts < 10:
             try:
-                self.driver.get(
-                    '%s%s' % (self.live_server_url, '/account/login/'))
+                self.get(url)
                 break
             except TimeoutException:
                 attempts += 1
 
+    def login(self, username, password):
+        """ log the user in """
+        self.get('%s%s' % (self.live_server_url, '/account/login/'))
         self.wait_until_visible((
             By.XPATH,
             '//*[@id="id_auth-username"]'
@@ -316,7 +320,7 @@ class StartPage(BasePage):
             self.operator = user.operator_set.all()[0]
         self.login(username=user.username,
                    password=DEFAULT_TEST_DATA['password'])
-        self.driver.get('%s%s' % (live_server_url, '/start/'))
+        self.get('%s%s' % (live_server_url, '/start/'))
 
     # --- ACTIONS
     def add_shareholder(self, user):

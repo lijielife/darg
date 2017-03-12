@@ -37,9 +37,9 @@ class BaseDetailPage(BasePage):
         assert 'start' in self.driver.current_url, 'login not successful'
 
         if path:
-            self.driver.get('%s%s' % (live_server_url, path))
+            self.get('%s%s' % (live_server_url, path))
         else:
-            self.driver.get('%s%s' % (live_server_url))
+            self.get('%s%s' % (live_server_url))
 
     def get_field(self, cls):
         """
@@ -128,7 +128,7 @@ class OptionsPage(BasePage):
         self.operator = user.operator_set.all()[0]
         self.login(username=user.username,
                    password=DEFAULT_TEST_DATA['password'])
-        self.driver.get('%s%s' % (live_server_url, '/options/'))
+        self.get('%s%s' % (live_server_url, '/options/'))
 
     # -- INPUT COMMANDs
     def enter_option_plan_form_data(self, *args, **kwargs):
@@ -356,7 +356,7 @@ class OptionsDetailPage(BasePage):
         self.operator = user.operator_set.all()[0]
         self.login(username=user.username,
                    password=DEFAULT_TEST_DATA['password'])
-        self.driver.get('%s%s' % (live_server_url, path))
+        self.get('%s%s' % (live_server_url, path))
 
     def get_security_text(self):
         """
@@ -380,7 +380,7 @@ class PositionPage(BasePage):
         self.operator = user.operator_set.all()[0]
         self.login(username=user.username,
                    password=DEFAULT_TEST_DATA['password'])
-        self.driver.get('%s%s' % (live_server_url, '/positions/'))
+        self.get('%s%s' % (live_server_url, '/positions/'))
 
     def click_confirm_position(self):
         table = self.driver.find_element_by_class_name('table')
