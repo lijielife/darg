@@ -337,7 +337,8 @@ class StartPage(BasePage):
 
         inputs[0].send_keys(user.first_name)
         inputs[1].send_keys(user.last_name)
-        inputs[2].send_keys(user.email)
+        if user.email:
+            inputs[2].send_keys(user.email)
         inputs[3].send_keys(random.randint(1, 6000))
 
     def enter_add_company_data(self, *args, **kwargs):
