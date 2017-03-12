@@ -85,7 +85,7 @@ class ShareholderDetailPage(BaseDetailPage):
         """
         secs = []
         t = self.driver.find_element_by_xpath(
-            '//table[contains(@class, "stock")]')
+            '//div[contains(@class, "stock") and contains(@class, "table")]')
         for tr in t.find_elements_by_class_name('security'):
             if tr.find_elements_by_class_name('number-segments'):
                 segments = tr.find_element_by_class_name(

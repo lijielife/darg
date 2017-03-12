@@ -243,7 +243,8 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                     )
                 )
             # wait for table
-            p.wait_until_visible((By.CSS_SELECTOR, 'table.stock tr.security'))
+            p.wait_until_visible((By.CSS_SELECTOR,
+                                  'div.table.stock div.tr.security'))
             self.assertEqual(p.get_securities(),
                              [u'0', u'', u'6', u'1000-1200, 1666'])
 
