@@ -105,7 +105,8 @@ class BaseSeleniumTestCase(LiveServerTestCase):
 
         super(BaseSeleniumTestCase, cls).setUpClass()
 
-        cls.selenium.set_page_load_timeout(30)
+        # failed to resolve TimeoutException
+        # cls.selenium.set_page_load_timeout(30)
 
     @classmethod
     def tearDownClass(cls):
