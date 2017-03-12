@@ -10,7 +10,6 @@
 
 {% block content %}
 <div ng_controller="StartController">
-  {% include "_form_errors.html" %}
   <div id="add_company" class="add-company-container" ng-show="!user.operator_set.length && !loading">
     {% include "_add_company_form.html" %}
   </div>
@@ -36,19 +35,35 @@
 
     <!-- ACTIONS -->
     <div class="panel" ng-hide="!user.operator_set.length">
-      <a class="btn-inline align-left" href="" ng-click="show_add_shareholder_form()">
+      <a class="btn-inline align-left" data-toggle="modal" data-target="#addShareholder" href="" ng-click="show_add_shareholder_form()">
         {% endverbatim %}{% trans "Add Shareholder" %}{% verbatim %}
       </a>
     </div>
 
-    <div id="add_shareholder" ng-hide="!user.operator_set.length  || !show_add_shareholder">
-      {% endverbatim %}{% include "_add_shareholder_form.html" %}{% verbatim %}
+    <!-- Modal -->
+    <div class="modal fade" id="addShareholder" tabindex="-1" role="dialog" aria-labelledby="addShareholderLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="addShareholderLabel">{% endverbatim %}{% trans "Add Shareholder" %}{% verbatim %}</h4>
+          </div>
+          <div class="modal-body">
+            {% endverbatim %}
+              {% include "_form_errors.html" %}
+            {% verbatim %}
+            <!-- add shareholder success -->
+            <p class="shareholder-added-success alert alert-success" ng-show="shareholder_added_success">
+              {% endverbatim %}{% trans "Shareholderr added. record share transfers here" %}{% verbatim %}
+            </p>
+            <div id="add_shareholder" ng-hide="!user.operator_set.length  || !show_add_shareholder">
+              {% endverbatim %}{% include "_add_shareholder_form.html" %}{% verbatim %}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- add shareholder success -->
-    <p class="shareholder-added-success alert alert-success" ng-show="shareholder_added_success">
-      {% endverbatim %}{% trans "Shareholderr added. record share transfers here" %}{% verbatim %}
-    </p>
 
 	<!-- --- SHARES --- -->
 	<h2 ng-show="shareholders.length" >{% endverbatim %}{% trans "Share Ownership" %}{% verbatim %}</h2>
