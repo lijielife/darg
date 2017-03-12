@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-11 13:27+0000\n"
-"PO-Revision-Date: 2017-02-12 20:34+0000\n"
+"POT-Creation-Date: 2017-03-12 08:14+0000\n"
+"PO-Revision-Date: 2017-03-12 08:14+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -88,14 +88,12 @@ msgstr "Ihre Liste gespaltener Aktienanrechte für das Unternehmen '{}'"
 msgid ""
 "Dear Operator,\n"
 "\n"
-"Your share split has been successful. Please find the list of partial shares "
-"below:\n"
+"Your share split has been successful. Please find the list of partial shares below:\n"
 "\n"
 msgstr ""
 "Lieber Operator,\n"
 "\n"
-"Der Aktiensplit war erfolgreich. Sie finden die Daten zu den teilweisen "
-"Aktienanrechten wie folgt:\n"
+"Der Aktiensplit war erfolgreich. Sie finden die Daten zu den teilweisen Aktienanrechten wie folgt:\n"
 "\n"
 
 #: shareholder/models.py:144
@@ -109,19 +107,16 @@ msgstr "--- Keine partiellen Splitbeträge ---\n"
 #: shareholder/models.py:154
 msgid ""
 "\n"
-"These shareholders are eligible to either sell their partial shares or get "
-"compensated.\n"
+"These shareholders are eligible to either sell their partial shares or get compensated.\n"
 "\n"
 "Please handle them accordingly and update the share register.\n"
 "\n"
 "Your Share Register Team"
 msgstr ""
 "\n"
-"Diese Gesellschafter sind berechtigt Ihre Anrechte zu verschenken, verkaufen "
-"oder eine entsprechende Kompensation für die Nichtverwendung zu erhalten.\n"
+"Diese Gesellschafter sind berechtigt Ihre Anrechte zu verschenken, verkaufen oder eine entsprechende Kompensation für die Nichtverwendung zu erhalten.\n"
 "\n"
-"Bitte handhaben Sie diese Anteile entsprechend und tragen Sie die "
-"durchgeführten Transaktionen nach.\n"
+"Bitte handhaben Sie diese Anteile entsprechend und tragen Sie die durchgeführten Transaktionen nach.\n"
 "\n"
 "Mit besten Grüßen\n"
 "\n"
@@ -129,7 +124,8 @@ msgstr ""
 
 #: shareholder/models.py:482
 msgid "Share split of {} on {} with ratio {}:{}. Return of old shares."
-msgstr "Aktiensplit von {} für {} mit Verhältnis {}:{}. Rückgabe alter Aktien."
+msgstr ""
+"Aktiensplit von {} für {} mit Verhältnis {}:{}. Rückgabe alter Aktien."
 
 #: shareholder/models.py:504
 msgid "Share split of {} on {} with ratio {}:{}. Provisioning of new shares."
@@ -171,101 +167,107 @@ msgstr "Gesellschafter ist Mitglied des VR/Managements"
 msgid "Missing all data required for #GAFI."
 msgstr "Alle Daten für GAFI-FATF fehlen."
 
-#: shareholder/models.py:779
-msgid "Shareholder first name, last name or company name missing."
-msgstr "Vorname, Nachname oder Unternehmensname des Gesellschafters fehlen."
+#: shareholder/models.py:781
+#| msgid "Shareholder first name, last name or company name missing."
+msgid "Shareholder first name or last name missing."
+msgstr "Vorname, Nachname des Gesellschafters fehlen."
 
-#: shareholder/models.py:783
+#: shareholder/models.py:788
+#| msgid "No company operator existing."
+msgid "Company name or last name missing."
+msgstr "Name des Unternehmens nicht vorhanden."
+
+#: shareholder/models.py:792
 msgid "Shareholder birthday missing."
 msgstr "Geburstag ist nicht angegeben."
 
-#: shareholder/models.py:787
+#: shareholder/models.py:796
 msgid "Shareholder origin/country missing."
 msgstr "Land des Aktionärs fehlt."
 
-#: shareholder/models.py:796
+#: shareholder/models.py:805
 msgid "Shareholder address or address details missing."
 msgstr "Adresse oder Adressdetails des Aktionärs fehlt."
 
-#: shareholder/models.py:1030
+#: shareholder/models.py:1039
 msgid "Preferred Stock"
 msgstr "Vorzugsaktien"
 
-#: shareholder/models.py:1031
+#: shareholder/models.py:1040
 msgid "Common Stock"
 msgstr "Stammaktien"
 
-#: shareholder/models.py:1032
+#: shareholder/models.py:1041
 msgid "Registered Shares"
 msgstr "Namensaktien"
 
-#: shareholder/models.py:1039
+#: shareholder/models.py:1048
 msgid "Nominal value of this asset"
 msgstr "Nominalwert"
 
-#: shareholder/models.py:1045 shareholder/models.py:1134
-#: shareholder/models.py:1210 shareholder/models.py:1258
+#: shareholder/models.py:1054 shareholder/models.py:1143
+#: shareholder/models.py:1219 shareholder/models.py:1267
 msgid "JSON list of segments of ids for securities. can be 1, 2, 3, 4-10"
 msgstr "JSON Liste der IDs der Wertpapiere. Kann [1,2,3, u'5-9'] sein."
 
-#: shareholder/models.py:1048
+#: shareholder/models.py:1057
 msgid "public security id aka Valor, WKN, CUSIP: http://bit.ly/2ieXwuK"
 msgstr ""
 "Öffentliche Wertpapiernummer aka Valor, WKN, CUSIP: http://bit.ly/2ieXwuK"
 
-#: shareholder/models.py:1053
+#: shareholder/models.py:1062
 msgid ""
 "App needs to track IDs of shares. WARNING: update initial transaction with "
 "segments on enabling."
 msgstr ""
-"Aktiennummern sollen verfolgt werden. WARNUNG: bei Aktivierung aktualisieren "
-"sie bitte auch alle vorhandenen Transaktionen für dieses Wertpapier!"
+"Aktiennummern sollen verfolgt werden. WARNUNG: bei Aktivierung aktualisieren"
+" sie bitte auch alle vorhandenen Transaktionen für dieses Wertpapier!"
 
-#: shareholder/models.py:1058
+#: shareholder/models.py:1067
 msgid "{} ({} CHF)"
 msgstr "{} ({} CHF)"
 
-#: shareholder/models.py:1123
+#: shareholder/models.py:1132
 msgid "Share Count transfered or created"
 msgstr "transferierte oder erstellte Aktienanzahl"
 
-#: shareholder/models.py:1127
+#: shareholder/models.py:1136
 msgid "Nominal value or payed price for the transaction"
 msgstr "Nominalwert (bei Kapitalerhöhung) oder Kaufpreis"
 
-#: shareholder/models.py:1131
+#: shareholder/models.py:1140
 msgid "Position is part of a split transaction"
 msgstr "Transaktion ist Teil eines Aktiensplits"
 
-#: shareholder/models.py:1137 shareholder/models.py:1261
+#: shareholder/models.py:1146 shareholder/models.py:1270
 msgid "Securities are purchase type (for myself, etc.)"
 msgstr "Wertpapiererwerb für ..."
 
-#: shareholder/models.py:1140 shareholder/models.py:1264
+#: shareholder/models.py:1149 shareholder/models.py:1273
 msgid "aka Skontro (read http://bit.ly/2iJquEl)"
 msgstr "aka Skontro (read http://bit.ly/2iJquEl)"
 
-#: shareholder/models.py:1143 shareholder/models.py:1267
+#: shareholder/models.py:1152 shareholder/models.py:1276
 msgid "What kind of depot is this position stored within"
 msgstr "In welcher Depotart wird das Wertpapier gespeichert."
 
-#: shareholder/models.py:1175
+#: shareholder/models.py:1184
 msgid "Capital Increase"
 msgstr "Kapitalerhöhung oder Gründung"
 
-#: shareholder/models.py:1177
+#: shareholder/models.py:1186
 msgid "Part of Split"
 msgstr "Teil einer Splittransaktion"
 
-#: shareholder/models.py:1179
+#: shareholder/models.py:1188
 msgid "Share issue"
 msgstr "Aktienausgabe"
 
-#: shareholder/models.py:1180
+#: shareholder/models.py:1189
 msgid "Regular Ownership change"
 msgstr "Regulärer Eigentümerwechsel"
 
-#: shareholder/models.py:1204
+#: shareholder/models.py:1213
 msgid "Number of shares approved"
 msgstr "Anzahl der genehmigten Aktien"
 
@@ -711,8 +713,8 @@ msgstr "Stimmrechte gesamt basierend auf ausgegebenen Aktien"
 #: shareholder/templates/shareholder/shareholder_detail.html:246
 msgid "Does include shares used for options. Without options it would be"
 msgstr ""
-"Beinhaltet Aktien welche für Optionen/Urkunden verwendet wurden. Rechnet man "
-"diese heraus ergibt dies"
+"Beinhaltet Aktien welche für Optionen/Urkunden verwendet wurden. Rechnet man"
+" diese heraus ergibt dies"
 
 #: shareholder/templates/shareholder/shareholder_detail.html:248
 msgid "Total option count based on shares dedicated to options"
@@ -774,16 +776,15 @@ msgstr ""
 "Transaktionen: {}"
 
 #: shareholder/validators.py:78
-msgid ""
-"Company share count \"{}\" does not match security count from positions "
-"\"{}\""
+msgid "Company share count \"{}\" does not match security count from positions \"{}\""
 msgstr ""
 "Aktienzahl des Unternehmens \"{}\" ist nicht identisch mit der Anzahl der "
 "Aktion in den Transaktionen \"{}\""
 
 #: shareholder/validators.py:93
 msgid "Address of some shareholders is not reachable via postal mail: {}"
-msgstr "Die Adresse einiger Gesellschafter ist postalisch nicht erreichbar: {}"
+msgstr ""
+"Die Adresse einiger Gesellschafter ist postalisch nicht erreichbar: {}"
 
 #: shareholder/validators.py:111
 msgid "Initial position for security {} is invalid"

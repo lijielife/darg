@@ -508,11 +508,22 @@ class ShareholderTestCase(TestCase):
         # must be in switzerland
         shareholder.company.country = Country.objects.get(
             iso_code__iexact='ch')
-
+        shareholder.user.userprofile.legal_type = 'C'
         shareholder.user.userprofile.company_name = None
         shareholder.user.userprofile.save()
 
         self.assertFalse(shareholder.validate_gafi()['is_valid'])
+
+        # company name not relevant for humans
+        shareholder = ShareholderGenerator().generate()
+        # must be in switzerland
+        shareholder.company.country = Country.objects.get(
+            iso_code__iexact='ch')
+        shareholder.user.userprofile.legal_type = 'H'
+        shareholder.user.userprofile.company_name = None
+        shareholder.user.userprofile.save()
+
+        self.assertTrue(shareholder.validate_gafi()['is_valid'])
 
         # --- valid data
         shareholder = ShareholderGenerator().generate()
