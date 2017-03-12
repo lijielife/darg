@@ -12,6 +12,7 @@ from django.conf import settings
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -58,8 +59,15 @@ class BasePage(object):
 
     def login(self, username, password):
         """ log the user in """
-        # if TimeoutException happens increase `implicitly_wait()` in setUp
-        self.driver.get('%s%s' % (self.live_server_url, '/account/login/'))
+        # if TimeoutException happens keep trying
+        attempts = 0
+        while attempts < 10:
+            try:
+                self.driver.get(
+                    '%s%s' % (self.live_server_url, '/account/login/'))
+                break
+            except TimeoutException:
+                attempts += 1
 
         self.wait_until_visible((
             By.XPATH,
