@@ -168,6 +168,48 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
         except Exception, e:
             self._handle_exception(e)
 
+    def test_add_shareholder_without_email(self):
+        """
+        add shareholder without email
+        """
+        op = OperatorGenerator().generate()
+        user = UserGenerator().generate()
+        user.email = None
+
+        try:
+            start = page.StartPage(
+                self.selenium, self.live_server_url, op.user)
+            # wait for list
+            start.wait_until_visible(
+                (By.CSS_SELECTOR, '#shareholder_list'))
+            start.is_properly_displayed()
+            self.assertEqual(start.has_shareholder_count(),
+                             Shareholder.objects.filter(
+                                company=op.company).count())
+            start.click_open_add_shareholder()
+            start.add_shareholder(user)
+            start.click_save_add_shareholder()
+            time.sleep(3)
+            # wait for list entry
+            xpath = (
+                '//div[@id="shareholder_list"]//span[text()="{}"]'
+                u''.format(
+                    Shareholder.objects.last().get_full_name()
+                )
+            )
+            start.wait_until_visible((By.XPATH, xpath))
+            self.assertEqual(start.has_shareholder_count(),
+                             Shareholder.objects.filter(
+                                company=op.company).count())
+            self.assertEqual(
+                user.first_name,
+                Shareholder.objects.filter(
+                    company=op.company).last().user.first_name)
+
+        except Exception, e:
+            self._handle_exception(e)
+
+
     def test_options_with_segments_display(self):
         """
         test on start page that options with segments are show properly

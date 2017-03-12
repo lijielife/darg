@@ -266,11 +266,9 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ('first_name', 'last_name', 'email', 'operator_set',
                   'userprofile')
+        extra_kwargs = {'email': {'required': False, 'allow_blank': True}}
 
     def create(self, validated_data):
-
-        if not validated_data.get('user').get('email'):
-            raise ValidationError(_('Email missing'))
 
         if validated_data.get('user').get('userprofile'):
             userprofile_data = validated_data.pop('userprofile')
@@ -291,6 +289,15 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         user = User.objects.create(**validated_data)
 
         return user
+
+    def validate_email(self, value):
+        """
+        handle django user model not allowing None values
+        """
+        if not value:
+            return u''
+        else:
+            return value
 
 
 class ShareholderListSerializer(serializers.HyperlinkedModelSerializer):
@@ -350,9 +357,6 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
         # FIXME: assuming one company per user
         company = user.operator_set.all()[0].company
 
-        if not validated_data.get('user').get('email'):
-            raise ValidationError({'email': [_('Email missing')]})
-
         if not validated_data.get('user').get('first_name'):
             raise ValidationError({'first_name': [_('First Name missing')]})
 
@@ -367,18 +371,24 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
 
         # get unique username
         username = make_username(
-            validated_data.get("user").get("first_name") or '',
-            validated_data.get("user").get("last_name") or '',
-            validated_data.get("user").get("email") or ''
+            validated_data.get("user", {}).get("first_name", u''),
+            validated_data.get("user", {}).get("last_name", u''),
+            validated_data.get("user", {}).get("email", u'')
         )
+        email = validated_data.get("user", {}).get("email", u'')
+        if email:
+            user_kwargs = {'email': email}
+        else:
+            user_kwargs = {'username': username}
 
         shareholder_user, created = User.objects.get_or_create(
-            email=validated_data.get("user").get("email"),
             defaults={
-                "username": username,
+                "email": validated_data.get("user", {}).get("email", u''),
                 "first_name": validated_data.get("user").get("first_name"),
                 "last_name": validated_data.get("user").get("last_name"),
-            })
+            },
+            **user_kwargs
+        )
 
         if not hasattr(shareholder_user, 'userprofile'):
             shareholder_user.userprofile = UserProfile.objects.create()
@@ -417,7 +427,7 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
 
         # don't create duplicate users with same email if email is set:
         if (
-                validated_data['user']['email'] and
+                validated_data['user'].get('email', u'') and
                 User.objects.filter(
                     email=validated_data['user']['email']
                 ).exists() and User.objects.get(
@@ -426,7 +436,7 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
             raise ValidationError({'email': [_(
                 'This email is already taken by another user/shareholder.')]})
 
-        user.email = validated_data['user']['email']
+        user.email = validated_data['user'].get('email', u'')
         user.first_name = validated_data['user']['first_name']
         user.last_name = validated_data['user']['last_name']
         user.save()
@@ -504,7 +514,6 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
         user = self.context.get("request").user
         company = user.operator_set.first().company
         return company
-
 
     def get_readable_number_segments(self, obj):
         """

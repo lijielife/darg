@@ -12,6 +12,7 @@ from django.conf import settings
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -56,32 +57,51 @@ class BasePage(object):
 
         return False
 
+    def get(self, url):
+        """
+        run x attempts to fetch url. url must be absolute
+        """
+        # if TimeoutException happens keep trying
+        attempts = 0
+        while attempts < 10:
+            try:
+                self.driver.get(url)
+                break
+            except TimeoutException:
+                attempts += 1
+
     def login(self, username, password):
         """ log the user in """
-        try:
-            self.driver.get('%s%s' % (self.live_server_url, '/account/login/'))
-        # randomly failes with TimeoutException
-        except:
-            time.sleep(5)
-            self.driver.get('%s%s' % (self.live_server_url, '/account/login/'))
-
-        self.driver.find_element_by_xpath(
-            '//*[@id="id_auth-username"]').send_keys(username)
-        self.driver.find_element_by_xpath(
-            '//*[@id="id_auth-password"]').send_keys(password)
-        self.driver.find_element_by_xpath(
-            '//button[contains(@class, "btn-primary")]').click()
+        self.get('%s%s' % (self.live_server_url, '/account/login/'))
+        self.wait_until_visible((
+            By.XPATH,
+            '//*[@id="id_auth-username"]'
+        )).send_keys(username)
+        self.wait_until_visible((
+            By.XPATH,
+            '//*[@id="id_auth-password"]'
+        )).send_keys(password)
+        self.wait_until_visible((
+            By.XPATH,
+            '//button[contains(@class, "btn-primary")]'
+        )).click()
         time.sleep(1)  # wait for page reload  # FIXME
-        page_heading = self.driver.find_element_by_tag_name(
-            'h1').get_attribute('innerHTML')
+        page_heading = self.driver.find_element_by_tag_name('h1').get_attribute(
+            'innerHTML')
         assert page_heading == 'Willkommen {}!'.format(
             username), 'failed to login. got {} page instead'.format(
             page_heading)
 
     def refresh(self):
         """ reload page """
-        self.driver.get(self.driver.current_url)
-        time.sleep(1)
+        # if TimeoutException happens keep trying
+        attempts = 0
+        while attempts < 10:
+            try:
+                self.driver.refresh()
+                break
+            except TimeoutException:
+                attempts += 1
 
     def use_datepicker(self, class_name, date=None):
         """
@@ -307,7 +327,7 @@ class StartPage(BasePage):
             self.operator = user.operator_set.all()[0]
         self.login(username=user.username,
                    password=DEFAULT_TEST_DATA['password'])
-        self.driver.get('%s%s' % (live_server_url, '/start/'))
+        self.get('%s%s' % (live_server_url, '/start/'))
 
     # --- ACTIONS
     def add_shareholder(self, user):
@@ -317,7 +337,8 @@ class StartPage(BasePage):
 
         inputs[0].send_keys(user.first_name)
         inputs[1].send_keys(user.last_name)
-        inputs[2].send_keys(user.email)
+        if user.email:
+            inputs[2].send_keys(user.email)
         inputs[3].send_keys(random.randint(1, 6000))
 
     def enter_add_company_data(self, *args, **kwargs):

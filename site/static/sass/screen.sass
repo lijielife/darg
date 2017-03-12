@@ -562,6 +562,14 @@ nav.navbar
 .totals
   border-top: 2px solid $color-gray-lighten
 .table
+  &.shareholder_detail_table
+    .td
+      &:before
+        content: attr(data-header)
+        width: 65%
+        font-weight: 700
+        margin-top: 10px
+
   @include display-flex(flex)
   @include flex-flow(column)
   @include justify-content(space-between)
@@ -623,6 +631,8 @@ nav.navbar
     width: 0
 
 // --  start
+.split-header
+  word-wrap: break-word //break word on mobile
 div #add_shareholder
   margin-bottom: 1em
 div #add_company

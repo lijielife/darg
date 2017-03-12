@@ -445,7 +445,6 @@ class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
         self.assertEqual(position.depot_type, "1")
         self.assertEqual(position.certificate_id, "88888")
 
-
     def test_add_position_with_number_segment(self):
         """
         test that we can add a position with numbered shares
@@ -842,7 +841,6 @@ class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
             '/services/rest/position?search={}'.format(query))
 
         self.assertEqual(res.status_code, 200)
-        print 'REMOVEME:', res.data  # instable on CI, print to understand the cause
         self.assertEqual(res.data['count'], 1)
 
     def test_ordering(self):
@@ -1002,6 +1000,37 @@ class ShareholderTestCase(TestCase):
 
         # check proper db status
         user = User.objects.get(email="mike.hildebrand2@darg.com")
+
+    def test_add_new_shareholder_without_email(self):
+        """ addes a new shareholder and user and checks for special chars"""
+
+        operator = OperatorGenerator().generate()
+        user = operator.user
+
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
+        self.assertTrue(logged_in)
+
+        data = {
+            u"user": {
+                u"first_name": u"Mike2Grüße",
+                u"last_name": u"Hildebrand2Grüße",
+            },
+            u"number": u"10002"}
+
+        response = self.client.post(
+            '/services/rest/shareholders',
+            data,
+            **{'HTTP_AUTHORIZATION': 'Token {}'.format(
+                user.auth_token.key), 'format': 'json'})
+
+        self.assertEqual(response.status_code, 201)
+        self.assertNotEqual(response.data.get('pk'), None)
+        self.assertTrue(isinstance(response.data.get('user'), dict))
+        self.assertEqual(response.data.get('number'), u'10002')
+
+        # check proper db status
+        user = User.objects.get(first_name=u"Mike2Grüße")
 
     def test_add_duplicate_new_shareholder(self):
         """

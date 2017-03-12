@@ -2539,13 +2539,64 @@ blockquote p.says:before {
   margin-top: -1px;
 }
 
-div.members-area ul li {
+.core .container.members-area .footer {
+  width: 100%;
+  text-align: center;
+}
+.core .container.members-area .login-meta a {
+  margin-bottom: 15px;
+}
+.core .container.members-area .two_factor_auth {
+  max-width: 245px;
+  margin: 0 auto;
+}
+.core .container.members-area .two_factor_auth #id_token-otp_token {
+  width: 100%;
+  margin-top: 10px;
+}
+.core .container.members-area .two_factor_auth input {
+  padding: 10px 13px;
+  margin-bottom: 10px;
+  min-width: 245px;
+}
+.core .container.members-area .two_factor_auth .auth {
+  margin-bottom: 15px;
+}
+.core .container.members-area .two_factor_auth .auth .btn {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px 13px;
+}
+.core .container.members-area .two_factor_auth .auth .btn.btn-disabled {
+  display: none;
+}
+.core .container.members-area .two_factor_auth .auth .btn.btn-link {
+  display: none;
+}
+.core .container.members-area .two_factor_auth .auth th {
+  display: none;
+}
+.core .container.members-area .two_factor_auth .auth tr {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-flow: column;
+  flex-flow: column;
+}
+.core .container.members-area ul li {
   list-style: none;
 }
-div.members-area ul.errorlist {
+.core .container.members-area ul.errorlist {
   padding: 0;
 }
 
+@media only screen and (min-width: 768px) {
+  .core .container.members-area .two_factor_auth {
+    max-width: 345px;
+  }
+  .core .container.members-area .two_factor_auth input {
+    min-width: 345px;
+  }
+}
 @font-face {
   font-family: "QuickSandLight";
   src: url("/static/compiled/fonts/Quicksand-Light.otf") format("opentype");
@@ -3305,6 +3356,10 @@ nav.navbar .navbar-text {
 }
 .td-width-10:before {
   width: 0;
+}
+
+.split-header {
+  word-wrap: break-word;
 }
 
 div #add_shareholder {
