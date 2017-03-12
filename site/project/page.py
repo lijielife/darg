@@ -58,30 +58,31 @@ class BasePage(object):
 
     def login(self, username, password):
         """ log the user in """
-        try:
-            self.driver.get('%s%s' % (self.live_server_url, '/account/login/'))
-        # randomly failes with TimeoutException
-        except:
-            time.sleep(5)
-            self.driver.get('%s%s' % (self.live_server_url, '/account/login/'))
+        # if TimeoutException happens increase `implicitly_wait()` in setUp
+        self.driver.get('%s%s' % (self.live_server_url, '/account/login/'))
 
-        self.driver.find_element_by_xpath(
-            '//*[@id="id_auth-username"]').send_keys(username)
-        self.driver.find_element_by_xpath(
-            '//*[@id="id_auth-password"]').send_keys(password)
-        self.driver.find_element_by_xpath(
-            '//button[contains(@class, "btn-primary")]').click()
+        self.wait_until_visible((
+            By.XPATH,
+            '//*[@id="id_auth-username"]'
+        )).send_keys(username)
+        self.wait_until_visible((
+            By.XPATH,
+            '//*[@id="id_auth-password"]'
+        )).send_keys(password)
+        self.wait_until_visible((
+            By.XPATH,
+            '//button[contains(@class, "btn-primary")]'
+        )).click()
         time.sleep(1)  # wait for page reload  # FIXME
-        page_heading = self.driver.find_element_by_tag_name(
-            'h1').get_attribute('innerHTML')
+        page_heading = self.driver.find_element_by_tag_name('h1').get_attribute(
+            'innerHTML')
         assert page_heading == 'Willkommen {}!'.format(
             username), 'failed to login. got {} page instead'.format(
             page_heading)
 
     def refresh(self):
         """ reload page """
-        self.driver.get(self.driver.current_url)
-        time.sleep(1)
+        self.driver.refresh()
 
     def use_datepicker(self, class_name, date=None):
         """

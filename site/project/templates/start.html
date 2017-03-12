@@ -25,14 +25,14 @@
   <!-- table per company -->
   <div id="shareholder_list" ng-hide="!user.operator_set.length || loading" ng-repeat="operator in user.operator_set">
 
-    <h2>
+    <h1>
       {% endverbatim %}{% trans "Your Shareholders for" %}{% verbatim %}
       {{ operator.company.name }}
       <img ng-src="{{ operator.company.logo_url }}" alt="company logo" ng-show="operator.company.logo_url"class="logo" height="30pt"/>
       <a href="{{ operator.company.profile_url }}" class="el-icon-cogs-wrapper btn-inline">
         <span class="el-icon-cogs"></span>
       </a>
-    </h2>
+    </h1>
 
     <!-- ACTIONS -->
     <div class="panel" ng-hide="!user.operator_set.length">
