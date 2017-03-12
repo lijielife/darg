@@ -102,8 +102,9 @@ class BaseSeleniumTestCase(LiveServerTestCase):
         )
         cls.selenium.set_window_size(*window_size)
         # more time to wait for page load...
-        cls.selenium.implicitly_wait(
-            getattr(settings, 'TEST_WEBDRIVER_IMPLICIT_WAIT', 30))
+        # setting added 10+ minutes to build duration
+        #cls.selenium.implicitly_wait(
+        #    getattr(settings, 'TEST_WEBDRIVER_IMPLICIT_WAIT', 30))
         #cls.selenium.set_page_load_timeout(
         #    getattr(settings, 'TEST_WEBDRIVER_IMPLICIT_WAIT', 30))
 
