@@ -189,6 +189,9 @@ class PositionTestCase(TransactionTestCase):
                     assets[shareholder.pk]['count'] * multiplier)
                 leftover += part
 
+            print shareholder
+            print shareholder.buyer
+            print shareholder.seller
             self.assertEqual(
                 shareholder.share_count(),
                 count2
