@@ -31,7 +31,7 @@ class UserCanEditCompanyPermission(permissions.BasePermission):
         ).has_object_permission(request, view, obj)
 
 
-class UserIsOperatorPermission(permissions.BasePermission):
+class UserIsOperatorPermission(permissions.IsAuthenticated):
     """
     Only operators of the same company may edit
     """
