@@ -11,7 +11,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        string = ", \n".join([user.email for user in User.objects.filter(
+        string = "\n".join([user.email for user in User.objects.filter(
                               operator__isnull=False).distinct()
                               ])
         self.stdout.write(string)
