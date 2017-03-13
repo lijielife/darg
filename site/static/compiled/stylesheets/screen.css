@@ -3358,10 +3358,6 @@ nav.navbar .navbar-text {
   width: 0;
 }
 
-.split-header {
-  word-wrap: break-word;
-}
-
 div #add_shareholder {
   margin-bottom: 1em;
 }
@@ -3748,6 +3744,9 @@ table.stock {
   }
   .table .tr .td {
     padding: 0.5em;
+  }
+  .table .tr .td:before {
+    content: none;
   }
   .table .tr .td a {
     padding-left: 10px;
