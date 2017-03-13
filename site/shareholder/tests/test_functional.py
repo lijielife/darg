@@ -63,6 +63,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
             p.refresh()
             p.wait_until_visible(
                 (By.CSS_SELECTOR, 'tr.shareholder-number span.el-icon-pencil'))
+            time.sleep(3)
             self.assertIn(profile.get_legal_type_display(),
                           p.get_field('legal-type'))
             self.assertIn(profile.initial_registration_at.strftime('%-d.%m.%y'),
