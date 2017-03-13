@@ -163,23 +163,15 @@ class SisWareImportBackend(BaseImportBackend):
         security = self._get_or_create_security(
             face_value=float(row[25].replace(',', '.')), cusip=row[24])
 
-        # POSITION
-        if not row[27]:
-            self._get_or_create_position(
-                bought_at=row[28], buyer=shareholder, count=row[26],
-                value=row[25],
-                face_value=float(row[25].replace(',', '.')),
-                registration_type=row[2],
-                stock_book_id=row[29], depot_type=row[30], security=security
-            )
-        # OPTION + PLAN
-        else:
-            self._get_or_create_option_transaction(
-                cert_id=row[27], bought_at=row[28], buyer=shareholder,
-                count=row[26], face_value=float(row[25].replace(',', '.')),
-                registration_type=row[2], certificate_id=row[27],
-                stock_book_id=row[29], depot_type=row[30], security=security
-            )
+        # POSITION and certificates for zertificate depot
+        self._get_or_create_position(
+            bought_at=row[28], buyer=shareholder, count=row[26],
+            value=row[25],
+            face_value=float(row[25].replace(',', '.')),
+            registration_type=row[2],
+            stock_book_id=row[29], depot_type=row[30], security=security,
+            certificate_id=row[27]
+        )
 
         return 1
 
@@ -209,7 +201,7 @@ class SisWareImportBackend(BaseImportBackend):
                     option_plan=op,
                     count=count,
                     buyer=self.company_shareholder,
-                    depot_type='0'
+                    depot_type='1'
                     )
 
         # first before summarizing
@@ -311,23 +303,22 @@ class SisWareImportBackend(BaseImportBackend):
         registration_type = self._match_registration_type(registration_type)
         depot_type = self._match_depot_type(depot_type)
 
+        defaults = {
+            'value': float(value.replace(',', '.')),
+            'registration_type': registration_type,
+            'stock_book_id': stock_book_id,
+            'depot_type': depot_type,
+        }
+        pkwargs = dict(bought_at=bought_at[0:10], seller=seller, buyer=buyer,
+                       security=security, count=int(count))
+
+        # optional certificate_id
+        if kwargs.get('certificate_id'):
+            pkwargs.update({'certificate_id': kwargs.get('certificate_id')})
+
         # FIXME add scontro and depot type to lookup
         position, c_ = Position.objects.get_or_create(
-            bought_at=bought_at[0:10], seller=seller, buyer=buyer,
-            security=security, count=int(count),
-            defaults={
-                'value': float(value.replace(',', '.')),
-                'registration_type': registration_type,
-                'stock_book_id': stock_book_id,
-                'depot_type': depot_type,
-            })
-
-        if not c_:
-            print (u'position for {} "{} {}"->"{} {}" {} with pk {} existing'
-                   u''.format(
-                    bought_at, seller.user.first_name, seller.user.last_name,
-                    buyer.user.first_name, buyer.user.last_name, security,
-                    position.pk))
+            defaults=defaults, **pkwargs)
 
         return position
 
@@ -335,7 +326,9 @@ class SisWareImportBackend(BaseImportBackend):
                                           count, face_value, registration_type,
                                           certificate_id, stock_book_id,
                                           depot_type, security):
-
+        """
+        not used at this time as RFB does not import options
+        """
         registration_type = self._match_registration_type(registration_type)
         depot_type = self._match_depot_type(depot_type)
 
