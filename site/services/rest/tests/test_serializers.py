@@ -417,6 +417,28 @@ class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin, TestCase):
         for k in profile_data.keys():
             self.assertIsNotNone(profile_data[k])
 
+    def test_validate_number(self):
+        """
+        shareholder.number must be unique
+        """
+        operator = OperatorGenerator().generate()
+        shs, security = ComplexShareholderConstellationGenerator().generate(
+            company=operator.company, shareholder_count=5)  # does +2shs
+        request = self.factory.get('/services/rest/shareholders')
+        request.user = operator.user
+
+        # existing number
+        serializer = ShareholderSerializer(
+            shs[1], context={'request': request})
+        with self.assertRaises(ValidationError):
+            serializer.validate_number(shs[0].number)
+
+        # new number
+        serializer = ShareholderSerializer(
+            shs[1], context={'request': request})
+        with self.assertRaises(ValidationError):
+            serializer.validate_number('345tfdw34rtf')
+
 
 class UserProfileSerializerTestCase(TestCase):
 

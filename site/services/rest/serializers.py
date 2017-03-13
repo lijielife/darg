@@ -486,6 +486,23 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
         """
         return obj.get_mailing_type_display()
 
+    def validate_number(self, value):
+        """
+        we must not have duplicate numbers per company
+        """
+        if self.context.get("request"):
+            request = self.context.get("request")
+            qs = Shareholder.objects.filter(
+                company=request.user.operator_set.first().company)
+            # for update operations
+            if self.instance is not None and self.instance.pk:
+                qs.exclude(pk=self.instance.pk)
+            if qs.exists():
+                raise serializers.ValidationError(
+                    _('Number must be unique for this company'))
+        else:
+            return value
+
 
 class PositionSerializer(serializers.HyperlinkedModelSerializer,
                          FieldValidationMixin):

@@ -330,7 +330,7 @@ class StartPage(BasePage):
         self.get('%s%s' % (live_server_url, '/start/'))
 
     # --- ACTIONS
-    def add_shareholder(self, user):
+    def add_shareholder(self, user, **kwargs):
         el = self.driver.find_element_by_id('add_shareholder')
         form = el.find_element_by_tag_name('form')
         inputs = form.find_elements_by_tag_name('input')
@@ -339,7 +339,7 @@ class StartPage(BasePage):
         inputs[1].send_keys(user.last_name)
         if user.email:
             inputs[2].send_keys(user.email)
-        inputs[3].send_keys(random.randint(1, 6000))
+        inputs[3].send_keys(kwargs.get('number') or random.randint(1, 6000))
 
     def enter_add_company_data(self, *args, **kwargs):
         el = self.driver.find_element_by_id('add_company')

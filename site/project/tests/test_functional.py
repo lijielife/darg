@@ -209,6 +209,36 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
         except Exception, e:
             self._handle_exception(e)
 
+    def test_add_shareholder_with_existing_number(self):
+        """
+        add shareholder with existing number
+        """
+        op = OperatorGenerator().generate()
+        user = UserGenerator().generate()
+        shareholder = ShareholderGenerator().generate(company=op.company)
+        user.email = None
+
+        try:
+            start = page.StartPage(
+                self.selenium, self.live_server_url, op.user)
+            # wait for list
+            start.wait_until_visible(
+                (By.CSS_SELECTOR, '#shareholder_list'))
+            start.is_properly_displayed()
+            self.assertEqual(start.has_shareholder_count(),
+                             Shareholder.objects.filter(
+                                company=op.company).count())
+            start.click_open_add_shareholder()
+            start.add_shareholder(user, number=shareholder.number)
+            start.click_save_add_shareholder()
+            time.sleep(3)
+
+            self.assertEqual(Shareholder.objects.filter(
+                company=op.company, number=shareholder.number).count(),
+                1)
+
+        except Exception, e:
+            self._handle_exception(e)
 
     def test_options_with_segments_display(self):
         """

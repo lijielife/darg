@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-12 22:28+0000\n"
+"POT-Creation-Date: 2017-03-13 20:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -140,6 +140,11 @@ msgstr ""
 msgid "Reports"
 msgstr ""
 
+#: reports/templates/reports/index.html:6 templates/base.html:9
+#: templates/flatpages/default.html:8
+msgid "brand name"
+msgstr ""
+
 #: reports/templates/reports/index.html:17
 msgid "Reports and Downloads for "
 msgstr ""
@@ -209,10 +214,6 @@ msgstr ""
 
 #: templates/base.html:9
 msgid "Das Aktienregister title content"
-msgstr ""
-
-#: templates/base.html:9
-msgid "brand name"
 msgstr ""
 
 #: templates/base.html:10
@@ -615,10 +616,10 @@ msgstr ""
 msgid "German"
 msgstr ""
 
-#: utils/import_backends.py:280
+#: utils/import_backends.py:272
 msgid "Disposhareholder"
 msgstr ""
 
-#: utils/import_backends.py:345
+#: utils/import_backends.py:338
 msgid "Default OptionPlan for {}"
 msgstr ""

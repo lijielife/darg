@@ -1034,7 +1034,8 @@ class ShareholderTestCase(TestCase):
 
     def test_add_duplicate_new_shareholder(self):
         """
-        adds a new shareholder with same id"""
+        adds a new shareholder with same id
+        """
 
         operator = OperatorGenerator().generate()
         shareholder = ShareholderGenerator().generate(company=operator.company)
