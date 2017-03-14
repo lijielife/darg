@@ -462,7 +462,7 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
                 'company_department')
             userprofile.birthday = profile_kwargs.get('birthday')
             userprofile.language = profile_kwargs.get('language')
-            userprofile.legal_type = profile_kwargs.get('legal_type')
+            userprofile.legal_type = profile_kwargs.get('legal_type') or 'H'
             userprofile.title = profile_kwargs.get('title')
             userprofile.salutation = profile_kwargs.get('salutation')
             userprofile.save()
@@ -485,6 +485,29 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
         change make it readable
         """
         return obj.get_mailing_type_display()
+
+    def validate_number(self, value):
+        """
+        we must not have duplicate numbers per company, ensure that for update
+        operations the current sh obj is excluded
+        """
+        if not value:
+            return value
+
+        if self.context.get("request"):
+            request = self.context.get("request")
+            qs = Shareholder.objects.filter(
+                company=request.user.operator_set.first().company,
+                number=value)
+            # for update operations
+            if self.instance is not None and self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+            # fail if number is used
+            if qs.exists():
+                raise serializers.ValidationError(
+                    _('Number must be unique for this company'))
+
+        return value
 
 
 class PositionSerializer(serializers.HyperlinkedModelSerializer,

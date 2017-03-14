@@ -22,6 +22,7 @@ from project.tests.mixins import MoreAssertsTestCaseMixin
 from services.rest.serializers import SecuritySerializer
 from shareholder.models import (Operator, OptionTransaction, Position,
                                 Security, Shareholder)
+from django.utils.translation import ugettext as _
 
 logger = logging.getLogger()
 
@@ -96,6 +97,8 @@ class AvailableOptionSegmentsViewTestCase(APITestCase):
         option_transactions, shs = \
             ComplexOptionTransactionsWithSegmentsGenerator().generate()
         optionplan = option_transactions[0].option_plan
+
+        self.client.force_login(optionplan.company.operator_set.first().user)
 
         res = self.client.get(reverse('available_option_segments',
                                       kwargs={'shareholder_id': shs[0].pk,
@@ -1034,7 +1037,8 @@ class ShareholderTestCase(TestCase):
 
     def test_add_duplicate_new_shareholder(self):
         """
-        adds a new shareholder with same id"""
+        adds a new shareholder with same id
+        """
 
         operator = OperatorGenerator().generate()
         shareholder = ShareholderGenerator().generate(company=operator.company)
@@ -1061,8 +1065,7 @@ class ShareholderTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             response.data.get('number'),
-            [u'Diese Aktion\xe4rsnummer wird bereits verwendet. Bitte '
-             u'w\xe4hlen Sie eine andere.']
+            [_('Number must be unique for this company')]
         )
 
     def test_add_shareholder_for_existing_user_account(self):
@@ -1217,7 +1220,7 @@ class ShareholderTestCase(TestCase):
         security = positions[0].security
 
         self.client.force_authenticate(
-            shs[0].company.operator_set.all()[0].user.username)
+            shs[0].company.operator_set.all()[0].user)
 
         res = self.client.get(reverse('shareholders-number-segments',
                                       kwargs={'pk': shs[1].pk}))
