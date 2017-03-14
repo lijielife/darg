@@ -98,6 +98,8 @@ class AvailableOptionSegmentsViewTestCase(APITestCase):
             ComplexOptionTransactionsWithSegmentsGenerator().generate()
         optionplan = option_transactions[0].option_plan
 
+        self.client.force_login(optionplan.company.operator_set.first().user)
+
         res = self.client.get(reverse('available_option_segments',
                                       kwargs={'shareholder_id': shs[0].pk,
                                               'optionsplan_id': optionplan.pk}))
@@ -1218,7 +1220,7 @@ class ShareholderTestCase(TestCase):
         security = positions[0].security
 
         self.client.force_authenticate(
-            shs[0].company.operator_set.all()[0].user.username)
+            shs[0].company.operator_set.all()[0].user)
 
         res = self.client.get(reverse('shareholders-number-segments',
                                       kwargs={'pk': shs[1].pk}))
