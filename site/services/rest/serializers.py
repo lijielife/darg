@@ -488,20 +488,26 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
 
     def validate_number(self, value):
         """
-        we must not have duplicate numbers per company
+        we must not have duplicate numbers per company, ensure that for update
+        operations the current sh obj is excluded
         """
+        if not value:
+            return value
+
         if self.context.get("request"):
             request = self.context.get("request")
             qs = Shareholder.objects.filter(
-                company=request.user.operator_set.first().company)
+                company=request.user.operator_set.first().company,
+                number=value)
             # for update operations
             if self.instance is not None and self.instance.pk:
-                qs.exclude(pk=self.instance.pk)
+                qs = qs.exclude(pk=self.instance.pk)
+            # fail if number is used
             if qs.exists():
                 raise serializers.ValidationError(
                     _('Number must be unique for this company'))
-        else:
-            return value
+
+        return value
 
 
 class PositionSerializer(serializers.HyperlinkedModelSerializer,

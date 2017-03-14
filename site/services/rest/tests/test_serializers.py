@@ -436,8 +436,8 @@ class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin, TestCase):
         # new number
         serializer = ShareholderSerializer(
             shs[1], context={'request': request})
-        with self.assertRaises(ValidationError):
-            serializer.validate_number('345tfdw34rtf')
+        # no validationerror raised
+        serializer.validate_number('345tfdw34rtf')
 
 
 class UserProfileSerializerTestCase(TestCase):

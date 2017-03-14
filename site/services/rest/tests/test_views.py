@@ -22,6 +22,7 @@ from project.tests.mixins import MoreAssertsTestCaseMixin
 from services.rest.serializers import SecuritySerializer
 from shareholder.models import (Operator, OptionTransaction, Position,
                                 Security, Shareholder)
+from django.utils.translation import ugettext as _
 
 logger = logging.getLogger()
 
@@ -1062,8 +1063,7 @@ class ShareholderTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             response.data.get('number'),
-            [u'Diese Aktion\xe4rsnummer wird bereits verwendet. Bitte '
-             u'w\xe4hlen Sie eine andere.']
+            [_('Number must be unique for this company')]
         )
 
     def test_add_shareholder_for_existing_user_account(self):
