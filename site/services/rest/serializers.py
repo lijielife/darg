@@ -462,7 +462,7 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
                 'company_department')
             userprofile.birthday = profile_kwargs.get('birthday')
             userprofile.language = profile_kwargs.get('language')
-            userprofile.legal_type = profile_kwargs.get('legal_type')
+            userprofile.legal_type = profile_kwargs.get('legal_type') or 'H'
             userprofile.title = profile_kwargs.get('title')
             userprofile.salutation = profile_kwargs.get('salutation')
             userprofile.save()
