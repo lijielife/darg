@@ -7,6 +7,7 @@ http://selenium-python.readthedocs.org/en/latest/page-objects.html
 # from locators import MainPageLocators (save all setter/getter here)
 
 from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext as _
 
 from selenium.webdriver.common.by import By
 
@@ -45,6 +46,17 @@ class CompanyPage(BasePage):
         el = self.driver.find_element_by_class_name(css_class)
         el = el.find_element_by_tag_name('input')
         el.send_keys(string)
+
+    def confirm_reset_company(self):
+        """
+        enter string and click confirm
+        """
+        modal = self.wait_until_visible((
+            By.ID, 'companyResetModal'))
+        field = modal.find_element_by_tag_name('input')
+        field.send_keys(_('DELETE'))
+        modal.find_element_by_class_name('btn-primary').click()
+        self.wait_until_invisible((By.ID, 'companyResetModal'))
 
     # -- CLICKs
     def click_save_new_operator(self):
@@ -112,6 +124,13 @@ class CompanyPage(BasePage):
                 btn = td.find_element_by_tag_name('button')
                 btn.click()
                 break
+
+    def click_reset_company(self):
+        """
+        open reset modal
+        """
+        self.wait_until_visible((
+            By.XPATH, '//div[@class="company-administration"]//button')).click()
 
     def save_edit(self, class_name):
         el = self.driver.find_element_by_class_name(class_name)

@@ -215,5 +215,20 @@
 
   {% endif %}
 
+  <h2>
+    {% trans "Administration" %}
+  </h2>
+  <div class="company-administration">
+    <button type="button" class="btn btn-primary btn-default btn-danger" data-toggle="modal" data-target="#companyResetModal">
+      {% trans "reset company" %}
+    </button>
+    <div class="note">
+	  {% trans "the company, shareholders, transactions, options, and all other assigned data are deleted. the user can then create the company anew and start fresh" %}
+	</div>
+	{% include "company/_reset_company_modal.html" %}
+  </div>
+
+
+
 </div>
 {% endblock %}

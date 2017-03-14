@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-13 20:01+0000\n"
+"POT-Creation-Date: 2017-03-14 21:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: company/page.py:57
+msgid "DELETE"
+msgstr ""
 
 #: company/templates/_add_operator_form.html:5
 msgid "To add a new operator enter the email of a registered user"
@@ -114,6 +118,39 @@ msgstr ""
 
 #: company/templates/company.html:212
 msgid "Edit Option Plan"
+msgstr ""
+
+#: company/templates/company.html:219
+msgid "Administration"
+msgstr ""
+
+#: company/templates/company.html:223
+msgid "reset company"
+msgstr ""
+
+#: company/templates/company.html:226
+msgid ""
+"the company, shareholders, transactions, options, and all other assigned "
+"data are deleted. the user can then create the company anew and start fresh"
+msgstr ""
+
+#: company/templates/company/_reset_company_modal.html:6
+#: company/templates/company/_reset_company_modal.html:15
+msgid "Close"
+msgstr ""
+
+#: company/templates/company/_reset_company_modal.html:7
+msgid "Confirm company reset"
+msgstr ""
+
+#: company/templates/company/_reset_company_modal.html:10
+msgid ""
+"Please type 'CONFIRM' to confirm your companies data deletion. The data "
+"cannot be restored afterwards."
+msgstr ""
+
+#: company/templates/company/_reset_company_modal.html:18
+msgid "Delete now without return"
 msgstr ""
 
 #: reports/templates/reports/_captable_form.html:8

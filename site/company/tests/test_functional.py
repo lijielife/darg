@@ -236,3 +236,25 @@ class CompanyFunctionalTestCase(BaseSeleniumTestCase):
 
         self.assertFalse(self.selenium.find_element_by_class_name(
             'numbered-segments').is_displayed())
+
+    def test_reset_company(self):
+        """
+        reset company and related data and it's redirect to the new data form
+        """
+        try:
+            user = self.operator.user
+
+            p = page.CompanyPage(
+                self.selenium,
+                self.live_server_url,
+                self.operator.user,
+                self.operator.company
+            )
+            p.click_reset_company()
+            p.confirm_reset_company()
+
+            self.assertFalse(user.operator_set.exists())
+            self.assertIn('/start/', p.driver.current_url)
+
+        except Exception, e:
+            self._handle_exception(e)

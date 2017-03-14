@@ -5,6 +5,7 @@ import logging
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 from django.test import RequestFactory, TestCase
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
@@ -21,7 +22,7 @@ from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
 from project.tests.mixins import MoreAssertsTestCaseMixin
 from services.rest.serializers import SecuritySerializer
 from shareholder.models import (Operator, OptionTransaction, Position,
-                                Security, Shareholder)
+                                Security, Shareholder, OptionPlan, UserProfile)
 from django.utils.translation import ugettext as _
 
 logger = logging.getLogger()
@@ -120,6 +121,61 @@ class CompanyViewSetTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.site = Site.objects.get_current()
+        self.operator = OperatorGenerator().generate()
+
+    def test_delete_company_permissions(self):
+        """
+        only auth'd operators can execute
+        """
+        # anon user
+        response = self.client.delete(
+            '/services/rest/company/{}'.format(self.operator.company.pk),
+            **{'format': 'json'})
+
+        self.assertEqual(response.status_code, 401)
+
+        # operator
+        self.client.force_login(self.operator.user)
+        response = self.client.delete(
+            '/services/rest/company/{}'.format(self.operator.company.pk),
+            **{'HTTP_AUTHORIZATION': 'Token {}'.format(
+                self.operator.user.auth_token.key), 'format': 'json'})
+        self.assertEqual(response.status_code, 204)
+
+        # foreign operator
+        op = OperatorGenerator().generate()
+        self.client.force_login(op.user)
+        response = self.client.delete(
+            '/services/rest/company/{}'.format(self.operator.company.pk),
+            **{'HTTP_AUTHORIZATION': 'Token {}'.format(
+                op.user.auth_token.key), 'format': 'json'})
+        self.assertEqual(response.status_code, 404)
+
+    def test_delete_company_and_related_data(self):
+        """
+        ensure related data is cleaned too, but not users and user profile
+        """
+        pk = self.operator.company.pk
+        sh = ShareholderGenerator().generate(company=self.operator.company)
+        uid = sh.user.pk
+        puid = sh.user.userprofile.pk
+
+        self.client.force_login(self.operator.user)
+        response = self.client.delete(
+            '/services/rest/company/{}'.format(self.operator.company.pk),
+            **{'HTTP_AUTHORIZATION': 'Token {}'.format(
+                self.operator.user.auth_token.key), 'format': 'json'})
+        self.assertEqual(response.status_code, 204)
+
+        self.assertFalse(Shareholder.objects.filter(company__pk=pk).exists())
+        self.assertFalse(Operator.objects.filter(company__pk=pk).exists())
+        self.assertFalse(Position.objects.filter(
+            Q(seller__company__pk=pk) | Q(buyer__company__pk=pk)
+        ).exists())
+        self.assertFalse(Security.objects.filter(company__pk=pk).exists())
+        self.assertFalse(OptionPlan.objects.filter(company__pk=pk).exists())
+        self.assertTrue(UserProfile.objects.filter(pk=puid).exists())
+        self.assertTrue(User.objects.filter(pk=uid).exists())
 
 
 class OperatorTestCase(TestCase):

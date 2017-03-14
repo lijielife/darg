@@ -3260,6 +3260,12 @@ nav.navbar .navbar-text {
   font-size: 1rem;
   line-height: 1.5;
 }
+.table.shareholder_detail_table .td:before {
+  content: attr(data-header);
+  width: 65%;
+  font-weight: 700;
+  margin-top: 10px;
+}
 
 .tr {
   border-bottom: 1px solid #f5f5f5;
@@ -3358,6 +3364,10 @@ nav.navbar .navbar-text {
   width: 0;
 }
 
+.split-header {
+  word-wrap: break-word;
+}
+
 div #add_shareholder {
   margin-bottom: 1em;
 }
@@ -3407,6 +3417,9 @@ div#optionplan .pdf_upload_preview {
 }
 #company h2 a {
   cursor: pointer;
+}
+#company .company-administration .note {
+  padding-top: 1em;
 }
 
 .alert-gafi {

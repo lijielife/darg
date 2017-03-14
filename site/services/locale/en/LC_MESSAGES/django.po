@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-13 20:01+0000\n"
+"POT-Creation-Date: 2017-03-14 21:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -69,46 +69,46 @@ msgstr ""
 msgid "This email is already taken by another user/shareholder."
 msgstr ""
 
-#: services/rest/serializers.py:502
+#: services/rest/serializers.py:508 services/rest/tests/test_views.py:1074
 msgid "Number must be unique for this company"
 msgstr ""
 
-#: services/rest/serializers.py:597 services/rest/serializers.py:934
+#: services/rest/serializers.py:603 services/rest/serializers.py:940
 msgid "Invalid security numbers segments."
 msgstr ""
 
-#: services/rest/serializers.py:603 services/rest/serializers.py:947
+#: services/rest/serializers.py:609 services/rest/serializers.py:953
 msgid "Segments \"{}\" must be owned by seller \"{}\". Available are {}"
 msgstr ""
 
-#: services/rest/serializers.py:616 services/rest/serializers.py:874
-#: services/rest/serializers.py:959
+#: services/rest/serializers.py:622 services/rest/serializers.py:880
+#: services/rest/serializers.py:965
 msgid "Number of shares in segments ({}) does not match count {}"
 msgstr ""
 
-#: services/rest/serializers.py:633
+#: services/rest/serializers.py:639
 msgid ""
 "Segment {} is blocked for options and cannot be transfered to a shareholder."
 msgstr ""
 
-#: services/rest/serializers.py:742 services/rest/serializers.py:1074
+#: services/rest/serializers.py:748 services/rest/serializers.py:1080
 msgid "Certificate ID {} is already used in transaction or option transaction"
 msgstr ""
 
-#: services/rest/serializers.py:770
+#: services/rest/serializers.py:776
 msgid "Not a pdf file."
 msgstr ""
 
-#: services/rest/serializers.py:851
+#: services/rest/serializers.py:857
 msgid "Invalid or empty security numbers segments."
 msgstr ""
 
-#: services/rest/serializers.py:862
+#: services/rest/serializers.py:868
 msgid ""
 "Segments \"{}\" must be owned by company shareholder \"{}\". Available are {}"
 msgstr ""
 
-#: services/rest/serializers.py:971
+#: services/rest/serializers.py:977
 msgid ""
 "Segment {} is not reserved for options inside a option plan and cannot be "
 "transfered to a option holder. Available are: {}"
