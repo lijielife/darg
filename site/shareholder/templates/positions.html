@@ -18,12 +18,7 @@
   <div class="panel panel-column">
     <a class="btn-inline align-left add-position" data-toggle="modal" data-target="#addPosition" href="" ng-click="show_add_position_form()">{% trans "Transfer Shares" %}</a>
     <a class="btn-inline add-capital" href="" data-toggle="modal" data-target="#capitalForm" ng-click="show_add_capital_form()">{% trans "Increase Capital" %}</a>
-    <a class="btn-inline split-shares" href="" ng-click="show_split_form()">{% trans "Split Shares" %}</a>
-  </div>
-
-
-  <div id="split-shares" ng-hide="!show_split">
-    {% include "_split_shares_form.html" %}
+    <a class="btn-inline split-shares" href="" data-toggle="modal" data-target="#splitShares" ng-click="show_split_form()">{% trans "Split Shares" %}</a>
   </div>
 
   <!-- MODAL ADD POSITION -->
@@ -51,6 +46,24 @@
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <h4 class="modal-title" id="capitalFormLabel">{% trans "Increase Capital" %}</h4>
+        </div>
+        <div class="modal-body">
+          {% include "_form_errors.html" %}
+          <div id="split-shares">
+            {% include "_split_shares_form.html" %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL SPLIT SHARES -->
+  <div class="modal fade" id="splitShares" tabindex="-1" role="dialog" aria-labelledby="splitSharesLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="splitSharesLabel">{% trans "Split Shares" %}</h4>
         </div>
         <div class="modal-body">
           {% include "_form_errors.html" %}
