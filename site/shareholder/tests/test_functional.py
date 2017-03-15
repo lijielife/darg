@@ -600,7 +600,7 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
                 self.selenium, self.live_server_url, self.operator.user)
             app.click_open_transfer_option()
             app.enter_transfer_option_data(
-                date='13. Mai 2016', buyer=self.buyer,
+                buyer=self.buyer,
                 title=self.optionplan.title,
                 seller=self.operator.company.get_company_shareholder()
             )
@@ -616,7 +616,7 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
 
             app.click_open_transfer_option()
             app.enter_transfer_option_data(
-                date='1. Nov. 2016', buyer=self.buyer,
+                date=datetime.date(2016, 11, 1), buyer=self.buyer,
                 title=self.optionplan.title,
                 seller=self.operator.company.get_company_shareholder()
             )
