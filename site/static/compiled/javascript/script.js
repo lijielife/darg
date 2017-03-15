@@ -193,7 +193,7 @@
           return $scope.errors = null;
         }, function(rejection) {
           $scope.errors = rejection.data;
-          return Raven.captureMessage('form error: ' + rejection.statusText, {
+          return Raven.captureMessage('add operator form error: ' + rejection.statusText, {
             level: 'warning',
             extra: {
               rejection: rejection
@@ -232,7 +232,7 @@
         }, function(rejection) {
           $scope.company.founded_at = new Date($scope.company.founded_at);
           $scope.errors = rejection.data;
-          return Raven.captureMessage('form error: ' + rejection.statusText, {
+          return Raven.captureMessage('add corp form error: ' + rejection.statusText, {
             level: 'warning',
             extra: {
               rejection: rejection
@@ -577,7 +577,7 @@
           return $window.ga('send', 'event', 'form-send', 'add-optionplan');
         }, function(rejection) {
           $scope.errors = rejection.data;
-          Raven.captureMessage('form error: ' + rejection.statusText, {
+          Raven.captureMessage('add option plan form error: ' + rejection.statusText, {
             level: 'warning',
             extra: {
               rejection: rejection
@@ -611,7 +611,7 @@
           return $window.ga('send', 'event', 'form-send', 'add-option-transaction');
         }, function(rejection) {
           $scope.errors = rejection.data;
-          Raven.captureMessage('form error: ' + rejection.statusText, {
+          Raven.captureMessage('add option transaction form error: ' + rejection.statusText, {
             level: 'warning',
             extra: {
               rejection: rejection
@@ -1051,7 +1051,7 @@
           return $scope.addPositionLoading = false;
         }, function(rejection) {
           $scope.errors = rejection.data;
-          Raven.captureMessage('form error: ' + rejection.statusText, {
+          Raven.captureMessage('add position form error: ' + rejection.statusText, {
             level: 'warning',
             extra: {
               rejection: rejection
@@ -1098,7 +1098,7 @@
           return $window.ga('send', 'event', 'form-send', 'add-split');
         }, function(rejection) {
           $scope.errors = rejection.data;
-          return Raven.captureMessage('form error: ' + rejection.statusText, {
+          return Raven.captureMessage('add split form error: ' + rejection.statusText, {
             level: 'warning',
             extra: {
               rejection: rejection
@@ -1456,7 +1456,7 @@
           return $scope.errors = null;
         }, function(rejection) {
           $scope.errors = rejection.data;
-          return Raven.captureMessage('form error: ' + rejection.statusText, {
+          return Raven.captureMessage('edit shareholder form error: ' + rejection.statusText, {
             level: 'warning',
             extra: {
               rejection: rejection
@@ -1830,7 +1830,7 @@
           return $scope.errors = null;
         }, function(rejection) {
           $scope.errors = rejection.data;
-          return Raven.captureMessage('form error: ' + rejection.statusText, {
+          return Raven.captureMessage('add corp form error: ' + rejection.statusText, {
             level: 'warning',
             extra: {
               rejection: rejection
@@ -1852,7 +1852,7 @@
           return $window.ga('send', 'event', 'form-send', 'add-shareholder');
         }, function(rejection) {
           $scope.errors = rejection.data;
-          return Raven.captureMessage('form error: ' + rejection.statusText, {
+          return Raven.captureMessage('add shareholder form error: ' + rejection.statusText, {
             level: 'warning',
             extra: {
               rejection: rejection

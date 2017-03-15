@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-14 21:25+0000\n"
-"PO-Revision-Date: 2017-03-14 21:26+0000\n"
-"Last-Translator:   <jirka@tschitschereengreen.com>\n"
+"POT-Creation-Date: 2017-03-15 22:36+0000\n"
+"PO-Revision-Date: 2017-03-15 22:37+0000\n"
+"Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -26,17 +26,17 @@ msgstr "Vorname"
 
 #: static/compiled/javascript/i18n_noop.js:4
 #: static/compiled/javascript/i18n_noop.js:23
-#: static/compiled/javascript/script.js:1230
-#: static/compiled/javascript/script.js:1532
-#: static/compiled/javascript/script.js:1554
+#: static/compiled/javascript/script.js:1233
+#: static/compiled/javascript/script.js:1535
+#: static/compiled/javascript/script.js:1557
 msgid "Last Name"
 msgstr "Nachname"
 
 #: static/compiled/javascript/i18n_noop.js:5
 #: static/compiled/javascript/i18n_noop.js:24
-#: static/compiled/javascript/script.js:1242
-#: static/compiled/javascript/script.js:1529
-#: static/compiled/javascript/script.js:1551
+#: static/compiled/javascript/script.js:1245
+#: static/compiled/javascript/script.js:1532
+#: static/compiled/javascript/script.js:1554
 msgid "Shareholder Number"
 msgstr "Gesellschafter Nummer"
 
@@ -78,7 +78,7 @@ msgstr "Wertpapier"
 
 #: static/compiled/javascript/i18n_noop.js:15
 #: static/compiled/javascript/i18n_noop.js:17
-#: static/compiled/javascript/script.js:1236
+#: static/compiled/javascript/script.js:1239
 msgid "Share Count"
 msgstr "Anzahl Aktien"
 
@@ -99,8 +99,9 @@ msgid "Exercise Price"
 msgstr "Ausübungspreis"
 
 #: static/compiled/javascript/i18n_noop.js:21
-msgid "Face Value"
-msgstr "Nennwert"
+#| msgid "Face Value"
+msgid "Face Value of shares"
+msgstr "Nennwert der Aktien"
 
 #: static/compiled/javascript/i18n_noop.js:25
 msgid "Vesting Period (months)"
@@ -199,17 +200,16 @@ msgid "Vesting period in months"
 msgstr "Sperrfrist/Vesting (in Monaten)"
 
 #: static/compiled/javascript/i18n_noop.js:49
-#: static/compiled/javascript/script.js:315
+#: static/compiled/javascript/script.js:318
 msgid "Input"
 msgstr "Eingabe hier"
 
 #: static/compiled/javascript/i18n_noop.js:50
-#: static/compiled/javascript/script.js:317
+#: static/compiled/javascript/script.js:320
 msgid "Please enter DELETE"
 msgstr "Bitte geben Sie \"LÖSCHEN\" ein."
 
 #: static/compiled/javascript/i18n_noop.js:51
-#| msgid "Face Value"
 msgid "Face_value"
 msgstr "Nennwert"
 
@@ -217,93 +217,93 @@ msgstr "Nennwert"
 msgid "DELETE"
 msgstr "LÖSCHEN"
 
-#: static/compiled/javascript/script.js:386
-#: static/compiled/javascript/script.js:858
+#: static/compiled/javascript/script.js:389
+#: static/compiled/javascript/script.js:861
 msgid "Sperrdepot"
 msgstr "Sperrdepot"
 
-#: static/compiled/javascript/script.js:389
-#: static/compiled/javascript/script.js:861
+#: static/compiled/javascript/script.js:392
+#: static/compiled/javascript/script.js:864
 msgid "Zertifikatsdepot"
 msgstr "Zertifikatsdepot"
 
-#: static/compiled/javascript/script.js:392
-#: static/compiled/javascript/script.js:864
+#: static/compiled/javascript/script.js:395
+#: static/compiled/javascript/script.js:867
 msgid "Gesellschaftsdepot"
 msgstr "Gesellschaftsdepot"
 
-#: static/compiled/javascript/script.js:657
-#: static/compiled/javascript/script.js:678
+#: static/compiled/javascript/script.js:660
+#: static/compiled/javascript/script.js:681
 msgid "Available security segments for option plan on selected date or now: "
 msgstr ""
 "Verfügbare Aktiennummern für Optionen vom Verkäufer zum ausgewählten Datum "
 "oder heute: "
 
-#: static/compiled/javascript/script.js:659
+#: static/compiled/javascript/script.js:662
 msgid ""
 "Available security segments for option plan on selected date or now: None"
 msgstr "Aktionär hält aktuell keine Optionen."
 
-#: static/compiled/javascript/script.js:680
+#: static/compiled/javascript/script.js:683
 msgid ""
 "No security segments available for option plan on selected date or now."
 msgstr ""
 "Es sind aktuell keine Aktiennummern für den Optionsplan am ausgewählten "
 "Datum verfügbar."
 
-#: static/compiled/javascript/script.js:1154
+#: static/compiled/javascript/script.js:1157
 msgid ""
 "Available security segments from this shareholder on selected date or now: "
 msgstr "Verfügbare Aktiennummern vom Verkäufer zum ausgewählten Datum: "
 
-#: static/compiled/javascript/script.js:1156
+#: static/compiled/javascript/script.js:1159
 msgid ""
 "Available security segments from this shareholder on selected date or now: "
 "None"
 msgstr "Aktionär hält aktuell keine Aktien."
 
-#: static/compiled/javascript/script.js:1233
+#: static/compiled/javascript/script.js:1236
 msgid "Last Name (descending)"
 msgstr "Nachname (absteigend)"
 
-#: static/compiled/javascript/script.js:1239
+#: static/compiled/javascript/script.js:1242
 msgid "Share Count (descending)"
 msgstr "Anzahl Aktien (absteigend)"
 
-#: static/compiled/javascript/script.js:1245
+#: static/compiled/javascript/script.js:1248
 msgid "Shareholder Number (descending)"
 msgstr "Gesellschafter Nummer (absteigend)"
 
-#: static/compiled/javascript/script.js:1248
+#: static/compiled/javascript/script.js:1251
 msgid "Share Percent Ownership"
 msgstr "Prozentualer Anteil der Wertpapiere"
 
-#: static/compiled/javascript/script.js:1251
+#: static/compiled/javascript/script.js:1254
 msgid "Share Percent Ownership (descending)"
 msgstr "Prozentualer Anteil der Wertpapiere (absteigend)"
 
-#: static/compiled/javascript/script.js:1344
+#: static/compiled/javascript/script.js:1347
 msgid "Human Being"
 msgstr "Natürliche Person"
 
-#: static/compiled/javascript/script.js:1347
+#: static/compiled/javascript/script.js:1350
 msgid "Corporate"
 msgstr "Juristische Person"
 
-#: static/compiled/javascript/script.js:1353
+#: static/compiled/javascript/script.js:1356
 msgid "Not deliverable"
 msgstr "Unzustellbar"
 
-#: static/compiled/javascript/script.js:1356
+#: static/compiled/javascript/script.js:1359
 msgid "Postal Mail"
 msgstr "Briefversand"
 
-#: static/compiled/javascript/script.js:1359
+#: static/compiled/javascript/script.js:1362
 msgid "via Email"
 msgstr "Emailversand"
 
-#: static/compiled/javascript/script.js:1526
-#: static/compiled/javascript/script.js:1548
+#: static/compiled/javascript/script.js:1529
+#: static/compiled/javascript/script.js:1551
 msgid "Email"
 msgstr "Email"
 
