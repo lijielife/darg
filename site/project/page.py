@@ -73,6 +73,8 @@ class BasePage(object):
     def login(self, username, password):
         """ log the user in """
         self.get('%s%s' % (self.live_server_url, '/account/login/'))
+
+        # enter credentials
         self.wait_until_visible((
             By.XPATH,
             '//*[@id="id_auth-username"]'
@@ -81,11 +83,14 @@ class BasePage(object):
             By.XPATH,
             '//*[@id="id_auth-password"]'
         )).send_keys(password)
-        self.wait_until_visible((
-            By.XPATH,
-            '//button[contains(@class, "btn-primary")]'
-        )).click()
+
+        # send form
+        btn = self.wait_until_visible((
+            By.XPATH, '//button[contains(@class, "btn-primary")]'))
+        btn.click()
         time.sleep(1)  # wait for page reload  # FIXME
+
+        # confirm page loaded
         page_heading = self.driver.find_element_by_tag_name('h1').get_attribute(
             'innerHTML')
         assert page_heading == 'Willkommen {}!'.format(
