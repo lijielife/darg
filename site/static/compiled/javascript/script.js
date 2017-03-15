@@ -142,7 +142,7 @@
   ]);
 
   app.controller('CompanyController', [
-    '$scope', '$http', 'Company', 'Country', 'Operator', 'Upload', 'Security', '$timeout', function($scope, $http, Company, Country, Operator, Upload, Security, $timeout) {
+    '$scope', '$http', '$window', 'Company', 'Country', 'Operator', 'Upload', 'Security', '$timeout', function($scope, $http, $window, Company, Country, Operator, Upload, Security, $timeout) {
       $scope.operators = [];
       $scope.company = null;
       $scope.errors = null;
@@ -300,8 +300,25 @@
         startingDay: 1,
         showWeeks: false
       };
-      return $scope.open_datepicker = function() {
+      $scope.open_datepicker = function() {
         return $scope.datepicker.opened = true;
+      };
+      return $scope.confirm_company_reset = function() {
+        var label;
+        $scope.errors = [];
+        if ($scope.confirmCompanyText === gettext('DELETE')) {
+          return $scope.company.$delete().then(function() {
+            $('#companyResetModal').modal('hide');
+            if (!_.isUndefined(window.ga)) {
+              ga('send', 'event', 'click', 'delete', 'company');
+            }
+            return $window.location.href = '/start/';
+          });
+        } else {
+          label = gettext('Input');
+          $scope.errors = {};
+          return $scope.errors[label] = [gettext('Please enter DELETE')];
+        }
       };
     }
   ]);
@@ -1605,7 +1622,7 @@
             return $scope.load_option_holders(result1.data.pk);
           });
         });
-        if ($scope.user.operator_set && $scope.user.operator_set[0].company.pk) {
+        if ($scope.user.operator_set.length > 0 && $scope.user.operator_set[0].company.pk) {
           return $scope.load_option_holders($scope.user.operator_set[0].company.pk);
         }
       })["finally"](function() {

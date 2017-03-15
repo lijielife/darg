@@ -47,6 +47,15 @@
         {% verbatim %}<span editable-text="shareholder.number" onaftersave="edit_shareholder()">{{ shareholder.number || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
       </td>
     </tr>
+    <tr class="is-management">
+      <td>{% trans "Is user member of management or board?" %}:</td>
+      <td>
+        {% verbatim %}<span editable-checkbox="shareholder.is_management" onaftersave="edit_shareholder()">
+          <span class="el-icon-ok-sign" ng-show="shareholder.is_management"></span>
+          <span class="el-icon-minus-sign" ng-hide="shareholder.is_management"></span>
+          <span class="el-icon-pencil"></span></span>{% endverbatim %}
+      </td>
+    </tr>
     {% verbatim %}
     <tr class="initial_registration_at" ng-show="shareholder.user.userprofile.initial_registration_at">
       <td>{% endverbatim %}{% trans "Initial Registration Date" %}{% verbatim %}:</td>
@@ -97,13 +106,13 @@
         {% endverbatim %}
       </td>
     </tr>
-    <tr>
+    <tr ng-hide="shareholder.user.userprofile.legal_type.value=='H'">
       <td>{% trans "Shareholder Company Name" %}:</td>
       <td>
         {% verbatim %}<span editable-text="shareholder.user.userprofile.company_name" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.company_name || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
       </td>
     </tr>
-    <tr class="company-department">
+    <tr class="company-department" ng-hide="shareholder.user.userprofile.legal_type.value=='H'">
       <td>{% trans "Shareholder Company Department" %}:</td>
       <td>
         {% verbatim %}<span editable-text="shareholder.user.userprofile.company_department" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.company_department || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
@@ -239,39 +248,41 @@
     <p>{% trans "Total option count based on shares dedicated to options" %}: {{shareholder.company.get_total_options }}</p>
     <p>{% trans "Total option count based on shares dedicated to options floating" %}: {{shareholder.company.get_total_options_floating }}</p>
   {% endif %}
-  <div class="table-responsive">
-    <table class="stock table table-striped">
-      <thead><tr>
-        <th>{% trans "security" %}</th>
-        <th>{% trans "cusip" %}</th>
+  <!-- TABLE -->
+  <div class="table stock shareholder_detail_table">
+    <div class="tr th">
+      <div class="td">{% trans "security" %}</div>
+      <div class="td">{% trans "cusip" %}</div>
+      {% if shareholder.is_company_shareholder %}
+      <div class="td">{% trans "issued" %}</div>
+      {% endif %}
+      <div class="td">
+        {% trans "shares owned" %}
         {% if shareholder.is_company_shareholder %}
-          <th>{% trans "issued" %}</th> 
+        <div class="note">{% trans "cleaned by options count" %}</div>
         {% endif %}
-        <th>
-		  {% trans "shares owned" %}
-		  {% if shareholder.is_company_shareholder %}
-            <div class="note">{% trans "cleaned by options count" %}</div>
-		  {% endif %}
-		</th>
-        <th>
-		  {% trans "options owned" %}
-		</th>
-        {% if security.track_numbers %}<th>{% trans "share segments" %}</th>{% endif %}
-      </tr></thead>
-      {% for security in securities %}
-      <tr class="security">
-        <td class="name">{{ security }}</td>
-        <td class="cusip">{% if security.cusip %}{{ security.cusip }}{% endif %}</td>
-        {% if shareholder.is_company_shareholder %}
-          <th>{{ security.calculate_count }}</th> 
-        {% endif %}
-        <td class="count">{{ security.count }}</td>
-        <td class="count">{{ security.options_count }}</td>
-        {% if security.segments %}<td class="number-segments">{{ security.segments }}</td>{% endif %}
-	    </tr>
-      {% endfor %}
-    </table>
-  </div>
+      </div>
+      <div class="td">{% trans "options owned" %}</div>
+      {% if security.track_numbers %}
+      <div class="td">{% trans "share segments" %}</div>
+      {% endif %}
+    </div>
+    {% for security in securities %}
+    <div class="tr security">
+      <div class="td name" data-header="{% trans 'security' %}">{{ security }}</div>
+      <div class="td cusip" data-header="{% trans 'cusip' %}">{% if security.cusip %}{{ security.cusip }}{% endif %}</div>
+      {% if shareholder.is_company_shareholder %}
+      <div class="td" data-header="{% trans 'issued' %}">{{ security.calculate_count }}</div>
+      {% endif %}
+      <div class="td count" data-header="{% trans 'shares owned' %}">{{ security.count }}</div>
+      <div class="td count" data-header="{% trans 'options owned' %}">{{ security.options_count }}</div>
+      {% if security.segments %}
+      <div class="td number-segments" data-header="{% trans 'share segments' %}" >{{ security.segments }}</div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div><!-- /table-->
+
   <!-- <a class="btn btn-focus btn-danger" title="{% trans "Delete shareholder" %}" >{% trans "Delete shareholder" %}</a> -->
 
 </div>

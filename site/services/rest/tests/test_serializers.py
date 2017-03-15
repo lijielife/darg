@@ -174,6 +174,25 @@ class OptionTransactionSerializerTestCase(TestCase):
         self.assertEqual(res.number_segments, [1, u'3-4', u'6-9', 33])
         self.assertEqual(res.registration_type, '2')
 
+    def test_validate_certificate_id(self):
+        """ certificate id must be unique """
+        serializer, position = self.__serialize('1, 3, 4, 6-9, 33')
+        certificate_id = '222'
+        self.assertEqual(serializer.validate_certificate_id(certificate_id),
+                         certificate_id)
+        # OptionTransaction existing -> fail
+        ot = OptionTransactionGenerator().generate(
+            certificate_id=certificate_id, company=position.buyer.company)
+        with self.assertRaises(ValidationError):
+            serializer.validate_certificate_id(certificate_id)
+        ot.delete()
+
+        # Position existing -> fail
+        position.certificate_id = certificate_id
+        position.save()
+        with self.assertRaises(ValidationError):
+            serializer.validate_certificate_id(certificate_id)
+
 
 class PositionSerializerTestCase(TestCase):
 
@@ -286,6 +305,25 @@ class PositionSerializerTestCase(TestCase):
         self.assertIsNotNone(position_data['stock_book_id'])
         self.assertIsNotNone(position_data['depot_type'])
 
+    def test_validate_certificate_id(self):
+        """ certificate id must be unique """
+        serializer, position = self.__serialize('1, 3, 4, 6-9, 33')
+        certificate_id = '222'
+        self.assertEqual(serializer.validate_certificate_id(certificate_id),
+                         certificate_id)
+        # OptionTransaction existing -> fail
+        ot = OptionTransactionGenerator().generate(
+            certificate_id=certificate_id, company=position.buyer.company)
+        with self.assertRaises(ValidationError):
+            serializer.validate_certificate_id(certificate_id)
+        ot.delete()
+
+        # Position existing -> fail
+        position.certificate_id = certificate_id
+        position.save()
+        with self.assertRaises(ValidationError):
+            serializer.validate_certificate_id(certificate_id)
+
 
 class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin, TestCase):
 
@@ -378,6 +416,28 @@ class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin, TestCase):
         # assure none is empty
         for k in profile_data.keys():
             self.assertIsNotNone(profile_data[k])
+
+    def test_validate_number(self):
+        """
+        shareholder.number must be unique
+        """
+        operator = OperatorGenerator().generate()
+        shs, security = ComplexShareholderConstellationGenerator().generate(
+            company=operator.company, shareholder_count=5)  # does +2shs
+        request = self.factory.get('/services/rest/shareholders')
+        request.user = operator.user
+
+        # existing number
+        serializer = ShareholderSerializer(
+            shs[1], context={'request': request})
+        with self.assertRaises(ValidationError):
+            serializer.validate_number(shs[0].number)
+
+        # new number
+        serializer = ShareholderSerializer(
+            shs[1], context={'request': request})
+        # no validationerror raised
+        serializer.validate_number('345tfdw34rtf')
 
 
 class UserProfileSerializerTestCase(TestCase):

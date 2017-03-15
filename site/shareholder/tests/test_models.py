@@ -105,6 +105,21 @@ class CompanyTestCase(TestCase):
         """
         self.assertEqual(self.company.get_total_votes_floating(), 2*100/2)
 
+    def test_has_printed_certificates(self):
+        ot = OptionTransactionGenerator().generate()
+        self.assertFalse(ot.option_plan.company.has_printed_certificates())
+        ot.printed_at = datetime.datetime.now()
+        ot.save()
+        self.assertTrue(ot.option_plan.company.has_printed_certificates())
+
+    def test_has_vested_positions(self):
+        ot = OptionTransactionGenerator().generate()
+        self.assertFalse(ot.option_plan.company.has_vested_positions())
+        ot.vesting_months = 22
+        ot.save()
+        self.assertTrue(ot.option_plan.company.has_vested_positions())
+
+
 
 class CountryTestCase(TestCase):
 
@@ -174,6 +189,9 @@ class PositionTestCase(TransactionTestCase):
                     assets[shareholder.pk]['count'] * multiplier)
                 leftover += part
 
+            print shareholder
+            print shareholder.buyer
+            print shareholder.seller
             self.assertEqual(
                 shareholder.share_count(),
                 count2
@@ -493,11 +511,22 @@ class ShareholderTestCase(TestCase):
         # must be in switzerland
         shareholder.company.country = Country.objects.get(
             iso_code__iexact='ch')
-
+        shareholder.user.userprofile.legal_type = 'C'
         shareholder.user.userprofile.company_name = None
         shareholder.user.userprofile.save()
 
         self.assertFalse(shareholder.validate_gafi()['is_valid'])
+
+        # company name not relevant for humans
+        shareholder = ShareholderGenerator().generate()
+        # must be in switzerland
+        shareholder.company.country = Country.objects.get(
+            iso_code__iexact='ch')
+        shareholder.user.userprofile.legal_type = 'H'
+        shareholder.user.userprofile.company_name = None
+        shareholder.user.userprofile.save()
+
+        self.assertTrue(shareholder.validate_gafi()['is_valid'])
 
         # --- valid data
         shareholder = ShareholderGenerator().generate()

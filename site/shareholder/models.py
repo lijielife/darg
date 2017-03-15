@@ -12,7 +12,7 @@ from django.core.mail import send_mail
 from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import ugettext as _
@@ -62,6 +62,20 @@ class TagMixin(object):
         return Tag.objects.get_for_object(self)
 
 
+class CertificateMixin(models.Model):
+    """
+    bundling common certificate logic for transaction and optiontransaction
+    """
+    certificate_id = models.CharField(
+        max_length=255, blank=True, null=True,
+        help_text=_('id of the issued certificate'))
+    printed_at = models.DateTimeField(_('was this printed at least once?'),
+                                      blank=True, null=True)
+
+    class Meta:
+        abstract = True
+
+
 class Country(models.Model):
     """Model for countries"""
     iso_code = models.CharField(max_length=2, primary_key=True)
@@ -80,6 +94,11 @@ def get_company_logo_upload_path(instance, filename):
         "public", "company", "%d" % instance.id, "logo", filename)
 
 
+def get_company_header_image_upload_path(instance, filename):
+    return os.path.join(
+        "public", "company", "%d" % instance.id, "header_image", filename)
+
+
 class Company(models.Model):
 
     name = models.CharField(max_length=255)
@@ -93,9 +112,16 @@ class Company(models.Model):
     logo = models.ImageField(
         blank=True, null=True,
         upload_to=get_company_logo_upload_path,)
+    pdf_header_image = models.ImageField(
+        blank=True, null=True,
+        upload_to=get_company_header_image_upload_path,)
     vote_ratio = models.PositiveIntegerField(
         _('Voting rights calculation: one vote per X of security.face_value'),
         blank=True, null=True, default=1)
+    signatures = models.CharField(
+        _('comma separated list of board members permitted to sign in the name '
+          'of the company'),
+        max_length=255, blank=True)
 
     def __unicode__(self):
         return u"{}".format(self.name)
@@ -201,6 +227,9 @@ class Company(models.Model):
         segments = self.optionplan_set.all().values_list(
             'number_segments', flat=True)
         return flatten_list(segments)
+
+    def get_board_members(self):
+        return self.signatures.split(',')
 
     def get_company_shareholder(self):
         """
@@ -395,6 +424,32 @@ class Company(models.Model):
         kwargs = {'crop': 'center', 'quality': 99, 'format': "PNG"}
         return get_thumbnail(self.logo.file, 'x40', **kwargs).url
 
+    # --- CHECKS
+    def has_printed_certificates(self):
+        """ returns bool if at least one certificate was printed/has printed
+        date
+        """
+        ots = OptionTransaction.objects.filter(option_plan__company=self,
+                                               printed_at__isnull=False
+                                               )
+        poss = Position.objects.filter(
+            Q(buyer__company=self) | Q(seller__company=self),
+            printed_at__isnull=False)
+
+        return ots.exists() or poss.exists()
+
+    def has_vested_positions(self):
+        """ returns bool if company has at least one position (option/
+        transaction) which vesting_months
+        """
+        return (Position.objects.filter(
+            Q(seller__company=self) | Q(buyer__company=self),
+            vesting_months__gt=0).exists() or
+            OptionTransaction.objects.filter(
+                option_plan__company=self,
+                vesting_months__gt=0).exists()
+            )
+
     # --- LOGIC
     def split_shares(self, data):
         """ split all existing positions """
@@ -503,6 +558,7 @@ class UserProfile(models.Model):
     language = language_fields.LanguageField(blank=True, null=True)
     nationality = models.ForeignKey(Country, blank=True, null=True,
                                     related_name='nationality')
+    url = models.URLField(blank=True, null=True)
 
     legal_type = models.CharField(
         max_length=1, choices=LEGAL_TYPES, default='H',
@@ -544,6 +600,8 @@ class Shareholder(TagMixin, models.Model):
     mailing_type = models.CharField(
         _('how should the shareholder be approached by the corp'), max_length=1,
         choices=MAILING_TYPES, blank=True, null=True)
+    is_management = models.BooleanField(
+        _('user is management/board member of company'), default=False)
 
     def __unicode__(self):
         return u'{} {} (#{})'.format(
@@ -714,11 +772,20 @@ class Shareholder(TagMixin, models.Model):
             result['errors'].append(_("Missing all data required for #GAFI."))
             return result
 
-        if not (self.user.first_name and self.user.last_name) or not \
-                self.user.userprofile.company_name:
+        # humans need names
+        if (self.user.userprofile.legal_type == 'H' and
+            not self.user.first_name or not self.user.last_name
+            ):
             result['is_valid'] = False
             result['errors'].append(_(
-                'Shareholder first name, last name or company name missing.'))
+                'Shareholder first name or last name missing.'))
+
+        if (self.user.userprofile.legal_type == 'C' and
+            not self.user.userprofile.company_name
+            ):
+            result['is_valid'] = False
+            result['errors'].append(_(
+                'Company name or last name missing.'))
 
         if not self.user.userprofile.birthday:
             result['is_valid'] = False
@@ -1044,8 +1111,15 @@ class Security(models.Model):
 
         return count
 
+    def get_isin(self):
 
-class Position(models.Model):
+        if self.cusip:
+            return 'CH0{}1'.format(self.cusip)
+
+        return ''
+
+
+class Position(CertificateMixin):
     """
     aka Transaction
     """
@@ -1077,6 +1151,7 @@ class Position(models.Model):
     depot_type = models.CharField(
         _('What kind of depot is this position stored within'), max_length=1,
         choices=DEPOT_TYPES, blank=True, null=True)
+    vesting_months = models.PositiveIntegerField(blank=True, null=True)
     comment = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -1112,6 +1187,9 @@ class Position(models.Model):
         if self.seller.is_company_shareholder():
             return _('Share issue')
         return _('Regular Ownership change')
+
+    def get_total_face_value(self):
+        return self.count * self.security.face_value
 
 
 def get_option_plan_upload_path(instance, filename):
@@ -1176,7 +1254,7 @@ class OptionPlan(models.Model):
         return "/optionsplan/{}/download/pdf/".format(self.pk)
 
 
-class OptionTransaction(models.Model):
+class OptionTransaction(CertificateMixin):
     """ Transfer of options from someone to anyone """
     bought_at = models.DateField()
     buyer = models.ForeignKey('Shareholder', related_name="option_buyer")
@@ -1185,9 +1263,6 @@ class OptionTransaction(models.Model):
     seller = models.ForeignKey('Shareholder', blank=True, null=True,
                                related_name="option_seller")
     vesting_months = models.PositiveIntegerField(blank=True, null=True)
-    certificate_id = models.CharField(
-        max_length=255, blank=True, null=True,
-        help_text=_('id of the issued certificate'))
     number_segments = JSONField(
         _('JSON list of segments of ids for securities. can be 1, 2, 3, 4-10'),
         default=list, blank=True, null=True)
@@ -1227,6 +1302,9 @@ class OptionTransaction(models.Model):
             return True
 
         return False
+
+    def get_total_face_value(self):
+        return self.count * self.option_plan.security.face_value
 
 
 # --------- DJANGO TAGGING ----------

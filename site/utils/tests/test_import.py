@@ -11,7 +11,7 @@ from django.core.management import call_command
 from django.test import TestCase
 
 from project.generators import CompanyGenerator, ShareholderGenerator
-from shareholder.models import OptionTransaction, Position, Shareholder
+from shareholder.models import Position, Shareholder
 from utils.import_backends import SisWareImportBackend, SECURITIES
 
 logger = logging.getLogger(__name__)
@@ -65,11 +65,7 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
         # does the company be a seller for each position?
         self.company_shareholder = self.company.get_company_shareholder()
         self.assertEqual(self.backend.row_count,
-                         self.company_shareholder.seller.count() +
-                         OptionTransaction.objects.filter(
-                            option_plan__company=self.company).exclude(
-                            seller__isnull=True
-                         ).count() -
+                         self.company_shareholder.seller.count() -
                          self.company.get_dispo_shareholder().buyer.count() +
                          1  # deleted but previously imported
                          )
@@ -81,11 +77,7 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
         # does the company be a seller for each position?
         self.company_shareholder = self.company.get_company_shareholder()
         self.assertEqual(self.backend.row_count,
-                         self.company_shareholder.seller.count() +
-                         OptionTransaction.objects.filter(
-                            option_plan__company=self.company).exclude(
-                            seller__isnull=True
-                         ).count() -
+                         self.company_shareholder.seller.count() -
                          self.company.get_dispo_shareholder().buyer.count() +
                          1  # deleted but previously imported
                          )
@@ -106,17 +98,6 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
         # check registration type
         self.assertEqual(
             Position.objects.filter(registration_type='1').count(), 3)
-        self.assertEqual(
-            Position.objects.filter(registration_type='2').count(),
-            self.backend.row_count - OptionTransaction.objects.filter(
-                option_plan__company=self.company).exclude(
-                    seller__isnull=True
-                ).count() - 1
-            )
-
-        # option plan
-        self.assertEqual(self.company.optionplan_set.count(), 3)
-        self.assertEqual(self.company.security_set.count(), 3)
 
         # maling_type
         self.assertEqual(
@@ -138,31 +119,12 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
         # positions
         self.assertEqual(
             Position.objects.filter(depot_type__isnull=True).count(), 0)
-        #  3 regular + 3 dispo sh
-        self.assertEqual(Position.objects.filter(depot_type='1').count(), 6)
-        self.assertEqual(Position.objects.filter(depot_type='2').count(), 0)
-        self.assertEqual(Position.objects.filter(depot_type='0').count(), 11)
+        #  10 regular + 3 dispo sh + 3 initial positions = 16
+        self.assertEqual(Position.objects.filter(depot_type='1').count(), 15)
+        self.assertEqual(Position.objects.filter(depot_type='2').count(), 1)
+        self.assertEqual(Position.objects.filter(depot_type='0').count(), 8)
         self.assertEqual(
             Position.objects.filter(stock_book_id__isnull=True).count(), 0)
-
-        # options
-        self.assertEqual(
-            OptionTransaction.objects.filter(depot_type='1').count(), 1)
-        self.assertEqual(
-            OptionTransaction.objects.filter(depot_type='2').count(), 0)
-        self.assertEqual(
-            OptionTransaction.objects.filter(depot_type='0').count(), 9)
-        self.assertEqual(OptionTransaction.objects.filter(
-            depot_type__isnull=True).count(), 0)
-        self.assertEqual(OptionTransaction.objects.filter(
-            stock_book_id__isnull=True).count(), 3)
-        self.assertEqual(OptionTransaction.objects.filter(
-            certificate_id__isnull=True).count(), 3)
-        self.assertEqual(OptionTransaction.objects.filter(
-            seller__isnull=True).count(), 3)
-        for security in self.company.security_set.all():
-            self.assertEqual(self.company_shareholder.options_count(
-                security=security), 0)
 
         # share counts
         self.assertEqual(self.company.share_count, 17439)
@@ -246,3 +208,6 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
         self.assertEqual(self.company.security_set.count(), 3)
         self.assertEqual(self.company.shareholder_set.count(), 1)
         self.assertEqual(self.company.operator_set.count(), 1)
+
+    def test_match_depot_type(self):
+        self.assertEqual(self.backend._match_depot_type(u'Sperrdepot'), '2')

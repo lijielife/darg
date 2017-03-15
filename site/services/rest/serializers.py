@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.core.mail import mail_managers, send_mail
 from django.core.urlresolvers import reverse
 from django.db import transaction
+from django.db.models import Q
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from rest_framework import serializers
@@ -198,7 +199,8 @@ class UserWithEmailOnlySerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email',)
+        # names used within company detail page
+        fields = ('email', 'first_name', 'last_name')
 
 
 class OperatorSerializer(serializers.HyperlinkedModelSerializer):
@@ -265,11 +267,9 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ('first_name', 'last_name', 'email', 'operator_set',
                   'userprofile')
+        extra_kwargs = {'email': {'required': False, 'allow_blank': True}}
 
     def create(self, validated_data):
-
-        if not validated_data.get('user').get('email'):
-            raise ValidationError(_('Email missing'))
 
         if validated_data.get('user').get('userprofile'):
             userprofile_data = validated_data.pop('userprofile')
@@ -290,6 +290,15 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         user = User.objects.create(**validated_data)
 
         return user
+
+    def validate_email(self, value):
+        """
+        handle django user model not allowing None values
+        """
+        if not value:
+            return u''
+        else:
+            return value
 
 
 class ShareholderListSerializer(serializers.HyperlinkedModelSerializer):
@@ -337,7 +346,8 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
             'full_name',
             'mailing_type',
             'readable_mailing_type',
-            'vote_count', 'vote_percent'
+            'vote_count', 'vote_percent',
+            'is_management',
         )
 
     def create(self, validated_data):
@@ -347,9 +357,6 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
 
         # FIXME: assuming one company per user
         company = user.operator_set.all()[0].company
-
-        if not validated_data.get('user').get('email'):
-            raise ValidationError({'email': [_('Email missing')]})
 
         if not validated_data.get('user').get('first_name'):
             raise ValidationError({'first_name': [_('First Name missing')]})
@@ -365,18 +372,24 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
 
         # get unique username
         username = make_username(
-            validated_data.get("user").get("first_name") or '',
-            validated_data.get("user").get("last_name") or '',
-            validated_data.get("user").get("email") or ''
+            validated_data.get("user", {}).get("first_name", u''),
+            validated_data.get("user", {}).get("last_name", u''),
+            validated_data.get("user", {}).get("email", u'')
         )
+        email = validated_data.get("user", {}).get("email", u'')
+        if email:
+            user_kwargs = {'email': email}
+        else:
+            user_kwargs = {'username': username}
 
         shareholder_user, created = User.objects.get_or_create(
-            email=validated_data.get("user").get("email"),
             defaults={
-                "username": username,
+                "email": validated_data.get("user", {}).get("email", u''),
                 "first_name": validated_data.get("user").get("first_name"),
                 "last_name": validated_data.get("user").get("last_name"),
-            })
+            },
+            **user_kwargs
+        )
 
         if not hasattr(shareholder_user, 'userprofile'):
             shareholder_user.userprofile = UserProfile.objects.create()
@@ -415,7 +428,7 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
 
         # don't create duplicate users with same email if email is set:
         if (
-                validated_data['user']['email'] and
+                validated_data['user'].get('email', u'') and
                 User.objects.filter(
                     email=validated_data['user']['email']
                 ).exists() and User.objects.get(
@@ -424,7 +437,7 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
             raise ValidationError({'email': [_(
                 'This email is already taken by another user/shareholder.')]})
 
-        user.email = validated_data['user']['email']
+        user.email = validated_data['user'].get('email', u'')
         user.first_name = validated_data['user']['first_name']
         user.last_name = validated_data['user']['last_name']
         user.save()
@@ -450,12 +463,13 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
                 'company_department')
             userprofile.birthday = profile_kwargs.get('birthday')
             userprofile.language = profile_kwargs.get('language')
-            userprofile.legal_type = profile_kwargs.get('legal_type')
+            userprofile.legal_type = profile_kwargs.get('legal_type') or 'H'
             userprofile.title = profile_kwargs.get('title')
             userprofile.salutation = profile_kwargs.get('salutation')
             userprofile.save()
 
         shareholder.number = validated_data['number']
+        shareholder.is_management = validated_data['is_management']
         if 'mailing_type' in validated_data.keys():
             shareholder.mailing_type = validated_data['mailing_type']
         shareholder.save()
@@ -472,6 +486,29 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
         change make it readable
         """
         return obj.get_mailing_type_display()
+
+    def validate_number(self, value):
+        """
+        we must not have duplicate numbers per company, ensure that for update
+        operations the current sh obj is excluded
+        """
+        if not value:
+            return value
+
+        if self.context.get("request"):
+            request = self.context.get("request")
+            qs = Shareholder.objects.filter(
+                company=request.user.operator_set.first().company,
+                number=value)
+            # for update operations
+            if self.instance is not None and self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+            # fail if number is used
+            if qs.exists():
+                raise serializers.ValidationError(
+                    _('Number must be unique for this company'))
+
+        return value
 
 
 class PositionSerializer(serializers.HyperlinkedModelSerializer,
@@ -494,7 +531,13 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
             'security', 'comment', 'is_split', 'is_draft', 'number_segments',
             'readable_number_segments', 'registration_type',
             'readable_registration_type', 'position_type', 'depot_type',
-            'readable_depot_type', 'stock_book_id',)
+            'readable_depot_type', 'stock_book_id', 'vesting_months',
+            'certificate_id', 'printed_at')
+
+    def _get_company(self):
+        user = self.context.get("request").user
+        company = user.operator_set.first().company
+        return company
 
     def get_readable_number_segments(self, obj):
         """
@@ -669,9 +712,42 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
             kwargs.update({
                 'depot_type': validated_data.get("depot_type")})
 
+        if validated_data.get("vesting_months"):
+            kwargs.update({
+                'vesting_months': validated_data.get("vesting_months")})
+
+        if validated_data.get("certificate_id"):
+            kwargs.update({
+                'certificate_id': validated_data.get("certificate_id")})
+
         position = Position.objects.create(**kwargs)
 
         return position
+
+    def validate_certificate_id(self, value):
+        """
+        ensure that its unique
+        """
+        if not value:
+            return value
+
+        company = self._get_company()
+        ot_queryset = OptionTransaction.objects.filter(
+            option_plan__company=company, certificate_id=value)
+        pos_queryset = Position.objects.filter(
+            Q(buyer__company=company) | Q(seller__company=company),
+            certificate_id=value)
+        # exclude self on update operation
+        if self.instance is not None and self.instance.pk:
+            pos_queryset = pos_queryset.exclude(pk=self.instance.pk).exists()
+
+        # if not yet existing
+        if not ot_queryset.exists() and not pos_queryset.exists():
+            return value
+        else:
+            raise ValidationError(
+                _("Certificate ID {} is already used in transaction or option "
+                  "transaction").format(value))
 
 
 class OptionPlanSerializer(serializers.HyperlinkedModelSerializer):
@@ -827,7 +903,16 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
                   'is_draft', 'number_segments', 'readable_number_segments',
                   'readable_registration_type', 'registration_type',
                   'depot_type', 'readable_depot_type', 'stock_book_id',
-                  'certificate_id')
+                  'certificate_id', 'printed_at')
+
+    def _get_optionplan(self):
+        op_serialized = self.initial_data.get('option_plan')
+        if isinstance(op_serialized, dict):
+            pk = op_serialized.get('pk')
+        else:
+            pk = int(op_serialized.split('/')[-1])
+        option_plan = OptionPlan.objects.get(id=pk)
+        return option_plan
 
     def is_valid(self, raise_exception=False):
         """
@@ -837,13 +922,7 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
 
         initial_data = self.initial_data
 
-        op_serialized = initial_data.get('option_plan')
-        if isinstance(op_serialized, dict):
-            pk = op_serialized.get('pk')
-        else:
-            pk = int(op_serialized.split('/')[-1])
-
-        option_plan = OptionPlan.objects.get(id=pk)
+        option_plan = self._get_optionplan()
         security = option_plan.security
 
         if not security.track_numbers:
@@ -976,6 +1055,31 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
         change make it readable
         """
         return obj.get_depot_type_display()
+
+    def validate_certificate_id(self, value):
+        """
+        ensure that its unique
+        """
+        if not value:
+            return value
+
+        company = self._get_optionplan().company
+        ot_queryset = OptionTransaction.objects.filter(
+            option_plan__company=company, certificate_id=value)
+        pos_queryset = Position.objects.filter(
+            Q(buyer__company=company) | Q(seller__company=company),
+            certificate_id=value)
+        # exclude self on update operation
+        if self.instance is not None and self.instance.pk:
+            ot_queryset = ot_queryset.exclude(pk=self.instance.pk).exists()
+
+        # if not yet existing
+        if not ot_queryset.exists() and not pos_queryset.exists():
+            return value
+        else:
+            raise ValidationError(
+                _("Certificate ID {} is already used in transaction or option "
+                  "transaction").format(value))
 
 
 class OptionHolderSerializer(serializers.HyperlinkedModelSerializer):

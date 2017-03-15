@@ -23,12 +23,12 @@
       font-size: 0.7em
     .tr
       .td
-        a
-          font-size: 0.9em
-        font-size: 0.9em
+        // a
+        //   font-size: 0.9em
+        // font-size: 0.9em
         @include align-items(baseline)
-    .th
-      font-size: 0.9em
+    // .th
+    //  font-size: 0.9em
 
 @media only screen and (max-width: 800px)
 
@@ -157,7 +157,6 @@
         .td
           word-break: normal
         @include align-items(flex-end)
-        font-weight: 700
         border-bottom: 2px solid $color-gray-lighten
       border-bottom: 1px solid $color-gray-lighten
       &.totals
@@ -165,6 +164,8 @@
       @include display-flex(flex)
       @include flex-flow(row)
       .td
+        &:before
+          content: none
         a
           &.btn-icon
             padding-left: 0
@@ -240,8 +241,8 @@
       padding: 10px 75px 10px 0
       position: relative
       border: 1px solid #f5f5f5
-      &.th
-        display: none
+      // &.th
+      //  display: none
       &.option-holders-heading
         font-weight: 700
         background: transparent
@@ -365,7 +366,9 @@
           font-size: 1.4em
       .benefits
         ul > li
-          font-size: 1.4em
+          display: block
+          padding-bottom: 1em
+          width: 100%
     header
       min-height: 180px
       text-align: center
