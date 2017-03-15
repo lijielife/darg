@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-12 08:14+0000\n"
+"POT-Creation-Date: 2017-03-14 21:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,8 +21,8 @@ msgstr ""
 msgid "Personal ownership"
 msgstr ""
 
-#: shareholder/models.py:34 shareholder/tests/test_functional.py:897
-#: shareholder/tests/test_functional.py:1457
+#: shareholder/models.py:34 shareholder/tests/test_functional.py:899
+#: shareholder/tests/test_functional.py:1459
 msgid "Personal representation"
 msgstr ""
 
@@ -46,7 +46,7 @@ msgstr ""
 msgid "Postal Mail"
 msgstr ""
 
-#: shareholder/models.py:46 shareholder/tests/test_functional.py:181
+#: shareholder/models.py:46 shareholder/tests/test_functional.py:182
 msgid "via Email"
 msgstr ""
 
@@ -120,7 +120,7 @@ msgstr ""
 msgid "Human Being"
 msgstr ""
 
-#: shareholder/models.py:542 shareholder/tests/test_functional.py:152
+#: shareholder/models.py:542 shareholder/tests/test_functional.py:153
 msgid "Corporate"
 msgstr ""
 
@@ -697,18 +697,22 @@ msgid "Total option count based on shares dedicated to options floating"
 msgstr ""
 
 #: shareholder/templates/shareholder/shareholder_detail.html:254
+#: shareholder/templates/shareholder/shareholder_detail.html:272
 msgid "security"
 msgstr ""
 
 #: shareholder/templates/shareholder/shareholder_detail.html:255
+#: shareholder/templates/shareholder/shareholder_detail.html:273
 msgid "cusip"
 msgstr ""
 
 #: shareholder/templates/shareholder/shareholder_detail.html:257
+#: shareholder/templates/shareholder/shareholder_detail.html:275
 msgid "issued"
 msgstr ""
 
 #: shareholder/templates/shareholder/shareholder_detail.html:260
+#: shareholder/templates/shareholder/shareholder_detail.html:277
 msgid "shares owned"
 msgstr ""
 
@@ -716,19 +720,21 @@ msgstr ""
 msgid "cleaned by options count"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:266
+#: shareholder/templates/shareholder/shareholder_detail.html:265
+#: shareholder/templates/shareholder/shareholder_detail.html:278
 msgid "options owned"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:268
+#: shareholder/templates/shareholder/shareholder_detail.html:267
+#: shareholder/templates/shareholder/shareholder_detail.html:280
 msgid "share segments"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:284
+#: shareholder/templates/shareholder/shareholder_detail.html:286
 msgid "Delete shareholder"
 msgstr ""
 
-#: shareholder/tests/test_functional.py:282
+#: shareholder/tests/test_functional.py:284
 msgid "This email is already taken by another user/shareholder."
 msgstr ""
 

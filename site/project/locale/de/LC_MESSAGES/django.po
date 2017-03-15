@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-12 08:14+0000\n"
+"POT-Creation-Date: 2017-03-14 21:50+0000\n"
 "PO-Revision-Date: 2017-03-11 13:28+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,67 +31,67 @@ msgstr ""
 "\"Nutzungsbedingungen Das-Aktienregister.ch\" target=\"_blank\" class=\"link "
 "tos\">Datenschutzerklärung</a> gelesen und stimme zu."
 
-#: project/tasks.py:88
+#: project/tasks.py:95
 msgid "Welcome to Das Aktienregister - Your new password"
 msgstr "Willkommen zu Das Aktienregister - Ihr neues Passwort"
 
-#: project/tasks.py:116
+#: project/tasks.py:123
 msgid "Your pdf captable file"
 msgstr "Ihre Liste der aktiven Gesellschafter als PDF"
 
-#: project/tasks.py:118 project/tasks.py:182
+#: project/tasks.py:125 project/tasks.py:189
 msgid "Your file is attached to this email"
 msgstr "Die Datei befindet sich im Anhang dieser Email"
 
-#: project/tasks.py:123
+#: project/tasks.py:130
 msgid "PDF Captable/Active Shareholders"
 msgstr "Download Liste der aktiven Aktionäre als PDF"
 
-#: project/tasks.py:143 project/tests/test_views.py:543 project/views.py:37
+#: project/tasks.py:150 project/tests/test_views.py:538 project/views.py:37
 msgid "shareholder number"
 msgstr "Aktieninhabernummer"
 
-#: project/tasks.py:143 project/views.py:37
+#: project/tasks.py:150 project/views.py:37
 msgid "last name"
 msgstr "Nachname"
 
-#: project/tasks.py:143 project/views.py:37
+#: project/tasks.py:150 project/views.py:37
 msgid "first name"
 msgstr "Vorname"
 
-#: project/tasks.py:144 project/views.py:38
+#: project/tasks.py:151 project/views.py:38
 msgid "email"
 msgstr "Email"
 
-#: project/tasks.py:144 project/views.py:346
+#: project/tasks.py:151 project/views.py:346
 msgid "share count"
 msgstr "Anzahl Aktien"
 
-#: project/tasks.py:144
+#: project/tasks.py:151
 msgid "votes share percent"
 msgstr "% Stimmrechte"
 
-#: project/tasks.py:145 project/views.py:39
+#: project/tasks.py:152 project/views.py:39
 msgid "language ISO"
 msgstr "Sprache ISO"
 
-#: project/tasks.py:145 project/views.py:39
+#: project/tasks.py:152 project/views.py:39
 msgid "language full"
 msgstr "Sprache"
 
-#: project/tasks.py:149
+#: project/tasks.py:156
 msgid "Share IDs"
 msgstr "Aktiennummern"
 
-#: project/tasks.py:174
+#: project/tasks.py:181
 msgid "None"
 msgstr "Keine"
 
-#: project/tasks.py:180
+#: project/tasks.py:187
 msgid "Your csv captable file"
 msgstr "Ihre Liste der aktiven Gesellschafter als CSV"
 
-#: project/tasks.py:187
+#: project/tasks.py:194
 msgid "CSV Captable/Active Shareholders"
 msgstr "Download Liste der aktiven Aktionäre als CSV"
 
@@ -637,7 +637,7 @@ msgstr ""
 "Sie haben bereits ein Nutzerkonto. Bitte loggen Sie sich ein oder setzen Sie "
 "Ihr Passwort zurück."
 
-#: project/tests/test_views.py:588 project/views.py:94
+#: project/tests/test_views.py:583 project/views.py:94
 msgid "date"
 msgstr "Datum"
 

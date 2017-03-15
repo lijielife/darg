@@ -176,27 +176,22 @@ class TrackingTestCase(TestCase):
 
     def test_start_authorized_with_operator(self):
 
-        try:
+        user = UserGenerator().generate()
 
-            user = UserGenerator().generate()
+        is_operator_added = _add_company_to_user_via_rest(user)
+        self.assertTrue(is_operator_added)
 
-            is_operator_added = _add_company_to_user_via_rest(user)
-            self.assertTrue(is_operator_added)
+        is_loggedin = self.client.login(
+            username=user.username, password=DEFAULT_TEST_DATA['password'])
 
-            is_loggedin = self.client.login(
-                username=user.username, password=DEFAULT_TEST_DATA['password'])
+        self.assertTrue(is_loggedin)
 
-            self.assertTrue(is_loggedin)
+        response = self.client.get(reverse('start'), follow=True)
 
-            response = self.client.get(reverse('start'), follow=True)
-
-            self.assertEqual(response.status_code, 200)
-            self.assertTrue("UA-58468401-4" in response.content)
-            self.assertTrue("Willkommen" in response.content)
-            self.assertTrue("shareholder_list" in response.content)
-
-        except Exception, e:
-            self._handle_exception(e)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("UA-58468401-4" in response.content)
+        self.assertTrue("Willkommen" in response.content)
+        self.assertTrue("shareholder_list" in response.content)
 
     def test_start_nonauthorized(self):
 

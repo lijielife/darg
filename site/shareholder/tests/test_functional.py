@@ -63,6 +63,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
             p.refresh()
             p.wait_until_visible(
                 (By.CSS_SELECTOR, 'tr.shareholder-number span.el-icon-pencil'))
+            time.sleep(3)
             self.assertIn(profile.get_legal_type_display(),
                           p.get_field('legal-type'))
             self.assertIn(profile.initial_registration_at.strftime('%-d.%m.%y'),
@@ -243,7 +244,8 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                     )
                 )
             # wait for table
-            p.wait_until_visible((By.CSS_SELECTOR, 'table.stock tr.security'))
+            p.wait_until_visible((By.CSS_SELECTOR,
+                                  'div.table.stock div.tr.security'))
             self.assertEqual(p.get_securities(),
                              [u'0', u'', u'6', u'1000-1200, 1666'])
 
@@ -748,6 +750,15 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.click_save_option_plan_form()
             # wait for error
             app.wait_until_visible((By.CSS_SELECTOR, '.form-error'))
+
+            # attempt to fix unstable @CI
+            # FIXME remove once stable
+            for s in Shareholder.objects.all():
+                print s.current_segments(
+                    security=operator.company.security_set.first())
+                print s.current_options_segments(
+                    security=operator.company.security_set.first())
+
             self.assertEqual(
                 app.get_form_errors(),
                 [u'Aktiennummern: Aktiennummer "[1050]" geh\xf6rt nicht zu '
@@ -776,6 +787,14 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.click_save_option_plan_form()
             # wait for error to disappear
             app.wait_until_invisible((By.CSS_SELECTOR, '.form-error'))
+
+            # attempt to fix unstable @CI
+            # FIXME remove once stable
+            for s in Shareholder.objects.all():
+                print s.current_segments(
+                    security=operator.company.security_set.first())
+                print s.current_options_segments(
+                    security=operator.company.security_set.first())
 
             self.assertTrue(app.is_no_errors_displayed())
             self.assertTrue(app.is_option_plan_displayed(

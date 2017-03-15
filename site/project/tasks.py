@@ -4,6 +4,7 @@ import datetime
 import time
 import StringIO
 import csv
+import logging
 
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
@@ -14,6 +15,8 @@ from shareholder.models import Company
 from project.celery import app
 from utils.pdf import render_to_pdf
 from utils.formatters import human_readable_segments
+
+logger = logging.getLogger(__name__)
 
 
 def _get_captable_pdf_context(company, ordering):
@@ -70,9 +73,13 @@ def _order_queryset(queryset, ordering):
     # handle sort by function result
     if hasattr(queryset.first(), funcname):
         unsorted_results = queryset.all()
-        return sorted(
-            unsorted_results, key=lambda t: float(getattr(t, funcname)()),
-            reverse=reverse)
+        try:
+            return sorted(
+                unsorted_results, key=lambda t: float(getattr(t, funcname)()),
+                reverse=reverse)
+        except TypeError:  # identify https://goo.gl/bDreXS
+            logger.exception('ordering {} must be function of {} queryset '
+                             'objects'.format(funcname, unsorted_results))
 
     # use conventional ordering
     return queryset.order_by(ordering)

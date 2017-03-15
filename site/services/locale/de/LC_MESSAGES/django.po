@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-12 08:14+0000\n"
-"PO-Revision-Date: 2017-03-11 11:56+0000\n"
+"POT-Creation-Date: 2017-03-14 21:50+0000\n"
+"PO-Revision-Date: 2017-03-13 20:01+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -67,72 +67,72 @@ msgstr ""
 "\n"
 "Das Aktienregister Team"
 
-#: services/rest/serializers.py:273 services/rest/serializers.py:354
-msgid "Email missing"
-msgstr "Bitte geben Sie eine gültige Email ein."
-
-#: services/rest/serializers.py:357
+#: services/rest/serializers.py:361
 msgid "First Name missing"
 msgstr "Bitte geben Sie eine gültigen Vornamen ein."
 
-#: services/rest/serializers.py:360
+#: services/rest/serializers.py:364
 msgid "Last Name missing"
 msgstr "Bitte geben Sie eine gültigen Nachnamen ein."
 
-#: services/rest/serializers.py:366
+#: services/rest/serializers.py:370
 msgid "Shareholder Number must be unique"
 msgstr ""
 "Diese Aktionärsnummer wird bereits verwendet. Bitte wählen Sie eine andere."
 
-#: services/rest/serializers.py:427
+#: services/rest/serializers.py:437
 msgid "This email is already taken by another user/shareholder."
 msgstr ""
 "Diese E-Mail wird bereits von einem anderen Nutzer/Gesellschafter verwendet."
 
-#: services/rest/serializers.py:571 services/rest/serializers.py:908
+#: services/rest/serializers.py:508 services/rest/tests/test_views.py:1074
+msgid "Number must be unique for this company"
+msgstr "Aktionärsnummer darf pro Unternehmen nur einmal vorkommen."
+
+#: services/rest/serializers.py:603 services/rest/serializers.py:940
 msgid "Invalid security numbers segments."
 msgstr "Ungültige Aktiennummern (1,2,3,4-9)."
 
-#: services/rest/serializers.py:577 services/rest/serializers.py:921
+#: services/rest/serializers.py:609 services/rest/serializers.py:953
 msgid "Segments \"{}\" must be owned by seller \"{}\". Available are {}"
 msgstr ""
 "Aktiennummer \"{}\" gehört nicht zu Verkäufer \"{}\". Verfügbar sind \"{}\"."
 
-#: services/rest/serializers.py:590 services/rest/serializers.py:848
-#: services/rest/serializers.py:933
+#: services/rest/serializers.py:622 services/rest/serializers.py:880
+#: services/rest/serializers.py:965
 msgid "Number of shares in segments ({}) does not match count {}"
 msgstr ""
 "Anzahl der Aktien in den Aktiennummern ist nicht identisch mit der Anzahl "
 "der Aktien im Formular: {}"
 
-#: services/rest/serializers.py:607
+#: services/rest/serializers.py:639
 msgid ""
 "Segment {} is blocked for options and cannot be transfered to a shareholder."
 msgstr ""
 "Aktiennummer(n) {} ist blockiert für Aktienoptionen und kann nicht an einen "
 "Aktionär transferiert werden."
 
-#: services/rest/serializers.py:716 services/rest/serializers.py:1048
+#: services/rest/serializers.py:748 services/rest/serializers.py:1080
 msgid "Certificate ID {} is already used in transaction or option transaction"
 msgstr ""
 "Urkunden/Zertifikats-ID {} wird bereits in einer Transaktion oder Option "
 "verwendet."
 
-#: services/rest/serializers.py:744
+#: services/rest/serializers.py:776
 msgid "Not a pdf file."
 msgstr "Falsches Dateiformat. Nur PDF ist erlaubt."
 
-#: services/rest/serializers.py:825
+#: services/rest/serializers.py:857
 msgid "Invalid or empty security numbers segments."
 msgstr "Ungültige Aktiennummern. Valide sind: \"1,2,3,4-9\"."
 
-#: services/rest/serializers.py:836
+#: services/rest/serializers.py:868
 msgid ""
 "Segments \"{}\" must be owned by company shareholder \"{}\". Available are {}"
 msgstr ""
 "Aktiennummer \"{}\" gehört nicht zu Verkäufer \"{}\". Verfügbar sind \"{}\"."
 
-#: services/rest/serializers.py:945
+#: services/rest/serializers.py:977
 msgid ""
 "Segment {} is not reserved for options inside a option plan and cannot be "
 "transfered to a option holder. Available are: {}"
@@ -140,7 +140,7 @@ msgstr ""
 "Aktiennummer(n) {} ist nicht reserviert für einen Optionsplan and kann nicht "
 "an einen Optionsinhaber transferiert werden. Verfügbar sind aber: {}."
 
-#: services/rest/tests/test_serializers.py:432
+#: services/rest/tests/test_serializers.py:454
 msgid "Human Being"
 msgstr "Natürliche Person"
 
@@ -156,8 +156,11 @@ msgstr ""
 msgid "Field may not be empty."
 msgstr "Das Feld darf nicht leer sein."
 
-#: services/rest/views.py:397 services/rest/views.py:502
+#: services/rest/views.py:397 services/rest/views.py:503
 msgid "Confirmed position cannot be deleted."
 msgstr ""
 "Festgeschriebene Transaktionen können nicht gelöscht werden. Verwenden Sie "
 "eine Gegen-Transaktion."
+
+#~ msgid "Email missing"
+#~ msgstr "Bitte geben Sie eine gültige Email ein."

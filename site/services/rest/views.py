@@ -57,11 +57,11 @@ class ShareholderViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        
+
         # no company setup yet
         if not user.operator_set.first():
           return Shareholder.objects.none()
-        
+
         company = user.operator_set.first().company
         return Shareholder.objects.filter(company=company)\
             .select_related('company', 'user', 'user__userprofile') \
@@ -179,7 +179,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
     pagination_class = SmallPagePagination
     serializer_class = CompanySerializer
     permission_classes = [
-        UserCanEditCompanyPermission,
+        UserIsOperatorPermission,
     ]
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('user__first_name', 'user__last_name', 'user__email',
@@ -408,7 +408,8 @@ class SecurityViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        return Security.objects.filter(company__operator__user=user)
+        if user.is_authenticated():
+            return Security.objects.filter(company__operator__user=user)
 
 
 class OptionPlanViewSet(viewsets.ModelViewSet):

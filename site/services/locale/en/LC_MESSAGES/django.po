@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-12 08:14+0000\n"
+"POT-Creation-Date: 2017-03-14 21:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,68 +53,68 @@ msgid ""
 "Your Das-Aktienregister Team"
 msgstr ""
 
-#: services/rest/serializers.py:273 services/rest/serializers.py:354
-msgid "Email missing"
-msgstr ""
-
-#: services/rest/serializers.py:357
+#: services/rest/serializers.py:361
 msgid "First Name missing"
 msgstr ""
 
-#: services/rest/serializers.py:360
+#: services/rest/serializers.py:364
 msgid "Last Name missing"
 msgstr ""
 
-#: services/rest/serializers.py:366
+#: services/rest/serializers.py:370
 msgid "Shareholder Number must be unique"
 msgstr ""
 
-#: services/rest/serializers.py:427
+#: services/rest/serializers.py:437
 msgid "This email is already taken by another user/shareholder."
 msgstr ""
 
-#: services/rest/serializers.py:571 services/rest/serializers.py:908
+#: services/rest/serializers.py:508 services/rest/tests/test_views.py:1074
+msgid "Number must be unique for this company"
+msgstr ""
+
+#: services/rest/serializers.py:603 services/rest/serializers.py:940
 msgid "Invalid security numbers segments."
 msgstr ""
 
-#: services/rest/serializers.py:577 services/rest/serializers.py:921
+#: services/rest/serializers.py:609 services/rest/serializers.py:953
 msgid "Segments \"{}\" must be owned by seller \"{}\". Available are {}"
 msgstr ""
 
-#: services/rest/serializers.py:590 services/rest/serializers.py:848
-#: services/rest/serializers.py:933
+#: services/rest/serializers.py:622 services/rest/serializers.py:880
+#: services/rest/serializers.py:965
 msgid "Number of shares in segments ({}) does not match count {}"
 msgstr ""
 
-#: services/rest/serializers.py:607
+#: services/rest/serializers.py:639
 msgid ""
 "Segment {} is blocked for options and cannot be transfered to a shareholder."
 msgstr ""
 
-#: services/rest/serializers.py:716 services/rest/serializers.py:1048
+#: services/rest/serializers.py:748 services/rest/serializers.py:1080
 msgid "Certificate ID {} is already used in transaction or option transaction"
 msgstr ""
 
-#: services/rest/serializers.py:744
+#: services/rest/serializers.py:776
 msgid "Not a pdf file."
 msgstr ""
 
-#: services/rest/serializers.py:825
+#: services/rest/serializers.py:857
 msgid "Invalid or empty security numbers segments."
 msgstr ""
 
-#: services/rest/serializers.py:836
+#: services/rest/serializers.py:868
 msgid ""
 "Segments \"{}\" must be owned by company shareholder \"{}\". Available are {}"
 msgstr ""
 
-#: services/rest/serializers.py:945
+#: services/rest/serializers.py:977
 msgid ""
 "Segment {} is not reserved for options inside a option plan and cannot be "
 "transfered to a option holder. Available are: {}"
 msgstr ""
 
-#: services/rest/tests/test_serializers.py:432
+#: services/rest/tests/test_serializers.py:454
 msgid "Human Being"
 msgstr ""
 
@@ -128,6 +128,6 @@ msgstr ""
 msgid "Field may not be empty."
 msgstr ""
 
-#: services/rest/views.py:397 services/rest/views.py:502
+#: services/rest/views.py:397 services/rest/views.py:503
 msgid "Confirmed position cannot be deleted."
 msgstr ""

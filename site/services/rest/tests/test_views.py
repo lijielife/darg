@@ -5,6 +5,7 @@ import logging
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 from django.test import RequestFactory, TestCase
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
@@ -21,7 +22,8 @@ from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
 from project.tests.mixins import MoreAssertsTestCaseMixin
 from services.rest.serializers import SecuritySerializer
 from shareholder.models import (Operator, OptionTransaction, Position,
-                                Security, Shareholder)
+                                Security, Shareholder, OptionPlan, UserProfile)
+from django.utils.translation import ugettext as _
 
 logger = logging.getLogger()
 
@@ -97,6 +99,8 @@ class AvailableOptionSegmentsViewTestCase(APITestCase):
             ComplexOptionTransactionsWithSegmentsGenerator().generate()
         optionplan = option_transactions[0].option_plan
 
+        self.client.force_login(optionplan.company.operator_set.first().user)
+
         res = self.client.get(reverse('available_option_segments',
                                       kwargs={'shareholder_id': shs[0].pk,
                                               'optionsplan_id': optionplan.pk}))
@@ -117,6 +121,61 @@ class CompanyViewSetTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.site = Site.objects.get_current()
+        self.operator = OperatorGenerator().generate()
+
+    def test_delete_company_permissions(self):
+        """
+        only auth'd operators can execute
+        """
+        # anon user
+        response = self.client.delete(
+            '/services/rest/company/{}'.format(self.operator.company.pk),
+            **{'format': 'json'})
+
+        self.assertEqual(response.status_code, 401)
+
+        # operator
+        self.client.force_login(self.operator.user)
+        response = self.client.delete(
+            '/services/rest/company/{}'.format(self.operator.company.pk),
+            **{'HTTP_AUTHORIZATION': 'Token {}'.format(
+                self.operator.user.auth_token.key), 'format': 'json'})
+        self.assertEqual(response.status_code, 204)
+
+        # foreign operator
+        op = OperatorGenerator().generate()
+        self.client.force_login(op.user)
+        response = self.client.delete(
+            '/services/rest/company/{}'.format(self.operator.company.pk),
+            **{'HTTP_AUTHORIZATION': 'Token {}'.format(
+                op.user.auth_token.key), 'format': 'json'})
+        self.assertEqual(response.status_code, 404)
+
+    def test_delete_company_and_related_data(self):
+        """
+        ensure related data is cleaned too, but not users and user profile
+        """
+        pk = self.operator.company.pk
+        sh = ShareholderGenerator().generate(company=self.operator.company)
+        uid = sh.user.pk
+        puid = sh.user.userprofile.pk
+
+        self.client.force_login(self.operator.user)
+        response = self.client.delete(
+            '/services/rest/company/{}'.format(self.operator.company.pk),
+            **{'HTTP_AUTHORIZATION': 'Token {}'.format(
+                self.operator.user.auth_token.key), 'format': 'json'})
+        self.assertEqual(response.status_code, 204)
+
+        self.assertFalse(Shareholder.objects.filter(company__pk=pk).exists())
+        self.assertFalse(Operator.objects.filter(company__pk=pk).exists())
+        self.assertFalse(Position.objects.filter(
+            Q(seller__company__pk=pk) | Q(buyer__company__pk=pk)
+        ).exists())
+        self.assertFalse(Security.objects.filter(company__pk=pk).exists())
+        self.assertFalse(OptionPlan.objects.filter(company__pk=pk).exists())
+        self.assertTrue(UserProfile.objects.filter(pk=puid).exists())
+        self.assertTrue(User.objects.filter(pk=uid).exists())
 
 
 class OperatorTestCase(TestCase):
@@ -444,7 +503,6 @@ class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
         self.assertEqual(position.stock_book_id, "666")
         self.assertEqual(position.depot_type, "1")
         self.assertEqual(position.certificate_id, "88888")
-
 
     def test_add_position_with_number_segment(self):
         """
@@ -842,7 +900,6 @@ class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
             '/services/rest/position?search={}'.format(query))
 
         self.assertEqual(res.status_code, 200)
-        print 'REMOVEME:', res.data  # instable on CI, print to understand the cause
         self.assertEqual(res.data['count'], 1)
 
     def test_ordering(self):
@@ -904,14 +961,6 @@ class ShareholderTestCase(TestCase):
 
     def setUp(self):
         self.client = APIClient()
-
-    def test_invitee_valid_email(self):
-
-        # Using the standard RequestFactory API to create a form POST request
-        response = self.client.post('/services/rest/invitee/',
-                                    {"email": "kk@ll.de"}, format='json')
-
-        self.assertEqual(response.data, {'email': u'kk@ll.de'})
 
     def test_invitee_invalid_email(self):
 
@@ -1003,9 +1052,41 @@ class ShareholderTestCase(TestCase):
         # check proper db status
         user = User.objects.get(email="mike.hildebrand2@darg.com")
 
+    def test_add_new_shareholder_without_email(self):
+        """ addes a new shareholder and user and checks for special chars"""
+
+        operator = OperatorGenerator().generate()
+        user = operator.user
+
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
+        self.assertTrue(logged_in)
+
+        data = {
+            u"user": {
+                u"first_name": u"Mike2Grüße",
+                u"last_name": u"Hildebrand2Grüße",
+            },
+            u"number": u"10002"}
+
+        response = self.client.post(
+            '/services/rest/shareholders',
+            data,
+            **{'HTTP_AUTHORIZATION': 'Token {}'.format(
+                user.auth_token.key), 'format': 'json'})
+
+        self.assertEqual(response.status_code, 201)
+        self.assertNotEqual(response.data.get('pk'), None)
+        self.assertTrue(isinstance(response.data.get('user'), dict))
+        self.assertEqual(response.data.get('number'), u'10002')
+
+        # check proper db status
+        user = User.objects.get(first_name=u"Mike2Grüße")
+
     def test_add_duplicate_new_shareholder(self):
         """
-        adds a new shareholder with same id"""
+        adds a new shareholder with same id
+        """
 
         operator = OperatorGenerator().generate()
         shareholder = ShareholderGenerator().generate(company=operator.company)
@@ -1032,8 +1113,7 @@ class ShareholderTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             response.data.get('number'),
-            [u'Diese Aktion\xe4rsnummer wird bereits verwendet. Bitte '
-             u'w\xe4hlen Sie eine andere.']
+            [_('Number must be unique for this company')]
         )
 
     def test_add_shareholder_for_existing_user_account(self):
@@ -1188,7 +1268,7 @@ class ShareholderTestCase(TestCase):
         security = positions[0].security
 
         self.client.force_authenticate(
-            shs[0].company.operator_set.all()[0].user.username)
+            shs[0].company.operator_set.all()[0].user)
 
         res = self.client.get(reverse('shareholders-number-segments',
                                       kwargs={'pk': shs[1].pk}))
