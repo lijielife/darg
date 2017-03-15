@@ -779,6 +779,14 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             # wait for error to disappear
             app.wait_until_invisible((By.CSS_SELECTOR, '.form-error'))
 
+            # attempt to fix unstable @CI
+            # FIXME remove once stable
+            for s in Shareholder.objects.all():
+                print s.current_segments(
+                    security=operator.company.security_set.first())
+                print s.current_options_segments(
+                    security=operator.company.security_set.first())
+
             self.assertTrue(app.is_no_errors_displayed())
             self.assertTrue(app.is_option_plan_displayed(
                 OptionPlan.objects.last().security))
