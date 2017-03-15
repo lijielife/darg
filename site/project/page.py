@@ -90,13 +90,6 @@ class BasePage(object):
         btn.click()
         time.sleep(1)  # wait for page reload  # FIXME
 
-        # confirm page loaded
-        page_heading = self.driver.find_element_by_tag_name('h1').get_attribute(
-            'innerHTML')
-        assert page_heading == 'Willkommen {}!'.format(
-            username), 'failed to login. got {} page instead'.format(
-            page_heading)
-
     def refresh(self):
         """ reload page """
         # if TimeoutException happens keep trying

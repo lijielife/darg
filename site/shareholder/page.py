@@ -9,7 +9,6 @@ http://selenium-python.readthedocs.org/en/latest/page-objects.html
 import time
 import logging
 
-from django.utils.translation import gettext as _
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 
@@ -343,14 +342,14 @@ class OptionsPage(BasePage):
         self.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
 
-class OptionsDetailPage(BasePage):
+class OptionsPlanDetailPage(BasePage):
     """Options Detail View"""
 
     def __init__(self, driver, live_server_url, user, path):
         """ load MainPage '/' """
         self.live_server_url = live_server_url
         # prepare driver
-        super(OptionsDetailPage, self).__init__(driver)
+        super(OptionsPlanDetailPage, self).__init__(driver)
 
         # load page
         self.operator = user.operator_set.all()[0]
@@ -363,7 +362,8 @@ class OptionsDetailPage(BasePage):
         return text of security table element
         """
         el = self.driver.find_element_by_xpath(
-            '//tr[contains(@class, "security")]/td[contains(@class, "text")]')
+            '//div[contains(@class, "security")]'
+            '//div[contains(@class, "text")]')
         return el.text
 
 

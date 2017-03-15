@@ -683,6 +683,18 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
         except Exception, e:
             self._handle_exception(e)
 
+
+class OptionsPlanFunctionalTestCase(BaseSeleniumTestCase):
+
+    def setUp(self):
+        self.operator = OperatorGenerator().generate()
+        self.securities = TwoInitialSecuritiesGenerator().generate(
+            company=self.operator.company)
+        self.buyer = ShareholderGenerator().generate(
+            company=self.operator.company)
+        self.seller = ShareholderGenerator().generate(
+            company=self.operator.company)
+
     def test_optionplan_detail_with_segments(self):
         """
         test numbered segments detail on option plan detail page
@@ -698,14 +710,14 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
         try:
             path = reverse('optionplan',
                            kwargs={'optionsplan_id': optionsplan.pk})
-            app = page.OptionsDetailPage(
+            app = page.OptionsPlanDetailPage(
                 self.selenium, self.live_server_url, operator.user, path)
 
             security_text = (
                     u'Vorzugsaktien (100 CHF)\n'
                     u'(Reservierte Aktiennummern 1000-2000)')
             app.wait_until_text_present(
-                (By.CSS_SELECTOR, 'tr.security td.text'), security_text)
+                (By.CSS_SELECTOR, 'div.security div.text'), security_text)
 
             self.assertEqual(app.get_security_text(), security_text)
 
@@ -912,7 +924,7 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.wait_until_visible((By.ID, "optiontransaction-detail"))
             self.assertEqual(
                 app.wait_until_visible((By.CLASS_NAME, 'registration-type'))
-                .find_elements_by_tag_name('td')[1].text,
+                .find_elements_by_class_name('td')[1].text,
                 _('Personal representation'))
 
         except Exception, e:
@@ -1472,7 +1484,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.wait_until_visible((By.ID, "position-detail"))
             self.assertEqual(
                 app.wait_until_visible((By.CLASS_NAME, 'registration-type'))
-                .find_elements_by_tag_name('td')[1].text,
+                .find_elements_by_class_name('td')[1].text,
                 _('Personal representation'))
 
         except Exception, e:
