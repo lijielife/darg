@@ -962,14 +962,6 @@ class ShareholderTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
 
-    def test_invitee_valid_email(self):
-
-        # Using the standard RequestFactory API to create a form POST request
-        response = self.client.post('/services/rest/invitee/',
-                                    {"email": "kk@ll.de"}, format='json')
-
-        self.assertEqual(response.data, {'email': u'kk@ll.de'})
-
     def test_invitee_invalid_email(self):
 
         # Using the standard RequestFactory API to create a form POST request
