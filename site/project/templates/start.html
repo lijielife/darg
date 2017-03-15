@@ -25,7 +25,7 @@
   <!-- table per company -->
   <div id="shareholder_list" ng-hide="!user.operator_set.length || loading" ng-repeat="operator in user.operator_set">
 
-    <h1>
+    <h1 class="captable-heading">
       {% endverbatim %}{% trans "Your Shareholders for" %}{% verbatim %}
       {{ operator.company.name }}
       <img ng-src="{{ operator.company.logo_url }}" alt="company logo" ng-show="operator.company.logo_url"class="logo" height="30pt"/>

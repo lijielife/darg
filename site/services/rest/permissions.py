@@ -1,5 +1,7 @@
 from rest_framework import permissions
 
+from shareholder.models import Company
+
 class SafeMethodsOnlyPermission(permissions.BasePermission):
     """Only can access non-destructive methods (like GET and HEAD)"""
     def has_permission(self, request, view):
@@ -30,22 +32,22 @@ class UserCanEditCompanyPermission(permissions.BasePermission):
             UserCanEditCompanyPermission, self
         ).has_object_permission(request, view, obj)
 
-
 class UserIsOperatorPermission(permissions.IsAuthenticated):
     """
     Only operators of the same company may edit
     """
     def has_object_permission(self, request, view, obj=None):
 
-        if hasattr(obj, 'company'):
+        if obj._meta.model == Company:
+            company = obj
+        elif hasattr(obj, 'company'):
             company = obj.company
-        elif hasattr(obj.buyer, 'company'):
+        elif hasattr(obj, 'buyer') and hasattr(obj.buyer, 'company'):
             company = obj.buyer.company
-        elif hasattr(obj.seller, 'company'):
+        elif hasattr(obj, 'seller') and hasattr(obj.seller, 'company'):
             company = obj.seller.company
 
         return request.user.operator_set.filter(company=company).exists()
-
 
 class UserCanAddShareholderPermission(SafeMethodsOnlyPermission):
     """Allow everyone to add a company"""

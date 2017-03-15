@@ -179,7 +179,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
     pagination_class = SmallPagePagination
     serializer_class = CompanySerializer
     permission_classes = [
-        UserCanEditCompanyPermission,
+        UserIsOperatorPermission,
     ]
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('user__first_name', 'user__last_name', 'user__email',

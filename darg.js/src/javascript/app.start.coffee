@@ -111,7 +111,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
                 # fetch option holders for this company
                 $scope.load_option_holders(result1.data.pk)
         # update option holders if we have the company id
-        if $scope.user.operator_set && $scope.user.operator_set[0].company.pk
+        if $scope.user.operator_set.length > 0 && $scope.user.operator_set[0].company.pk
            $scope.load_option_holders($scope.user.operator_set[0].company.pk)
 
     .finally ->

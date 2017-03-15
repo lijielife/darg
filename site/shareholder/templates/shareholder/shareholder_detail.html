@@ -40,97 +40,114 @@
   {% endif %}
 
   {# core data #}
-  <table class="table table-striped small-font-size">
-    <tr class="shareholder-number">
-      <td>{% trans "Shareholder Number" %}:</td>
-      <td>
+  <div class="table table-striped">
+    <div class="tr th shareholder-number">
+      <div class="td">
+        {% trans "Shareholder Number" %}:
+      </div>
+      <div class="td">
         {% verbatim %}<span editable-text="shareholder.number" onaftersave="edit_shareholder()">{{ shareholder.number || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
-      </td>
-    </tr>
-    <tr class="is-management">
-      <td>{% trans "Is user member of management or board?" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th is-management">
+      <div class="td">
+        {% trans "Is user member of management or board?" %}:
+      </div>
+      <div class="td">
         {% verbatim %}<span editable-checkbox="shareholder.is_management" onaftersave="edit_shareholder()">
           <span class="el-icon-ok-sign" ng-show="shareholder.is_management"></span>
           <span class="el-icon-minus-sign" ng-hide="shareholder.is_management"></span>
-          <span class="el-icon-pencil"></span></span>{% endverbatim %}
-      </td>
-    </tr>
-    {% verbatim %}
-    <tr class="initial_registration_at" ng-show="shareholder.user.userprofile.initial_registration_at">
-      <td>{% endverbatim %}{% trans "Initial Registration Date" %}{% verbatim %}:</td>
-      <td>
+          <span class="el-icon-pencil"></span></span>
+        {% endverbatim %}
+      </div>
+    </div>
+    <div class="tr th initial_registration_at" ng-show="shareholder.user.userprofile.initial_registration_at">
+      {% verbatim %}
+      <div class="td">
+        {% endverbatim %}{% trans "Initial Registration Date" %}{% verbatim %}:
+      </div>
+      <div class="td">
         {{ (shareholder.user.userprofile.initial_registration_at|date:"dd.MM.yy") }}
-      </td>
-    </tr>
-    {% endverbatim %}
-    <tr class="title">
-      <td>
+      </div>
+      {% endverbatim %}
+    </div>
+    <div class="tr th title">
+      <div class="td">
         {% trans "Title" %}:
-      </td>
-      <td>
+      </div>
+      <div class="td">
         {% verbatim %}<span editable-text="shareholder.user.userprofile.title" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.title || 'Titel' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
-      </td>
-    </tr>
-    <tr class="salutation">
-      <td>
+      </div>
+    </div>
+    <div class="tr th salutation">
+      <div class="td">
         {% trans "Salutation" %}:
-      </td>
-      <td>
+      </div>
+      <div class="td">
         {% verbatim %}<span editable-text="shareholder.user.userprofile.salutation" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.salutation || 'Anrede' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
-      </td>
-    </tr>
-    <tr class="full-name">
-      <td>
+      </div>
+    </div>
+    <div class="tr th full-name">
+      <div class="td">
         {% trans "First Name, Last Name" %}:
-      </td>
-      <td>
+      </div>
+      <div class="td">
         {% verbatim %}<span editable-text="shareholder.user.first_name" onaftersave="edit_shareholder()">{{ shareholder.user.first_name || 'Vorname' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
         {% verbatim %}<span editable-text="shareholder.user.last_name" onaftersave="edit_shareholder()">{{ shareholder.user.last_name || 'Nachname' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
-      </td>
-    </tr>
-    <tr class="user-email">
-      <td>{% trans "Shareholder Email" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th user-email">
+      <div class="td">
+        {% trans "Shareholder Email" %}:
+      </div>
+      <div class="td">
         {% verbatim %}<span editable-text="shareholder.user.email" onaftersave="edit_shareholder()">{{ shareholder.user.email || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
-      </td>
-    </tr>
-    <tr class="legal-type">
-      <td>{% trans "Shareholder Legal Type" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th legal-type">
+      <div class="td">
+        {% trans "Shareholder Legal Type" %}:
+      </div>
+      <div class="td">
         {% verbatim %}
         <span editable-select="shareholder.user.userprofile.legal_type" onaftersave="edit_shareholder()" e-ng-options="l as l.name for l in legal_types">
           {{ shareholder.user.userprofile.readable_legal_type || 'Aktionaersart' }}
           <span class="el-icon-pencil"></span>
         </span>
         {% endverbatim %}
-      </td>
-    </tr>
-    <tr ng-hide="shareholder.user.userprofile.legal_type.value=='H'">
-      <td>{% trans "Shareholder Company Name" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th company-name" ng-hide="shareholder.user.userprofile.legal_type.value=='H'">
+      <div class="td">
+        {% trans "Shareholder Company Name" %}:
+      </div>
+      <div class="td">
         {% verbatim %}<span editable-text="shareholder.user.userprofile.company_name" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.company_name || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
-      </td>
-    </tr>
-    <tr class="company-department" ng-hide="shareholder.user.userprofile.legal_type.value=='H'">
-      <td>{% trans "Shareholder Company Department" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th company-department" ng-hide="shareholder.user.userprofile.legal_type.value=='H'">
+      <div class="td">
+        {% trans "Shareholder Company Department" %}:
+      </div>
+      <div class="td">
         {% verbatim %}<span editable-text="shareholder.user.userprofile.company_department" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.company_department || '' }} <span class="el-icon-pencil"></span></span>{% endverbatim %}
-      </td>
-    </tr>
-    <tr class="mailing-type">
-      <td>{% trans "Mailing Type" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th mailing-type">
+      <div class="td">
+        {% trans "Mailing Type" %}:
+      </div>
+      <div class="td">
         {% verbatim %}
         <span editable-select="shareholder.mailing_type" onaftersave="edit_shareholder()" e-ng-options="l as l.name for l in mailing_types">
           {{ shareholder.readable_mailing_type || 'Versandart' }}
           <span class="el-icon-pencil"></span>
         </span>
         {% endverbatim %}
-      </td>
-    </tr>
-    <tr>
-      <td>
+      </div>
+    </div>
+    <div class="tr th address">
+      <div class="td">
         <strong>{% trans "Address" %}:</strong><br/>
         {% trans "Street" %}<br/>
         {% trans "Street2" %}<br/>
@@ -139,56 +156,56 @@
         {% trans "Country" %}<br/>
         {% trans "P.O. Box" %}<br/>
         {% trans "c/o" %}
-      </td>
-      <td>
-        <br/>
+      </div>
+      <div class="td address-data">
         {% verbatim %}
-        <span editable-text="shareholder.user.userprofile.street" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.street || 'Street' }} <span class="el-icon-pencil"></span></span>
-        <br/>
-        <span editable-text="shareholder.user.userprofile.street2" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.street2 || 'Street2' }} <span class="el-icon-pencil"></span></span>
-        <br/>
-        <span editable-text="shareholder.user.userprofile.postal_code" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.postal_code || 'PLZ' }} <span class="el-icon-pencil"></span></span>
-        <span editable-text="shareholder.user.userprofile.city" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.city || 'City' }} <span class="el-icon-pencil"></span></span>
-        <br/>
-        <span editable-text="shareholder.user.userprofile.province" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.province || 'Province' }} <span class="el-icon-pencil"></span></span>
-        <br/>
-        <span editable-select="shareholder.user.userprofile.country" onaftersave="edit_shareholder()" e-ng-options="c as c.name for c in countries">
+        <div editable-text="shareholder.user.userprofile.street" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.street || 'Street' }} <span class="el-icon-pencil"></span></div>
+        <div editable-text="shareholder.user.userprofile.street2" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.street2 || 'Street2' }} <span class="el-icon-pencil"></span></div>
+        <div>
+          <span editable-text="shareholder.user.userprofile.postal_code" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.postal_code || 'PLZ' }} <span class="el-icon-pencil"></span></span>
+          <span editable-text="shareholder.user.userprofile.city" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.city || 'City' }} <span class="el-icon-pencil"></span></span>
+        </div>
+        <div editable-text="shareholder.user.userprofile.province" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.province || 'Province' }} <span class="el-icon-pencil"></span></div>
+        <div editable-select="shareholder.user.userprofile.country" onaftersave="edit_shareholder()" e-ng-options="c as c.name for c in countries">
           {{ shareholder.user.userprofile.country.name || 'Country' }}
           <span class="el-icon-pencil"></span>
-        </span>
-        <br/>
-        <span editable-text="shareholder.user.userprofile.pobox" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.pobox || 'P.O. Box' }} <span class="el-icon-pencil"></span></span>
-        <br/>
-        <span editable-text="shareholder.user.userprofile.c_o" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.c_o || 'c/o' }} <span class="el-icon-pencil"></span></span>
-        <br/>
+        </div>
+        <div editable-text="shareholder.user.userprofile.pobox" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.pobox || 'P.O. Box' }} <span class="el-icon-pencil"></span></div>
+        <div editable-text="shareholder.user.userprofile.c_o" onaftersave="edit_shareholder()">{{ shareholder.user.userprofile.c_o || 'c/o' }} <span class="el-icon-pencil"></span></div>
         {% endverbatim %}
-      </td>
-    </tr>
-    <tr>
-      <td>{% trans "Nationality" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th nationality">
+      <div class="td">
+        {% trans "Nationality" %}:
+      </div>
+      <div class="td">
         {% verbatim %}
         <span editable-select="shareholder.user.userprofile.nationality" onaftersave="edit_shareholder()" e-ng-options="c as c.name for c in countries">
           {{ shareholder.user.userprofile.nationality.name || 'Nationality' }}
           <span class="el-icon-pencil"></span>
         </span>
         {% endverbatim %}
-      </td>
-    </tr>
-    <tr>
-      <td>{% trans "Shareholder Language" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th language">
+      <div class="td">
+        {% trans "Shareholder Language" %}:
+      </div>
+      <div class="td">
         {% verbatim %}
         <span editable-select="shareholder.user.userprofile.language" onaftersave="edit_shareholder()" e-ng-options="l as l.name for l in languages">
           {{ shareholder.user.userprofile.readable_language || 'Language' }}
           <span class="el-icon-pencil"></span>
         </span>
         {% endverbatim %}
-      </td>
-    </tr>
-    <tr class="birthday">
-      <td>{% trans "Shareholder Birthday" %}:</td>
-      <td class="date-field">
+      </div>
+    </div>
+    <div class="tr th birthday">
+      <div class="td">
+        {% trans "Shareholder Birthday" %}:
+      </div>
+      <div class="td date-field">
         {% verbatim %}
         <span editable-bsdate="shareholder.user.userprofile.birthday"
               onaftersave="edit_shareholder()"
@@ -207,24 +224,37 @@
             <span class="el-icon-pencil"></span>
         </span>
         {% endverbatim %}
-      </td>
-    </tr>
+      </div>
+    </div>
     {% if not shareholder.is_company_shareholder and not shareholder.is_dispo_shareholder %}
-    <tr>
-      <td>{% trans "Value of all shares according to last transaction" %}:</td>
-      <td>{{ shareholder.share_value }}</td>
-    </tr>
-    <tr>
-      <td>{% trans "Voting rights total count" %}:</td>
-      {# company shareholder does not have voting rights #}
-      <td>{{ shareholder.vote_count }}</td>
-    </tr>
-     <tr>
-      <td>{% trans "Voting rights percent" %}:</td>
-      <td>{% verbatim %}{{ shareholder.vote_percent | percentage:2 }}{% endverbatim %}</td>
-    </tr>
+    <div class="tr th">
+      <div class="td">
+        {% trans "Value of all shares according to last transaction" %}:
+      </div>
+      <div class="td">
+        {{ shareholder.share_value }}
+      </div>
+    </div>
+    <div class="tr th">
+      <div class="td">
+        {% trans "Voting rights total count" %}:
+      </div>
+      <div class="td">
+        {# company shareholder does not have voting rights #}
+        {{ shareholder.vote_count }}
+      </div>
+    </div>
+    <div class="tr th">
+      <div class="td">
+        {% trans "Voting rights percent" %}:
+      </div>
+      <div class="td">
+        {% verbatim %}{{ shareholder.vote_percent | percentage:2 }}{% endverbatim %}
+      </div>
+    </div>
     {% endif %}
-   </table>
+  </div>
+
 
   <!-- OWNED STOCK -->
   <h2>{% trans "Owned Stock" %}</h2>
@@ -250,7 +280,7 @@
   {% endif %}
   <!-- TABLE -->
   <div class="table stock shareholder_detail_table">
-    <div class="tr th">
+    <div class="tr th hide-mobile">
       <div class="td">{% trans "security" %}</div>
       <div class="td">{% trans "cusip" %}</div>
       {% if shareholder.is_company_shareholder %}

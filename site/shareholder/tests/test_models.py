@@ -248,7 +248,7 @@ class PositionTestCase(TransactionTestCase):
         company.split_shares(data)
 
         # asserts by checking overall shareholder situation
-        # means each shareholder should have now more shares but some
+        # means each shareholder should have now more shares but same
         # overall stock value
 
         leftover = 0
