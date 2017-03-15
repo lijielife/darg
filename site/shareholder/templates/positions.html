@@ -14,23 +14,38 @@
   <p class="explaination">
     {% trans "Use Transactions to record each shareholders state of shares. For initial foundation transfer shares from company to..."%}
   </p>
-  {% include "_form_errors.html" %}
 
   <div class="panel panel-column">
-    <a class="btn-inline align-left add-position" href="" ng-click="show_add_position_form()">{% trans "Transfer Shares" %}</a>
+    <a class="btn-inline align-left add-position" data-toggle="modal" data-target="#addPosition" href="" ng-click="show_add_position_form()">{% trans "Transfer Shares" %}</a>
     <a class="btn-inline add-capital" href="" ng-click="show_add_capital_form()">{% trans "Increase Capital" %}</a>
     <a class="btn-inline split-shares" href="" ng-click="show_split_form()">{% trans "Split Shares" %}</a>
   </div>
 
-  <div id="add_position" ng-hide="!show_add_position">
-    {% include "_add_position_form.html" %}
-  </div>
   <div id="add_capital" ng-hide="!show_add_capital">
     {% include "_add_capital_form.html" %}
   </div>
   <div id="split-shares" ng-hide="!show_split">
     {% include "_split_shares_form.html" %}
   </div>
+
+  <!-- MODAL ADD POSITION -->
+  <div class="modal fade" id="addPosition" tabindex="-1" role="dialog" aria-labelledby="addPositionLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="addPositionLabel">{% trans "Transfer Shares" %}</h4>
+        </div>
+        <div class="modal-body">
+          {% include "_form_errors.html" %}
+          <div id="add_position">
+            {% include "_add_position_form.html" %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <!-- TABLE ACTIONS -->
   {% include "_table_actions.html" %}

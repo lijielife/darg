@@ -83,9 +83,7 @@ html, body
 
   form
     margin-bottom: 3em
-    select
-      box-shadow: unset
-    input
+    input, select
       line-height: normal
       border: 1px solid #e0e0e0
       border-radius: 4px
@@ -93,6 +91,10 @@ html, body
       &:focus
         box-shadow: unset
         border-color: #337ab7
+    select
+      box-shadow: unset
+      padding-top: 0
+      padding-bottom: 0
 
   p
     margin: 0 0 10px
@@ -192,7 +194,7 @@ html, body
   .el-icon-cogs
     font-size: 50%
 
-  .el-icon-chevron-down
+  .el-icon-chevron-down, .el-icon-chevron-up
     font-size: 75%
 
   .el-icon-cogs-wrapper
@@ -545,7 +547,7 @@ nav.navbar
 
 //override bootstrap styles
 .form-group
-  input
+  input, select
     margin: 5px 0
 .modal-content
   box-shadow: none
@@ -655,7 +657,8 @@ div.table-actions
     padding: 0px
 
 // -- positions
-
+.optional-forms-box
+  margin-top: 10px
 // -- optionplan
 div#optionplan
   .pdf_upload_preview
