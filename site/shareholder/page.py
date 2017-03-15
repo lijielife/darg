@@ -52,7 +52,7 @@ class ShareholderDetailPage(BaseDetailPage):
     def click_to_edit(self, class_name):
         el = self.wait_until_visible((
             By.XPATH,
-            u'//tr[contains(@class, "{}")]//'
+            u'//div[contains(@class, "{}")]//'
             u'span[contains(@class, "editable-click")]'.format(class_name)
         ))
         el.click()
@@ -75,7 +75,7 @@ class ShareholderDetailPage(BaseDetailPage):
         return date from inside this element
         """
         bday = self.driver.find_element_by_xpath(
-            '//tr[@class="birthday active"]/td/span')
+            '//div[contains(@class, "birthday")]//div//span')
         return bday.text
 
     def get_securities(self):

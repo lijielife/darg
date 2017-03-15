@@ -50,7 +50,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                 )
             # wait for 'link'
             p.wait_until_visible(
-                (By.CSS_SELECTOR, 'tr.shareholder-number span.el-icon-pencil'))
+                (By.CSS_SELECTOR, 'div.shareholder-number span.el-icon-pencil'))
             time.sleep(1)
             self.assertIn(
                 self.buyer.user.userprofile.get_legal_type_display(),
@@ -62,7 +62,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
             profile.save()
             p.refresh()
             p.wait_until_visible(
-                (By.CSS_SELECTOR, 'tr.shareholder-number span.el-icon-pencil'))
+                (By.CSS_SELECTOR, 'div.shareholder-number span.el-icon-pencil'))
             time.sleep(3)
             self.assertIn(profile.get_legal_type_display(),
                           p.get_field('legal-type'))
@@ -85,13 +85,13 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                 )
             # wait for 'link'
             p.wait_until_visible(
-                (By.CSS_SELECTOR, 'tr.shareholder-number span.el-icon-pencil'))
+                (By.CSS_SELECTOR, 'div.shareholder-number span.el-icon-pencil'))
             p.click_to_edit("shareholder-number")
             p.edit_shareholder_number(99, "shareholder-number")
             p.save_edit("shareholder-number")
             # wait for form to disappear
             p.wait_until_invisible(
-                (By.CSS_SELECTOR, 'tr.shareholder-number form'))
+                (By.CSS_SELECTOR, 'div.shareholder-number form'))
 
         except Exception, e:
             self._handle_exception(e)
@@ -118,13 +118,13 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                 )
             # wait for 'link'
             p.wait_until_visible(
-                (By.CSS_SELECTOR, 'tr.company-department span.el-icon-pencil'))
+                (By.CSS_SELECTOR, 'div.company-department span.el-icon-pencil'))
             p.click_to_edit("company-department")
             p.edit_shareholder_number('IT Security Dep.', "company-department")
             p.save_edit("company-department")
             # wait for form to disappear
             p.wait_until_invisible(
-                (By.CSS_SELECTOR, 'tr.company-department form'))
+                (By.CSS_SELECTOR, 'div.company-department form'))
 
         except Exception, e:
             self._handle_exception(e)
@@ -208,13 +208,13 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                 )
             # wait for 'link'
             p.wait_until_visible(
-                (By.CSS_SELECTOR, 'tr.birthday span.el-icon-pencil'))
+                (By.CSS_SELECTOR, 'div.birthday span.el-icon-pencil'))
             p.click_to_edit("birthday")
             p.click_open_datepicker("birthday")
             p.click_date_in_datepicker("birthday", birthday)
             p.save_edit("birthday")
             # wait for form to disappear
-            p.wait_until_invisible((By.CSS_SELECTOR, 'tr.birthday form'))
+            p.wait_until_invisible((By.CSS_SELECTOR, 'div.birthday form'))
 
             self.assertEqual(
                 p.get_birthday(),
@@ -268,12 +268,12 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                 )
             # wait for 'link'
             p.wait_until_visible(
-                (By.CSS_SELECTOR, 'tr.user-email span.el-icon-pencil'))
+                (By.CSS_SELECTOR, 'div.user-email span.el-icon-pencil'))
             p.click_to_edit("user-email")
             p.edit_shareholder_number(self.operator.user.email, "user-email")
             p.save_edit("user-email")
             # wait for form to disappear
-            p.wait_until_invisible((By.CSS_SELECTOR, 'tr.user-email form'))
+            p.wait_until_invisible((By.CSS_SELECTOR, 'div.user-email form'))
 
             self.assertEqual(
                 User.objects.filter(email=self.operator.user.email).count(),
