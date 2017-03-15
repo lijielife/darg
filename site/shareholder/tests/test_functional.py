@@ -750,6 +750,15 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.click_save_option_plan_form()
             # wait for error
             app.wait_until_visible((By.CSS_SELECTOR, '.form-error'))
+
+            # attempt to fix unstable @CI
+            # FIXME remove once stable
+            for s in Shareholder.objects.all():
+                print s.current_segments(
+                    security=operator.company.security_set.first())
+                print s.current_options_segments(
+                    security=operator.company.security_set.first())
+
             self.assertEqual(
                 app.get_form_errors(),
                 [u'Aktiennummern: Aktiennummer "[1050]" geh\xf6rt nicht zu '
