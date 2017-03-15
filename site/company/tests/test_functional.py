@@ -186,6 +186,7 @@ class CompanyFunctionalTestCase(BaseSeleniumTestCase):
 
             # wait for form to disappear
             p.wait_until_invisible((By.CSS_SELECTOR, 'tr.security form'))
+            time.sleep(1)  # FIXME replace by wait
 
         except Exception, e:
             self._handle_exception(e)

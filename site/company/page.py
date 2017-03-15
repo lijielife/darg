@@ -95,7 +95,7 @@ class CompanyPage(BasePage):
                 break
 
     def click_to_edit(self, class_name):
-        el = self.driver.find_element_by_class_name(class_name)
+        el = self.wait_until_visible((By.CLASS_NAME, class_name))
         el = el.find_element_by_class_name('editable-click')
         self.scroll_to(element=el)
         el.click()
