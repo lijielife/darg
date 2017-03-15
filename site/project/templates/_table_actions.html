@@ -2,20 +2,20 @@
 {% verbatim %}
 <div class="table-actions">
   <div class="row">
-    <div class="col-sm-3 col-xs-4">
+    <div class="col-sm-3 col-xs-12">
       <div class="input-group">
         <input type="search" class="form-control search-input" ng-model="{% endverbatim %}{{prefix}}{% verbatim %}search_params.query" translate translate-attr-placeholder="Search Term here" ng-keyup="$event.keyCode == 13 && {% endverbatim %}{{prefix}}{% verbatim %}search()">
         <span class="input-group-addon search-btn" ng-click="{% endverbatim %}{{prefix}}{% verbatim %}search()"><span class="el-icon-search"></span></span>
       </div>
     </div>    
-    <div class="col-sm-3 col-xs-4" ng-show="ordering_options">
+    <div class="col-sm-3 col-xs-12" ng-show="ordering_options">
       <div class="input-group">
         <select class="form-control" ng-model="{% endverbatim %}{{prefix}}{% verbatim %}search_params.ordering" ng-change="{% endverbatim %}{{prefix}}{% verbatim %}search()" ng-options="option.value as option.name for option in {% endverbatim %}{{prefix}}{% verbatim %}ordering_options">
           <option value='' disabled>{% endverbatim %}{% trans "Sort" %}{% verbatim %}</option>
         </select>
       </div>
     </div>    
-    <div class="col-sm-6 col-xs-4">
+    <div class="col-sm-6 col-xs-12">
       <div class="input-group pull-right">
         <nav aria-label="Page navigation" ng-show="{% endverbatim %}{{prefix}}{% verbatim %}next || {% endverbatim %}{{prefix}}{% verbatim %}previous" class="pull-right">
           <ul class="pagination">
