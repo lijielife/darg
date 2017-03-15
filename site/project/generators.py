@@ -25,6 +25,7 @@ DEFAULT_TEST_DATA = {
     'password': u'testàäå',
     'username': u'testusernameàäå',
     'date': u'13. Mai 2016',  # datepicker format
+    'date_obj': datetime.date(2016, 5, 13),
     'title': u'2016 OptionsPlan àäå',
     'exercise_price': u'2.05',
     'share_count': u'156',

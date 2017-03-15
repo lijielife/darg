@@ -4,7 +4,7 @@
 {% verbatim %}
 <div>
   <form class="form-inline">
-    <div class="form-group block-level add-information-inline form">
+    <div class="form-group block-level add-information-inline form add-option">
         <span class="input-group date-field">
           <input placeholder="Kaufdatum" type="text" class="form-control"
             ng-model="newOptionTransaction.bought_at"
@@ -15,6 +15,7 @@
             close-text="Schliessen"
             clear-text="Leeren"
             current-text="Heute"
+			readonly="readonly"
             />
           <span class="input-group-btn">
             <button type="button" class="btn btn-default" ng-click="open_datepicker()"><i class="glyphicon glyphicon-calendar"></i></button>

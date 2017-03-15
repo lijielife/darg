@@ -18,7 +18,7 @@ gettext('Share Count');
 gettext('Board Approval Date');
 gettext('Underlying Asset');
 gettext('Exercise Price');
-gettext('Face Value');
+gettext('Face Value of shares');
 gettext('First Name');
 gettext('Last Name');
 gettext('Shareholder Number');

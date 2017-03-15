@@ -9,7 +9,7 @@
     <div class="form-group block-level">
       <input type="text" class="form-control" ng-model="newCompany.name" translate translate-attr-placeholder="Company Name">
       <span class="input-group date-field">
-        <input type="text" class="form-control"
+        <input type="text" class="form-control datepicker"
           ng-model="newCompany.founded_at"
           uib-datepicker-popup="{{ datepicker.format }}"
           datepicker-options="datepicker.options"
@@ -18,14 +18,15 @@
           close-text="Schliessen"
           clear-text="Leeren"
           current-text="Heute"
-		  placeholder="Gruendungsdatum"
+		  placeholder="{{'Founding Date'|translate}} --> "
+		  readonly="readonly"
           />
         <span class="input-group-btn">
           <button type="button" class="btn btn-default" ng-click="open_datepicker()"><i class="glyphicon glyphicon-calendar"></i></button>
         </span>
       </span>
       <input type="number" class="form-control" ng-model="newCompany.count" translate translate-attr-placeholder="Share Count">
-      <input type="number" class="form-control" ng-model="newCompany.face_value" translate translate-attr-placeholder="Face Value" step=".01">
+      <input type="number" class="form-control" ng-model="newCompany.face_value" translate translate-attr-placeholder="Face Value of shares" step=".01">
     </div>
     <div class="form-group">
       <button class="btn btn-submit btn-add-company" ng-click="add_company()">{% endverbatim %}{% trans "Add Company" %}{% verbatim %}</button>

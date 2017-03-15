@@ -2786,6 +2786,9 @@ html, body {
   padding: 0em;
   margin: 0em;
 }
+.core .container .glyphicon-calendar {
+  color: #337ab7;
+}
 .core .container .btn-inline {
   border: none;
   margin: 0em;

@@ -3,7 +3,7 @@
 {% trans "Please enter your option plan data:" %}
 {% verbatim %}
 <div>
-  <form class="form-inline add-information-inline form">
+  <form class="form-inline add-information-inline form add-optionplan">
     <div class="form-group block-level">
         <p>{% endverbatim %}{% trans "Board Approval Date" %}{% verbatim %}</p>
         <span class="input-group date-field">
@@ -16,6 +16,7 @@
             close-text="Schliessen"
             clear-text="Leeren"
             current-text="Heute"
+			readonly="readonly"
             />
           <span class="input-group-btn">
             <button type="button" class="btn btn-default" ng-click="open_datepicker()"><i class="glyphicon glyphicon-calendar"></i></button>

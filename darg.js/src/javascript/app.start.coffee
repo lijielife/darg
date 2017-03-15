@@ -282,7 +282,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
             $scope.errors = null
         , (rejection) ->
             $scope.errors = rejection.data
-            Raven.captureMessage('form error: ' + rejection.statusText, {
+            Raven.captureMessage('add corp form error: ' + rejection.statusText, {
                 level: 'warning',
                 extra: { rejection: rejection },
             })
@@ -303,7 +303,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
             $window.ga('send', 'event', 'form-send', 'add-shareholder')
         , (rejection) ->
             $scope.errors = rejection.data
-            Raven.captureMessage('form error: ' + rejection.statusText, {
+            Raven.captureMessage('add shareholder form error: ' + rejection.statusText, {
                 level: 'warning',
                 extra: { rejection: rejection },
             })

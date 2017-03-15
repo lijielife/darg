@@ -137,7 +137,7 @@ class BasePage(object):
 
     def click_datepicker_previous_month(self):
         # handle multiple datepickers
-        next_btns = self.driver.find_selement_by_xpath(
+        next_btns = self.driver.find_elements_by_xpath(
             '//div[contains(@class, "uib-datepicker")]//thead//th[1]//button')
         for next_btn in next_btns:
             if next_btn.is_displayed():

@@ -178,7 +178,7 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
             $scope.addPositionLoading = false
         , (rejection) ->
             $scope.errors = rejection.data
-            Raven.captureMessage('form error: ' + rejection.statusText, {
+            Raven.captureMessage('add position form error: ' + rejection.statusText, {
                 level: 'warning',
                 extra: { rejection: rejection },
             })
@@ -216,7 +216,7 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
             $window.ga('send', 'event', 'form-send', 'add-split')
         , (rejection) ->
             $scope.errors = rejection.data
-            Raven.captureMessage('form error: ' + rejection.statusText, {
+            Raven.captureMessage('add split form error: ' + rejection.statusText, {
                 level: 'warning',
                 extra: { rejection: rejection },
             })

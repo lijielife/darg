@@ -139,7 +139,9 @@ class OptionsPage(BasePage):
         select = Select(selects[0])
         select.select_by_index(2)
 
-        inputs[0].send_keys(DEFAULT_TEST_DATA.get('date'))
+        self.use_datepicker(class_name='add-optionplan',
+                            date=DEFAULT_TEST_DATA.get('date_obj'))
+        # inputs[0].send_keys(DEFAULT_TEST_DATA.get('date'))
         inputs[1].send_keys(DEFAULT_TEST_DATA.get('title'))
         inputs[2].send_keys(
             str(kwargs.get('exercise_price',
@@ -157,7 +159,9 @@ class OptionsPage(BasePage):
         select = Select(selects[0])
         select.select_by_index(2)
 
-        inputs[0].send_keys(DEFAULT_TEST_DATA.get('date'))
+        self.use_datepicker(class_name='add-optionplan',
+                            date=DEFAULT_TEST_DATA.get('date_obj'))
+        # inputs[0].send_keys(DEFAULT_TEST_DATA.get('date'))
         inputs[1].send_keys(DEFAULT_TEST_DATA.get('title'))
         inputs[2].send_keys(DEFAULT_TEST_DATA.get('exercise_price'))
         inputs[3].send_keys(kwargs.get('count',
@@ -186,8 +190,11 @@ class OptionsPage(BasePage):
         select.select_by_visible_text(
             kwargs.get('title') or DEFAULT_TEST_DATA.get('title'))
 
-        inputs[0].send_keys(
-            kwargs.get('date') or DEFAULT_TEST_DATA.get('date'))
+        self.use_datepicker(
+            class_name='add-option',
+            date=kwargs.get('date') or DEFAULT_TEST_DATA.get('date_obj'))
+        #inputs[0].send_keys(
+        #    kwargs.get('date') or DEFAULT_TEST_DATA.get('date'))
         inputs[3].send_keys(str(
             kwargs.get('count', DEFAULT_TEST_DATA.get('count'))))
         inputs[5].send_keys(DEFAULT_TEST_DATA.get('vesting_period'))
@@ -223,8 +230,11 @@ class OptionsPage(BasePage):
         select.select_by_visible_text(
             kwargs.get('title') or DEFAULT_TEST_DATA.get('title'))
 
-        inputs[0].send_keys(
-            kwargs.get('date') or DEFAULT_TEST_DATA.get('date'))
+        self.use_datepicker(
+            class_name='add-option',
+            date=kwargs.get('date') or DEFAULT_TEST_DATA.get('date_obj'))
+        # inputs[0].send_keys(
+        #    kwargs.get('date') or DEFAULT_TEST_DATA.get('date'))
         inputs[3].send_keys(kwargs.get('number_segments',
                             DEFAULT_TEST_DATA.get('share_count')))
         inputs[4].send_keys(kwargs.get('number_segments',
