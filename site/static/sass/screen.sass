@@ -567,13 +567,12 @@ nav.navbar
       &:before
         content: attr(data-header)
         width: 65%
-        font-weight: 700
         margin-top: 10px
 
   @include display-flex(flex)
   @include flex-flow(column)
   @include justify-content(space-between)
-  font-size: 1rem
+  // font-size: 1rem
   line-height: 1.5
 .tr
   &.totals
@@ -611,7 +610,7 @@ nav.navbar
   @include align-items(baseline)
   word-wrap: break-word
   padding: 0.8em
-  font-size: 0.9em
+  // font-size: 0.9em
   [class*='el-icon-']
     padding: 0 5px
 .td-width-1
@@ -629,6 +628,8 @@ nav.navbar
   @include flex-grow(10)
   &:before
     width: 0
+.table-striped > .tr:nth-of-type(odd)
+  background-color: #f9f9f9
 
 // --  start
 .split-header

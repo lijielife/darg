@@ -199,7 +199,8 @@ class UserWithEmailOnlySerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email',)
+        # names used within company detail page
+        fields = ('email', 'first_name', 'last_name')
 
 
 class OperatorSerializer(serializers.HyperlinkedModelSerializer):

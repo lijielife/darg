@@ -44,33 +44,36 @@
   {% endverbatim %}
 
   <h2>{% trans "Data" %}</h2>
-  <table class="table table-striped">
-    <tr>
-      <td>{% trans "Company Name" %}:</td>
-      <td>
+  <div class="table table-striped">
+    <div class="tr th">
+      <div class="td">{% trans "Company Name" %}:</div>
+      <div class="td">
         {% verbatim %}
         <span editable-text="company.name" onaftersave="edit_company()">
           {{ company.name || 'empty' }}
           <span class="el-icon-pencil"></span>
         </span>
         {% endverbatim %}
-      </td>
-    </tr>
-    <tr>
-      <td>{% trans "Company Share Count" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th">
+      <div class="td">
+        {% trans "Company Share Count" %}:
+      </div>
+      <div class="td">
         {% verbatim %}
         <span editable-text="company.share_count" onaftersave="edit_company()">
           {{ company.share_count }}
           <span class="el-icon-pencil"></span>
         </span>
         {% endverbatim %}
-      </td>
-    </tr>
-
-    <tr class="founding-date">
-      <td>{% trans "Company founding date" %}:</td>
-      <td class="date-field">
+      </div>
+    </div>
+    <div class="tr th founding-date">
+      <div class="td">
+        {% trans "Company founding date" %}:
+      </div>
+      <div class="td date-field">
         {% verbatim %}
         <span editable-bsdate="company.founded_at"
               onaftersave="edit_company()"
@@ -88,72 +91,77 @@
             <span class="el-icon-pencil"></span>
         </span>
         {% endverbatim %}
-      </td>
-    </tr>
-
-    <tr>
-      <td>{% trans "Provisioned Capital (Liberiertes Kapital)" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th">
+      <div class="td">
+        {% trans "Provisioned Capital (Liberiertes Kapital)" %}:
+      </div>
+      <div class="td">
         {% verbatim %}
         <span editable-text="company.provisioned_capital" onaftersave="edit_company()">
           {{ company.provisioned_capital || 'k.A.' }}
           <span class="el-icon-pencil"></span>
         </span>
         {% endverbatim %}
-      </td>
-    </tr>
-
-    <tr>
-      <td>{% trans "CHF for one vote based on face value of securities" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th">
+      <div class="td">
+        {% trans "CHF for one vote based on face value of securities" %}:
+      </div>
+      <div class="td">
         {% verbatim %}
         <span editable-text="company.vote_ratio" onaftersave="edit_company()">
           {{ company.vote_ratio || 'k.A.' }}
           <span class="el-icon-pencil"></span>
         </span>
         {% endverbatim %}
-      </td>
-    </tr>
-
-    <tr>
-      <td>{% trans "Total Vote Count" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th">
+      <div class="td">
+        {% trans "Total Vote Count" %}:
+      </div>
+      <div class="td">
         {% verbatim %}
           {{ company.vote_count || 'k.A.' }}
         {% endverbatim %}
-      </td>
-    </tr>
-
-    <tr>
-      <td>{% trans "Total Vote Count Floating" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th">
+      <div class="td">
+        {% trans "Total Vote Count Floating" %}:
+      </div>
+      <div class="td">
         {% verbatim %}
           {{ company.vote_count_floating || 'k.A.' }}
         {% endverbatim %}
-      </td>
-    </tr>
-
-    <tr>
-      <td>{% trans "Company Headquarter Country" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th">
+      <div class="td">
+        {% trans "Company Headquarter Country" %}:
+      </div>
+      <div class="td">
       {% verbatim %}
         <span editable-select="company.country" onaftersave="edit_company()" e-ng-options="c as c.name for c in countries">
           {{ company.country.name || 'empty' }}
           <span class="el-icon-pencil"></span>
         </span>
       {% endverbatim %}
-      </td>
-    </tr>
-  </table>
+      </div>
+    </div>
+  </div>
 
   <!-- SECURITIES -->
   <h2>{% trans "Securities" %}</h2>
   {% verbatim %}
-  <table class="table table-striped">
-    <tr ng-repeat="security in company.security_set" class="security">	
-	  <td>{{ security.readable_title}} </td>
-	  <td>{{ security.count }}</td>
-      <td class="numbered-segments" ng-show="security.track_numbers">
+  <div class="table table-striped">
+    <div class="tr th security" ng-repeat="security in company.security_set">
+      <div class="td">{{ security.readable_title}}</div>
+      <div class="td">{{ security.count }}</div>
+      <div class="td numbered-segments"  ng-show="security.track_numbers">
         <span />
           {% endverbatim %}{% trans 'tracking security numbers for owners enabled. segments:' %}{% verbatim %}
         </span>
@@ -161,10 +169,12 @@
           {{ security.readable_number_segments }}
           <span class="el-icon-pencil"></span>
         </span>
-      </td>
-      <td ng-hide="security.track_numbers"></td>
-    </tr>
-  </table>
+      </div>
+      <div class="td" ng-hide="security.track_numbers"></div>
+    </div>
+  </div>
+
+
   <div class="alert alert-info" role="alert">
     {% endverbatim %}{% trans 'Please contact us at our' %}{% verbatim %}
     <a href="mailto:info+helpdesk@das-aktienregister.ch" class="btn-inline">Customer Service Desk</a>
@@ -174,44 +184,52 @@
 
   <!-- ADMINS -->
   {% if company.operator_set.exists %}
-    <h2>
-      {% trans "Administrators" %}
-      <a ng-click="toggle_add_operator_form()" title="{% trans "add operator" %}" class="btn-inline toggle-add-operator-form" ng-hide="show_add_operator_form">
-        +
-      </a>
-    </h2>
+  <h2>
+    {% trans "Administrators" %}
+    <a ng-click="toggle_add_operator_form()" title="{% trans "add operator" %}" class="btn-inline toggle-add-operator-form" ng-hide="show_add_operator_form">
+      +
+    </a>
+  </h2>
 
-    {% include "_add_operator_form.html" %}
+  {% include "_add_operator_form.html" %}
 
-    {% verbatim %}
-    <table class="table table-striped operators">
-      <tr ng-repeat="operator in operators">
-        <td>
-          {{ operator.user.first_name }} {{ operator.user.last_name }} {{ operator.user.userprofile.company_name }}
-        </td>
-        <td>
-          {{operator.user.email}}
-        </td>
-        <td>
-          <span ng-hide="operator.is_myself" ng-click="delete_operator(operator.id)" class="remove-operator">
-            <span class="el-icon-remove-circle"></span>
-          </span>
-        </td>
-      </tr>
-    </table>
-    {% endverbatim %}
-
+  {% verbatim %}
+  <div class="table table-striped operators">
+    <div class="tr th" ng-repeat="operator in operators">
+      <div class="td">
+        {{ operator.user.first_name }} {{ operator.user.last_name }} {{ operator.user.userprofile.company_name }}
+      </div>
+      <div class="td">
+        {{operator.user.email}}
+      </div>
+      <div class="td">
+        <span ng-hide="operator.is_myself" ng-click="delete_operator(operator.id)" class="remove-operator">
+          <span class="el-icon-remove-circle"></span>
+        </span>
+      </div>
+    </div>
+  </div>
+  {% endverbatim %}
   {% endif %}
 
   <!-- OPTIONS -->
   {% if company.optionplan_set.exists %}
     <h2>{% trans "Option Plans" %}</h2>
 
-    <table class="table table-striped">
+  <div class="table table-striped">
     {% for optionplan in company.optionplan_set.all %}
-      <tr><td>{% trans "Options Plan Name" %}</td><td><a href="{% url "optionplan" optionplan.pk %}" title="{% trans "Edit Option Plan" %}" class="btn-inline align-left">{{ optionplan.title }}</a></td></tr>
+    <div class="tr th">
+      <div class="td">    
+        {% trans "Options Plan Name" %}
+      </div>
+      <div class="td">
+        <a href="{% url "optionplan" optionplan.pk %}" title="{% trans "Edit Option Plan" %}" class="btn-inline align-left">
+          {{ optionplan.title }}
+        </a>
+      </div>
+    </div>
     {% endfor %}
-    </table>
+  </div>
 
   {% endif %}
 
