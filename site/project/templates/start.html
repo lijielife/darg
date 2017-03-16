@@ -35,7 +35,7 @@
     </h1>
 
     <!-- ACTIONS -->
-    <div class="panel" ng-hide="!user.operator_set.length">
+    <div class="panel" ng-hide="!user.operator_set.length || show_add_shareholder" >
       <a class="btn btn-focus" href="" ng-click="show_add_shareholder_form()">
         {% endverbatim %}{% trans "Add Shareholder" %}{% verbatim %}
       </a>

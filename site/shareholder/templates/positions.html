@@ -16,7 +16,7 @@
   </p>
   {% include "_form_errors.html" %}
 
-  <div class="panel panel-column">
+  <div class="panel panel-column" ng-hide="show_add_position || show_add_capital || show_split">
     <a class="btn btn-focus add-position" href="" ng-click="show_add_position_form()">{% trans "Transfer Shares" %}</a>
     <a class="btn btn-focus add-capital" href="" ng-click="show_add_capital_form()">{% trans "Increase Capital" %}</a>
     <a class="btn btn-focus split-shares" href="" ng-click="show_split_form()">{% trans "Split Shares" %}</a>
