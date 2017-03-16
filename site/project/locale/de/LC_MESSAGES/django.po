@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-16 18:42+0000\n"
-"PO-Revision-Date: 2017-03-11 13:28+0000\n"
-"Last-Translator:   <jirka@tschitschereengreen.com>\n"
+"POT-Creation-Date: 2017-03-16 21:02+0000\n"
+"PO-Revision-Date: 2017-03-16 21:03+0000\n"
+"Last-Translator:   <jirka@kkd-partners.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -21,14 +21,15 @@ msgstr ""
 
 #: project/forms.py:23
 msgid ""
-"I have read and agree to the <a href=\"http://www1.das-aktienregister.ch/agb"
-"\" alt=\"Darg Terms of Service\" target=\"_blank\" class=\"link tos\">Terms "
-"of Service</a>"
+"I have read and agree to the <a href=\"http://www1.das-"
+"aktienregister.ch/agb\" alt=\"Darg Terms of Service\" target=\"_blank\" "
+"class=\"link tos\">Terms of Service</a>"
 msgstr ""
-"Ich habe die <a href=\"http://www1.das-aktienregister.ch/agb\" alt="
-"\"Nutzungsbedingungen Das-Aktienregister.ch\" target=\"_blank\" class=\"link "
-"tos\">Nutzungsbedingungen</a> und <a href=\"/impressum/#datenschutz\" alt="
-"\"Nutzungsbedingungen Das-Aktienregister.ch\" target=\"_blank\" class=\"link "
+"Ich habe die <a href=\"http://www1.das-aktienregister.ch/agb\" "
+"alt=\"Nutzungsbedingungen Das-Aktienregister.ch\" target=\"_blank\" "
+"class=\"link tos\">Nutzungsbedingungen</a> und <a "
+"href=\"/impressum/#datenschutz\" alt=\"Nutzungsbedingungen Das-"
+"Aktienregister.ch\" target=\"_blank\" class=\"link "
 "tos\">Datenschutzerklärung</a> gelesen und stimme zu."
 
 #: project/tasks.py:95
@@ -305,7 +306,7 @@ msgstr "Gründungsdatum"
 
 #: project/templates/active_shareholder_captable.pdf.html:98
 #: project/templates/active_shareholder_captable.pdf.html:141
-#: project/templates/start.html:64
+#: project/templates/start.html:75
 msgid "Name"
 msgstr "Name"
 
@@ -316,7 +317,7 @@ msgstr "Email"
 
 #: project/templates/active_shareholder_captable.pdf.html:100
 #: project/templates/active_shareholder_captable.pdf.html:143
-#: project/templates/start.html:65
+#: project/templates/start.html:76
 msgid "Shareholder Number"
 msgstr "Aktieninhabernummer"
 
@@ -527,12 +528,8 @@ msgid ""
 "Gesetzeskonformitaet. Das Online-Aktienbuch macht die Pflege schnell und "
 "effizient, damit Zeit frei wird fuer die wirklichen Herausforderungen"
 msgstr ""
-"Die Automatische Validierung verhindert Fehler und sichert maximale "
-"Gesetzeskonformität. Das Online-Aktienbuch macht die Pflege schnell und "
-"effizient, damit Zeit frei wird für die wirklichen Herausforderungen. <br/"
-"><br/>\n"
-"<strong>PLUS: der rechtlichen Verantwortung des Verwaltungsrates ist Sorge "
-"getragen.</strong>"
+"Die Automatische Validierung verhindert Fehler und sichert maximale Gesetzeskonformität. Das Online-Aktienbuch macht die Pflege schnell und effizient, damit Zeit frei wird für die wirklichen Herausforderungen. <br/><br/>\n"
+"<strong>PLUS: der rechtlichen Verantwortung des Verwaltungsrates ist Sorge getragen.</strong>"
 
 #: project/templates/index.html:119
 msgid "Do you know our Blog?"
@@ -601,28 +598,40 @@ msgstr ""
 "übertragen\" class=\"btn-inline\">Transaktionen</a> um seinen Aktienstand "
 "einzutragen."
 
-#: project/templates/start.html:54
+#: project/templates/start.html:55
+msgid "Need more advices? Read"
+msgstr "Sie benötigen Hilfe oder mehr Infos?"
+
+#: project/templates/start.html:56
+msgid "share register quickstart guide"
+msgstr "Aktienbuch Quickstart"
+
+#: project/templates/start.html:57
+msgid "our quickstart tutorial!"
+msgstr "Lesen Sie unseren Quickstart-Guide zum Aktienbuch!"
+
+#: project/templates/start.html:63
 msgid "Share Ownership"
 msgstr "Aktienbesitz"
 
-#: project/templates/start.html:66
+#: project/templates/start.html:77
 #, python-format
 msgid "Shares (%%%%)"
 msgstr "Aktien (%)"
 
-#: project/templates/start.html:70
+#: project/templates/start.html:81
 msgid "Gafi Validation failed"
 msgstr "GAFI-FATF Validierung fehlgeschlagen"
 
-#: project/templates/start.html:84
+#: project/templates/start.html:95
 msgid "Total Shares distributed"
 msgstr "Gesamtzahl ausgegebener Aktien"
 
-#: project/templates/start.html:94
+#: project/templates/start.html:105
 msgid "Option Holders"
 msgstr "Optionsinhaber/Zertifikate"
 
-#: project/templates/start.html:95
+#: project/templates/start.html:106
 msgid "Option Holders note"
 msgstr "Zugrundeliegende Aktien sind bei der AG hinterlegt."
 
@@ -631,8 +640,8 @@ msgid ""
 "You have already an existing user account. Please login or reset your "
 "password."
 msgstr ""
-"Sie haben bereits ein Nutzerkonto. Bitte loggen Sie sich ein oder setzen Sie "
-"Ihr Passwort zurück."
+"Sie haben bereits ein Nutzerkonto. Bitte loggen Sie sich ein oder setzen Sie"
+" Ihr Passwort zurück."
 
 #: project/tests/test_views.py:583 project/views.py:94
 msgid "date"
@@ -868,11 +877,11 @@ msgstr ""
 #~ msgstr "Datenexport als CSV für Excel etc."
 
 #~ msgid ""
-#~ "We are currently in private Beta. Please leave your email address to "
-#~ "receive an invitation soon!"
+#~ "We are currently in private Beta. Please leave your email address to receive"
+#~ " an invitation soon!"
 #~ msgstr ""
-#~ "Wir sind aktuell in geschlossender Beta. Bitte hinterlassen Sie ihre "
-#~ "Email, um eine Einladung zu erhalten."
+#~ "Wir sind aktuell in geschlossender Beta. Bitte hinterlassen Sie ihre Email, "
+#~ "um eine Einladung zu erhalten."
 
 #~ msgid "Your Email"
 #~ msgstr "Email"
@@ -897,8 +906,8 @@ msgstr ""
 
 #~ msgid "GAFI Standard compliant"
 #~ msgstr ""
-#~ "Entspricht <a href=\"http://www.fatf-gafi.org/\" title=\"GAFI\" class="
-#~ "\"regular\">GAFI Standards</a>"
+#~ "Entspricht <a href=\"http://www.fatf-gafi.org/\" title=\"GAFI\" "
+#~ "class=\"regular\">GAFI Standards</a>"
 
 #~ msgid "Extensive data validation to ensure you cannot make a mistake"
 #~ msgstr "Umfangreiche Datenvalidierung  - Garantiert korrekte Daten"

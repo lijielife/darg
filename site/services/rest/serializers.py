@@ -387,6 +387,7 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
                 "email": validated_data.get("user", {}).get("email", u''),
                 "first_name": validated_data.get("user").get("first_name"),
                 "last_name": validated_data.get("user").get("last_name"),
+                "username": username,
             },
             **user_kwargs
         )

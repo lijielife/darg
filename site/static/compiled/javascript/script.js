@@ -1812,6 +1812,7 @@
         });
       };
       $scope.add_company = function() {
+        $scope.errors = null;
         return $scope.newCompany.$save().then(function(result) {
           return $http.get('/services/rest/user').then(function(result) {
             $scope.user = result.data.results[0];
@@ -1839,11 +1840,13 @@
         });
       };
       $scope.add_shareholder = function() {
+        $scope.errors = null;
         return $scope.newShareholder.$save().then(function(result) {
           return $scope.shareholders.push(result);
         }).then(function() {
           $scope.newShareholder = new Shareholder();
           $scope.shareholder_added_success = true;
+          $scope.show_add_shareholder = false;
           return $timeout(function() {
             return $scope.shareholder_added_success = false;
           }, 30000);

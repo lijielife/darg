@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-16 18:42+0000\n"
+"POT-Creation-Date: 2017-03-16 21:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -284,7 +284,7 @@ msgstr ""
 
 #: project/templates/active_shareholder_captable.pdf.html:98
 #: project/templates/active_shareholder_captable.pdf.html:141
-#: project/templates/start.html:64
+#: project/templates/start.html:75
 msgid "Name"
 msgstr ""
 
@@ -295,7 +295,7 @@ msgstr ""
 
 #: project/templates/active_shareholder_captable.pdf.html:100
 #: project/templates/active_shareholder_captable.pdf.html:143
-#: project/templates/start.html:65
+#: project/templates/start.html:76
 msgid "Shareholder Number"
 msgstr ""
 
@@ -555,28 +555,40 @@ msgstr ""
 msgid "Shareholderr added. record share transfers here"
 msgstr ""
 
-#: project/templates/start.html:54
+#: project/templates/start.html:55
+msgid "Need more advices? Read"
+msgstr ""
+
+#: project/templates/start.html:56
+msgid "share register quickstart guide"
+msgstr ""
+
+#: project/templates/start.html:57
+msgid "our quickstart tutorial!"
+msgstr ""
+
+#: project/templates/start.html:63
 msgid "Share Ownership"
 msgstr ""
 
-#: project/templates/start.html:66
+#: project/templates/start.html:77
 #, python-format
 msgid "Shares (%%%%)"
 msgstr ""
 
-#: project/templates/start.html:70
+#: project/templates/start.html:81
 msgid "Gafi Validation failed"
 msgstr ""
 
-#: project/templates/start.html:84
+#: project/templates/start.html:95
 msgid "Total Shares distributed"
 msgstr ""
 
-#: project/templates/start.html:94
+#: project/templates/start.html:105
 msgid "Option Holders"
 msgstr ""
 
-#: project/templates/start.html:95
+#: project/templates/start.html:106
 msgid "Option Holders note"
 msgstr ""
 

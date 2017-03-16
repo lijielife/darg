@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-16 18:45+0000\n"
-"PO-Revision-Date: 2017-03-16 18:45+0000\n"
+"POT-Creation-Date: 2017-03-16 21:01+0000\n"
+"PO-Revision-Date: 2017-03-16 21:00+0000\n"
 "Last-Translator:   <jirka@kkd-partners.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -74,7 +74,7 @@ msgstr "Datum"
 
 #: static/compiled/javascript/i18n_noop.js:14
 msgid "Start Date"
-msgstr ""
+msgstr "von Datum..."
 
 #: static/compiled/javascript/i18n_noop.js:15
 msgid "Security"
@@ -213,9 +213,16 @@ msgid "Please enter DELETE"
 msgstr "Bitte geben Sie \"LÖSCHEN\" ein."
 
 #: static/compiled/javascript/i18n_noop.js:52
-#| msgid "Face_value"
 msgid "face_value"
 msgstr "Nennwert"
+
+#: static/compiled/javascript/i18n_noop.js:53
+msgid "first_name"
+msgstr "Vorname"
+
+#: static/compiled/javascript/i18n_noop.js:54
+msgid "last_name"
+msgstr "Nachname"
 
 #: static/compiled/javascript/script.js:309
 msgid "DELETE"
@@ -249,8 +256,7 @@ msgid ""
 msgstr "Aktionär hält aktuell keine Optionen."
 
 #: static/compiled/javascript/script.js:683
-msgid ""
-"No security segments available for option plan on selected date or now."
+msgid "No security segments available for option plan on selected date or now."
 msgstr ""
 "Es sind aktuell keine Aktiennummern für den Optionsplan am ausgewählten "
 "Datum verfügbar."

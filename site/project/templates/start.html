@@ -50,16 +50,27 @@
       {% endverbatim %}{% trans "Shareholderr added. record share transfers here" %}{% verbatim %}
     </p>
 
+	<p class="panel" ng-show="shareholders.length < 2">
+	{% endverbatim %}
+	{% trans "Need more advices? Read" %}
+	<a href="/aktienbuch/quickstart/" title="{% trans "share register quickstart guide" %}" target="_blank">
+	  {% trans "our quickstart tutorial!" %}
+	</a>
+	{% verbatim %}
+	</p>
+
 	<!-- --- SHARES --- -->
-	<h2 ng-show="shareholders.length" >{% endverbatim %}{% trans "Share Ownership" %}{% verbatim %}</h2>
+	<h2 ng-show="shareholders.length > 1" >{% endverbatim %}{% trans "Share Ownership" %}{% verbatim %}</h2>
 
     <!-- TABLE ACTIONS -->
 	{% endverbatim %}
+	<div ng-hide="shareholders.length < 2">
 	{% include "_table_actions.html" %}
+	</div>
 	{% verbatim %}
 
     <!-- TABLE -->
-    <div class="table">
+    <div class="table" ng-hide="shareholders.length < 2">
       <div class="tr th">
         <div class="td td-width-2 ">{% endverbatim %}{% trans "Name" %}{% verbatim %}</div>
         <div class="td text-right-flex">{% endverbatim %}{% trans "Shareholder Number" %}{% verbatim %}</div>
