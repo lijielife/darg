@@ -262,6 +262,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
 
     # --- FORMS
     $scope.add_company = ->
+        $scope.errors = null
         $scope.newCompany.$save().then (result) ->
             $http.get('/services/rest/user').then (result) ->
                 $scope.user = result.data.results[0]
@@ -288,6 +289,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
             })
 
     $scope.add_shareholder = ->
+        $scope.errors = null
         $scope.newShareholder.$save().then (result) ->
             $scope.shareholders.push result
         .then ->
