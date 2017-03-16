@@ -294,6 +294,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
             # Reset our editor to a new blank post
             $scope.newShareholder = new Shareholder()
             $scope.shareholder_added_success = true
+            $scope.show_add_shareholder = false
             $timeout ->
                 $scope.shareholder_added_success = false
             , 30000

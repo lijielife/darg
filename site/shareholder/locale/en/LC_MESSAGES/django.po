@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-16 18:42+0000\n"
+"POT-Creation-Date: 2017-03-16 21:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -172,82 +172,82 @@ msgstr ""
 msgid "Shareholder address or address details missing."
 msgstr ""
 
-#: shareholder/models.py:1039
+#: shareholder/models.py:1043
 msgid "Preferred Stock"
 msgstr ""
 
-#: shareholder/models.py:1040
+#: shareholder/models.py:1044
 msgid "Common Stock"
 msgstr ""
 
-#: shareholder/models.py:1041
+#: shareholder/models.py:1045
 msgid "Registered Shares"
 msgstr ""
 
-#: shareholder/models.py:1048
+#: shareholder/models.py:1052
 msgid "Nominal value of this asset"
 msgstr ""
 
-#: shareholder/models.py:1054 shareholder/models.py:1143
-#: shareholder/models.py:1219 shareholder/models.py:1267
+#: shareholder/models.py:1058 shareholder/models.py:1147
+#: shareholder/models.py:1223 shareholder/models.py:1271
 msgid "JSON list of segments of ids for securities. can be 1, 2, 3, 4-10"
 msgstr ""
 
-#: shareholder/models.py:1057
+#: shareholder/models.py:1061
 msgid "public security id aka Valor, WKN, CUSIP: http://bit.ly/2ieXwuK"
 msgstr ""
 
-#: shareholder/models.py:1062
+#: shareholder/models.py:1066
 msgid ""
 "App needs to track IDs of shares. WARNING: update initial transaction with "
 "segments on enabling."
 msgstr ""
 
-#: shareholder/models.py:1067
+#: shareholder/models.py:1071
 msgid "{} ({} CHF)"
 msgstr ""
 
-#: shareholder/models.py:1132
+#: shareholder/models.py:1136
 msgid "Share Count transfered or created"
 msgstr ""
 
-#: shareholder/models.py:1136
+#: shareholder/models.py:1140
 msgid "Nominal value or payed price for the transaction"
 msgstr ""
 
-#: shareholder/models.py:1140
+#: shareholder/models.py:1144
 msgid "Position is part of a split transaction"
 msgstr ""
 
-#: shareholder/models.py:1146 shareholder/models.py:1270
+#: shareholder/models.py:1150 shareholder/models.py:1274
 msgid "Securities are purchase type (for myself, etc.)"
 msgstr ""
 
-#: shareholder/models.py:1149 shareholder/models.py:1273
+#: shareholder/models.py:1153 shareholder/models.py:1277
 msgid "aka Skontro (read http://bit.ly/2iJquEl)"
 msgstr ""
 
-#: shareholder/models.py:1152 shareholder/models.py:1276
+#: shareholder/models.py:1156 shareholder/models.py:1280
 msgid "What kind of depot is this position stored within"
 msgstr ""
 
-#: shareholder/models.py:1184
+#: shareholder/models.py:1188
 msgid "Capital Increase"
 msgstr ""
 
-#: shareholder/models.py:1186
+#: shareholder/models.py:1190
 msgid "Part of Split"
 msgstr ""
 
-#: shareholder/models.py:1188
+#: shareholder/models.py:1192
 msgid "Share issue"
 msgstr ""
 
-#: shareholder/models.py:1189
+#: shareholder/models.py:1193
 msgid "Regular Ownership change"
 msgstr ""
 
-#: shareholder/models.py:1213
+#: shareholder/models.py:1217
 msgid "Number of shares approved"
 msgstr ""
 
