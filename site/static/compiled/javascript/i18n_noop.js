@@ -49,7 +49,7 @@ gettext('Certificate ID');
 gettext('Vesting period in months');
 gettext('Input');
 gettext('Please enter DELETE');
-gettext('Face_value');
+gettext('face_value');
 
 // TEMPLATE
 // gettext('');

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-14 21:50+0000\n"
+"POT-Creation-Date: 2017-03-16 18:42+0000\n"
 "PO-Revision-Date: 2017-03-11 13:28+0000\n"
 "Last-Translator:   <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -104,24 +104,24 @@ msgstr "Bitte geben Sie die Daten die Kapitalerhöhung an:"
 msgid "On (date)"
 msgstr "Am (Datum)"
 
-#: project/templates/_add_capital_form.html:27
-#: project/templates/_add_option_plan_form.html:26
-#: project/templates/_add_position_form.html:48
-#: project/templates/_split_shares_form.html:30
+#: project/templates/_add_capital_form.html:30
+#: project/templates/_add_option_plan_form.html:29
+#: project/templates/_add_position_form.html:51
+#: project/templates/_split_shares_form.html:33
 msgid "Security"
 msgstr "Aktienart"
 
-#: project/templates/_add_capital_form.html:33
-#: project/templates/_add_option_plan_form.html:34
-#: project/templates/_add_option_transaction_form.html:62
-#: project/templates/_add_position_form.html:69
+#: project/templates/_add_capital_form.html:36
+#: project/templates/_add_option_plan_form.html:37
+#: project/templates/_add_option_transaction_form.html:65
+#: project/templates/_add_position_form.html:72
 #: project/templates/_add_shareholder_form.html:15
-#: project/templates/_split_shares_form.html:36
+#: project/templates/_split_shares_form.html:39
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: project/templates/_add_capital_form.html:34
-#: project/templates/_add_position_form.html:72
+#: project/templates/_add_capital_form.html:37
+#: project/templates/_add_position_form.html:75
 msgid "Add Position"
 msgstr "Position hinzufügen"
 
@@ -135,15 +135,15 @@ msgstr ""
 "<strong>Unternehmen anlegen:</strong><br/> Geben Sie ihren Firmennamen, das "
 "Gründungsdatum, die Anzahl und den Nennwert der Aktien bei Gründung ein:"
 
-#: project/templates/_add_company_form.html:31
+#: project/templates/_add_company_form.html:33
 msgid "Add Company"
 msgstr "Unternehmen hinzufügen"
 
-#: project/templates/_add_company_form.html:37
+#: project/templates/_add_company_form.html:39
 msgid "Please contact us at our"
 msgstr "Bitte kontaktieren Sie unseren"
 
-#: project/templates/_add_company_form.html:39
+#: project/templates/_add_company_form.html:41
 msgid ""
 "for getting more security types (common stock, preferred stock, numbered "
 "shares) added"
@@ -159,11 +159,11 @@ msgstr "Bitte geben Sie die Daten für den Optionsplan an:"
 msgid "Board Approval Date"
 msgstr "Genehmigt durch Board am (z.B. 1. Jan 2016):"
 
-#: project/templates/_add_option_plan_form.html:35
+#: project/templates/_add_option_plan_form.html:38
 msgid "Add Option-Plan"
 msgstr "Optionsplan hinzufügen"
 
-#: project/templates/_add_option_plan_form.html:38
+#: project/templates/_add_option_plan_form.html:41
 msgid "Approved Option Plan PDF can be uploaded later in Plan's Edit Form"
 msgstr ""
 "Das PDF für den Optionsplan kann später in der Detailansicht für den "
@@ -173,50 +173,47 @@ msgstr ""
 msgid "Please enter your Option data:"
 msgstr "Bitte geben Sie die Daten für die Option an:"
 
-#: project/templates/_add_option_transaction_form.html:24
-#: project/templates/_add_position_form.html:28
+#: project/templates/_add_option_transaction_form.html:27
+#: project/templates/_add_position_form.html:31
 msgid "from"
 msgstr "von"
 
-#: project/templates/_add_option_transaction_form.html:27
-#: project/templates/_add_position_form.html:31
+#: project/templates/_add_option_transaction_form.html:30
+#: project/templates/_add_position_form.html:34
 msgid "Seller"
 msgstr "Verkäufer"
 
-#: project/templates/_add_option_transaction_form.html:33
+#: project/templates/_add_option_transaction_form.html:36
+#: project/templates/_add_position_form.html:40
 msgid "transferred to"
 msgstr "an"
 
-#: project/templates/_add_option_transaction_form.html:36
-#: project/templates/_add_position_form.html:40
+#: project/templates/_add_option_transaction_form.html:39
+#: project/templates/_add_position_form.html:43
 msgid "Buyer"
 msgstr "Käufer"
 
-#: project/templates/_add_option_transaction_form.html:42
+#: project/templates/_add_option_transaction_form.html:45
 msgid "Option Plan"
 msgstr "Optionsplan"
 
-#: project/templates/_add_option_transaction_form.html:51
-#: project/templates/_add_position_form.html:58
+#: project/templates/_add_option_transaction_form.html:54
+#: project/templates/_add_position_form.html:61
 msgid "optional fields"
 msgstr "Optionale Daten"
 
-#: project/templates/_add_option_transaction_form.html:53
-#: project/templates/_add_position_form.html:60
+#: project/templates/_add_option_transaction_form.html:56
+#: project/templates/_add_position_form.html:63
 msgid "Depot Type"
 msgstr "Depotart"
 
-#: project/templates/_add_option_transaction_form.html:63
+#: project/templates/_add_option_transaction_form.html:66
 msgid "Add Option"
 msgstr "Option hinzufügen"
 
 #: project/templates/_add_position_form.html:3
 msgid "Please enter your position data:"
 msgstr "Bitte geben Sie die Daten für die Übertragung der Aktien an:"
-
-#: project/templates/_add_position_form.html:37
-msgid "to"
-msgstr "an"
 
 #: project/templates/_add_shareholder_form.html:3
 msgid "Please enter your shareholder data:"
@@ -244,7 +241,7 @@ msgstr ""
 "mit Nachverfolgung der Aktiennummern. Bitte wenden Sie sich an unseren "
 "Support."
 
-#: project/templates/_split_shares_form.html:33
+#: project/templates/_split_shares_form.html:36
 msgid ""
 "Please note that the split will leave partial share rights unhandled. You "
 "must assign those options to the shareholders and either pay, trade or "
@@ -258,7 +255,7 @@ msgstr ""
 "Kompensation, Verkauf, Verfall der Anrechte nachträglich über Transaktionen "
 "ein."
 
-#: project/templates/_split_shares_form.html:37
+#: project/templates/_split_shares_form.html:40
 msgid "Add Share Split"
 msgstr "Aktiensplit hinzufügen"
 
@@ -802,6 +799,9 @@ msgstr "Zertifikat/Urkunde"
 msgid "pdf file is being generated and will be sent by email to you"
 msgstr ""
 "Die PDF Datei wird generiert und anschliessend per Email an Sie gesendet."
+
+#~ msgid "to"
+#~ msgstr "an"
 
 #~ msgid "Automatische Validierung der Daten."
 #~ msgstr ""
