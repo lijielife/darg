@@ -29,10 +29,10 @@
               <li {% ifequal request.path start_url %}class="active"{% endifequal %}>
                 <a href="{{start_url}}">{% trans "Start" %}</a>
               </li>
-			  {% if request.user.operator_set.exists %}
               <li {% ifequal request.path positions_url %}class="active"{% endifequal %}>
                 <a href="{{ positions_url }}">{% trans "Positions" %}</a>
               </li>
+              {% if request.user.operator_set.exists %}
               <li {% ifequal request.path options_url %}class="active"{% endifequal %}>
                 <a href="{{options_url}}">{% trans "Options" %}</a>
               </li>
