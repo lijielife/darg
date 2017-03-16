@@ -50,6 +50,8 @@ gettext('Vesting period in months');
 gettext('Input');
 gettext('Please enter DELETE');
 gettext('face_value');
+gettext('first_name');
+gettext('last_name');
 
 // TEMPLATE
 // gettext('');
