@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-15 22:36+0000\n"
-"PO-Revision-Date: 2017-03-16 13:20+0000\n"
+"POT-Creation-Date: 2017-03-16 18:45+0000\n"
+"PO-Revision-Date: 2017-03-16 18:45+0000\n"
 "Last-Translator:   <jirka@kkd-partners.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -20,12 +20,12 @@ msgstr ""
 "X-Translated-Using: django-rosetta 0.7.12\n"
 
 #: static/compiled/javascript/i18n_noop.js:3
-#: static/compiled/javascript/i18n_noop.js:22
+#: static/compiled/javascript/i18n_noop.js:23
 msgid "First Name"
 msgstr "Vorname"
 
 #: static/compiled/javascript/i18n_noop.js:4
-#: static/compiled/javascript/i18n_noop.js:23
+#: static/compiled/javascript/i18n_noop.js:24
 #: static/compiled/javascript/script.js:1233
 #: static/compiled/javascript/script.js:1535
 #: static/compiled/javascript/script.js:1557
@@ -33,7 +33,7 @@ msgid "Last Name"
 msgstr "Nachname"
 
 #: static/compiled/javascript/i18n_noop.js:5
-#: static/compiled/javascript/i18n_noop.js:24
+#: static/compiled/javascript/i18n_noop.js:25
 #: static/compiled/javascript/script.js:1245
 #: static/compiled/javascript/script.js:1532
 #: static/compiled/javascript/script.js:1554
@@ -73,144 +73,148 @@ msgid "Date"
 msgstr "Datum"
 
 #: static/compiled/javascript/i18n_noop.js:14
+msgid "Start Date"
+msgstr ""
+
+#: static/compiled/javascript/i18n_noop.js:15
 msgid "Security"
 msgstr "Wertpapier"
 
-#: static/compiled/javascript/i18n_noop.js:15
-#: static/compiled/javascript/i18n_noop.js:17
+#: static/compiled/javascript/i18n_noop.js:16
+#: static/compiled/javascript/i18n_noop.js:18
 #: static/compiled/javascript/script.js:1239
 msgid "Share Count"
 msgstr "Anzahl Aktien"
 
-#: static/compiled/javascript/i18n_noop.js:16
+#: static/compiled/javascript/i18n_noop.js:17
 msgid "Option Plan"
 msgstr "Optionsplan"
 
-#: static/compiled/javascript/i18n_noop.js:18
+#: static/compiled/javascript/i18n_noop.js:19
 msgid "Board Approval Date"
 msgstr "Bestätigt durch Board am..."
 
-#: static/compiled/javascript/i18n_noop.js:19
+#: static/compiled/javascript/i18n_noop.js:20
 msgid "Underlying Asset"
 msgstr "Basiswertpapier"
 
-#: static/compiled/javascript/i18n_noop.js:20
+#: static/compiled/javascript/i18n_noop.js:21
 msgid "Exercise Price"
 msgstr "Ausübungspreis"
 
-#: static/compiled/javascript/i18n_noop.js:21
-#| msgid "Face Value"
+#: static/compiled/javascript/i18n_noop.js:22
 msgid "Face Value of shares"
 msgstr "Nennwert der Aktien"
 
-#: static/compiled/javascript/i18n_noop.js:25
+#: static/compiled/javascript/i18n_noop.js:26
 msgid "Vesting Period (months)"
 msgstr "Dauer Vesting (Monate)"
 
-#: static/compiled/javascript/i18n_noop.js:26
+#: static/compiled/javascript/i18n_noop.js:27
 msgid "Ratio: Dividend"
 msgstr "Ratio: Divident"
 
-#: static/compiled/javascript/i18n_noop.js:27
+#: static/compiled/javascript/i18n_noop.js:28
 msgid "Ratio: Divisor"
 msgstr "Ratio: Divisor"
 
-#: static/compiled/javascript/i18n_noop.js:28
+#: static/compiled/javascript/i18n_noop.js:29
 msgid "dividend"
 msgstr "Divident"
 
-#: static/compiled/javascript/i18n_noop.js:29
+#: static/compiled/javascript/i18n_noop.js:30
 msgid "security"
 msgstr "Wertpapier"
 
-#: static/compiled/javascript/i18n_noop.js:30
+#: static/compiled/javascript/i18n_noop.js:31
 msgid "execute_at"
 msgstr "Datum"
 
-#: static/compiled/javascript/i18n_noop.js:31
+#: static/compiled/javascript/i18n_noop.js:32
 msgid "divisor"
 msgstr "Divisor"
 
-#: static/compiled/javascript/i18n_noop.js:32
+#: static/compiled/javascript/i18n_noop.js:33
 msgid "count"
 msgstr "Anzahl"
 
-#: static/compiled/javascript/i18n_noop.js:33
+#: static/compiled/javascript/i18n_noop.js:34
 msgid "bought_at"
 msgstr "Kaufdatum"
 
-#: static/compiled/javascript/i18n_noop.js:34
+#: static/compiled/javascript/i18n_noop.js:35
 msgid "user"
 msgstr "Nutzer"
 
-#: static/compiled/javascript/i18n_noop.js:35
+#: static/compiled/javascript/i18n_noop.js:36
 msgid "number"
 msgstr "Gesellschafternummer"
 
-#: static/compiled/javascript/i18n_noop.js:36
+#: static/compiled/javascript/i18n_noop.js:37
 msgid "title"
 msgstr "Titel"
 
-#: static/compiled/javascript/i18n_noop.js:37
+#: static/compiled/javascript/i18n_noop.js:38
 msgid "board_approved_at"
 msgstr "Bestätigt durch Board am..."
 
-#: static/compiled/javascript/i18n_noop.js:38
+#: static/compiled/javascript/i18n_noop.js:39
 msgid "option_plan"
 msgstr "Optionsplan"
 
-#: static/compiled/javascript/i18n_noop.js:39
+#: static/compiled/javascript/i18n_noop.js:40
 msgid "seller"
 msgstr "Verkäufer"
 
-#: static/compiled/javascript/i18n_noop.js:40
+#: static/compiled/javascript/i18n_noop.js:41
 msgid "buyer"
 msgstr "Käufer"
 
-#: static/compiled/javascript/i18n_noop.js:41
+#: static/compiled/javascript/i18n_noop.js:42
 msgid "Founding Date"
 msgstr "Gründungsdatum"
 
-#: static/compiled/javascript/i18n_noop.js:42
+#: static/compiled/javascript/i18n_noop.js:43
 msgid "Company Name"
 msgstr "Unternehmensname"
 
-#: static/compiled/javascript/i18n_noop.js:43
+#: static/compiled/javascript/i18n_noop.js:44
 msgid "Share IDs"
 msgstr "Aktien# (z.B. 1, 4-9)"
 
-#: static/compiled/javascript/i18n_noop.js:44
+#: static/compiled/javascript/i18n_noop.js:45
 msgid "Invalid number segment. Please use 1, 2, 3, 4-10."
 msgstr "Ungültige Aktiennummern. Format: 1,2,3,4-7"
 
-#: static/compiled/javascript/i18n_noop.js:45
+#: static/compiled/javascript/i18n_noop.js:46
 msgid "number_segments"
 msgstr "Aktiennummern"
 
-#: static/compiled/javascript/i18n_noop.js:46
+#: static/compiled/javascript/i18n_noop.js:47
 msgid "Stock Book ID"
 msgstr "Valor/WKN/CUSIP"
 
-#: static/compiled/javascript/i18n_noop.js:47
+#: static/compiled/javascript/i18n_noop.js:48
 msgid "Certificate ID"
 msgstr "Zertifikats ID"
 
-#: static/compiled/javascript/i18n_noop.js:48
+#: static/compiled/javascript/i18n_noop.js:49
 msgid "Vesting period in months"
 msgstr "Sperrfrist/Vesting (in Monaten)"
 
-#: static/compiled/javascript/i18n_noop.js:49
+#: static/compiled/javascript/i18n_noop.js:50
 #: static/compiled/javascript/script.js:318
 msgid "Input"
 msgstr "Eingabe hier"
 
-#: static/compiled/javascript/i18n_noop.js:50
+#: static/compiled/javascript/i18n_noop.js:51
 #: static/compiled/javascript/script.js:320
 msgid "Please enter DELETE"
 msgstr "Bitte geben Sie \"LÖSCHEN\" ein."
 
-#: static/compiled/javascript/i18n_noop.js:51
-msgid "Face_value"
+#: static/compiled/javascript/i18n_noop.js:52
+#| msgid "Face_value"
+msgid "face_value"
 msgstr "Nennwert"
 
 #: static/compiled/javascript/script.js:309
