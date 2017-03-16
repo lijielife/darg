@@ -861,7 +861,7 @@ class OptionsPlanFunctionalTestCase(BaseSeleniumTestCase):
             # wait for angular (tranfer option link)
             app.wait_until_visible(
                 (By.CSS_SELECTOR,
-                 '[ng_controller="OptionsController"] .panel .btn-inline'))
+                 '[ng_controller="OptionsController"] .panel .btn'))
             app.click_open_transfer_option()
             app.enter_transfer_option_with_segments_data(
                 buyer=shs[1], seller=shs[0], number_segments='1667',
@@ -893,7 +893,7 @@ class OptionsPlanFunctionalTestCase(BaseSeleniumTestCase):
             # wait for angular (tranfer option link)
             app.wait_until_visible(
                 (By.CSS_SELECTOR,
-                 '[ng_controller="OptionsController"] .panel .btn-inline'))
+                 '[ng_controller="OptionsController"] .panel .btn'))
             app.click_open_transfer_option()
             app.enter_transfer_option_with_segments_data(
                 buyer=shs[1], seller=shs[0])
