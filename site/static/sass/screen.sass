@@ -204,6 +204,9 @@ html, body
   .glyphicon-calendar
     color: $color-blue
 
+  .btn
+    font-size: initial
+    font-weight: 300
   // button, but more a link and has many of them in a a row
   .btn-inline
     border: none
@@ -213,27 +216,26 @@ html, body
     font-size: 1em
     background-color: transparent
     color: $color-blue
-  .panel
-    margin-top: 1em
-    .btn-inline
-      margin-right: 1em
 
   // highlight the recommended button amongst buttons
   .btn-focus, .btn-info
     border: 1px solid $color-focus
     background-color: $color-blue
     color: $color-white
-    font-weight: bold
   .btn-danger
     border: 1px solid $color-red
-    color: $color-red
-    font-weight: bold
     color: $color-red
     background: none
   .btn-white
     background-color: $color-white !important
     color: $color-blue !important
     border: 1px solid $color-blue !important
+
+  .panel
+    margin-top: 1em
+    box-shadow: none
+    .btn-inline
+      margin-right: 1em
 
   // to remove all left spacing
   .align-left

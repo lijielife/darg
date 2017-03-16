@@ -2792,6 +2792,10 @@ html, body {
 .core .container .glyphicon-calendar {
   color: #337ab7;
 }
+.core .container .btn {
+  font-size: initial;
+  font-weight: 300;
+}
 .core .container .btn-inline {
   border: none;
   margin: 0em;
@@ -2801,22 +2805,13 @@ html, body {
   background-color: transparent;
   color: #337ab7;
 }
-.core .container .panel {
-  margin-top: 1em;
-}
-.core .container .panel .btn-inline {
-  margin-right: 1em;
-}
 .core .container .btn-focus, .core .container .btn-info {
   border: 1px solid #337ab7;
   background-color: #337ab7;
   color: #fff;
-  font-weight: bold;
 }
 .core .container .btn-danger {
   border: 1px solid #c0392b;
-  color: #c0392b;
-  font-weight: bold;
   color: #c0392b;
   background: none;
 }
@@ -2824,6 +2819,13 @@ html, body {
   background-color: #fff !important;
   color: #337ab7 !important;
   border: 1px solid #337ab7 !important;
+}
+.core .container .panel {
+  margin-top: 1em;
+  box-shadow: none;
+}
+.core .container .panel .btn-inline {
+  margin-right: 1em;
 }
 .core .container .align-left {
   padding-left: 0em;
