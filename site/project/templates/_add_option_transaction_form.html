@@ -16,9 +16,11 @@
             clear-text="Leeren"
             current-text="Heute"
 			readonly="readonly"
+            placeholder="{{'Date'|translate}}"
+            ng-click="toggle_datepicker()"
             />
           <span class="input-group-btn">
-            <button type="button" class="btn btn-default" ng-click="open_datepicker()"><i class="glyphicon glyphicon-calendar"></i></button>
+            <button type="button" class="btn btn-default" ng-click="toggle_datepicker()"><i class="glyphicon glyphicon-calendar"></i></button>
           </span>
         </span>
         <!-- --- SELLER -- -->

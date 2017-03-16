@@ -285,8 +285,8 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
         startingDay: 1,
         showWeeks: false,
     }
-    $scope.open_datepicker = ->
-        $scope.datepicker.opened = true
+    $scope.toggle_datepicker = ->
+        $scope.datepicker.opened = !$scope.datepicker.opened
 
     # --- LINK
     $scope.goto_option = (option_id) ->

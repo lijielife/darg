@@ -18,11 +18,12 @@
           close-text="Schliessen"
           clear-text="Leeren"
           current-text="Heute"
-		  placeholder="{{'Founding Date'|translate}} --> "
+		  placeholder="{{'Founding Date'|translate}}"
 		  readonly="readonly"
+          ng-click="toggle_datepicker()"
           />
         <span class="input-group-btn">
-          <button type="button" class="btn btn-default" ng-click="open_datepicker()"><i class="glyphicon glyphicon-calendar"></i></button>
+          <button type="button" class="btn btn-default" ng-click="toggle_datepicker()"><i class="glyphicon glyphicon-calendar"></i></button>
         </span>
       </span>
       <input type="number" class="form-control" ng-model="newCompany.count" translate translate-attr-placeholder="Share Count">
