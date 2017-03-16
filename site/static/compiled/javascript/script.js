@@ -701,8 +701,8 @@
         startingDay: 1,
         showWeeks: false
       };
-      $scope.open_datepicker = function() {
-        return $scope.datepicker.opened = true;
+      $scope.toggle_datepicker = function() {
+        return $scope.datepicker.opened = !$scope.datepicker.opened;
       };
       return $scope.goto_option = function(option_id) {
         return window.location = "/options/" + option_id + "/";
@@ -1171,8 +1171,8 @@
         startingDay: 1,
         showWeeks: false
       };
-      $scope.open_datepicker = function() {
-        return $scope.datepicker.opened = true;
+      $scope.toggle_datepicker = function() {
+        return $scope.datepicker.opened = !$scope.datepicker.opened;
       };
       return $scope.goto_position = function(position_id) {
         return window.location = "/positions/" + position_id + "/";
@@ -1303,8 +1303,8 @@
         startingDay: 1,
         showWeeks: false
       };
-      $scope.open_datepicker1 = function() {
-        return $scope.datepicker1.opened = true;
+      $scope.toggle_datepicker1 = function() {
+        return $scope.datepicker1.opened = !$scope.datepicker1.opened;
       };
       $scope.datepicker2 = {
         opened: false
@@ -1315,8 +1315,8 @@
         startingDay: 1,
         showWeeks: false
       };
-      return $scope.open_datepicker2 = function() {
-        return $scope.datepicker2.opened = true;
+      return $scope.toggle_datepicker2 = function() {
+        return $scope.datepicker2.opened = !$scope.datepicker2.opened;
       };
     }
   ]);
@@ -1878,8 +1878,9 @@
         startingDay: 1,
         showWeeks: false
       };
-      return $scope.open_datepicker = function() {
-        return $scope.datepicker.opened = true;
+      return $scope.toggle_datepicker = function() {
+        $scope.datepicker.opened = !$scope.datepicker.opened;
+        return false;
       };
     }
   ]);

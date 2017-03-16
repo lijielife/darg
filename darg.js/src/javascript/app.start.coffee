@@ -327,6 +327,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
         startingDay: 1,
         showWeeks: false,
     }
-    $scope.open_datepicker = ->
-        $scope.datepicker.opened = true
+    $scope.toggle_datepicker = ->
+        $scope.datepicker.opened = !$scope.datepicker.opened
+        return false
 ]

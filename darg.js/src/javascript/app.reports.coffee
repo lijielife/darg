@@ -71,8 +71,8 @@ app.controller 'ReportsController', ['$scope', '$http', 'Shareholder', ($scope, 
         startingDay: 1,
         showWeeks: false,
     }
-    $scope.open_datepicker1 = ->
-        $scope.datepicker1.opened = true
+    $scope.toggle_datepicker1 = ->
+        $scope.datepicker1.opened = !$scope.datepicker1.opened
 
     $scope.datepicker2 = { opened: false }
     $scope.datepicker2.format = 'd. MMM yyyy'
@@ -81,8 +81,8 @@ app.controller 'ReportsController', ['$scope', '$http', 'Shareholder', ($scope, 
         startingDay: 1,
         showWeeks: false,
     }
-    $scope.open_datepicker2 = ->
-        $scope.datepicker2.opened = true
+    $scope.toggle_datepicker2 = ->
+        $scope.datepicker2.opened = !$scope.datepicker2.opened
 
 ]
 

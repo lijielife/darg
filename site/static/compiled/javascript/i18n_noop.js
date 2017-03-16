@@ -11,6 +11,7 @@ gettext('Name');
 gettext('Buyer');
 gettext('Seller');
 gettext('Date');
+gettext('Start Date');
 gettext('Security');
 gettext('Share Count');
 gettext('Option Plan');
