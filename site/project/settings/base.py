@@ -30,7 +30,7 @@ def get_env_variable(var_name, fail_on_error=True):
     return env_var
 
 
-VERSION = '0.4.34'
+VERSION = '0.4.35'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
