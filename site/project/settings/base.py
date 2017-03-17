@@ -345,6 +345,8 @@ MARKDOWNX_MARKDOWN_EXTENSIONS = [
     'markdown.extensions.nl2br',
     'markdown.extensions.smarty',
 ]
+# crispy images pls
+MARKDOWNX_IMAGE_MAX_SIZE = {'size': (900, 900), 'quality': 100,}
 
 # Media path
 # Path, where images will be stored in MEDIA_ROOT folder
