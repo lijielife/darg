@@ -190,8 +190,8 @@ class PositionTestCase(TransactionTestCase):
                 leftover += part
 
             print shareholder
-            print shareholder.buyer
-            print shareholder.seller
+            print shareholder.buyer.all()
+            print shareholder.seller.all()
             self.assertEqual(
                 shareholder.share_count(),
                 count2
