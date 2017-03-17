@@ -27,8 +27,8 @@
             <button type="button" class="btn btn-default" ng-click="toggle_datepicker()"><i class="glyphicon glyphicon-calendar"></i></button>
           </span>
         </span>
-      <input type="number" class="form-control" ng-model="newSplit.dividend" translate translate-attr-placeholder="Ratio: Dividend" ng-maxlength="3">
-      <input type="number" class="form-control" ng-model="newSplit.divisor" translate translate-attr-placeholder="Ratio: Divisor" ng-maxlength="3">
+      <input type="number" class="form-control" ng-model="newSplit.dividend" translate translate-attr-placeholder="Ratio: Dividend" min="0" ng-maxlength="3">
+      <input type="number" class="form-control" ng-model="newSplit.divisor" translate translate-attr-placeholder="Ratio: Divisor" min="0" ng-maxlength="3">
       <select class="form-control" ng-model="newSplit.security" ng-options="security as security.readable_title for security in securities" translate translate-attr-placeholder="Security">
         <option value='' disabled>{% endverbatim %}{% trans "Security" %}{% verbatim %}</option>
       </select>
