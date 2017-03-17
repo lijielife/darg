@@ -1,11 +1,11 @@
 {% extends "base_auth.html" %}
 
-{% load django_markdown markdownify staticfiles %}
+{% load django_markdown markdownify staticfiles i18n %}
 
 {% block ng_cloak %}{% endblock %}
 
 {% block title %}
-  <TITLE>{{ flatpage.title }} - Das Aktienregister</TITLE>
+  <TITLE>{{ flatpage.title }} | {% trans "brand name" %}</TITLE>
   <META NAME="Description" CONTENT="Das Aktienregister - GAFI konform und Audit Trail sicher">
   <META NAME="Keywords" CONTENT="Aktienregister, Share Register, Aktionariat, Aktien, Aktiengesellschaft">
 {% endblock %}

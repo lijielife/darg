@@ -45,6 +45,10 @@ gettext('Invalid number segment. Please use 1, 2, 3, 4-10.');
 gettext('number_segments');
 gettext('Stock Book ID');
 gettext('Certificate ID');
+gettext('Vesting period in months');
+gettext('Input');
+gettext('Please enter DELETE');
+gettext('Face_value');
 
 // TEMPLATE
 // gettext('');

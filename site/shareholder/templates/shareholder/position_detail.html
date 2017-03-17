@@ -84,11 +84,38 @@
       </td>
     </tr>
     <tr class="stock-book-id" ng-show="position.stock_book_id">
-      <td>{% trans "Stick Book ID" %}:</td>
+      <td>{% trans "Stock Book ID" %}:</td>
       <td>
         {% verbatim %}{{ position.stock_book_id}}{% endverbatim %}
       </td>
     </tr>
+    <tr class="certificate-id" ng-show="position.certificate_id">
+      <td>{% trans "Certificate ID" %}:</td>
+      <td>
+        {% verbatim %}{{ position.certificate_id}}{% endverbatim %}
+      </td>
+    </tr>
+    <tr class="vesting-months" ng-show="position.vesting_months">
+      <td>{% trans "Vesting period in months" %}:</td>
+      <td>
+        {% verbatim %}{{ position.vesting_months}}{% endverbatim %}
+      </td>
+    </tr>
   </table>
+
+  <!-- print func -->
+  {% verbatim %}
+  <div class="print-certificate">
+    <a class="btn btn-focus" ng-show="!position.printed_at && position.certificate_id" href="{% endverbatim %}{% url "position_option_pdf" option_id=position.pk %}{% verbatim %}" target="_blank">
+	  {% endverbatim %}{% trans "Print certificate" %}{% verbatim %}
+	</a>
+    <a class="btn btn-focus" ng-show="position.printed_at && position.certificate_id" href="{% endverbatim %}{% url "position_option_pdf" option_id=position.pk %}{% verbatim %}" target="_blank">
+	  {% endverbatim %}{% trans "Print certificate copy" %}{% verbatim %}
+	</a>
+    <div class="note" ng-show="position.printed_at" style="display: inline">
+      {% endverbatim %}{% trans "first printed at" %}{% verbatim %}: {{ position.printed_at  | date : 'd.MM.yy' }}
+    </div>
+  </div>
+  {% endverbatim %}
 </div>
 {% endblock %}

@@ -24,14 +24,14 @@
   <!-- table per company -->
   <div id="shareholder_list" ng-hide="!user.operator_set.length || loading" ng-repeat="operator in user.operator_set">
 
-    <h2>
+    <h1>
       {% endverbatim %}{% trans "Your Shareholders for" %}{% verbatim %}
       {{ operator.company.name }}
       <img ng-src="{{ operator.company.logo_url }}" alt="company logo" ng-show="operator.company.logo_url"class="logo" height="30pt"/>
       <a href="{{ operator.company.profile_url }}" class="el-icon-cogs-wrapper btn-inline">
         <span class="el-icon-cogs"></span>
       </a>
-    </h2>
+    </h1>
 
     <!-- ACTIONS -->
     <div class="panel" ng-hide="!user.operator_set.length">
@@ -106,7 +106,7 @@
     </div><!-- /table-->
 
     <!-- --- OPTIONS --- -->
-	<h2 ng-show="option_holders.length" >{% endverbatim %}{% trans "Option Holders" %}{% verbatim %}</h2>
+	<h2 class="split-header" ng-show="option_holders.length" >{% endverbatim %}{% trans "Option Holders" %}{% verbatim %}</h2>
 	<div class="note" ng-show="option_holders.length" >{% endverbatim %}{% trans "Option Holders note" %}{% verbatim %}</div>
 
     <!-- TABLE ACTIONS -->
@@ -123,8 +123,8 @@
       <div class="tr option-holders" ng-show="option_holders.length" ng-repeat="option_holder in option_holders  | orderBy:'-share_count'" ng-click="goto_shareholder(option_holder.pk)" ng-mouseover="">
         <div class="td td-width-2 order-1 option-holders full-name">{{ option_holder.full_name }}</div>
         <div class="td text-right-flex number order-2">{{ option_holder.number }}</div>
-        <div class="td text-right-flex share shareholders-count">
-          <value ng-if="option_holder.options_count != '-'">
+        <div class="td text-right-flex share shareholders-count gray-circle">
+          <value class='transform-center' ng-if="option_holder.options_count != '-'">
             {{ option_holder.options_count | number : 0}} ({{option_holder.options_percent | number : 1}}%)
           </value>
         </div>

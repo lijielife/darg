@@ -1,0 +1,24 @@
+{% load i18n %}
+<div class="modal fade" tabindex="-1" role="dialog" id="companyResetModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="{% trans "Close" %}"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">{% trans "Confirm company reset" %}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{% trans "Please type 'CONFIRM' to confirm your companies data deletion. The data cannot be restored afterwards." %}</p>
+        <p>{% include "_form_errors.html" %}</p>
+        <p><input class="form-control confirm-company-reset" ng-model="confirmCompanyText" type="text" name="firstname"/></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+        {% verbatim %}
+        <button type="button" class="btn btn-primary" ng-click="confirm_company_reset()" ng-disabled="!confirmCompanyText">
+          {% endverbatim %}{% trans "Delete now without return" %}{% verbatim %}
+        </button>
+        {% endverbatim %}
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

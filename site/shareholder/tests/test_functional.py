@@ -63,6 +63,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
             p.refresh()
             p.wait_until_visible(
                 (By.CSS_SELECTOR, 'tr.shareholder-number span.el-icon-pencil'))
+            time.sleep(3)
             self.assertIn(profile.get_legal_type_display(),
                           p.get_field('legal-type'))
             self.assertIn(profile.initial_registration_at.strftime('%-d.%m.%y'),
@@ -102,6 +103,10 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
         """
         edit company department
         """
+        profile = self.buyer.user.userprofile
+        profile.legal_type = 'C'
+        profile.save()
+
         try:
 
             p = page.ShareholderDetailPage(
@@ -239,7 +244,8 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                     )
                 )
             # wait for table
-            p.wait_until_visible((By.CSS_SELECTOR, 'table.stock tr.security'))
+            p.wait_until_visible((By.CSS_SELECTOR,
+                                  'div.table.stock div.tr.security'))
             self.assertEqual(p.get_securities(),
                              [u'0', u'', u'6', u'1000-1200, 1666'])
 
@@ -289,6 +295,8 @@ class PositionDetailFunctionalTestCase(BaseSeleniumTestCase):
         self.poss, self.shs = ComplexPositionsWithSegmentsGenerator().generate(
             company=self.operator.company)
         self. position = self.poss[-1]
+        self.position.certificate_id = '8888'
+        self.position.save()
         self.page = page.PositionDetailPage(
             self.selenium, self.live_server_url, self.operator.user,
             path=reverse('position', kwargs={'pk': self.position.pk}))
@@ -307,6 +315,10 @@ class PositionDetailFunctionalTestCase(BaseSeleniumTestCase):
             self.assertIn(
                 self.position.stock_book_id,
                 self.page.get_field('stock-book-id'))
+            self.assertIn(
+                self.position.certificate_id,
+                self.page.get_field('certificate-id'))
+
 
         except Exception, e:
             self._handle_exception(e)
@@ -463,6 +475,8 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             self.assertTrue(app.is_option_date_equal('13.05.16'))
             self.assertTrue(app.is_option_plan_displayed(
                 ot.option_plan.security))
+            self.assertTrue(app.is_shareholder_name_displayed(self.seller))
+            self.assertTrue(app.is_shareholder_name_displayed(self.buyer))
 
         except Exception, e:
             self._handle_exception(e)
@@ -736,6 +750,15 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.click_save_option_plan_form()
             # wait for error
             app.wait_until_visible((By.CSS_SELECTOR, '.form-error'))
+
+            # attempt to fix unstable @CI
+            # FIXME remove once stable
+            for s in Shareholder.objects.all():
+                print s.current_segments(
+                    security=operator.company.security_set.first())
+                print s.current_options_segments(
+                    security=operator.company.security_set.first())
+
             self.assertEqual(
                 app.get_form_errors(),
                 [u'Aktiennummern: Aktiennummer "[1050]" geh\xf6rt nicht zu '
@@ -764,6 +787,14 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.click_save_option_plan_form()
             # wait for error to disappear
             app.wait_until_invisible((By.CSS_SELECTOR, '.form-error'))
+
+            # attempt to fix unstable @CI
+            # FIXME remove once stable
+            for s in Shareholder.objects.all():
+                print s.current_segments(
+                    security=operator.company.security_set.first())
+                print s.current_options_segments(
+                    security=operator.company.security_set.first())
 
             self.assertTrue(app.is_no_errors_displayed())
             self.assertTrue(app.is_option_plan_displayed(
@@ -953,7 +984,8 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
         """
         position = PositionGenerator().generate(
             save=False, seller=self.seller, buyer=self.buyer,
-            security=self.securities[1], stock_book_id='444', depot_type='1')
+            security=self.securities[1], stock_book_id='444', depot_type='1',
+            certificate_id='88888')
 
         try:
 
@@ -975,6 +1007,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             position = Position.objects.last()
             self.assertEqual(position.stock_book_id, '444')
             self.assertEqual(position.depot_type, '1')
+            self.assertEqual(position.certificate_id, '88888')
 
         except Exception, e:
             self._handle_exception(e)

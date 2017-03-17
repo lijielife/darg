@@ -47,7 +47,7 @@
                   <a href="/blog/" title="Blog" class="btn-inline btn-with-separator">{% trans "Blog" %}</a>
                 </li>
                 <li>
-                  <a href="{% url "registration_register" %}" title="{% trans "Try for free" %}" class="btn btn-default btn-white">{% trans "Try for free" %}</a>
+                  <a href="{% url "django.contrib.flatpages.views.flatpage" url="preisliste/" %}" title="{% trans "Try for free" %}" class="btn btn-default btn-white">{% trans "Try for free" %}</a>
                 </li>
               </ul>
             </div><!-- /.navbar-collapse -->
@@ -58,7 +58,7 @@
   <div class="container">
     <h1>{% trans "Das Online-Aktienbuch" %}</h1>
     <h2>{% trans "Mit Sicherheit gesetzeskonform durch automatische Validierung." %}</h2>
-    <a href="{% url "registration_register" %}" title="{% trans "Try for free" %}" class="btn btn-default btn-white">
+    <a href="{% url "django.contrib.flatpages.views.flatpage" url="preisliste/" %}" title="{% trans "Try for free" %}" class="btn btn-default btn-white">
       {% trans "Try for free" %}
     </a>
     <div class="main-screenshot chrome animated fadeInUp">
@@ -79,15 +79,27 @@
   -->
   <div class="benefits">
     <div class="container">
+	  <h2>{{ company_count }} {% trans "Companies and" %} {{ shareholder_count }} {% trans "shareholders do trust www.das-aktienregister.ch because of:" %}</h2>
       <ul>
-        <li>{% trans "Eingabe alle Daten mit maximaler Effizienz." %}</li>
-        <li>{% trans "Revisionssichere Ablage." %}</li>
-        <li>{% trans "Automatische Validierung der Daten." %}</li>
-        <li>{% trans "10 Jahre Datengarantie." %}</li>
-        <li>{% trans "Aktienbuch als PDF herunterladen." %}</li>
+        <li>
+		  <div class="title">{% trans "Eingabe alle Daten mit maximaler Effizienz." %}</div>
+		  <div>{% trans "Latest Cloud-Technology, fast servers, modern user interface - the share register is made for it's users efficiency and time saving." %}</div>
+		</li>
+        <li>
+		  <div class="title">{% trans "Revisionssichere Ablage." %}</div>
+		  <div>{% trans "Every change to any data is recorded and saved. Hence any data change is transparent and can be reproduced." %}</div>
+		</li>
+        <li>
+		  <div class="title">{% trans "10 Jahre Datengarantie." %}</div>
+		  <div>{% trans "Data security is our most important concern. Duplicate daily backups, encrypted storage and constant reviews provide a highly secure environment for your critical data." %}</div>
+		</li>
+        <li>
+		  <div class="title">{% trans "Aktienbuch als PDF herunterladen." %}</div>
+		  <div>{% trans "Insert your data of your shareholders and your past transactions. Click a button and easily download your Captable PDF for any review or assessment. Anytime at your fingertips." %}</div>
+		</li>
       </ul>
-      <a href="{% url "registration_register" %}" title="{% trans "Try for free" %}" class="btn btn-default btn-focus">
-        {% trans "Try for free" %}
+      <a href="{% url "django.contrib.flatpages.views.flatpage" url="preisliste/" %}" title="{% trans "Try for free" %}" class="btn btn-default btn-focus">
+        {% trans "Try for free now" %}
       </a>
     </div>
   </div>
