@@ -17,11 +17,7 @@
     <a class="btn-inline " href="" data-toggle="modal" data-target="#addOptionPlan" ng-click="show_add_option_plan_form()">{% trans "Grant New Option Plan" %}</a>
   </div>
 
-  <!-- FORMS -->
-
-
-
-  <!-- MODAL SPLIT SHARES -->
+  <!-- MODAL OPTIONS TRANSACTION -->
   <div class="modal fade" id="addOptionTransaction" tabindex="-1" role="dialog" aria-labelledby="addOptionTransactionLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -31,6 +27,9 @@
         </div>
         <div class="modal-body">
           {% include "_form_errors.html" %}
+          <p class="alert alert-success" ng-show="transaction_added_success">
+            {% trans "Transaction added" %}
+          </p>
           <div id="add_option_transaction">
             {% include "_add_option_transaction_form.html" %}
           </div>
@@ -39,7 +38,7 @@
     </div>
   </div>
 
-  <!-- MODAL SPLIT SHARES -->
+  <!-- MODAL OPTION PLAN -->
   <div class="modal fade" id="addOptionPlan" tabindex="-1" role="dialog" aria-labelledby="addOptionPlanLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -49,6 +48,9 @@
         </div>
         <div class="modal-body">
           {% include "_form_errors.html" %}
+          <p class="alert alert-success" ng-show="plan_added_success">
+            {% trans "Plan added" %}
+          </p>
           <div id="add_option_plan">
             {% include "_add_option_plan_form.html" %}
           </div>
