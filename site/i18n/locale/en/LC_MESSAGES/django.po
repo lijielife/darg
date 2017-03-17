@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-14 21:50+0000\n"
+"POT-Creation-Date: 2017-03-16 21:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: company/page.py:57
+#: company/page.py:59
 msgid "DELETE"
 msgstr ""
 
@@ -26,7 +26,7 @@ msgid "To add a new operator enter the email of a registered user"
 msgstr ""
 
 #: company/templates/_add_operator_form.html:15
-#: reports/templates/reports/_transaction_form.html:44
+#: reports/templates/reports/_transaction_form.html:50
 msgid "Cancel"
 msgstr ""
 
@@ -54,81 +54,81 @@ msgstr ""
 msgid "Company Name"
 msgstr ""
 
-#: company/templates/company.html:60
+#: company/templates/company.html:61
 msgid "Company Share Count"
 msgstr ""
 
-#: company/templates/company.html:72
+#: company/templates/company.html:74
 msgid "Company founding date"
 msgstr ""
 
-#: company/templates/company.html:95
+#: company/templates/company.html:98
 msgid "Provisioned Capital (Liberiertes Kapital)"
 msgstr ""
 
-#: company/templates/company.html:107
+#: company/templates/company.html:111
 msgid "CHF for one vote based on face value of securities"
 msgstr ""
 
-#: company/templates/company.html:119
+#: company/templates/company.html:124
 msgid "Total Vote Count"
 msgstr ""
 
-#: company/templates/company.html:128
+#: company/templates/company.html:134
 msgid "Total Vote Count Floating"
 msgstr ""
 
-#: company/templates/company.html:137
+#: company/templates/company.html:144
 msgid "Company Headquarter Country"
 msgstr ""
 
-#: company/templates/company.html:150
+#: company/templates/company.html:158
 msgid "Securities"
 msgstr ""
 
-#: company/templates/company.html:158 company/tests/test_views.py:54
+#: company/templates/company.html:166 company/tests/test_views.py:54
 msgid "tracking security numbers for owners enabled. segments:"
 msgstr ""
 
-#: company/templates/company.html:169
+#: company/templates/company.html:179
 msgid "Please contact us at our"
 msgstr ""
 
-#: company/templates/company.html:171
+#: company/templates/company.html:181
 msgid ""
 "for getting more security types (common stock, preferred stock, numbered "
 "shares) added"
 msgstr ""
 
-#: company/templates/company.html:178
+#: company/templates/company.html:188
 msgid "Administrators"
 msgstr ""
 
-#: company/templates/company.html:179
+#: company/templates/company.html:189
 msgid "add operator"
 msgstr ""
 
-#: company/templates/company.html:208
+#: company/templates/company.html:217
 msgid "Option Plans"
 msgstr ""
 
-#: company/templates/company.html:212
+#: company/templates/company.html:223
 msgid "Options Plan Name"
 msgstr ""
 
-#: company/templates/company.html:212
+#: company/templates/company.html:226
 msgid "Edit Option Plan"
 msgstr ""
 
-#: company/templates/company.html:219
+#: company/templates/company.html:237
 msgid "Administration"
 msgstr ""
 
-#: company/templates/company.html:223
+#: company/templates/company.html:241
 msgid "reset company"
 msgstr ""
 
-#: company/templates/company.html:226
+#: company/templates/company.html:244
 msgid ""
 "the company, shareholders, transactions, options, and all other assigned "
 "data are deleted. the user can then create the company anew and start fresh"
@@ -161,19 +161,19 @@ msgstr ""
 msgid "from"
 msgstr ""
 
-#: reports/templates/reports/_transaction_form.html:24
+#: reports/templates/reports/_transaction_form.html:27
 msgid "to"
 msgstr ""
 
-#: reports/templates/reports/_transaction_form.html:41
+#: reports/templates/reports/_transaction_form.html:47
 msgid "Security"
 msgstr ""
 
-#: reports/templates/reports/_transaction_form.html:45
+#: reports/templates/reports/_transaction_form.html:51
 msgid "Download"
 msgstr ""
 
-#: reports/templates/reports/index.html:6 templates/menu.html:39
+#: reports/templates/reports/index.html:6 templates/menu.html:40
 msgid "Reports"
 msgstr ""
 
@@ -276,50 +276,50 @@ msgstr ""
 msgid "Start"
 msgstr ""
 
-#: templates/menu.html:33
+#: templates/menu.html:34
 msgid "Positions"
 msgstr ""
 
-#: templates/menu.html:36
+#: templates/menu.html:37
 msgid "Options"
 msgstr ""
 
-#: templates/menu.html:50
+#: templates/menu.html:52
 msgid "Logged in as"
 msgstr ""
 
-#: templates/menu.html:61
+#: templates/menu.html:63
 msgid "Admin"
 msgstr ""
 
-#: templates/menu.html:64
+#: templates/menu.html:66
 msgid "I18N"
 msgstr ""
 
-#: templates/menu.html:68 templates/registration/password_reset_form.html:4
+#: templates/menu.html:70 templates/registration/password_reset_form.html:4
 #: templates/registration/password_reset_form.html:14
 #: templates/registration/password_reset_form.html:33
 msgid "Reset password"
 msgstr ""
 
-#: templates/menu.html:69 templates/registration/password_change_form.html:4
+#: templates/menu.html:71 templates/registration/password_change_form.html:4
 #: templates/registration/password_change_form.html:12
 msgid "Change password"
 msgstr ""
 
-#: templates/menu.html:72
+#: templates/menu.html:74
 msgid "Security Settings"
 msgstr ""
 
-#: templates/menu.html:74
+#: templates/menu.html:76
 msgid "Logout"
 msgstr ""
 
-#: templates/menu.html:80 templates/two_factor/core/login.html:61
+#: templates/menu.html:82 templates/two_factor/core/login.html:61
 msgid "Register"
 msgstr ""
 
-#: templates/menu.html:83 templates/registration/registration_form.html:26
+#: templates/menu.html:85 templates/registration/registration_form.html:26
 #: templates/two_factor/core/login.html:12
 msgid "Login"
 msgstr ""
@@ -330,6 +330,10 @@ msgstr ""
 
 #: templates/registration/logout.html:11
 msgid "You are now logged out. Go to "
+msgstr ""
+
+#: templates/registration/logout.html:11
+msgid "Start page"
 msgstr ""
 
 #: templates/registration/password_change_done.html:12
@@ -440,7 +444,11 @@ msgid "Registration Complete"
 msgstr ""
 
 #: templates/registration/registration_complete.html:12
-msgid "You are now registered. Start here:"
+msgid "You are now registered."
+msgstr ""
+
+#: templates/registration/registration_complete.html:12
+msgid "Start here to create your company"
 msgstr ""
 
 #: templates/registration/registration_form.html:11

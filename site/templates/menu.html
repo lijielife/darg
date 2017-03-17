@@ -32,13 +32,15 @@
               <li {% ifequal request.path positions_url %}class="active"{% endifequal %}>
                 <a href="{{ positions_url }}">{% trans "Positions" %}</a>
               </li>
+              {% if request.user.operator_set.exists %}
               <li {% ifequal request.path options_url %}class="active"{% endifequal %}>
                 <a href="{{options_url}}">{% trans "Options" %}</a>
               </li>
               <li {% ifequal request.path reports_url %}class="active"{% endifequal %}>
                 <a href="{{reports_url}}">{% trans "Reports" %}</a>
               </li>
-              {% endif %}
+			  {% endif %}
+            {% endif %}
           </ul>
 
           <ul class="nav navbar-nav navbar-right top-separator">

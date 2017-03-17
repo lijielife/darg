@@ -2364,8 +2364,11 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   }
 }
 .date-field .input-group-btn .btn {
-  padding: 8px 12px 10px;
+  padding: 7px 12px 10px;
   border: 1px solid #ccc;
+}
+.date-field .form-control[readonly] {
+  background: transparent;
 }
 
 .uib-datepicker-popup button {
@@ -2786,6 +2789,13 @@ html, body {
   padding: 0em;
   margin: 0em;
 }
+.core .container .glyphicon-calendar {
+  color: #337ab7;
+}
+.core .container .btn {
+  font-size: initial;
+  font-weight: 300;
+}
 .core .container .btn-inline {
   border: none;
   margin: 0em;
@@ -2795,22 +2805,13 @@ html, body {
   background-color: transparent;
   color: #337ab7;
 }
-.core .container .panel {
-  margin-top: 1em;
-}
-.core .container .panel .btn-inline {
-  margin-right: 1em;
-}
 .core .container .btn-focus, .core .container .btn-info {
   border: 1px solid #337ab7;
   background-color: #337ab7;
   color: #fff;
-  font-weight: bold;
 }
 .core .container .btn-danger {
   border: 1px solid #c0392b;
-  color: #c0392b;
-  font-weight: bold;
   color: #c0392b;
   background: none;
 }
@@ -2818,6 +2819,13 @@ html, body {
   background-color: #fff !important;
   color: #337ab7 !important;
   border: 1px solid #337ab7 !important;
+}
+.core .container .panel {
+  margin-top: 1em;
+  box-shadow: none;
+}
+.core .container .panel .btn-inline {
+  margin-right: 1em;
 }
 .core .container .align-left {
   padding-left: 0em;
@@ -2976,6 +2984,7 @@ nav.navbar .navbar-text {
 
 .form .form-control {
   box-shadow: unset;
+  font-size: initial;
 }
 .form input {
   display: block;
@@ -3427,16 +3436,16 @@ div#optionplan .pdf_upload_preview {
   line-height: initial;
 }
 
-.shareholder-table__font-size-small {
-  font-size: 14px;
-}
-
 .is-management .el-icon-minus-sign, .is-management .el-icon-ok-sign {
   font-size: 14px !important;
 }
 
 table.stock {
   display: table !important;
+}
+
+div.address-data {
+  display: block !important;
 }
 
 .blog .lead {

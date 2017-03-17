@@ -68,6 +68,22 @@ class BasePage(object):
                 self.driver.get(url)
                 break
             except TimeoutException:
+                if attempts == 9:
+                    raise
+                attempts += 1
+
+    def click(self, element):
+        """
+        handles occasional timeouts on click
+        """
+        attempts = 0
+        while attempts < 10:
+            try:
+                element.click()
+                break
+            except TimeoutException:
+                if attempts == 9:
+                    raise
                 attempts += 1
 
     def login(self, username, password):
@@ -87,15 +103,8 @@ class BasePage(object):
         # send form
         btn = self.wait_until_visible((
             By.XPATH, '//button[contains(@class, "btn-primary")]'))
-        btn.click()
+        self.click(btn)
         time.sleep(1)  # wait for page reload  # FIXME
-
-        # confirm page loaded
-        page_heading = self.driver.find_element_by_tag_name('h1').get_attribute(
-            'innerHTML')
-        assert page_heading == 'Willkommen {}!'.format(
-            username), 'failed to login. got {} page instead'.format(
-            page_heading)
 
     def refresh(self):
         """ reload page """
@@ -144,7 +153,7 @@ class BasePage(object):
 
     def click_datepicker_previous_month(self):
         # handle multiple datepickers
-        next_btns = self.driver.find_selement_by_xpath(
+        next_btns = self.driver.find_elements_by_xpath(
             '//div[contains(@class, "uib-datepicker")]//thead//th[1]//button')
         for next_btn in next_btns:
             if next_btn.is_displayed():

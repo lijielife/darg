@@ -184,7 +184,7 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
             $scope.addPositionLoading = false
         , (rejection) ->
             $scope.errors = rejection.data
-            Raven.captureMessage('form error: ' + rejection.statusText, {
+            Raven.captureMessage('add position form error: ' + rejection.statusText, {
                 level: 'warning',
                 extra: { rejection: rejection },
             })
@@ -226,7 +226,7 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
             $window.ga('send', 'event', 'form-send', 'add-split')
         , (rejection) ->
             $scope.errors = rejection.data
-            Raven.captureMessage('form error: ' + rejection.statusText, {
+            Raven.captureMessage('add split form error: ' + rejection.statusText, {
                 level: 'warning',
                 extra: { rejection: rejection },
             })
@@ -287,8 +287,8 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
         startingDay: 1,
         showWeeks: false,
     }
-    $scope.open_datepicker = ->
-        $scope.datepicker.opened = true
+    $scope.toggle_datepicker = ->
+        $scope.datepicker.opened = !$scope.datepicker.opened
 
     # --- LINK
     $scope.goto_position = (position_id) ->

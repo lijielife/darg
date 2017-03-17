@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-14 21:25+0000\n"
+"POT-Creation-Date: 2017-03-16 21:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,23 +18,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: static/compiled/javascript/i18n_noop.js:3
-#: static/compiled/javascript/i18n_noop.js:22
+#: static/compiled/javascript/i18n_noop.js:23
 msgid "First Name"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:4
-#: static/compiled/javascript/i18n_noop.js:23
-#: static/compiled/javascript/script.js:1230
-#: static/compiled/javascript/script.js:1532
-#: static/compiled/javascript/script.js:1554
+#: static/compiled/javascript/i18n_noop.js:24
+#: static/compiled/javascript/script.js:1233
+#: static/compiled/javascript/script.js:1535
+#: static/compiled/javascript/script.js:1557
 msgid "Last Name"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:5
-#: static/compiled/javascript/i18n_noop.js:24
-#: static/compiled/javascript/script.js:1242
-#: static/compiled/javascript/script.js:1529
-#: static/compiled/javascript/script.js:1551
+#: static/compiled/javascript/i18n_noop.js:25
+#: static/compiled/javascript/script.js:1245
+#: static/compiled/javascript/script.js:1532
+#: static/compiled/javascript/script.js:1554
 msgid "Shareholder Number"
 msgstr ""
 
@@ -71,230 +71,242 @@ msgid "Date"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:14
-msgid "Security"
+msgid "Start Date"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:15
-#: static/compiled/javascript/i18n_noop.js:17
-#: static/compiled/javascript/script.js:1236
-msgid "Share Count"
+msgid "Security"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:16
+#: static/compiled/javascript/i18n_noop.js:18
+#: static/compiled/javascript/script.js:1239
+msgid "Share Count"
+msgstr ""
+
+#: static/compiled/javascript/i18n_noop.js:17
 msgid "Option Plan"
 msgstr ""
 
-#: static/compiled/javascript/i18n_noop.js:18
+#: static/compiled/javascript/i18n_noop.js:19
 msgid "Board Approval Date"
 msgstr ""
 
-#: static/compiled/javascript/i18n_noop.js:19
+#: static/compiled/javascript/i18n_noop.js:20
 msgid "Underlying Asset"
 msgstr ""
 
-#: static/compiled/javascript/i18n_noop.js:20
+#: static/compiled/javascript/i18n_noop.js:21
 msgid "Exercise Price"
 msgstr ""
 
-#: static/compiled/javascript/i18n_noop.js:21
-msgid "Face Value"
-msgstr ""
-
-#: static/compiled/javascript/i18n_noop.js:25
-msgid "Vesting Period (months)"
+#: static/compiled/javascript/i18n_noop.js:22
+msgid "Face Value of shares"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:26
-msgid "Ratio: Dividend"
+msgid "Vesting Period (months)"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:27
-msgid "Ratio: Divisor"
+msgid "Ratio: Dividend"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:28
-msgid "dividend"
+msgid "Ratio: Divisor"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:29
-msgid "security"
+msgid "dividend"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:30
-msgid "execute_at"
+msgid "security"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:31
-msgid "divisor"
+msgid "execute_at"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:32
-msgid "count"
+msgid "divisor"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:33
-msgid "bought_at"
+msgid "count"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:34
-msgid "user"
+msgid "bought_at"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:35
-msgid "number"
+msgid "user"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:36
-msgid "title"
+msgid "number"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:37
-msgid "board_approved_at"
+msgid "title"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:38
-msgid "option_plan"
+msgid "board_approved_at"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:39
-msgid "seller"
+msgid "option_plan"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:40
-msgid "buyer"
+msgid "seller"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:41
-msgid "Founding Date"
+msgid "buyer"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:42
-msgid "Company Name"
+msgid "Founding Date"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:43
-msgid "Share IDs"
+msgid "Company Name"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:44
-msgid "Invalid number segment. Please use 1, 2, 3, 4-10."
+msgid "Share IDs"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:45
-msgid "number_segments"
+msgid "Invalid number segment. Please use 1, 2, 3, 4-10."
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:46
-msgid "Stock Book ID"
+msgid "number_segments"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:47
-msgid "Certificate ID"
+msgid "Stock Book ID"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:48
-msgid "Vesting period in months"
+msgid "Certificate ID"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:49
-#: static/compiled/javascript/script.js:315
-msgid "Input"
+msgid "Vesting period in months"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:50
-#: static/compiled/javascript/script.js:317
-msgid "Please enter DELETE"
+#: static/compiled/javascript/script.js:318
+msgid "Input"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:51
-msgid "Face_value"
+#: static/compiled/javascript/script.js:320
+msgid "Please enter DELETE"
+msgstr ""
+
+#: static/compiled/javascript/i18n_noop.js:52
+msgid "face_value"
+msgstr ""
+
+#: static/compiled/javascript/i18n_noop.js:53
+msgid "first_name"
+msgstr ""
+
+#: static/compiled/javascript/i18n_noop.js:54
+msgid "last_name"
 msgstr ""
 
 #: static/compiled/javascript/script.js:309
 msgid "DELETE"
 msgstr ""
 
-#: static/compiled/javascript/script.js:386
-#: static/compiled/javascript/script.js:858
-msgid "Sperrdepot"
-msgstr ""
-
 #: static/compiled/javascript/script.js:389
 #: static/compiled/javascript/script.js:861
-msgid "Zertifikatsdepot"
+msgid "Sperrdepot"
 msgstr ""
 
 #: static/compiled/javascript/script.js:392
 #: static/compiled/javascript/script.js:864
+msgid "Zertifikatsdepot"
+msgstr ""
+
+#: static/compiled/javascript/script.js:395
+#: static/compiled/javascript/script.js:867
 msgid "Gesellschaftsdepot"
 msgstr ""
 
-#: static/compiled/javascript/script.js:657
-#: static/compiled/javascript/script.js:678
+#: static/compiled/javascript/script.js:660
+#: static/compiled/javascript/script.js:681
 msgid "Available security segments for option plan on selected date or now: "
 msgstr ""
 
-#: static/compiled/javascript/script.js:659
+#: static/compiled/javascript/script.js:662
 msgid ""
 "Available security segments for option plan on selected date or now: None"
 msgstr ""
 
-#: static/compiled/javascript/script.js:680
+#: static/compiled/javascript/script.js:683
 msgid "No security segments available for option plan on selected date or now."
 msgstr ""
 
-#: static/compiled/javascript/script.js:1154
+#: static/compiled/javascript/script.js:1157
 msgid ""
 "Available security segments from this shareholder on selected date or now: "
 msgstr ""
 
-#: static/compiled/javascript/script.js:1156
+#: static/compiled/javascript/script.js:1159
 msgid ""
 "Available security segments from this shareholder on selected date or now: "
 "None"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1233
+#: static/compiled/javascript/script.js:1236
 msgid "Last Name (descending)"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1239
+#: static/compiled/javascript/script.js:1242
 msgid "Share Count (descending)"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1245
+#: static/compiled/javascript/script.js:1248
 msgid "Shareholder Number (descending)"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1248
+#: static/compiled/javascript/script.js:1251
 msgid "Share Percent Ownership"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1251
+#: static/compiled/javascript/script.js:1254
 msgid "Share Percent Ownership (descending)"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1344
+#: static/compiled/javascript/script.js:1347
 msgid "Human Being"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1347
+#: static/compiled/javascript/script.js:1350
 msgid "Corporate"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1353
+#: static/compiled/javascript/script.js:1356
 msgid "Not deliverable"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1356
+#: static/compiled/javascript/script.js:1359
 msgid "Postal Mail"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1359
+#: static/compiled/javascript/script.js:1362
 msgid "via Email"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1526
-#: static/compiled/javascript/script.js:1548
+#: static/compiled/javascript/script.js:1529
+#: static/compiled/javascript/script.js:1551
 msgid "Email"
 msgstr ""

@@ -12,9 +12,9 @@
 <div ng_controller="OptionsController">
   <h1>{% trans "Options" %}</h1>
 
-  <div class="panel panel-column">
-    <a class="btn-inline align-left" href="" data-toggle="modal" data-target="#addOptionTransaction" ng-click="show_add_option_transaction_form()" ng-hide="!option_plans.length">{% trans "Transfer Option" %}</a>
-    <a class="btn-inline " href="" data-toggle="modal" data-target="#addOptionPlan" ng-click="show_add_option_plan_form()">{% trans "Grant New Option Plan" %}</a>
+  <div class="panel panel-column" ng-hide="show_add_option_transaction || show_add_option_plan">
+    <a class="btn btn-focus" href="" data-toggle="modal" data-target="#addOptionTransaction" ng-click="show_add_option_transaction_form()" ng-hide="!option_plans.length">{% trans "Transfer Option" %}</a>
+    <a class="btn btn-focus " href="" data-toggle="modal" data-target="#addOptionPlan" ng-click="show_add_option_plan_form()">{% trans "Grant New Option Plan" %}</a>
   </div>
 
   <!-- MODAL OPTIONS TRANSACTION -->

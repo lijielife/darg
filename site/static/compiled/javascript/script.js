@@ -193,7 +193,7 @@
           return $scope.errors = null;
         }, function(rejection) {
           $scope.errors = rejection.data;
-          return Raven.captureMessage('form error: ' + rejection.statusText, {
+          return Raven.captureMessage('add operator form error: ' + rejection.statusText, {
             level: 'warning',
             extra: {
               rejection: rejection
@@ -232,7 +232,7 @@
         }, function(rejection) {
           $scope.company.founded_at = new Date($scope.company.founded_at);
           $scope.errors = rejection.data;
-          return Raven.captureMessage('form error: ' + rejection.statusText, {
+          return Raven.captureMessage('add corp form error: ' + rejection.statusText, {
             level: 'warning',
             extra: {
               rejection: rejection
@@ -577,7 +577,7 @@
           return $window.ga('send', 'event', 'form-send', 'add-optionplan');
         }, function(rejection) {
           $scope.errors = rejection.data;
-          Raven.captureMessage('form error: ' + rejection.statusText, {
+          Raven.captureMessage('add option plan form error: ' + rejection.statusText, {
             level: 'warning',
             extra: {
               rejection: rejection
@@ -611,7 +611,7 @@
           return $window.ga('send', 'event', 'form-send', 'add-option-transaction');
         }, function(rejection) {
           $scope.errors = rejection.data;
-          Raven.captureMessage('form error: ' + rejection.statusText, {
+          Raven.captureMessage('add option transaction form error: ' + rejection.statusText, {
             level: 'warning',
             extra: {
               rejection: rejection
@@ -701,8 +701,8 @@
         startingDay: 1,
         showWeeks: false
       };
-      $scope.open_datepicker = function() {
-        return $scope.datepicker.opened = true;
+      $scope.toggle_datepicker = function() {
+        return $scope.datepicker.opened = !$scope.datepicker.opened;
       };
       return $scope.goto_option = function(option_id) {
         return window.location = "/options/" + option_id + "/";
@@ -1051,7 +1051,7 @@
           return $scope.addPositionLoading = false;
         }, function(rejection) {
           $scope.errors = rejection.data;
-          Raven.captureMessage('form error: ' + rejection.statusText, {
+          Raven.captureMessage('add position form error: ' + rejection.statusText, {
             level: 'warning',
             extra: {
               rejection: rejection
@@ -1098,7 +1098,7 @@
           return $window.ga('send', 'event', 'form-send', 'add-split');
         }, function(rejection) {
           $scope.errors = rejection.data;
-          return Raven.captureMessage('form error: ' + rejection.statusText, {
+          return Raven.captureMessage('add split form error: ' + rejection.statusText, {
             level: 'warning',
             extra: {
               rejection: rejection
@@ -1171,8 +1171,8 @@
         startingDay: 1,
         showWeeks: false
       };
-      $scope.open_datepicker = function() {
-        return $scope.datepicker.opened = true;
+      $scope.toggle_datepicker = function() {
+        return $scope.datepicker.opened = !$scope.datepicker.opened;
       };
       return $scope.goto_position = function(position_id) {
         return window.location = "/positions/" + position_id + "/";
@@ -1303,8 +1303,8 @@
         startingDay: 1,
         showWeeks: false
       };
-      $scope.open_datepicker1 = function() {
-        return $scope.datepicker1.opened = true;
+      $scope.toggle_datepicker1 = function() {
+        return $scope.datepicker1.opened = !$scope.datepicker1.opened;
       };
       $scope.datepicker2 = {
         opened: false
@@ -1315,8 +1315,8 @@
         startingDay: 1,
         showWeeks: false
       };
-      return $scope.open_datepicker2 = function() {
-        return $scope.datepicker2.opened = true;
+      return $scope.toggle_datepicker2 = function() {
+        return $scope.datepicker2.opened = !$scope.datepicker2.opened;
       };
     }
   ]);
@@ -1456,7 +1456,7 @@
           return $scope.errors = null;
         }, function(rejection) {
           $scope.errors = rejection.data;
-          return Raven.captureMessage('form error: ' + rejection.statusText, {
+          return Raven.captureMessage('edit shareholder form error: ' + rejection.statusText, {
             level: 'warning',
             extra: {
               rejection: rejection
@@ -1812,6 +1812,7 @@
         });
       };
       $scope.add_company = function() {
+        $scope.errors = null;
         return $scope.newCompany.$save().then(function(result) {
           return $http.get('/services/rest/user').then(function(result) {
             $scope.user = result.data.results[0];
@@ -1830,7 +1831,7 @@
           return $scope.errors = null;
         }, function(rejection) {
           $scope.errors = rejection.data;
-          return Raven.captureMessage('form error: ' + rejection.statusText, {
+          return Raven.captureMessage('add corp form error: ' + rejection.statusText, {
             level: 'warning',
             extra: {
               rejection: rejection
@@ -1839,11 +1840,13 @@
         });
       };
       $scope.add_shareholder = function() {
+        $scope.errors = null;
         return $scope.newShareholder.$save().then(function(result) {
           return $scope.shareholders.push(result);
         }).then(function() {
           $scope.newShareholder = new Shareholder();
           $scope.shareholder_added_success = true;
+          $scope.show_add_shareholder = false;
           return $timeout(function() {
             return $scope.shareholder_added_success = false;
           }, 30000);
@@ -1852,7 +1855,7 @@
           return $window.ga('send', 'event', 'form-send', 'add-shareholder');
         }, function(rejection) {
           $scope.errors = rejection.data;
-          return Raven.captureMessage('form error: ' + rejection.statusText, {
+          return Raven.captureMessage('add shareholder form error: ' + rejection.statusText, {
             level: 'warning',
             extra: {
               rejection: rejection
@@ -1878,8 +1881,9 @@
         startingDay: 1,
         showWeeks: false
       };
-      return $scope.open_datepicker = function() {
-        return $scope.datepicker.opened = true;
+      return $scope.toggle_datepicker = function() {
+        $scope.datepicker.opened = !$scope.datepicker.opened;
+        return false;
       };
     }
   ]);

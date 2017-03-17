@@ -190,8 +190,8 @@ class PositionTestCase(TransactionTestCase):
                 leftover += part
 
             print shareholder
-            print shareholder.buyer
-            print shareholder.seller
+            print shareholder.buyer.all()
+            print shareholder.seller.all()
             self.assertEqual(
                 shareholder.share_count(),
                 count2
@@ -248,7 +248,7 @@ class PositionTestCase(TransactionTestCase):
         company.split_shares(data)
 
         # asserts by checking overall shareholder situation
-        # means each shareholder should have now more shares but some
+        # means each shareholder should have now more shares but same
         # overall stock value
 
         leftover = 0

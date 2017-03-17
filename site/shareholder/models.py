@@ -1018,6 +1018,10 @@ class Shareholder(TagMixin, models.Model):
         # do the math
         total_votes_eligible = self.company.get_total_votes_eligible()
 
+        # no floating cap yet, hence cannot continue the math
+        if total_votes_eligible == 0:
+            return None
+
         # how much percent of these eligible votes does the shareholder have?
         return (self.vote_count(date) /
                 float(total_votes_eligible))

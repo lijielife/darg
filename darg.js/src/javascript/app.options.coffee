@@ -187,7 +187,7 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
             $window.ga('send', 'event', 'form-send', 'add-optionplan')
         , (rejection) ->
             $scope.errors = rejection.data
-            Raven.captureMessage('form error: ' + rejection.statusText, {
+            Raven.captureMessage('add option plan form error: ' + rejection.statusText, {
                 level: 'warning',
                 extra: { rejection: rejection },
             })
@@ -223,7 +223,7 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
             $window.ga('send', 'event', 'form-send', 'add-option-transaction')
         , (rejection) ->
             $scope.errors = rejection.data
-            Raven.captureMessage('form error: ' + rejection.statusText, {
+            Raven.captureMessage('add option transaction form error: ' + rejection.statusText, {
                 level: 'warning',
                 extra: { rejection: rejection },
             })
@@ -295,8 +295,8 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
         startingDay: 1,
         showWeeks: false,
     }
-    $scope.open_datepicker = ->
-        $scope.datepicker.opened = true
+    $scope.toggle_datepicker = ->
+        $scope.datepicker.opened = !$scope.datepicker.opened
 
     # --- LINK
     $scope.goto_option = (option_id) ->

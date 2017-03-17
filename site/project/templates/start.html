@@ -24,7 +24,7 @@
   <!-- table per company -->
   <div id="shareholder_list" ng-hide="!user.operator_set.length || loading" ng-repeat="operator in user.operator_set">
 
-    <h1>
+    <h1 class="captable-heading">
       {% endverbatim %}{% trans "Your Shareholders for" %}{% verbatim %}
       {{ operator.company.name }}
       <img ng-src="{{ operator.company.logo_url }}" alt="company logo" ng-show="operator.company.logo_url"class="logo" height="30pt"/>
@@ -35,11 +35,10 @@
 
     <!-- ACTIONS -->
     <div class="panel" ng-hide="!user.operator_set.length">
-      <a class="btn-inline align-left" data-toggle="modal" data-target="#addShareholder" href="" ng-click="show_add_shareholder_form()">
+      <a class="btn btn-focus" data-toggle="modal" data-target="#addShareholder" href="" ng-click="show_add_shareholder_form()">
         {% endverbatim %}{% trans "Add Shareholder" %}{% verbatim %}
       </a>
     </div>
-
     <!-- Modal -->
     <div class="modal fade" id="addShareholder" tabindex="-1" role="dialog" aria-labelledby="addShareholderLabel">
       <div class="modal-dialog" role="document">
@@ -65,16 +64,27 @@
     </div>
 
 
+	<p class="panel" ng-show="shareholders.length < 10 ">
+	{% endverbatim %}
+	{% trans "Need more advices? Read" %}
+	<a href="/aktienbuch/quickstart/" title="{% trans "share register quickstart guide" %}" target="_blank">
+	  {% trans "our quickstart tutorial!" %}
+	</a>
+	{% verbatim %}
+	</p>
+
 	<!-- --- SHARES --- -->
-	<h2 ng-show="shareholders.length" >{% endverbatim %}{% trans "Share Ownership" %}{% verbatim %}</h2>
+	<h2 ng-show="shareholders.length > 1" >{% endverbatim %}{% trans "Share Ownership" %}{% verbatim %}</h2>
 
     <!-- TABLE ACTIONS -->
 	{% endverbatim %}
+	<div ng-hide="shareholders.length < 2">
 	{% include "_table_actions.html" %}
+	</div>
 	{% verbatim %}
 
     <!-- TABLE -->
-    <div class="table">
+    <div class="table" ng-hide="shareholders.length < 2">
       <div class="tr th">
         <div class="td td-width-2 ">{% endverbatim %}{% trans "Name" %}{% verbatim %}</div>
         <div class="td text-right-flex">{% endverbatim %}{% trans "Shareholder Number" %}{% verbatim %}</div>

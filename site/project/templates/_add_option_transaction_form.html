@@ -3,7 +3,7 @@
 {% trans "Please enter your Option data:" %}
 {% verbatim %}
 <div>
-  <form class="add-information-inline form">
+  <form class="add-information-inline form add-option">
     <div class="form-group block-level">
         <span class="input-group date-field">
           <input placeholder="Kaufdatum" type="text" class="form-control"
@@ -15,9 +15,12 @@
             close-text="Schliessen"
             clear-text="Leeren"
             current-text="Heute"
+			readonly="readonly"
+            placeholder="{{'Date'|translate}}"
+            ng-click="toggle_datepicker()"
             />
           <span class="input-group-btn">
-            <button type="button" class="btn btn-default" ng-click="open_datepicker()"><i class="glyphicon glyphicon-calendar"></i></button>
+            <button type="button" class="btn btn-default" ng-click="toggle_datepicker()"><i class="glyphicon glyphicon-calendar"></i></button>
           </span>
         </span>
         <!-- --- SELLER -- -->
@@ -49,7 +52,6 @@
                 Show optional forms &nbsp;<span class="el-icon-chevron-down"></span>
             </p>
         </div>
-
         <!-- optional fields -->
         <div class="optional-fields" ng-show="show_optional_fields">
             {% endverbatim %}{% trans "optional fields" %}{% verbatim %}:
