@@ -11,19 +11,50 @@
 {% block content %}
 <div ng_controller="OptionsController">
   <h1>{% trans "Options" %}</h1>
-  {% include "_form_errors.html" %}
 
   <div class="panel panel-column">
-    <a class="btn-inline align-left" href="" ng-click="show_add_option_transaction_form()" ng-hide="!option_plans.length">{% trans "Transfer Option" %}</a>
-    <a class="btn-inline " href="" ng-click="show_add_option_plan_form()">{% trans "Grant New Option Plan" %}</a>
+    <a class="btn-inline align-left" href="" data-toggle="modal" data-target="#addOptionTransaction" ng-click="show_add_option_transaction_form()" ng-hide="!option_plans.length">{% trans "Transfer Option" %}</a>
+    <a class="btn-inline " href="" data-toggle="modal" data-target="#addOptionPlan" ng-click="show_add_option_plan_form()">{% trans "Grant New Option Plan" %}</a>
   </div>
 
   <!-- FORMS -->
-  <div id="add_option_transaction" ng-hide="!show_add_option_transaction">
-    {% include "_add_option_transaction_form.html" %}
+
+
+
+  <!-- MODAL SPLIT SHARES -->
+  <div class="modal fade" id="addOptionTransaction" tabindex="-1" role="dialog" aria-labelledby="addOptionTransactionLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="addOptionTransactionLabel">{% trans "Split Shares" %}</h4>
+        </div>
+        <div class="modal-body">
+          {% include "_form_errors.html" %}
+          <div id="add_option_transaction">
+            {% include "_add_option_transaction_form.html" %}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="add_option_plan" ng-hide="!show_add_option_plan">
-    {% include "_add_option_plan_form.html" %}
+
+  <!-- MODAL SPLIT SHARES -->
+  <div class="modal fade" id="addOptionPlan" tabindex="-1" role="dialog" aria-labelledby="addOptionPlanLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="addOptionPlanLabel">{% trans "Split Shares" %}</h4>
+        </div>
+        <div class="modal-body">
+          {% include "_form_errors.html" %}
+          <div id="add_option_plan">
+            {% include "_add_option_plan_form.html" %}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   {% verbatim %}
