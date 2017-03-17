@@ -2364,7 +2364,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   }
 }
 .date-field .input-group-btn .btn {
-  padding: 8px 12px 10px;
+  padding: 7px 12px 10px;
   border: 1px solid #ccc;
 }
 .date-field .form-control[readonly] {
@@ -2984,6 +2984,7 @@ nav.navbar .navbar-text {
 
 .form .form-control {
   box-shadow: unset;
+  font-size: initial;
 }
 .form input {
   display: block;
