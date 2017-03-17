@@ -68,6 +68,22 @@ class BasePage(object):
                 self.driver.get(url)
                 break
             except TimeoutException:
+                if attempts == 9:
+                    raise
+                attempts += 1
+
+    def click(self, element):
+        """
+        handles occasional timeouts on click
+        """
+        attempts = 0
+        while attempts < 10:
+            try:
+                element.click()
+                break
+            except TimeoutException:
+                if attempts == 9:
+                    raise
                 attempts += 1
 
     def login(self, username, password):
@@ -87,7 +103,7 @@ class BasePage(object):
         # send form
         btn = self.wait_until_visible((
             By.XPATH, '//button[contains(@class, "btn-primary")]'))
-        btn.click()
+        self.click(btn)
         time.sleep(1)  # wait for page reload  # FIXME
 
     def refresh(self):
