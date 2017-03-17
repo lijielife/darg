@@ -897,7 +897,7 @@ class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
 
         query = position.buyer.user.first_name
         res = self.client.get(
-            '/services/rest/position?search={}'.format(query))
+            u'/services/rest/position?search={}'.format(query))
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['count'], 1)
