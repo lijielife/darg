@@ -2649,21 +2649,30 @@ html, body {
   margin: 0.3em 0.3em 0.3em 0em;
   display: inline-block;
 }
-.core .container form {
-  margin-bottom: 3em;
+.core .container select::-ms-expand {
+  display: none;
 }
-.core .container form select {
+.core .container select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   box-shadow: unset;
+  background-image: url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE2cHgiIGhlaWdodD0iMTZweCIgdmlld0JveD0iMCAwIDMwNiAzMDYiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDMwNiAzMDY7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPGc+Cgk8ZyBpZD0iZXhwYW5kLW1vcmUiPgoJCTxwb2x5Z29uIHBvaW50cz0iMjcwLjMsNTguNjUgMTUzLDE3NS45NSAzNS43LDU4LjY1IDAsOTQuMzUgMTUzLDI0Ny4zNSAzMDYsOTQuMzUgICAiIGZpbGw9IiM5NTk1OTUiLz4KCTwvZz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K);
+  background-position: 95% center;
+  background-repeat: no-repeat;
 }
-.core .container form input {
+.core .container input {
   line-height: normal;
   border: 1px solid #e0e0e0;
   border-radius: 4px;
   padding: 10px 15px;
 }
-.core .container form input:focus {
+.core .container input:focus {
   box-shadow: unset;
   border-color: #337ab7;
+}
+.core .container form {
+  margin-bottom: 3em;
 }
 .core .container p {
   margin: 0 0 10px;
@@ -2875,7 +2884,6 @@ html, body {
 .collapse-expanded .navbar-username {
   color: #888;
   display: block;
-  line-height: 13px;
   position: relative;
 }
 
@@ -2909,8 +2917,10 @@ html, body {
 .limit-letters {
   max-width: 100px;
   overflow: hidden;
-  text-overflow: ellipsis;
   display: inline-block;
+  text-overflow: ellipsis;
+  position: relative;
+  top: 4px;
 }
 
 .navbar-default .navbar-nav .open a {
@@ -4071,6 +4081,30 @@ div.address-data {
   }
 }
 @media only screen and (max-width: 600px) {
+  .table-actions .row {
+    -webkit-flex-flow: column;
+    flex-flow: column;
+    display: -webkit-flex;
+    display: flex;
+  }
+  .table-actions .row [class*="col-"] {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  .table-actions .row [class*="col-"] nav.pull-right {
+    float: none !important;
+  }
+  .table-actions .row [class*="col-"] .pagination {
+    width: 100%;
+    text-align: center;
+  }
+  .table-actions .row [class*="col-"] .input-group {
+    width: 100%;
+  }
+  .table-actions .row [class*="col-"] .full-width-mobile {
+    width: calc(100% - 66px);
+  }
+
   .table {
     position: relative;
   }
