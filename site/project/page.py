@@ -25,7 +25,6 @@ from project.generators import DEFAULT_TEST_DATA
 # from locators import MainPageLocators (save all setter/getter here)
 
 
-
 class BasePage(object):
     """Base class to initialize the base page that will be called
     from all pages"""
@@ -87,7 +86,7 @@ class BasePage(object):
                 attempts += 1
 
             # refresh page on stale element (means page was loaded)
-            except StaleElementReferenceException
+            except StaleElementReferenceException:
                 self.driver.refresh()
 
     def login(self, username, password):
