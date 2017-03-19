@@ -21,8 +21,11 @@ def set_company_in_session(sender, user, request, **kwargs):
     """
     operator = user.operator_set.order_by(
         '-last_active_at').first()
-    request.session['company_pk'] = operator.company
-    operator.last_active_at = datetime.datetime.now()
+
+    # None if regular shareholder
+    if operator:
+        request.session['company_pk'] = operator.company.pk
+        operator.last_active_at = datetime.datetime.now()
 
 
 user_logged_in.connect(set_company_in_session)
