@@ -44,7 +44,7 @@ class AddCompanyTestCase(APITestCase):
             "name": "Pariatur Rerum est voluptates ipsa in officia libero "
                     "soluta omnis saepe voluptates omnis quidem autem veniam "
                     "rerum molestiae incidunt",
-            "count": 36,
+            "share_count": 36,
             "face_value": 18,
             "founded_at": "2016-05-31T23:00:00.000Z"
         }
@@ -55,6 +55,7 @@ class AddCompanyTestCase(APITestCase):
         self.assertEqual(res.status_code, 201)
         company = user.operator_set.all()[0].company
         self.assertEqual(company.security_set.all()[0].title, 'C')
+        self.assertIsNotNone(self.client.session.get('company_pk'))
 
     def test_add_company_saving_twice(self):
         """
@@ -66,7 +67,7 @@ class AddCompanyTestCase(APITestCase):
             "name": "Pariatur Rerum est voluptates ipsa in officia libero "
                     "soluta omnis saepe voluptates omnis quidem autem veniam "
                     "rerum molestiae incidunt",
-            "count": 36,
+            "share_count": 36,
             "face_value": 18,
             "founded_at": "2016-05-31T23:00:00.000Z"
         }

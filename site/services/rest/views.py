@@ -215,7 +215,10 @@ class AddCompanyView(APIView):
     def post(self, request, format=None):
         serializer = AddCompanySerializer(data=request.data)
         if serializer.is_valid() and request.user.is_authenticated():
-            serializer.save(user=request.user)
+            company = serializer.save(user=request.user)
+            # once user added a company save it to the session to allow
+            # multi company handling for single user
+            request.session['company_pk'] = company.pk
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

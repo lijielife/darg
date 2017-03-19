@@ -118,9 +118,10 @@ class CompanySerializer(serializers.HyperlinkedModelSerializer):
 class AddCompanySerializer(serializers.Serializer):
 
     name = serializers.CharField(max_length=255)
-    face_value = serializers.DecimalField(max_digits=19, decimal_places=4)
+    face_value = serializers.DecimalField(max_digits=19, decimal_places=4,
+                                          required=False)
     founded_at = serializers.DateTimeField(required=False)
-    count = serializers.IntegerField()
+    share_count = serializers.IntegerField()
 
     def create(self, validated_data):
         """ check data, add company, add company_itself shareholder, add first
@@ -132,13 +133,13 @@ class AddCompanySerializer(serializers.Serializer):
         # inconsistent database
         with transaction.atomic():
             company = Company.objects.create(
-                share_count=validated_data.get("count"),
+                share_count=validated_data.get("share_count"),
                 name=validated_data.get("name"),
                 founded_at=validated_data.get('founded_at')
             )
             security = Security.objects.create(
                 title="C",
-                count=validated_data.get("count"),
+                count=validated_data.get("share_count"),
                 company=company,
             )
 
@@ -158,7 +159,7 @@ class AddCompanySerializer(serializers.Serializer):
             Position.objects.create(
                 bought_at=validated_data.get(
                     'founded_at') or datetime.datetime.now(),
-                buyer=shareholder, count=validated_data.get("count"),
+                buyer=shareholder, count=validated_data.get("share_count"),
                 value=validated_data.get("face_value"),
                 security=security,
             )
@@ -169,7 +170,7 @@ class AddCompanySerializer(serializers.Serializer):
                 u'user {} signed up for company {}'.format(user, company)
             )
 
-            return validated_data
+            return company
 
 
 class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
