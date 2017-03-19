@@ -44,9 +44,11 @@ Pillow
 django-app-namespace-template-loader
 zinnia-theme-bootstrap
 docutils
+# flatpages:
 markdown
 django_markdown
 django-markdownx
+git+https://github.com/patroqueeet/django-flatpage-meta.git@master#egg=flatpage_meta
 #-- end blog
 
 ipdbplugin
