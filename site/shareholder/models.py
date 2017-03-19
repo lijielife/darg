@@ -1032,6 +1032,7 @@ class Operator(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     company = models.ForeignKey('Company', verbose_name="Operators Company")
     share_count = models.PositiveIntegerField(blank=True, null=True)
+    last_active_at = models.DateTimeField(blank=True, null=True)
 
     def __unicode__(self):
         return u"{} {} ({})".format(

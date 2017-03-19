@@ -105,8 +105,6 @@ urlpatterns = [
     url(r'^accounts/register/$', RegistrationView.as_view(
         form_class=RegistrationForm), name='registration_register'),
     url(r'^accounts/', include('registration.backends.simple.urls')),
-    url(r'^accounts/login/$', RedirectView.as_view(url='/account/login/'),
-        name='auth_login'),
     url(r'', include(tf_urls + tf_twilio_urls, 'two_factor')),  # two factorauth
     url(r'^instapage/', 'project.views.instapage', name='instapage'),
 
