@@ -9,21 +9,20 @@ import time
 from datetime import datetime
 
 from django.conf import settings
-
-from selenium.webdriver.common.by import By
+from selenium.common.exceptions import (StaleElementReferenceException,
+                                        TimeoutException)
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.ui import Select, WebDriverWait
+
+# from selenium.webdriver.support.ui import Select
+from project.generators import DEFAULT_TEST_DATA
 
 
 # from element import BasePageElement (save all locators here)
 # from locators import MainPageLocators (save all setter/getter here)
-
-# from selenium.webdriver.support.ui import Select
-from project.generators import DEFAULT_TEST_DATA
 
 
 class BasePage(object):
@@ -85,6 +84,10 @@ class BasePage(object):
                 if attempts == 9:
                     raise
                 attempts += 1
+
+            # refresh page on stale element (means page was loaded)
+            except StaleElementReferenceException:
+                self.driver.refresh()
 
     def login(self, username, password):
         """ log the user in """
