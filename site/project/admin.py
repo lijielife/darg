@@ -8,6 +8,8 @@ from django.contrib.auth.models import User
 from django.contrib.flatpages.admin import FlatPageAdmin
 from django.contrib.flatpages.models import FlatPage
 
+from flatpage_meta.admin import ReplacementFlatPageAdmin
+
 from markdownx.widgets import AdminMarkdownxWidget
 # from reversion.admin import VersionAdmin  # revers > 2.0
 from reversion.helpers import patch_admin  # reversion < 2.0
@@ -49,7 +51,7 @@ class ReversionedUserAdmin(VersionAdmin, UserAdmin):
 """
 
 
-class FlatPageAdminX(FlatPageAdmin):
+class FlatPageAdminX(ReplacementFlatPageAdmin):
     formfield_overrides = {
         models.TextField: {'widget': AdminMarkdownxWidget},
     }

@@ -70,7 +70,8 @@ INSTALLED_APPS = (
     'sorl.thumbnail',
     'djrill',
     'django_markdown',
-    'markdownx',
+    'markdownx',  # flatpage advanced admin
+    'flatpage_meta',  # flatpage meta tags
     'reversion',
     'storages',
     'dbbackup',
