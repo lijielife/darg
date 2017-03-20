@@ -69,8 +69,9 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
         $scope.option_holders = []
         #$scope.search_params.query = null
 
-    $scope.load_option_holders = (company_pk) ->
-        $http.get('/services/rest/shareholders/option_holder?company='+company_pk).then (result) ->
+    # company determined by session
+    $scope.load_option_holders = () ->
+        $http.get('/services/rest/shareholders/option_holder').then (result) ->
             angular.forEach result.data.results, (item) ->
                 $scope.option_holders.push item
             if result.data.next
@@ -82,8 +83,8 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
             if result.data.current
                 $scope.optionholder_current=result.data.current
 
+    # company determined by session
     $scope.load_all_shareholders = ->
-        # FIXME - its not company specific
         $scope.reset_search_params()
         $scope.search_params.query = null
         $http.get('/services/rest/shareholders').then (result) ->
@@ -98,24 +99,23 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
             if result.data.current
                 $scope.current=result.data.current
 
-    $scope.load_all_shareholders()
-          
-
-    $http.get('/services/rest/user').then (result) ->
-        $scope.user = result.data.results[0]
-        # loop over ops and fetch corp data
-        angular.forEach $scope.user.operator_set, (item, key) ->
+    $scope.load_user = ->
+        # get user / company data
+        $http.get('/services/rest/user').then (result) ->
+            $scope.loading = true
+            $scope.user = result.data.results[0]
             # get company data
-            $http.get(item.company).then (result1) ->
-                $scope.user.operator_set[key].company = result1.data
-                # fetch option holders for this company
-                $scope.load_option_holders(result1.data.pk)
-        # update option holders if we have the company id
-        if $scope.user.operator_set.length > 0 && $scope.user.operator_set[0].company.pk
-           $scope.load_option_holders($scope.user.operator_set[0].company.pk)
+            $http.get($scope.user.selected_company).then (result1) ->
+                $scope.company = result1.data
+        .finally ->
+            $scope.loading = false
+         
 
-    .finally ->
-        $scope.loading = false
+    # --- INIT
+    # load shareholder/option holders based on session
+    $scope.load_all_shareholders()
+    $scope.load_option_holders()
+    $scope.load_user()
 
     # --- Dynamic props
     $scope.$watchCollection 'shareholders', (shareholders)->
@@ -239,7 +239,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
         # FIXME - its not company specific
         # respect ordering and search
         params = {}
-        params.company = $scope.user.operator_set[0].company.pk
+        params.company = $scope.company
         if $scope.optionholder_search_params.query
             params.search = $scope.optionholder_search_params.query
         if $scope.optionholder_search_params.ordering
@@ -264,19 +264,12 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
     $scope.add_company = ->
         $scope.errors = null
         $scope.newCompany.$save().then (result) ->
-            $http.get('/services/rest/user').then (result) ->
-                $scope.user = result.data.results[0]
-                # loop over ops and fetch corp data
-                angular.forEach $scope.user.operator_set, (item, key) ->
-                    $http.get(item.company).then (result1) ->
-                        $scope.user.operator_set[key].company = result1.data
-            .then ->
-                # load shs and option holders
-                $scope.load_all_shareholders()
-
+            # update user and company
+            $scope.load_user()
+            $scope.load_all_shareholders()  # new shareholder is added, reload
         .then ->
             # Reset our editor to a new blank post
-            $scope.company = new Company()
+            $scope.newCompany = new Company()
             $window.ga('send', 'event', 'form-send', 'add-company')
         .then ->
             # Clear any errors

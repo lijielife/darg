@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-16 21:02+0000\n"
+"POT-Creation-Date: 2017-03-19 20:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -153,6 +153,19 @@ msgstr ""
 msgid "Delete now without return"
 msgstr ""
 
+#: company/templates/company_select.html:7 templates/menu.html:71
+#: templates/menu.html:72
+msgid "Select Company"
+msgstr ""
+
+#: company/templates/company_select.html:15
+msgid "Select your company"
+msgstr ""
+
+#: company/templates/company_select.html:33
+msgid "add company"
+msgstr ""
+
 #: reports/templates/reports/_captable_form.html:8
 msgid "Sort by:"
 msgstr ""
@@ -178,7 +191,7 @@ msgid "Reports"
 msgstr ""
 
 #: reports/templates/reports/index.html:6 templates/base.html:9
-#: templates/flatpages/default.html:8
+#: templates/flatpages/default.html:9
 msgid "brand name"
 msgstr ""
 
@@ -276,7 +289,7 @@ msgstr ""
 msgid "Start"
 msgstr ""
 
-#: templates/menu.html:34
+#: templates/menu.html:33
 msgid "Positions"
 msgstr ""
 
@@ -296,30 +309,30 @@ msgstr ""
 msgid "I18N"
 msgstr ""
 
-#: templates/menu.html:70 templates/registration/password_reset_form.html:4
+#: templates/menu.html:77 templates/registration/password_reset_form.html:4
 #: templates/registration/password_reset_form.html:14
 #: templates/registration/password_reset_form.html:33
 msgid "Reset password"
 msgstr ""
 
-#: templates/menu.html:71 templates/registration/password_change_form.html:4
+#: templates/menu.html:78 templates/registration/password_change_form.html:4
 #: templates/registration/password_change_form.html:12
 msgid "Change password"
 msgstr ""
 
-#: templates/menu.html:74
+#: templates/menu.html:81
 msgid "Security Settings"
 msgstr ""
 
-#: templates/menu.html:76
+#: templates/menu.html:83
 msgid "Logout"
 msgstr ""
 
-#: templates/menu.html:82 templates/two_factor/core/login.html:61
+#: templates/menu.html:89 templates/two_factor/core/login.html:61
 msgid "Register"
 msgstr ""
 
-#: templates/menu.html:85 templates/registration/registration_form.html:26
+#: templates/menu.html:92 templates/registration/registration_form.html:26
 #: templates/two_factor/core/login.html:12
 msgid "Login"
 msgstr ""

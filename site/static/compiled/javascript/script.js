@@ -1326,6 +1326,23 @@
 (function() {
   var app;
 
+  app = angular.module('js.darg.app.select_company', ['js.darg.api', 'pascalprecht.translate', 'ui.bootstrap']);
+
+  app.config([
+    '$translateProvider', function($translateProvider) {
+      $translateProvider.translations('de', django.catalog);
+      $translateProvider.preferredLanguage('de');
+      return $translateProvider.useSanitizeValueStrategy('escaped');
+    }
+  ]);
+
+  app.controller('SelectCompanyController', ['$scope', '$http', function($scope, $http) {}]);
+
+}).call(this);
+
+(function() {
+  var app;
+
   app = angular.module('js.darg.app.shareholder', ['js.darg.api', 'xeditable', 'pascalprecht.translate', 'ui.bootstrap']);
 
   app.config([
@@ -1573,8 +1590,8 @@
         $scope.optionholder_next = null;
         return $scope.option_holders = [];
       };
-      $scope.load_option_holders = function(company_pk) {
-        return $http.get('/services/rest/shareholders/option_holder?company=' + company_pk).then(function(result) {
+      $scope.load_option_holders = function() {
+        return $http.get('/services/rest/shareholders/option_holder').then(function(result) {
           angular.forEach(result.data.results, function(item) {
             return $scope.option_holders.push(item);
           });
@@ -1613,21 +1630,20 @@
           }
         });
       };
-      $scope.load_all_shareholders();
-      $http.get('/services/rest/user').then(function(result) {
-        $scope.user = result.data.results[0];
-        angular.forEach($scope.user.operator_set, function(item, key) {
-          return $http.get(item.company).then(function(result1) {
-            $scope.user.operator_set[key].company = result1.data;
-            return $scope.load_option_holders(result1.data.pk);
+      $scope.load_user = function() {
+        return $http.get('/services/rest/user').then(function(result) {
+          $scope.loading = true;
+          $scope.user = result.data.results[0];
+          return $http.get($scope.user.selected_company).then(function(result1) {
+            return $scope.company = result1.data;
           });
+        })["finally"](function() {
+          return $scope.loading = false;
         });
-        if ($scope.user.operator_set.length > 0 && $scope.user.operator_set[0].company.pk) {
-          return $scope.load_option_holders($scope.user.operator_set[0].company.pk);
-        }
-      })["finally"](function() {
-        return $scope.loading = false;
-      });
+      };
+      $scope.load_all_shareholders();
+      $scope.load_option_holders();
+      $scope.load_user();
       $scope.$watchCollection('shareholders', function(shareholders) {
         $scope.total_shares = 0;
         return angular.forEach(shareholders, function(item) {
@@ -1783,7 +1799,7 @@
       $scope.optionholder_search = function() {
         var params, paramss;
         params = {};
-        params.company = $scope.user.operator_set[0].company.pk;
+        params.company = $scope.company;
         if ($scope.optionholder_search_params.query) {
           params.search = $scope.optionholder_search_params.query;
         }
@@ -1814,18 +1830,10 @@
       $scope.add_company = function() {
         $scope.errors = null;
         return $scope.newCompany.$save().then(function(result) {
-          return $http.get('/services/rest/user').then(function(result) {
-            $scope.user = result.data.results[0];
-            return angular.forEach($scope.user.operator_set, function(item, key) {
-              return $http.get(item.company).then(function(result1) {
-                return $scope.user.operator_set[key].company = result1.data;
-              });
-            });
-          }).then(function() {
-            return $scope.load_all_shareholders();
-          });
+          $scope.load_user();
+          return $scope.load_all_shareholders();
         }).then(function() {
-          $scope.company = new Company();
+          $scope.newCompany = new Company();
           return $window.ga('send', 'event', 'form-send', 'add-company');
         }).then(function() {
           return $scope.errors = null;
