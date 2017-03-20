@@ -156,8 +156,8 @@ class CompanyFunctionalTestCase(BaseSeleniumTestCase):
             # wait for form to disappear
             p.wait_until_invisible((By.CSS_SELECTOR, '.tr.security form'))
             p.refresh()
-            self.assertIn("88, 99-100", p.wait_until_visible((
-                By.CSS_SELECTOR, '.tr.security')).text)
+            self.assertTrue(p.wait_until_text_present((
+                By.CSS_SELECTOR, '.tr.security'), "88, 99-100"))
 
         except Exception, e:
             self._handle_exception(e)
