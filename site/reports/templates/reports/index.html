@@ -25,6 +25,7 @@
       <li>
         {% trans "Download active Shareholders as" %}
         <a href="{% verbatim %}{{ captable_csv_url }}{% endverbatim %}" title="{% trans "Download active Shareholders as PDF" %}" class="btn btn-inline">
+		  <img src="{% static "compiled/images/pdf-icon.png" %}" alt="pdf icon" width="20px"/>
           {% trans "PDF" %}
         </a> |
         <a href="{% verbatim %}{{ captable_pdf_url }}{% endverbatim %}" title="{% trans "Download active Shareholders as CSV" %}" class="btn btn-inline">
