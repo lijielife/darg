@@ -62,7 +62,7 @@ class ShareholderViewSet(viewsets.ModelViewSet):
         if not self.request.session.get('company_pk'):
             return Shareholder.objects.none()
 
-        company = Company.objects.get(pk=self.request.session.get('company_pk'))
+        company = get_company_from_request(self.request)
 
         return Shareholder.objects.filter(company=company)\
             .select_related('company', 'user', 'user__userprofile') \
@@ -151,8 +151,8 @@ class OperatorViewSet(viewsets.ModelViewSet):
             raise Http404
 
     def get_queryset(self):
-        user = self.request.user
-        return Operator.objects.filter(company__operator__user=user)\
+        company = get_company_from_request(self.request)
+        return Operator.objects.filter(company-company)\
             .distinct()
 
     def destroy(self, request, pk=None):
@@ -409,9 +409,8 @@ class SecurityViewSet(viewsets.ModelViewSet):
     ]
 
     def get_queryset(self):
-        user = self.request.user
-        if user.is_authenticated():
-            return Security.objects.filter(company__operator__user=user)
+        company = get_company_from_request(self.request)
+        return Security.objects.filter(company=company)
 
 
 class OptionPlanViewSet(viewsets.ModelViewSet):
@@ -422,8 +421,8 @@ class OptionPlanViewSet(viewsets.ModelViewSet):
     ]
 
     def get_queryset(self):
-        user = self.request.user
-        return OptionPlan.objects.filter(company__operator__user=user)
+        company = get_company_from_request(self.request)
+        return OptionPlan.objects.filter(company=company)
 
     # FIXME add perms like that to decor. permission_classes=[IsAdminOrIsSelf]
     @detail_route(methods=['post'])
@@ -469,9 +468,9 @@ class OptionTransactionViewSet(viewsets.ModelViewSet):
     ordering = ('option_plan__pk', '-bought_at')
 
     def get_queryset(self):
-        user = self.request.user
+        company = get_company_from_request(self.request)
         qs = OptionTransaction.objects.filter(
-            option_plan__company__operator__user=user
+            option_plan__company=company
         )
 
         # filter if option plan is given in query params
