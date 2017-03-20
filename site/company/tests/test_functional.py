@@ -117,7 +117,7 @@ class CompanyFunctionalTestCase(BaseSeleniumTestCase):
             p.save_edit("founding-date")
 
             # wait for form to disappear
-            p.wait_until_invisible((By.CSS_SELECTOR, 'tr.founding-date form'))
+            p.wait_until_invisible((By.CSS_SELECTOR, '.tr.founding-date form'))
 
             today = datetime.datetime.now().date()
             founding_date = datetime.date(today.year, today.month, 1)
@@ -154,15 +154,13 @@ class CompanyFunctionalTestCase(BaseSeleniumTestCase):
             p.save_edit("security")
 
             # wait for form to disappear
-            p.wait_until_invisible((By.CSS_SELECTOR, 'tr.security form'))
+            p.wait_until_invisible((By.CSS_SELECTOR, '.tr.security form'))
+            p.refresh()
+            self.assertIn("88, 99-100", p.wait_until_visible((
+                By.CSS_SELECTOR, '.tr.security')).text)
 
         except Exception, e:
             self._handle_exception(e)
-
-        self.assertTrue(
-            [88, u'99-100'] in
-            self.operator.company.security_set.values_list(
-                'number_segments', flat=True))
 
     def test_alter_number_segment(self):
         """
@@ -185,7 +183,7 @@ class CompanyFunctionalTestCase(BaseSeleniumTestCase):
             p.save_edit("security")
 
             # wait for form to disappear
-            p.wait_until_invisible((By.CSS_SELECTOR, 'tr.security form'))
+            p.wait_until_invisible((By.CSS_SELECTOR, '.tr.security form'))
             time.sleep(1)  # FIXME replace by wait
 
         except Exception, e:
