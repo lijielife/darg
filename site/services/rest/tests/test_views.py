@@ -1458,14 +1458,15 @@ class OptionTransactionTestCase(APITestCase):
         optiontransaction = OptionTransactionGenerator().generate(
             company=operator.company)
 
-        logged_in = self.client.login(username=user.username,
-                                      password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(logged_in)
+        self.client.force_login(user)
+        session = self.client.session
+        session['company_pk'] = operator.company.pk
+        session.save()
 
         res = self.client.delete(
             '/services/rest/optiontransaction/{}'.format(optiontransaction.pk))
 
-        self.assertEqual(res.status_code, 404)
+        self.assertEqual(res.status_code, 403)
 
     def test_delete_confirmed_optiontransaction(self):
         """
@@ -1648,6 +1649,9 @@ class SecurityTestCase(APITestCase):
         del data['face_value']  # mandatory, remove
 
         self.client.force_authenticate(user=operator.user)
+        session = self.client.session
+        session['company_pk'] = company.pk
+        session.save()
 
         res = self.client.put(url, data=data)
         self.assertIn('Vorzugsaktien', res.content)

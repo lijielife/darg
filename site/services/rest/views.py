@@ -152,7 +152,7 @@ class OperatorViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         company = get_company_from_request(self.request)
-        return Operator.objects.filter(company-company)\
+        return Operator.objects.filter(company=company)\
             .distinct()
 
     def destroy(self, request, pk=None):
