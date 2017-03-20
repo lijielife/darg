@@ -90,10 +90,6 @@ class BasePage(object):
                     raise
                 attempts += 1
 
-            # refresh page on stale element (means page was loaded)
-            except StaleElementReferenceException:
-                self.driver.refresh()
-
     def login(self, username, password):
         """ log the user in """
         self.get('%s%s' % (self.live_server_url, '/account/login/'))
@@ -220,7 +216,7 @@ class BasePage(object):
         el = self.driver.find_element_by_id(id)
         form = el.find_element_by_tag_name('form')
         field = form.find_element_by_class_name(cls)
-        field.send_keys(shareholder.get_full_name()[:10])
+        field.send_keys(shareholder.get_full_name()[:3])
 
         # select typeahead result
         self.wait_until_present(
