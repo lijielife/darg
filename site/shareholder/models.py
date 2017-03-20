@@ -422,7 +422,7 @@ class Company(models.Model):
             return
 
         kwargs = {'crop': 'center', 'quality': 99, 'format': "PNG"}
-        return get_thumbnail(self.logo.file, 'x40', **kwargs).url
+        return get_thumbnail(self.logo.file, 'x80', **kwargs).url
 
     # --- CHECKS
     def has_printed_certificates(self):
@@ -572,6 +572,7 @@ class UserProfile(models.Model):
 
     ip = models.GenericIPAddressField(blank=True, null=True)
     tnc_accepted = models.BooleanField(default=False)
+    is_multi_company_allowed = models.BooleanField(default=False)
 
     def __unicode__(self):
         return u"%s, %s %s" % (self.city, self.province,

@@ -64,6 +64,8 @@ urlpatterns = [
     url(r'^shareholder/(?P<pk>[0-9]+)/$',
         ShareholderView.as_view(), name='shareholder'),
 
+    url(r'^company/$', 'company.views.company_select',
+        name='company_list'),
     url(r'^company/(?P<company_id>[0-9]+)/$', 'company.views.company',
         name='company'),
     url(r'^company/(?P<company_id>[0-9]+)/download/csv$',

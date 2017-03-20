@@ -39,7 +39,7 @@ def _add_company_to_user_via_rest(user):
         reverse('add_company'), {
             'name': 'company',
             'founded_at': '2015-01-02T23:00:00.000Z',
-            'count': 1,
+            'share_count': 1,
             'face_value': 2
         },
         **{

@@ -14,7 +14,7 @@
   <!-- FORM ERRORS -->
   {% include "_form_errors.html" %}
 
-  <div id="add_company" class="add-company-container" ng-show="!user.operator_set.length && !loading">
+  <div id="add_company" class="add-company-container" ng-show="user.selected_company==null && !loading">
     {% include "_add_company_form.html" %}
   </div>
 
@@ -26,25 +26,25 @@
   </div>
 
   <!-- table per company -->
-  <div id="shareholder_list" ng-hide="!user.operator_set.length || loading" ng-repeat="operator in user.operator_set">
+  <div id="shareholder_list" ng-show="user.selected_company && !loading">
 
     <h1 class="captable-heading">
       {% endverbatim %}{% trans "Your Shareholders for" %}{% verbatim %}
-      {{ operator.company.name }}
-      <img ng-src="{{ operator.company.logo_url }}" alt="company logo" ng-show="operator.company.logo_url"class="logo" height="30pt"/>
-      <a href="{{ operator.company.profile_url }}" class="el-icon-cogs-wrapper btn-inline">
+      {{ company.name }}
+      <img ng-src="{{ company.logo_url }}" alt="company logo" ng-show="company.logo_url"class="logo" style="width: 40px"/>
+      <a href="{{ company.profile_url }}" class="el-icon-cogs-wrapper btn-inline">
         <span class="el-icon-cogs"></span>
       </a>
     </h1>
 
     <!-- ACTIONS -->
-    <div class="panel" ng-hide="!user.operator_set.length || show_add_shareholder" >
+    <div class="panel" ng-hide="show_add_shareholder" >
       <a class="btn btn-focus" href="" ng-click="show_add_shareholder_form()">
         {% endverbatim %}{% trans "Add Shareholder" %}{% verbatim %}
       </a>
     </div>
 
-    <div id="add_shareholder" ng-hide="!user.operator_set.length  || !show_add_shareholder">
+    <div id="add_shareholder" ng-hide="!show_add_shareholder">
       {% endverbatim %}{% include "_add_shareholder_form.html" %}{% verbatim %}
     </div>
 
@@ -99,7 +99,7 @@
           </value>
         </div>
         <div class="td summary text-right-flex">
-          {{ user.operator_set[0].company.share_count }}
+          {{ company.share_count }}
         </div>
       </div>
     </div><!-- /table-->

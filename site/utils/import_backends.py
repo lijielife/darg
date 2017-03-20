@@ -132,7 +132,7 @@ class SisWareImportBackend(BaseImportBackend):
                                            }
                                            )
 
-        # and a matching operator?
+        # and a matching operator? take the first one we find inside db
         self.operator = self.company.operator_set.first()
         if not self.operator:
             logger.info('operator created')

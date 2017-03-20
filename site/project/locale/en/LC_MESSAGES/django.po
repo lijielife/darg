@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-16 21:02+0000\n"
+"POT-Creation-Date: 2017-03-19 20:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -207,7 +207,7 @@ msgid "Please enter your shareholder data:"
 msgstr ""
 
 #: project/templates/_add_shareholder_form.html:16
-#: project/templates/start.html:40
+#: project/templates/start.html:43
 msgid "Add Shareholder"
 msgstr ""
 
@@ -243,7 +243,7 @@ msgid "Sort"
 msgstr ""
 
 #: project/templates/active_shareholder_captable.pdf.html:66
-#: project/templates/start.html:29
+#: project/templates/start.html:32
 msgid "Your Shareholders for"
 msgstr ""
 
@@ -284,7 +284,7 @@ msgstr ""
 
 #: project/templates/active_shareholder_captable.pdf.html:98
 #: project/templates/active_shareholder_captable.pdf.html:141
-#: project/templates/start.html:75
+#: project/templates/start.html:78
 msgid "Name"
 msgstr ""
 
@@ -295,7 +295,7 @@ msgstr ""
 
 #: project/templates/active_shareholder_captable.pdf.html:100
 #: project/templates/active_shareholder_captable.pdf.html:143
-#: project/templates/start.html:76
+#: project/templates/start.html:79
 msgid "Shareholder Number"
 msgstr ""
 
@@ -551,44 +551,44 @@ msgstr ""
 msgid "Captable"
 msgstr ""
 
-#: project/templates/start.html:50
+#: project/templates/start.html:53
 msgid "Shareholderr added. record share transfers here"
 msgstr ""
 
-#: project/templates/start.html:55
+#: project/templates/start.html:58
 msgid "Need more advices? Read"
 msgstr ""
 
-#: project/templates/start.html:56
+#: project/templates/start.html:59
 msgid "share register quickstart guide"
 msgstr ""
 
-#: project/templates/start.html:57
+#: project/templates/start.html:60
 msgid "our quickstart tutorial!"
 msgstr ""
 
-#: project/templates/start.html:63
+#: project/templates/start.html:66
 msgid "Share Ownership"
 msgstr ""
 
-#: project/templates/start.html:77
+#: project/templates/start.html:80
 #, python-format
 msgid "Shares (%%%%)"
 msgstr ""
 
-#: project/templates/start.html:81
+#: project/templates/start.html:84
 msgid "Gafi Validation failed"
 msgstr ""
 
-#: project/templates/start.html:95
+#: project/templates/start.html:98
 msgid "Total Shares distributed"
 msgstr ""
 
-#: project/templates/start.html:105
+#: project/templates/start.html:108
 msgid "Option Holders"
 msgstr ""
 
-#: project/templates/start.html:106
+#: project/templates/start.html:109
 msgid "Option Holders note"
 msgstr ""
 

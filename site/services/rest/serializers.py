@@ -20,6 +20,7 @@ from shareholder.models import (Company, Country, Operator, OptionPlan,
 from utils.formatters import inflate_segments, string_list_to_json
 from utils.hashers import random_hash
 from utils.math import substract_list
+from utils.session import get_company_from_request
 from utils.user import make_username
 
 User = get_user_model()
@@ -141,6 +142,7 @@ class AddCompanySerializer(serializers.Serializer):
                 title="C",
                 count=validated_data.get("share_count"),
                 company=company,
+                face_value=validated_data.get("face_value"),
             )
 
             username = make_username('Company', 'itself', company.name)
@@ -163,7 +165,8 @@ class AddCompanySerializer(serializers.Serializer):
                 value=validated_data.get("face_value"),
                 security=security,
             )
-            Operator.objects.create(user=user, company=company)
+            Operator.objects.create(user=user, company=company,
+                                    last_active_at=datetime.datetime.now())
 
             mail_managers(
                 u'new user signed up',
@@ -260,14 +263,14 @@ class OperatorSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    operator_set = OperatorSerializer(many=True, read_only=True)
     userprofile = UserProfileSerializer(
         many=False, required=False, allow_null=True)
+    selected_company = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email', 'operator_set',
-                  'userprofile')
+        fields = ('first_name', 'last_name', 'email',
+                  'userprofile', 'selected_company')
         extra_kwargs = {'email': {'required': False, 'allow_blank': True}}
 
     def create(self, validated_data):
@@ -300,6 +303,21 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             return u''
         else:
             return value
+
+    def get_selected_company(self, obj):
+        """
+        return company the user selected last
+        """
+
+        op = Operator.objects.filter(
+            user=obj,
+            company__pk=get_company_from_request(self.context['request']).pk
+        ).first()
+
+        if op:
+            return reverse('company-detail',
+                           kwargs={'pk': op.company.pk})
+        return None
 
 
 class ShareholderListSerializer(serializers.HyperlinkedModelSerializer):
@@ -353,11 +371,8 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
 
     def create(self, validated_data):
 
-        # existing or new user
-        user = self.context.get("request").user
-
         # FIXME: assuming one company per user
-        company = user.operator_set.all()[0].company
+        company = get_company_from_request(self.context.get("request"))
 
         if not validated_data.get('user').get('first_name'):
             raise ValidationError({'first_name': [_('First Name missing')]})
@@ -500,7 +515,7 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
         if self.context.get("request"):
             request = self.context.get("request")
             qs = Shareholder.objects.filter(
-                company=request.user.operator_set.first().company,
+                company=get_company_from_request(request),
                 number=value)
             # for update operations
             if self.instance is not None and self.instance.pk:
@@ -537,8 +552,7 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
             'certificate_id', 'printed_at')
 
     def _get_company(self):
-        user = self.context.get("request").user
-        company = user.operator_set.first().company
+        company = get_company_from_request(self.context.get("request"))
         return company
 
     def get_readable_number_segments(self, obj):
@@ -573,8 +587,7 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
 
         initial_data = self.initial_data
         security = initial_data.get('security')
-        user = self.context.get("request").user
-        company = user.operator_set.all()[0].company
+        company = get_company_from_request(self.context.get("request"))
 
         if security and Security.objects.get(
                 company=company, title=security.get('title'),
@@ -653,8 +666,7 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
 
         # prepare data
         kwargs = {}
-        user = self.context.get("request").user
-        company = user.operator_set.all()[0].company
+        company = get_company_from_request(self.context.get("request"))
 
         security = Security.objects.get(
             company=company,
@@ -782,8 +794,7 @@ class OptionPlanSerializer(serializers.HyperlinkedModelSerializer):
 
         # prepare data
         kwargs = {}
-        user = self.context.get("request").user
-        company = user.operator_set.all()[0].company
+        company = get_company_from_request(self.context.get("request"))
         security = Security.objects.get(
             company=company,
             title=validated_data.get("security").get('title'),
@@ -989,8 +1000,7 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
 
         # prepare data
         kwargs = {}
-        user = self.context.get("request").user
-        company = user.operator_set.all()[0].company
+        company = get_company_from_request(self.context.get("request"))
         option_plan = OptionPlan.objects.get(
             pk=self.initial_data.get('option_plan').get('pk'))
 

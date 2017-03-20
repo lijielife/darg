@@ -34,13 +34,20 @@ class AddCompanySerializerTestCase(TestCase):
     def test_create(self):
         validated_data = {
             'user': UserGenerator().generate(),
-            'count': 33,
+            'share_count': 33,
             'founded_at': datetime.datetime.now().date(),
             'name': u'Mühleggbahn AG',
             'face_value': 22,
         }
-        res = self.serializer.create(validated_data)
-        self.assertEqual(res, validated_data)
+        company = self.serializer.create(validated_data)
+
+        self.assertEqual(company.share_count, validated_data['share_count'])
+        self.assertTrue(company.operator_set.filter(
+                        user=validated_data['user']).exists())
+        self.assertEqual(company.founded_at, validated_data['founded_at'])
+        self.assertEqual(company.name, validated_data['name'])
+        self.assertEqual(company.security_set.first().face_value,
+                         validated_data['face_value'])
 
 
 class OptionPlanSerializerTestCase(TestCase):
@@ -57,6 +64,7 @@ class OptionPlanSerializerTestCase(TestCase):
         request = self.factory.get(url)
         request.user = OperatorGenerator().generate(
             company=option_plan.company).user
+        request.session = {'company_pk': option_plan.company.pk}
         # prepare data
         data = OptionPlanSerializer(
             option_plan, context={'request': request}).data
@@ -123,6 +131,7 @@ class OptionTransactionSerializerTestCase(TestCase):
         request = self.factory.get(url)
         request.user = OperatorGenerator().generate(
             company=option_plan.company).user
+        request.session = {'company_pk': option_plan.company.pk}
         # prepare data
         data = OptionTransactionSerializer(
             position, context={'request': request}).data
@@ -204,6 +213,7 @@ class PositionSerializerTestCase(TestCase):
         # authenticated request
         request.user = OperatorGenerator().generate(
             company=position.buyer.company).user
+        request.session = {'company_pk': position.buyer.company.pk}
         # prepare data
         data = PositionSerializer(
             position, context={'request': request}).data
@@ -267,6 +277,7 @@ class PositionSerializerTestCase(TestCase):
             url = reverse('position-detail', kwargs={'pk': position.id})
             request = self.factory.get(url)
             request.user = operator.user
+            request.session = {'company_pk': company.pk}
 
             # prepare data
             position.seller = None
@@ -387,6 +398,7 @@ class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin, TestCase):
         profile.save()
         request = self.factory.get('/services/rest/shareholders')
         request.user = operator.user
+        request.session = {'company_pk': operator.company.pk}
 
         qs = operator.company.shareholder_set.filter(pk=shs[0].pk)
         serializer = ShareholderSerializer(
@@ -426,6 +438,7 @@ class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin, TestCase):
             company=operator.company, shareholder_count=5)  # does +2shs
         request = self.factory.get('/services/rest/shareholders')
         request.user = operator.user
+        request.session = {'company_pk': operator.company.pk}
 
         # existing number
         serializer = ShareholderSerializer(

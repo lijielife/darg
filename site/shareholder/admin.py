@@ -15,7 +15,7 @@ class CompanyAdmin(VersionAdmin):
 
 
 class OperatorAdmin(VersionAdmin):
-    list_display = ('id', 'user', 'company', 'user', 'date_joined')
+    list_display = ('id', 'user', 'company', 'date_joined')
     list_filter = ('company',)
 
     def date_joined(selfi, obj):
@@ -51,10 +51,14 @@ class PositionAdmin(VersionAdmin):
 
 
 class UserProfileAdmin(VersionAdmin):
-    list_display = ('pk', 'street', 'street2', 'city')
+    list_display = ('user', 'full_name', 'street',
+                    'street2', 'city')
     search_fields = [
-        'user__first_name', 'user__email', 'user__last_name'
+        'user__first_name', 'user__email', 'user__last_name', 'user__username',
     ]
+
+    def full_name(self, obj):
+        return u'{} {}'.format(obj.user.first_name, obj.user.last_name)
 
 
 class CountryAdmin(VersionAdmin):
