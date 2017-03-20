@@ -64,12 +64,17 @@ class BasePage(object):
         attempts = 0
         while attempts < 10:
             try:
-                self.driver.get(url)
+                # random attempt to make chromedriver work
+                if attempts % 2 == 0:
+                    self.driver.get(url)
+                else:
+                    self.driver.refresh()
                 break
             except TimeoutException:
                 if attempts == 9:
                     raise
                 attempts += 1
+                time.sleep(2*attempts)
 
     def click(self, element):
         """
