@@ -9,8 +9,7 @@ import time
 from datetime import datetime
 
 from django.conf import settings
-from selenium.common.exceptions import (StaleElementReferenceException,
-                                        TimeoutException)
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -76,24 +75,6 @@ class BasePage(object):
                 attempts += 1
                 time.sleep(2*attempts)
 
-    def click(self, element):
-        """
-        handles occasional timeouts on click
-        """
-        attempts = 0
-        while attempts < 10:
-            try:
-                element.click()
-                break
-            except TimeoutException:
-                if attempts == 9:
-                    raise
-                attempts += 1
-
-            # refresh page on stale element (means page was loaded)
-            except StaleElementReferenceException:
-                self.driver.refresh()
-
     def login(self, username, password):
         """ log the user in """
         self.get('%s%s' % (self.live_server_url, '/account/login/'))
@@ -111,7 +92,7 @@ class BasePage(object):
         # send form
         btn = self.wait_until_visible((
             By.XPATH, '//button[contains(@class, "btn-primary")]'))
-        self.click(btn)
+        btn.click()
         time.sleep(1)  # wait for page reload  # FIXME
 
     def refresh(self):
@@ -220,7 +201,7 @@ class BasePage(object):
         el = self.driver.find_element_by_id(id)
         form = el.find_element_by_tag_name('form')
         field = form.find_element_by_class_name(cls)
-        field.send_keys(shareholder.get_full_name()[:10])
+        field.send_keys(shareholder.get_full_name()[:7])
 
         # select typeahead result
         self.wait_until_present(

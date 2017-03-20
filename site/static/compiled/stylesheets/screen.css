@@ -2920,7 +2920,7 @@ html, body {
   display: inline-block;
   text-overflow: ellipsis;
   position: relative;
-  top: 4px;
+  top: 3px;
 }
 
 .navbar-default .navbar-nav .open a {
@@ -2939,6 +2939,9 @@ nav.navbar a.navbar-brand img {
 }
 nav.navbar .navbar-text {
   margin-top: 18px;
+}
+nav.navbar .dropdown-toggle {
+  padding-top: 12px;
 }
 
 .core .container .form {
@@ -3256,7 +3259,6 @@ nav.navbar .navbar-text {
 }
 
 .limit-max-height {
-  max-height: 40px;
   overflow: hidden;
 }
 
