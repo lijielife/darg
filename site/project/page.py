@@ -9,8 +9,7 @@ import time
 from datetime import datetime
 
 from django.conf import settings
-from selenium.common.exceptions import (StaleElementReferenceException,
-                                        TimeoutException)
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -216,7 +215,7 @@ class BasePage(object):
         el = self.driver.find_element_by_id(id)
         form = el.find_element_by_tag_name('form')
         field = form.find_element_by_class_name(cls)
-        field.send_keys(shareholder.get_full_name()[:3])
+        field.send_keys(shareholder.get_full_name()[:7])
 
         # select typeahead result
         self.wait_until_present(
