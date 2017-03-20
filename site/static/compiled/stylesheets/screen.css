@@ -3425,6 +3425,10 @@ div.table-actions ul.pagination {
   padding: 0px;
 }
 
+div#shareholder_list .logo {
+  width: 40px;
+}
+
 div#optionplan .pdf_upload_preview {
   border: 1px solid gray;
 }
@@ -3440,6 +3444,9 @@ div#optionplan .pdf_upload_preview {
 }
 #company .company-administration .note {
   padding-top: 1em;
+}
+#company .logo {
+  width: 40px;
 }
 
 .alert-gafi {

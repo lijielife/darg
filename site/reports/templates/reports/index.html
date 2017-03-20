@@ -12,69 +12,67 @@
 <div ng_controller="ReportsController">
   {% include "_messages.html" %}
   {% include "_form_errors.html" %}
-  {% for operator in request.user.operator_set.all %}
-    <script>company_id = {{operator.company.id}}</script>
-    <h2>{% trans "Reports and Downloads for " %} {{operator.company}}</h2>
+  <script>var company_id = {{company.id}};</script>
+  <h2>{% trans "Reports and Downloads for " %} {{company}}</h2>
   <!-- INTRO -->
   <div class="note">
     {% trans "Use CSV for Excel like Downloads. Follow this <a href='https://goo.gl/aQ2gVx'>guide for instructions</a>." %}
   </div>
 
-    <div>
-      <ul>
-        <!-- CAPTABLE -->
-        <li>
-          {% trans "Download active Shareholders as" %}
-          <a href="{% verbatim %}{{ captable_csv_url }}{% endverbatim %}" title="{% trans "Download active Shareholders as PDF" %}" class="btn btn-inline">
-            {% trans "PDF" %}
-          </a> |
-          <a href="{% verbatim %}{{ captable_pdf_url }}{% endverbatim %}" title="{% trans "Download active Shareholders as CSV" %}" class="btn btn-inline">
-            {% trans "CSV" %}
-          </a>
-          <span class="el-icon-envelope"></span>
-          <span class="el-icon-chevron-down" ng-click="toggle_captable_form()"></span>
-		  {% include "reports/_captable_form.html" %} 
-        </li>
+  <div>
+    <ul>
+      <!-- CAPTABLE -->
+      <li>
+        {% trans "Download active Shareholders as" %}
+        <a href="{% verbatim %}{{ captable_csv_url }}{% endverbatim %}" title="{% trans "Download active Shareholders as PDF" %}" class="btn btn-inline">
+          {% trans "PDF" %}
+        </a> |
+        <a href="{% verbatim %}{{ captable_pdf_url }}{% endverbatim %}" title="{% trans "Download active Shareholders as CSV" %}" class="btn btn-inline">
+          {% trans "CSV" %}
+        </a>
+        <span class="el-icon-envelope"></span>
+        <span class="el-icon-chevron-down" ng-click="toggle_captable_form()"></span>
+  	  {% include "reports/_captable_form.html" %} 
+      </li>
 
-        <!-- TRANSACTIONS -->
-        <li>
-          {% trans "Transactions per security in period" %}
-          <span class="el-icon-chevron-down" ng-click="toggle_transaction_form()"></span>
-		  {% include "reports/_transaction_form.html" %}
-        </li>
-        <li>
-          {% trans "Address data of all shareholders" %}
-          <a href="{% url "contacts_csv" company_id=operator.company.id %}" title="{% trans "Address data of all shareholders" %}">
-            <span class="el-icon-download-alt"></span>
-          </a>
-        </li>
-        <li>
-    	  {% trans "Printed Certificates" %}
-          {% if operator.company.has_printed_certificates %}
-    	  <a href="{% url "printed_certificates_csv" company_id=operator.company.id %}" title="">
-    	    <span class="el-icon-download-alt"></span>
-          </a>
-          {% else %}
-          <div class="note">
-            {% trans "No printed certificates are available. Please print a certificate via a transaction or option transaction" %}
-          </div>
-		{% endif %}
-        </li>
-        <li>
-		  {% trans "Vested Shares" %}
-          {% if operator.company.has_vested_positions %}
-		  <a href="{% url "vested_csv" company_id=operator.company.id %}" title="">
-		    <span class="el-icon-download-alt"></span>
-		  </a>
-          {% else %}
-          <div class="note">
-            {% trans "no vested positions yet. please add vesting data to either transaction or option transaction" %}
-          </div>
-		{% endif %}
-        </li>
-        <!-- <li><a href="" title="">{% trans "Depot Statement per Shareholder" %}</a></li> -->
-      </ul>
-    </div>
-  {% endfor %}
+      <!-- TRANSACTIONS -->
+      <li>
+        {% trans "Transactions per security in period" %}
+        <span class="el-icon-chevron-down" ng-click="toggle_transaction_form()"></span>
+  	  {% include "reports/_transaction_form.html" %}
+      </li>
+      <li>
+        {% trans "Address data of all shareholders" %}
+        <a href="{% url "contacts_csv" company_id=company.id %}" title="{% trans "Address data of all shareholders" %}">
+          <span class="el-icon-download-alt"></span>
+        </a>
+      </li>
+      <li>
+  	  {% trans "Printed Certificates" %}
+        {% if company.has_printed_certificates %}
+  	  <a href="{% url "printed_certificates_csv" company_id=company.id %}" title="">
+  	    <span class="el-icon-download-alt"></span>
+        </a>
+        {% else %}
+        <div class="note">
+          {% trans "No printed certificates are available. Please print a certificate via a transaction or option transaction" %}
+        </div>
+  	{% endif %}
+      </li>
+      <li>
+  	  {% trans "Vested Shares" %}
+        {% if company.has_vested_positions %}
+  	  <a href="{% url "vested_csv" company_id=company.id %}" title="">
+  	    <span class="el-icon-download-alt"></span>
+  	  </a>
+        {% else %}
+        <div class="note">
+          {% trans "no vested positions yet. please add vesting data to either transaction or option transaction" %}
+        </div>
+  	{% endif %}
+      </li>
+      <!-- <li><a href="" title="">{% trans "Depot Statement per Shareholder" %}</a></li> -->
+    </ul>
+  </div>
 </div>
 {% endblock %}

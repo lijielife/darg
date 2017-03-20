@@ -65,6 +65,13 @@
                         <a href="/rosetta/" target="_blank">{% trans "I18N" %}</a>
                       </li>
                     {% endif %}
+					  {% if request.user.userprofile.is_multi_company_allowed %}
+                      <li>
+                        <a href="{% url "company_list" %}" title="{% trans "Select Company" %}" class="btn-inline">
+                          {% trans "Select Company" %}
+                        </a>
+                      </li>
+					  {% endif %}
                       <li>
                         <a href="{% url "auth_password_change" %}" title="{% trans "Reset password" %}" class="btn-inline">
                           {% trans "Change password" %}

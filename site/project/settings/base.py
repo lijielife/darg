@@ -371,6 +371,8 @@ TEST_WEBDRIVER_PAGE_LOAD_TIMEOUT = 5
 TEST_CHROMEDRIVER_EXECUTABLE = os.environ.get(
     'DJANGO_TEST_CHROMEDRIVER_EXECUTABLE', './chromedriver')
 
+# THUMBS
+THUMBNAIL_PRESERVE_FORMAT = True
 
 # django-dbbackup
 DROPBOX_ROOT_PATH = get_env_variable('DROPBOX_ROOT_PATH', fail_on_error=False)
