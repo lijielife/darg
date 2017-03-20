@@ -1035,6 +1035,9 @@ class Operator(models.Model):
     share_count = models.PositiveIntegerField(blank=True, null=True)
     last_active_at = models.DateTimeField(blank=True, null=True)
 
+    class Meta:
+        ordering = ['company__name']
+
     def __unicode__(self):
         return u"{} {} ({})".format(
             self.user.first_name, self.user.last_name, self.user.email)
