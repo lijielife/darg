@@ -75,20 +75,6 @@ class BasePage(object):
                 attempts += 1
                 time.sleep(2*attempts)
 
-    def click(self, element):
-        """
-        handles occasional timeouts on click
-        """
-        attempts = 0
-        while attempts < 10:
-            try:
-                element.click()
-                break
-            except TimeoutException:
-                if attempts == 9:
-                    raise
-                attempts += 1
-
     def login(self, username, password):
         """ log the user in """
         self.get('%s%s' % (self.live_server_url, '/account/login/'))
@@ -106,7 +92,7 @@ class BasePage(object):
         # send form
         btn = self.wait_until_visible((
             By.XPATH, '//button[contains(@class, "btn-primary")]'))
-        self.click(btn)
+        btn.click()
         time.sleep(1)  # wait for page reload  # FIXME
 
     def refresh(self):
