@@ -206,8 +206,15 @@ class OptionTransactionSerializerTestCase(TestCase):
 class PositionSerializerTestCase(TestCase):
 
     def __serialize(self, segments):
+        # create capital
+        p = PositionGenerator().generate(number_segments=segments,
+                                         count=8, seller=None)
+        # position under test:
         position = PositionGenerator().generate(number_segments=segments,
-                                                count=8)
+                                                count=8,
+                                                company=p.buyer.company,
+                                                seller=p.buyer, save=False,
+                                                security=p.security)
         url = reverse('position-detail', kwargs={'pk': position.id})
         request = self.factory.get(url)
         # authenticated request
@@ -335,6 +342,24 @@ class PositionSerializerTestCase(TestCase):
         with self.assertRaises(ValidationError):
             serializer.validate_certificate_id(certificate_id)
 
+    def test_validate_count(self):
+        """ count must be positive and more then what shareholder owns """
+        serializer, position = self.__serialize('1, 3, 4, 6-9, 33')
+        certificate_id = '222'
+
+        # negative count -> fail
+        with self.assertRaises(ValidationError):
+            self.assertEqual(serializer.validate_count(-1),
+                             certificate_id)
+
+        # less then shareholder owns -> fail
+        with self.assertRaises(ValidationError):
+            serializer.validate_count(
+                position.seller.share_count(security=position.security) + 1)
+
+        # success
+        count = position.seller.share_count(security=position.security)
+        self.assertEqual(count, serializer.validate_count(count))
 
 class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin, TestCase):
 

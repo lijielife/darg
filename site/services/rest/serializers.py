@@ -763,6 +763,28 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
                 _("Certificate ID {} is already used in transaction or option "
                   "transaction").format(value))
 
+    def validate_count(self, value):
+        """
+        shareholder cannot sell what he doesn't own
+        """
+        value = float(value)
+        if value < 0:
+            raise ValidationError(_('count {} must be greater then 0'
+                                    '').format(value))
+
+        # seller is optional
+        if self.initial_data.get('seller'):
+            security = Security.objects.get(
+                pk=self.initial_data.get('security').get('pk'))
+            seller = Shareholder.objects.get(
+                pk=self.initial_data.get('seller').get('pk'))
+
+            if value > seller.share_count(security=security):
+                raise ValidationError(
+                    _('seller does not have enough shares. max value is {}.'
+                      '').format(seller.share_count(security=security)))
+
+        return value
 
 class OptionPlanSerializer(serializers.HyperlinkedModelSerializer):
     """
