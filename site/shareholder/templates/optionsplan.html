@@ -1,6 +1,7 @@
 {% extends "base_auth.html" %}
 {% load i18n %}
 {% load staticfiles %}
+{% load l10n %}
 
 {% block title %}
   <TITLE>{% trans "Optionplan" %} {{ optionplan.title }} - Das Aktienregister</TITLE>
@@ -11,7 +12,7 @@
 {% block content %}
 
 <!-- required for angular API call -->
-<script>var optionplan_id = {{ optionplan.id}}</script>
+<script>var optionplan_id = {{ optionplan.id|unlocalize }}</script>
 
 <div ng_controller="OptionPlanController" id="optionplan">
 
