@@ -36,7 +36,7 @@
         {% trans "Exercise Price" %}:
       </div>
       <div class="td">
-        {% verbatim %}<span>{{ optionplan.exercise_price }} <!--<span class="el-icon-pencil"></span>--></span>{% endverbatim %}
+        {% verbatim %}<span>{{ optionplan.exercise_price | currency }} <!--<span class="el-icon-pencil"></span>--></span>{% endverbatim %}
       </div>
     </div>
     <div class="tr th count">
@@ -44,7 +44,7 @@
         {% trans "Share count" %}:
       </div>
       <div class="td">
-        {% verbatim %}<span>{{ optionplan.count }} <!--<span class="el-icon-pencil"></span>--></span>{% endverbatim %}
+        {% verbatim %}<span>{{ optionplan.count | number }} <!--<span class="el-icon-pencil"></span>--></span>{% endverbatim %}
       </div>
     </div>
     <div class="tr th comment">

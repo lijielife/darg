@@ -60,7 +60,7 @@
         {% trans "Count" %}:
       </div>
       <div class="td">
-        {% verbatim %}{{ position.count}}{% endverbatim %}
+        {% verbatim %}{{ position.count | number }}{% endverbatim %}
       </div>
     </div>
     <div class="tr th date">
@@ -76,7 +76,7 @@
         {% trans "Value" %}:
       </div>
       <div class="td">
-        {% verbatim %}{{ position.value}}{% endverbatim %}
+        {% verbatim %}{{ position.value | currency }}{% endverbatim %}
       </div>
     </div>
     <div class="tr th number-segments" ng-show="position.security.track_numbers && position.number_segments">
@@ -124,7 +124,7 @@
         {% trans "Vesting period in months" %}:
       </div>
       <div class="td">
-        {% verbatim %}{{ position.vesting_months}}{% endverbatim %}
+        {% verbatim %}{{ position.vesting_months | number }}{% endverbatim %}
       </div>
     </div>
   </div>

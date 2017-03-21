@@ -63,7 +63,7 @@
       <div class="td">
         {% verbatim %}
         <span editable-text="company.share_count" onaftersave="edit_company()">
-          {{ company.share_count }}
+          {{ company.share_count | number }}
           <span class="el-icon-pencil"></span>
         </span>
         {% endverbatim %}
@@ -100,7 +100,7 @@
       <div class="td">
         {% verbatim %}
         <span editable-text="company.provisioned_capital" onaftersave="edit_company()">
-          {{ company.provisioned_capital || 'k.A.' }}
+          {{ (company.provisioned_capital | currency) || 'k.A.' }}
           <span class="el-icon-pencil"></span>
         </span>
         {% endverbatim %}
@@ -113,7 +113,7 @@
       <div class="td">
         {% verbatim %}
         <span editable-text="company.vote_ratio" onaftersave="edit_company()">
-          {{ company.vote_ratio || 'k.A.' }}
+          {{ (company.vote_ratio | number) || 'k.A.' }}
           <span class="el-icon-pencil"></span>
         </span>
         {% endverbatim %}
@@ -125,7 +125,7 @@
       </div>
       <div class="td">
         {% verbatim %}
-          {{ company.vote_count || 'k.A.' }}
+          {{ (company.vote_count | number ) || 'k.A.' }}
         {% endverbatim %}
       </div>
     </div>
@@ -135,7 +135,7 @@
       </div>
       <div class="td">
         {% verbatim %}
-          {{ company.vote_count_floating || 'k.A.' }}
+          {{ (company.vote_count_floating | number) || 'k.A.' }}
         {% endverbatim %}
       </div>
     </div>
@@ -146,7 +146,7 @@
       <div class="td">
       {% verbatim %}
         <span editable-select="company.country" onaftersave="edit_company()" e-ng-options="c as c.name for c in countries">
-          {{ company.country.name || 'empty' }}
+          {{ company.country.name || 'Bitte waehlen' }}
           <span class="el-icon-pencil"></span>
         </span>
       {% endverbatim %}
@@ -160,7 +160,7 @@
   <div class="table table-striped">
     <div class="tr th security" ng-repeat="security in company.security_set">
       <div class="td">{{ security.readable_title}}</div>
-      <div class="td">{{ security.count }}</div>
+      <div class="td">{{ security.count | number }}</div>
       <div class="td numbered-segments"  ng-show="security.track_numbers">
         <span />
           {% endverbatim %}{% trans 'tracking security numbers for owners enabled. segments:' %}{% verbatim %}

@@ -85,7 +85,7 @@
         <div class="td text-right-flex order-2 number">{{ shareholder.number }}</div>
         <div class="td text-right-flex order-4 gray-circle">
           <value class='transform-center' ng-if="shareholder.share_count != '-'">
-              {{ shareholder.share_count | number : 0}}
+              {{ shareholder.share_count | number }}
               <span class="shares-count" ng-hide="shareholder.is_company">
                   ({{shareholder.share_percent | number : 1}}%)
               </span>
@@ -99,7 +99,7 @@
           </value>
         </div>
         <div class="td summary text-right-flex">
-          {{ company.share_count }}
+          {{ company.share_count | number }}
         </div>
       </div>
     </div><!-- /table-->
@@ -124,7 +124,7 @@
         <div class="td text-right-flex number order-2">{{ option_holder.number }}</div>
         <div class="td text-right-flex share shareholders-count gray-circle">
           <value class='transform-center' ng-if="option_holder.options_count != '-'">
-            {{ option_holder.options_count | number : 0}} ({{option_holder.options_percent | number : 1}}%)
+            {{ option_holder.options_count | number }} ({{option_holder.options_percent | number: 2}}%)
           </value>
         </div>
       </div>

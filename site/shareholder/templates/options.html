@@ -77,13 +77,13 @@
         </div>
         <div class="td text-right-flex count gray-circle" ng-click="goto_option(optiontransaction.pk)" ng-mouseover="">
           <span class="transform-center large">
-            {{ optiontransaction.count }}
+            {{ optiontransaction.count | number }}
           </span>
           <span class="note hide-mobile" ng-show="optiontransaction.option_plan.security.track_numbers && optiontransaction.readable_number_segments">
             (#{{ optiontransaction.readable_number_segments }})
           </span>
         </div>
-        <div class="td text-right-flex margin-top-additional" ng-click="goto_option(optiontransaction.pk)" ng-mouseover="">{{ optiontransaction.option_plan.exercise_price }}</div>
+        <div class="td text-right-flex margin-top-additional" ng-click="goto_option(optiontransaction.pk)" ng-mouseover="">{{ optiontransaction.option_plan.exercise_price | currency }}</div>
         <div class="td td-width-2" ng-click="goto_option(optiontransaction.pk)" ng-mouseover="">
           {{ optiontransaction.seller.full_name }}
         </div>

@@ -51,7 +51,7 @@
         {% trans "Count" %}:
       </div>
       <div class="td">
-        {% verbatim %}{{ optiontransaction.count }} {% endverbatim %}
+        {% verbatim %}{{ optiontransaction.count | number }} {% endverbatim %}
       </div>
     </div>
     <div class="tr th option-plan">
@@ -67,7 +67,7 @@
         {% trans "Vesting (in months)" %}:
       </div>
       <div class="td">
-        {% verbatim %}{{ optiontransaction.vesting_months }} {% endverbatim %}
+        {% verbatim %}{{ optiontransaction.vesting_months | number }} {% endverbatim %}
       </div>
     </div>
     <div class="tr th registration-type" ng-show="optiontransaction.readable_registration_type">

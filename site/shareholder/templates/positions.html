@@ -77,19 +77,19 @@
           </div>
           <div class="td td-width-2 order-2 buyer-name" ng-click="goto_position(position.pk)" ng-mouseover="">{{ position.buyer.full_name }}</div>
           <div class="td order-5 flex-column td-flex-inline" ng-click="goto_position(position.pk)" ng-mouseover="" >
-            <span class="custom-typeface-mobile hidden-md hidden-lg hidden-sm">{{ position.count }}</span>
+            <span class="custom-typeface-mobile hidden-md hidden-lg hidden-sm">{{ position.count | number }}</span>
             <span class="custom-typeface-mobile">{{ position.security.readable_title }}</span>
           </div>
           <div class="hide-mobile td text-right-flex count order-4 flex-column">
             <span class=" medium">
-              <span>{{ position.count }}</span>
+              <span>{{ position.count | number }}</span>
               <span class="note" ng-show="position.security.track_numbers && position.readable_number_segments">
                 (#{{ position.readable_number_segments }})
               </span>
             </span>
           </div>
           <div class="td text-right-flex order-3 td-flex-inline td-border-right flex-column" ng-click="goto_position(position.pk)" ng-mouseover="">
-            <b class="custom-typeface-mobile">{{ position.value }}</b>
+            <b class="custom-typeface-mobile">{{ position.value | currency }}</b>
             <span class="custom-typeface-mobile meta-mobile-only">CHF</span>
           </div>
           <div class="td hidden-xs" ng-click="goto_position(position.pk)" ng-mouseover="">

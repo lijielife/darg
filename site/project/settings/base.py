@@ -158,7 +158,7 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
-LANGUAGE_CODE = 'de'
+LANGUAGE_CODE = 'de-ch'
 
 TIME_ZONE = 'UTC'
 
@@ -168,6 +168,13 @@ USE_L10N = True
 
 USE_TZ = True
 
+THOUSAND_SEPARATOR = "'"
+
+USE_THOUSAND_SEPARATOR = True
+
+FORMAT_MODULE_PATH = [
+    'formats',
+]
 # -- LOGGING
 
 LOGGING = {
