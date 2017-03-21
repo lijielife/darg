@@ -58,7 +58,9 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
         self.assertIn(u'Natürliche', res)
 
     def test_import_repeated(self):
-
+        """
+        import twice and check data afterwards
+        """
         self.backend.import_from_file(str(self.company.pk))
         self.assertImport()
 
@@ -125,6 +127,7 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
         self.assertEqual(Position.objects.filter(depot_type='0').count(), 8)
         self.assertEqual(
             Position.objects.filter(stock_book_id__isnull=True).count(), 0)
+        self.assertFalse(Position.objects.filter(is_draft=True).exists())
 
         # share counts
         self.assertEqual(self.company.share_count, 17439)
