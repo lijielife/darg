@@ -421,11 +421,13 @@ class ComplexShareholderConstellationGenerator(object):
             PositionGenerator().generate(
                 company=company,
                 seller=shareholders[-2],
-                security=s1).buyer)
+                security=s1, count=shareholders[-2].share_count()
+                ).buyer)
         shareholders.append(
             PositionGenerator().generate(
                 company=company,
                 seller=shareholders[-1],
+                count=shareholders[-1].share_count(),
                 security=s1).buyer)
 
         return shareholders, s1

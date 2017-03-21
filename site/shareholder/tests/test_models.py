@@ -255,8 +255,8 @@ class PositionTestCase(TransactionTestCase):
         shareholders.reverse()
         for shareholder in shareholders:
             if shareholder == shareholders[-1]:
-                pt, count2 = math.modf(assets[shareholder.pk]['count'] *
-                                       multiplier)
+                part, count2 = math.modf(assets[shareholder.pk]['count'] *
+                                         multiplier)
                 count2 += round(leftover)
             else:
                 part, count2 = math.modf(
