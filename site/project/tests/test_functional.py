@@ -264,7 +264,7 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
                 self.assertEqual(row.find_element_by_class_name('number').text,
                                  shareholder.number)
                 self.assertEqual(row.find_element_by_class_name('share').text,
-                                 u'6 (6,00%)')
+                                 u'6 (6.00%)')
                 self.assertEqual(
                     row.find_element_by_class_name('full-name').text,
                     shareholder.get_full_name())
