@@ -12,6 +12,7 @@ site/media/cache
 site/media/media
 site/media/private
 site/media/public
+site/media/f
 build/*
 src/*
 site/project/settings/dev_local.py
