@@ -152,12 +152,12 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
             p.click_to_edit("legal-type")
             p.select_type("legal-type", _('Corporate'))
             p.save_edit("legal-type")
-            # wait for form to disappear
-            p.wait_until_invisible(
-                (By.CSS_SELECTOR, '.legal-type form'))
+            p.wait_until_js_rendered()
+            time.sleep(2)
 
-            self.buyer.user.userprofile.refresh_from_db()
-            self.assertEqual(self.buyer.user.userprofile.legal_type, 'C')
+            profile = self.buyer.user.userprofile
+            profile.refresh_from_db()
+            self.assertEqual(profile.legal_type, 'C')
 
         except Exception, e:
             self._handle_exception(e)

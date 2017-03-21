@@ -1,5 +1,6 @@
 {% extends "base_auth.html" %}
 {% load i18n %}
+{% load l10n %}
 
 {% block title %}
   <TITLE>{% trans "Shareholder" %}: {{ shareholder.get_full_name }} (#{{ shareholder.number }}) - Das Aktienregister</TITLE>
@@ -11,7 +12,7 @@
 
 <!-- required for angular API call -->
 <script>
-  var shareholder_id = {{ shareholder.id}};
+  var shareholder_id = {{ shareholder.id|unlocalize }};
 </script>
 
 <div ng_controller="ShareholderController">

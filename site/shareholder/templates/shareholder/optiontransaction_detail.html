@@ -1,5 +1,6 @@
 {% extends "base_auth.html" %}
 {% load i18n %}
+{% load l10n %}
 
 {% block title %}
   <TITLE>{% trans "Optiontransaction" %} {{ optiontransaction.pk }} - Das Aktienregister</TITLE>
@@ -11,7 +12,7 @@
 
 <!-- required for angular API call -->
 <script>
-  var optiontransaction_id = {{ optiontransaction.id}};
+  var optiontransaction_id = {{ optiontransaction.id|unlocalize}};
 </script>
 
 <div ng_controller="OptionTransactionController" id="optiontransaction-detail">

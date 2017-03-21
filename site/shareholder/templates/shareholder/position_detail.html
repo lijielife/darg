@@ -1,5 +1,6 @@
 {% extends "base_auth.html" %}
 {% load i18n %}
+{% load l10n %}
 
 {% block title %}
   <TITLE>{% trans "Position" %} {{ position.pk }} - Das Aktienregister</TITLE>
@@ -11,7 +12,7 @@
 
 <!-- required for angular API call -->
 <script>
-  var position_id = {{ position.id}};
+  var position_id = {{ position.id|unlocalize}};
 </script>
 
 <div ng_controller="PositionController" id="position-detail">

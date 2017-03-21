@@ -1,13 +1,14 @@
 {% extends "base_auth.html" %}
 {% load i18n %}
 {% load staticfiles %}
+{% load l10n %}
 
 {% block ng_app %}js.darg.app.company{% endblock %}
 
 {% block content %}
 
 <!-- required for angular API call -->
-<script>var company_id = {{ company.id}}</script>
+<script>var company_id = {{ company.id|unlocalize }}</script>
 
 <div ng_controller="CompanyController" id="company">
 
