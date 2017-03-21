@@ -16,10 +16,10 @@
   <ul>
     {% for operator in request.user.operator_set.all %}
     <li>
-      {% thumbnail operator.company.logo "30x30" as thumb %}
-        <img src="{{ thumb.url }}">
+      {% thumbnail operator.company.logo "60x60" as thumb %}
+        <img src="{{ thumb.url }}" width="30px">
       {% empty %}
-      <!-- FIXME add fallback here -->
+        <img src="{% static "compiled/images/default-company-logo.jpg" %}" alt="logo company default" width="30px"/>
       {% endthumbnail %}
 
       <a href="{% url "company_list" %}?company_id={{operator.company.pk}}">
