@@ -10,7 +10,7 @@ from shareholder.models import Bank
 class SwissBankImportBackend(object):
 
     def _call_url(self):
-        return requests.get(settings.SWISS_BANKS_DOWNLOAD_URL)
+        return requests.get(settings.SWISS_BANKS_DOWNLOAD_URL, verify=False)
 
     def _get_or_create_bank(self, data):
         defaults = dict(
