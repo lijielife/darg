@@ -354,7 +354,7 @@ MARKDOWNX_MARKDOWN_EXTENSIONS = [
     'markdown.extensions.smarty',
 ]
 # crispy images pls
-MARKDOWNX_IMAGE_MAX_SIZE = {'size': (900, 900), 'quality': 100,}
+MARKDOWNX_IMAGE_MAX_SIZE = {'size': (900, 900), 'quality': 100}
 
 # Media path
 # Path, where images will be stored in MEDIA_ROOT folder
@@ -390,17 +390,26 @@ if DROPBOX_ROOT_PATH:
         'oauth2_access_token': get_env_variable('DROPBOX_ACCESS_TOKEN'),
     }
 
+# swiss bank list download url
+SWISS_BANKS_DOWNLOAD_URL = ('https://www.six-interbank-clearing.com/dam'
+                            '/downloads/bc-bank-master/bcbankenstamm')
+
 
 # need to differentiate instances
-def backup_filename(databasename, servername, datetime, extension, content_type):
+def backup_filename(databasename, servername, datetime, extension,
+                    content_type):
     import getpass
     username = getpass.getuser()
-    return '{username}-{databasename}-{servername}-{datetime}.{extension}'.format(
-        **{'username': username, 'databasename': databasename,
-        'servername': servername, 'datetime': datetime, 'extension': extension})
+    return ('{username}-{databasename}-{servername}-{datetime}.{extension}'
+            ''.format(
+                **{'username': username, 'databasename': databasename,
+                   'servername': servername, 'datetime': datetime,
+                   'extension': extension})
+            )
 
 
-def media_backup_filename(databasename, servername, datetime, extension, content_type):
+def media_backup_filename(databasename, servername, datetime, extension,
+                          content_type):
     import getpass
     username = getpass.getuser()
     return '{username}-mediafiles-{servername}-{datetime}.{extension}'.format(

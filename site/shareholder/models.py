@@ -89,6 +89,28 @@ class Country(models.Model):
         ordering = ["name", "iso_code"]
 
 
+class Bank(models.Model):
+    """
+    list of all swiss banks
+    see https://goo.gl/i926Wr as guidance
+    """
+    short_name = models.CharField(max_length=15)
+    name = models.CharField(max_length=60)
+    postal_code = models.CharField(blank=True, max_length=10)
+    address = models.CharField(blank=True, max_length=35)
+    city = models.CharField(blank=True, max_length=35)
+    swift = models.CharField(max_length=14)
+    bcnr = models.CharField(max_length=5)
+    branchid = models.CharField(max_length=4)
+
+    class Meta:
+        verbose_name_plural = "Banks"
+        ordering = ["name"]
+
+    def __unicode__(self):
+        return u'{}({}, {})'.format(self.name, self.city, self.swift)
+
+
 def get_company_logo_upload_path(instance, filename):
     return os.path.join(
         "public", "company", "%d" % instance.id, "logo", filename)

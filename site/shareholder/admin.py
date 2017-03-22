@@ -1,8 +1,9 @@
 from django.contrib import admin
 from reversion.admin import VersionAdmin
 
-from shareholder.models import Shareholder, Company, Operator, Position, \
-    UserProfile, Country, OptionPlan, OptionTransaction, Security
+from shareholder.models import (Bank, Company, Country, Operator, OptionPlan,
+                                OptionTransaction, Position, Security,
+                                Shareholder, UserProfile)
 
 
 class ShareholderAdmin(VersionAdmin):
@@ -11,6 +12,10 @@ class ShareholderAdmin(VersionAdmin):
 
 
 class CompanyAdmin(VersionAdmin):
+    pass
+
+
+class BankAdmin(VersionAdmin):
     pass
 
 
@@ -90,3 +95,4 @@ admin.site.register(Country, CountryAdmin)
 admin.site.register(Security, SecurityAdmin)
 admin.site.register(OptionPlan, OptionPlanAdmin)
 admin.site.register(OptionTransaction, OptionTransactionAdmin)
+admin.site.register(Bank, BankAdmin)
