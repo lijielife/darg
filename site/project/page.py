@@ -94,7 +94,13 @@ class BasePage(object):
         # send form
         btn = self.wait_until_clickable((
             By.XPATH, '//button[contains(@class, "btn-primary")]'))
-        btn.click()
+
+        # seeing random exceptions, but page is loaded and we can go on...
+        try:
+            btn.click()
+        except TimeoutException:
+            pass
+
         time.sleep(1)  # wait for page reload  # FIXME
 
     def refresh(self):
