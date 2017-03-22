@@ -92,7 +92,7 @@ class BasePage(object):
         )).send_keys(password)
 
         # send form
-        btn = self.wait_until_visible((
+        btn = self.wait_until_clickable((
             By.XPATH, '//button[contains(@class, "btn-primary")]'))
         btn.click()
         time.sleep(1)  # wait for page reload  # FIXME
