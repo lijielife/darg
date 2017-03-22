@@ -912,7 +912,8 @@ class OptionsPlanFunctionalTestCase(BaseSeleniumTestCase):
                  '[ng_controller="OptionsController"] .panel .btn'))
             app.click_open_transfer_option()
             app.enter_transfer_option_with_segments_data(
-                buyer=shs[1], seller=shs[0])
+                buyer=shs[1], seller=shs[0], share_count=shs[0].options_count(),
+                number_segments="2100,2101,2102-2252")
             app.click_save_transfer_option()
             # wait for form to disappear
             app.wait_until_invisible(
