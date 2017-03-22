@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-21 13:55+0000\n"
+"POT-Creation-Date: 2017-03-21 23:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,101 +34,101 @@ msgstr ""
 msgid "Add Operator"
 msgstr ""
 
-#: company/templates/company.html:15
+#: company/templates/company.html:16
 msgid "Company Details for"
 msgstr ""
 
-#: company/templates/company.html:24
+#: company/templates/company.html:25
 msgid "Company Logo"
 msgstr ""
 
-#: company/templates/company.html:35
+#: company/templates/company.html:36
 msgid "Upload success"
 msgstr ""
 
-#: company/templates/company.html:46
+#: company/templates/company.html:47
 msgid "Data"
 msgstr ""
 
-#: company/templates/company.html:49
+#: company/templates/company.html:50
 msgid "Company Name"
 msgstr ""
 
-#: company/templates/company.html:61
+#: company/templates/company.html:62
 msgid "Company Share Count"
 msgstr ""
 
-#: company/templates/company.html:74
+#: company/templates/company.html:75
 msgid "Company founding date"
 msgstr ""
 
-#: company/templates/company.html:98
+#: company/templates/company.html:99
 msgid "Provisioned Capital (Liberiertes Kapital)"
 msgstr ""
 
-#: company/templates/company.html:111
+#: company/templates/company.html:112
 msgid "CHF for one vote based on face value of securities"
 msgstr ""
 
-#: company/templates/company.html:124
+#: company/templates/company.html:125
 msgid "Total Vote Count"
 msgstr ""
 
-#: company/templates/company.html:134
+#: company/templates/company.html:135
 msgid "Total Vote Count Floating"
 msgstr ""
 
-#: company/templates/company.html:144
+#: company/templates/company.html:145
 msgid "Company Headquarter Country"
 msgstr ""
 
-#: company/templates/company.html:158
+#: company/templates/company.html:159
 msgid "Securities"
 msgstr ""
 
-#: company/templates/company.html:166 company/tests/test_views.py:54
+#: company/templates/company.html:167 company/tests/test_views.py:54
 msgid "tracking security numbers for owners enabled. segments:"
 msgstr ""
 
-#: company/templates/company.html:179
+#: company/templates/company.html:180
 msgid "Please contact us at our"
 msgstr ""
 
-#: company/templates/company.html:181
+#: company/templates/company.html:182
 msgid ""
 "for getting more security types (common stock, preferred stock, numbered "
 "shares) added"
 msgstr ""
 
-#: company/templates/company.html:188
+#: company/templates/company.html:189
 msgid "Administrators"
 msgstr ""
 
-#: company/templates/company.html:189
+#: company/templates/company.html:190
 msgid "add operator"
 msgstr ""
 
-#: company/templates/company.html:217
+#: company/templates/company.html:218
 msgid "Option Plans"
 msgstr ""
 
-#: company/templates/company.html:223
+#: company/templates/company.html:224
 msgid "Options Plan Name"
 msgstr ""
 
-#: company/templates/company.html:226
+#: company/templates/company.html:227
 msgid "Edit Option Plan"
 msgstr ""
 
-#: company/templates/company.html:237
+#: company/templates/company.html:238
 msgid "Administration"
 msgstr ""
 
-#: company/templates/company.html:241
+#: company/templates/company.html:242
 msgid "reset company"
 msgstr ""
 
-#: company/templates/company.html:244
+#: company/templates/company.html:245
 msgid ""
 "the company, shareholders, transactions, options, and all other assigned "
 "data are deleted. the user can then create the company anew and start fresh"

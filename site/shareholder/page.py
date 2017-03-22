@@ -235,7 +235,7 @@ class OptionsPage(BasePage):
             date=kwargs.get('date') or DEFAULT_TEST_DATA.get('date_obj'))
         # inputs[0].send_keys(
         #    kwargs.get('date') or DEFAULT_TEST_DATA.get('date'))
-        inputs[3].send_keys(kwargs.get('number_segments',
+        inputs[3].send_keys(kwargs.get('share_count',
                             DEFAULT_TEST_DATA.get('share_count')))
         inputs[4].send_keys(kwargs.get('number_segments',
                             DEFAULT_TEST_DATA.get('number_segments')))

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-21 13:55+0000\n"
+"POT-Creation-Date: 2017-03-21 23:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -69,20 +69,20 @@ msgstr ""
 msgid "This email is already taken by another user/shareholder."
 msgstr ""
 
-#: services/rest/serializers.py:526 services/rest/tests/test_views.py:1121
+#: services/rest/serializers.py:526 services/rest/tests/test_views.py:1127
 msgid "Number must be unique for this company"
 msgstr ""
 
-#: services/rest/serializers.py:619 services/rest/serializers.py:974
+#: services/rest/serializers.py:619 services/rest/serializers.py:976
 msgid "Invalid security numbers segments."
 msgstr ""
 
-#: services/rest/serializers.py:625 services/rest/serializers.py:987
+#: services/rest/serializers.py:625 services/rest/serializers.py:989
 msgid "Segments \"{}\" must be owned by seller \"{}\". Available are {}"
 msgstr ""
 
-#: services/rest/serializers.py:638 services/rest/serializers.py:914
-#: services/rest/serializers.py:999
+#: services/rest/serializers.py:638 services/rest/serializers.py:916
+#: services/rest/serializers.py:1001
 msgid "Number of shares in segments ({}) does not match count {}"
 msgstr ""
 
@@ -91,38 +91,42 @@ msgid ""
 "Segment {} is blocked for options and cannot be transfered to a shareholder."
 msgstr ""
 
-#: services/rest/serializers.py:763 services/rest/serializers.py:1113
+#: services/rest/serializers.py:763 services/rest/serializers.py:1115
 msgid "Certificate ID {} is already used in transaction or option transaction"
 msgstr ""
 
-#: services/rest/serializers.py:772
+#: services/rest/serializers.py:772 services/rest/serializers.py:1124
 msgid "count {} must be greater then 0"
 msgstr ""
 
-#: services/rest/serializers.py:782
+#: services/rest/serializers.py:784
 msgid "seller does not have enough shares. max value is {}."
 msgstr ""
 
-#: services/rest/serializers.py:811
+#: services/rest/serializers.py:813
 msgid "Not a pdf file."
 msgstr ""
 
-#: services/rest/serializers.py:891
+#: services/rest/serializers.py:893
 msgid "Invalid or empty security numbers segments."
 msgstr ""
 
-#: services/rest/serializers.py:902
+#: services/rest/serializers.py:904
 msgid ""
 "Segments \"{}\" must be owned by company shareholder \"{}\". Available are {}"
 msgstr ""
 
-#: services/rest/serializers.py:1011
+#: services/rest/serializers.py:1013
 msgid ""
 "Segment {} is not reserved for options inside a option plan and cannot be "
 "transfered to a option holder. Available are: {}"
 msgstr ""
 
-#: services/rest/tests/test_serializers.py:492
+#: services/rest/serializers.py:1136
+msgid "seller does not have enough options. max value is {}."
+msgstr ""
+
+#: services/rest/tests/test_serializers.py:514
 msgid "Human Being"
 msgstr ""
 

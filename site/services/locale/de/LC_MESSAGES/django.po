@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-21 13:55+0000\n"
-"PO-Revision-Date: 2017-03-21 13:56+0000\n"
+"POT-Creation-Date: 2017-03-21 23:22+0000\n"
+"PO-Revision-Date: 2017-03-21 23:22+0000\n"
 "Last-Translator:   <jirka@kkd-partners.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -83,20 +83,20 @@ msgid "This email is already taken by another user/shareholder."
 msgstr ""
 "Diese E-Mail wird bereits von einem anderen Nutzer/Gesellschafter verwendet."
 
-#: services/rest/serializers.py:526 services/rest/tests/test_views.py:1121
+#: services/rest/serializers.py:526 services/rest/tests/test_views.py:1127
 msgid "Number must be unique for this company"
 msgstr "Aktionärsnummer darf pro Unternehmen nur einmal vorkommen."
 
-#: services/rest/serializers.py:619 services/rest/serializers.py:974
+#: services/rest/serializers.py:619 services/rest/serializers.py:976
 msgid "Invalid security numbers segments."
 msgstr "Ungültige Aktiennummern (1,2,3,4-9)."
 
-#: services/rest/serializers.py:625 services/rest/serializers.py:987
+#: services/rest/serializers.py:625 services/rest/serializers.py:989
 msgid "Segments \"{}\" must be owned by seller \"{}\". Available are {}"
 msgstr "Aktiennummer \"{}\" gehört nicht zu Verkäufer \"{}\". Verfügbar sind \"{}\"."
 
-#: services/rest/serializers.py:638 services/rest/serializers.py:914
-#: services/rest/serializers.py:999
+#: services/rest/serializers.py:638 services/rest/serializers.py:916
+#: services/rest/serializers.py:1001
 msgid "Number of shares in segments ({}) does not match count {}"
 msgstr ""
 "Anzahl der Aktien in den Aktiennummern ist nicht identisch mit der Anzahl "
@@ -109,33 +109,33 @@ msgstr ""
 "Aktiennummer(n) {} ist blockiert für Aktienoptionen und kann nicht an einen "
 "Aktionär transferiert werden."
 
-#: services/rest/serializers.py:763 services/rest/serializers.py:1113
+#: services/rest/serializers.py:763 services/rest/serializers.py:1115
 msgid "Certificate ID {} is already used in transaction or option transaction"
 msgstr ""
 "Urkunden/Zertifikats-ID {} wird bereits in einer Transaktion oder Option "
 "verwendet."
 
-#: services/rest/serializers.py:772
+#: services/rest/serializers.py:772 services/rest/serializers.py:1124
 msgid "count {} must be greater then 0"
 msgstr "Anzahl Aktien {} muss größer als Null sein."
 
-#: services/rest/serializers.py:782
+#: services/rest/serializers.py:784
 msgid "seller does not have enough shares. max value is {}."
 msgstr "Verkäufer besitzt nur {} Aktien."
 
-#: services/rest/serializers.py:811
+#: services/rest/serializers.py:813
 msgid "Not a pdf file."
 msgstr "Falsches Dateiformat. Nur PDF ist erlaubt."
 
-#: services/rest/serializers.py:891
+#: services/rest/serializers.py:893
 msgid "Invalid or empty security numbers segments."
 msgstr "Ungültige Aktiennummern. Valide sind: \"1,2,3,4-9\"."
 
-#: services/rest/serializers.py:902
+#: services/rest/serializers.py:904
 msgid "Segments \"{}\" must be owned by company shareholder \"{}\". Available are {}"
 msgstr "Aktiennummer \"{}\" gehört nicht zu Verkäufer \"{}\". Verfügbar sind \"{}\"."
 
-#: services/rest/serializers.py:1011
+#: services/rest/serializers.py:1013
 msgid ""
 "Segment {} is not reserved for options inside a option plan and cannot be "
 "transfered to a option holder. Available are: {}"
@@ -143,7 +143,12 @@ msgstr ""
 "Aktiennummer(n) {} ist nicht reserviert für einen Optionsplan and kann nicht"
 " an einen Optionsinhaber transferiert werden. Verfügbar sind aber: {}."
 
-#: services/rest/tests/test_serializers.py:492
+#: services/rest/serializers.py:1136
+#| msgid "seller does not have enough shares. max value is {}."
+msgid "seller does not have enough options. max value is {}."
+msgstr "Verkäufer besitzt nur {} Optionen."
+
+#: services/rest/tests/test_serializers.py:514
 msgid "Human Being"
 msgstr "Natürliche Person"
 
