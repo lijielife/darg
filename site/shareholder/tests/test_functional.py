@@ -424,6 +424,7 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app = page.OptionsPage(
                 self.selenium, self.live_server_url, self.operator.user)
             app.click_open_create_option_plan()
+            app.wait_until_modal_opened('addOptionPlan')
 
             self.assertTrue(app.is_option_plan_form_open())
 
@@ -431,6 +432,7 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.click_save_option_plan_form()
 
             # wait for form to disappear
+            app.close_modal('addOptionPlan')
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
             self.assertTrue(app.is_no_errors_displayed())
@@ -449,6 +451,7 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app = page.OptionsPage(
                 self.selenium, self.live_server_url, self.operator.user)
             app.click_open_create_option_plan()
+            app.wait_until_modal_opened('addOptionPlan')
 
             self.assertTrue(app.is_option_plan_form_open())
 
@@ -456,6 +459,7 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.click_save_option_plan_form()
 
             # wait for form to disappear
+            app.close_modal('addOptionPlan')
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
             self.assertTrue(app.is_no_errors_displayed())
@@ -490,10 +494,12 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app = page.OptionsPage(
                 self.selenium, self.live_server_url, self.operator.user)
             app.click_open_create_option_plan()
+            app.wait_until_modal_opened('addOptionPlan')
             app.enter_option_plan_form_data()
             app.click_save_option_plan_form()
 
             # wait for form to disappear
+            app.close_modal('addOptionPlan')
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
             app.click_open_transfer_option()
             app.show_optional_fields()
@@ -504,6 +510,7 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.click_save_transfer_option()
 
             # wait for form to disappear
+            app.close_modal('addOptionPlan')
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
             self.assertTrue(app.is_no_errors_displayed())
@@ -667,6 +674,7 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app = page.OptionsPage(
                 self.selenium, self.live_server_url, operator.user)
             app.click_open_create_option_plan()
+            app.wait_until_modal_opened('addOptionPlan')
 
             self.assertTrue(app.is_option_plan_form_open())
 
@@ -674,6 +682,7 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.click_save_option_plan_form()
 
             # wait for form to disappear
+            app.close_modal('addOptionPlan')
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
             self.assertTrue(app.is_no_errors_displayed())
@@ -688,6 +697,7 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.click_save_transfer_option()
 
             # wait for form to disappear
+            app.close_modal('addOptionPlan')
             app.wait_until_invisible(
                 (By.CSS_SELECTOR, '#add_option_transaction'))
 
@@ -759,6 +769,7 @@ class OptionsPlanFunctionalTestCase(BaseSeleniumTestCase):
             app = page.OptionsPage(
                 self.selenium, self.live_server_url, operator.user)
             app.click_open_create_option_plan()
+            app.wait_until_modal_opened('addOptionPlan')
 
             self.assertTrue(app.is_option_plan_form_open())
 
@@ -766,7 +777,8 @@ class OptionsPlanFunctionalTestCase(BaseSeleniumTestCase):
             app.enter_option_plan_form_data_with_segments(number_segments='')
             app.click_save_option_plan_form()
             # wait for error
-            app.wait_until_visible((By.CSS_SELECTOR, '.form-error'))
+            app.wait_until_visible((
+                By.CSS_SELECTOR, '#addOptionPlan .form-error'))
             self.assertEqual(
                 app.get_form_errors(),
                 [u'Aktiennummern: Ung\xfcltige Aktiennummern. '
@@ -776,11 +788,12 @@ class OptionsPlanFunctionalTestCase(BaseSeleniumTestCase):
             # not owned by company shareholder
             app.refresh()
             app.click_open_create_option_plan()
+            app.wait_until_modal_opened('addOptionPlan')
             app.enter_option_plan_form_data_with_segments(
                 number_segments='1050', count=1)
             app.click_save_option_plan_form()
             # wait for error
-            app.wait_until_visible((By.CSS_SELECTOR, '.form-error'))
+            app.wait_until_visible((By.CSS_SELECTOR, '#addOptionPlan .form-error'))
 
             # attempt to fix unstable @CI
             # FIXME remove once stable
@@ -799,11 +812,12 @@ class OptionsPlanFunctionalTestCase(BaseSeleniumTestCase):
             # wrong count vs. segment count
             app.refresh()
             app.click_open_create_option_plan()
+            app.wait_until_modal_opened('addOptionPlan')
             app.enter_option_plan_form_data_with_segments(
                 number_segments='1667', count=2)
             app.click_save_option_plan_form()
             # wait for error
-            app.wait_until_visible((By.CSS_SELECTOR, '.form-error'))
+            app.wait_until_visible((By.CSS_SELECTOR, '#addOptionPlan .form-error'))
             self.assertEqual(
                 app.get_form_errors(),
                 [u'Anzahl: Anzahl der Aktien in den Aktiennummern ist nicht '
@@ -812,12 +826,14 @@ class OptionsPlanFunctionalTestCase(BaseSeleniumTestCase):
             # successful
             app.refresh()
             app.click_open_create_option_plan()
+            app.wait_until_modal_opened('addOptionPlan')
             app.enter_option_plan_form_data_with_segments(
                 number_segments='1667',
                 count=1)
             app.click_save_option_plan_form()
             # wait for error to disappear
-            app.wait_until_invisible((By.CSS_SELECTOR, '.form-error'))
+            app.close_modal('addOptionPlan')
+            app.wait_until_invisible((By.CSS_SELECTOR, '#addOptionPlan .form-error'))
 
             # attempt to fix unstable @CI
             # FIXME remove once stable
@@ -850,11 +866,13 @@ class OptionsPlanFunctionalTestCase(BaseSeleniumTestCase):
             app = page.OptionsPage(
                 self.selenium, self.live_server_url, operator.user)
             app.click_open_create_option_plan()
+            app.wait_until_modal_opened('addOptionPlan')
             self.assertTrue(app.is_option_plan_form_open())
             app.enter_option_plan_form_data_with_segments()
             app.click_save_option_plan_form()
 
             # wait for form to disappear
+            app.close_modal('addOptionPlan')
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
             self.assertTrue(app.is_no_errors_displayed())
@@ -919,6 +937,7 @@ class OptionsPlanFunctionalTestCase(BaseSeleniumTestCase):
                 number_segments="2100,2101,2102-2252")
             app.click_save_transfer_option()
             # wait for form to disappear
+            app.close_modal('addOptionTransaction')
             app.wait_until_invisible(
                 (By.CSS_SELECTOR, '#add_option_transaction'))
             self.assertTrue(app.is_no_errors_displayed())
@@ -1218,7 +1237,6 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.click_save_position()
 
             # wait for error
-            app.close_modal('addPosition')
             app.wait_until_visible((By.CSS_SELECTOR, '.form-error'))
 
             self.assertFalse(app.is_no_errors_displayed())
@@ -1243,6 +1261,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.click_save_position()
 
             # wait for form to disappear
+            app.close_modal('addPosition')
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_position'))
 
             self.assertEqual(len(app.get_position_row_data()), 8)

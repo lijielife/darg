@@ -268,7 +268,11 @@ class OptionsPage(BasePage):
         el.click()
 
     def show_optional_fields(self):
-        self.driver.find_element_by_class_name('el-icon-plus-sign').click()
+        els = self.driver.find_elements_by_class_name('el-icon-chevron-down')
+        for el in els:
+            if el.is_displayed():
+                el.click()
+                return
 
     # -- VALIDATIONs
     def is_option_plan_form_open(self):
