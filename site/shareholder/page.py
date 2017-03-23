@@ -193,7 +193,7 @@ class OptionsPage(BasePage):
         self.use_datepicker(
             class_name='add-option',
             date=kwargs.get('date') or DEFAULT_TEST_DATA.get('date_obj'))
-        #inputs[0].send_keys(
+        # inputs[0].send_keys(
         #    kwargs.get('date') or DEFAULT_TEST_DATA.get('date'))
         inputs[3].send_keys(str(
             kwargs.get('count', DEFAULT_TEST_DATA.get('count'))))
@@ -419,6 +419,7 @@ class PositionPage(BasePage):
     def click_open_split_form(self):
         btn = self.driver.find_element_by_class_name('split-shares')
         btn.click()
+        self.wait_until_modal_opened('splitShares')
 
     def click_open_cap_increase_form(self):
         btn = self.driver.find_element_by_class_name('add-capital')
@@ -486,7 +487,7 @@ class PositionPage(BasePage):
             inputs[9].send_keys(position.certificate_id)
 
     def show_optional_fields(self):
-        self.driver.find_element_by_class_name('el-icon-plus-sign').click()
+        self.driver.find_element_by_class_name('el-icon-chevron-down').click()
 
     def enter_bought_at(self, date):
         """

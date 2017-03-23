@@ -203,14 +203,20 @@ class BasePage(object):
 
         raise Exception('Clickable button not found')
 
+    def close_modal(self, id):
+        modal = self.wait_until_visible((By.ID, id))
+        modal.find_element_by_class_name('close').click()
+        self.wait_until_invisible((By.ID, id))
+
     def enter_typeahead(self, id, shareholder, cls):
         """
         enter selling shareholder
         """
         # trigger typeahead search
-        el = self.driver.find_element_by_id(id)
+        el = self.wait_until_visible((By.ID, id))
         form = el.find_element_by_tag_name('form')
         field = form.find_element_by_class_name(cls)
+        field.click()
         field.send_keys(shareholder.get_full_name()[:7])
 
         # select typeahead result
@@ -218,7 +224,7 @@ class BasePage(object):
             (By.CSS_SELECTOR, "#{} form .dropdown-menu".format(id)))
         self.wait_until_text_present(
             (By.CSS_SELECTOR, '#{} form .dropdown-menu li a'.format(id)),
-            shareholder.get_full_name())
+            shareholder.get_full_name(), timeout=15)
         self.wait_until_clickable(
             (By.CSS_SELECTOR, '#{} form .dropdown-menu li a'.format(id))
         ).click()
@@ -341,13 +347,17 @@ class BasePage(object):
         element = wait.until(EC.presence_of_element_located(element))
         return element
 
-    def wait_until_text_present(self, element, text):
+    def wait_until_text_present(self, element, text, timeout=None):
         """
         wait until element is clickable
         """
-        wait = WebDriverWait(self.driver, settings.TEST_WEBDRIVER_WAIT_TIMEOUT)
+        wait = WebDriverWait(self.driver,
+                             timeout or settings.TEST_WEBDRIVER_WAIT_TIMEOUT)
         element = wait.until(EC.text_to_be_present_in_element(element, text))
         return element
+
+    def wait_until_modal_opened(self, id):
+        self.wait_until_visible((By.ID, id))
 
     def drag_n_drop(self, object, target):
         """
