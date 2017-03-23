@@ -303,6 +303,8 @@ class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
         seller = ShareholderGenerator().generate(company=operator.company)
         securities = TwoInitialSecuritiesGenerator().generate(
             company=operator.company)
+        position = PositionGenerator().generate(
+            seller=None, security=securities[1], buyer=seller)
 
         logged_in = self.client.login(username=user.username,
                                       password=DEFAULT_TEST_DATA['password'])
@@ -408,6 +410,8 @@ class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
         seller = ShareholderGenerator().generate(company=operator.company)
         securities = TwoInitialSecuritiesGenerator().generate(
             company=operator.company)
+        position = PositionGenerator().generate(
+            seller=None, security=securities[1], buyer=seller)
 
         logged_in = self.client.login(username=user.username,
                                       password=DEFAULT_TEST_DATA['password'])
@@ -633,6 +637,8 @@ class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
 
         cs = CompanyShareholderGenerator().generate(
             security=sec1, company=operator.company)
+        position = PositionGenerator().generate(
+            seller=None, security=sec1, buyer=cs, count=1000000)
         buyer = ShareholderGenerator().generate(company=operator.company)
 
         logger.info('data preparation done.')
@@ -711,7 +717,7 @@ class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
 
         # call with perf check
         # was 55, increased to 95
-        with self.assertLessNumQueries(56):
+        with self.assertLessNumQueries(58):
             response = self.client.post(
                 u'/services/rest/position',
                 data,

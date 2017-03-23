@@ -87,7 +87,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
             p.wait_until_visible(
                 (By.CSS_SELECTOR, 'div.shareholder-number span.el-icon-pencil'))
             p.click_to_edit("shareholder-number")
-            p.edit_shareholder_number(99, "shareholder-number")
+            p.edit_field(99, "shareholder-number")
             p.save_edit("shareholder-number")
             # wait for form to disappear
             p.wait_until_invisible(
@@ -120,7 +120,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
             p.wait_until_visible(
                 (By.CSS_SELECTOR, 'div.company-department span.el-icon-pencil'))
             p.click_to_edit("company-department")
-            p.edit_shareholder_number('IT Security Dep.', "company-department")
+            p.edit_field('IT Security Dep.', "company-department")
             p.save_edit("company-department")
             # wait for form to disappear
             p.wait_until_invisible(
@@ -152,12 +152,12 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
             p.click_to_edit("legal-type")
             p.select_type("legal-type", _('Corporate'))
             p.save_edit("legal-type")
-            # wait for form to disappear
-            p.wait_until_invisible(
-                (By.CSS_SELECTOR, '.legal-type form'))
+            p.wait_until_js_rendered()
+            time.sleep(2)
 
-            self.buyer.user.userprofile.refresh_from_db()
-            self.assertEqual(self.buyer.user.userprofile.legal_type, 'C')
+            profile = self.buyer.user.userprofile
+            profile.refresh_from_db()
+            self.assertEqual(profile.legal_type, 'C')
 
         except Exception, e:
             self._handle_exception(e)
@@ -269,8 +269,9 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
             # wait for 'link'
             p.wait_until_visible(
                 (By.CSS_SELECTOR, 'div.user-email span.el-icon-pencil'))
+            p.wait_until_js_rendered()  # prevent Element is not clickable ...
             p.click_to_edit("user-email")
-            p.edit_shareholder_number(self.operator.user.email, "user-email")
+            p.edit_field(self.operator.user.email, "user-email")
             p.save_edit("user-email")
             # wait for form to disappear
             p.wait_until_invisible((By.CSS_SELECTOR, 'div.user-email form'))
@@ -461,7 +462,8 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
 
             app.click_open_transfer_option()
             app.enter_transfer_option_data(
-                buyer=self.buyer, seller=self.seller)
+                seller=self.buyer, buyer=self.seller,
+                count=self.buyer.options_count())
             app.click_save_transfer_option()
 
             # wait for form to disappear
@@ -496,8 +498,9 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.click_open_transfer_option()
             app.show_optional_fields()
             app.enter_transfer_option_data(
-                buyer=self.buyer, seller=self.seller, certificate_id='33',
-                stock_book_id='44', depot_type='1')
+                seller=self.buyer, buyer=self.seller, certificate_id='33',
+                stock_book_id='44', depot_type='1',
+                count=self.buyer.options_count())
             app.click_save_transfer_option()
 
             # wait for form to disappear
@@ -505,7 +508,8 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
 
             self.assertTrue(app.is_no_errors_displayed())
             self.assertTrue(app.is_transfer_option_shown(
-                buyer=self.buyer, seller=self.seller
+                seller=self.buyer, buyer=self.seller,
+                count=self.buyer.options_count()
             ))
             self.assertTrue(app.is_option_date_equal('13.05.16'))
             security = self.buyer.option_buyer.first().option_plan.security
@@ -589,10 +593,18 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
         bad: 15.5.2016)
         """
 
+        # initial optionplan and option creation transaction
         self.optionplan = OptionPlanGenerator().generate(
             company=self.operator.company,
             security=self.securities[0]
         )
+        PositionGenerator().generate(
+            seller=None, buyer=self.operator.company.get_company_shareholder(),
+            count=100, security=self.securities[0])
+        OptionTransactionGenerator().generate(
+            seller=None, buyer=self.operator.company.get_company_shareholder(),
+            option_plan=self.optionplan,
+            count=self.operator.company.get_company_shareholder().share_count())
 
         try:
 
@@ -602,7 +614,9 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.enter_transfer_option_data(
                 buyer=self.buyer,
                 title=self.optionplan.title,
-                seller=self.operator.company.get_company_shareholder()
+                seller=self.operator.company.get_company_shareholder(),
+                count=self.operator.company.get_company_shareholder()
+                .options_count()
             )
             app.click_save_transfer_option()
 
@@ -618,7 +632,9 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.enter_transfer_option_data(
                 date=datetime.date(2016, 11, 1), buyer=self.buyer,
                 title=self.optionplan.title,
-                seller=self.operator.company.get_company_shareholder()
+                seller=self.operator.company.get_company_shareholder(),
+                count=self.operator.company.get_company_shareholder()
+                .options_count()
             )
             app.click_save_transfer_option()
 
@@ -665,7 +681,8 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             ct = shs[1].option_buyer.count()
             app.click_open_transfer_option()
             app.enter_transfer_option_with_segments_data(
-                buyer=shs[1], seller=shs[0])
+                buyer=shs[1], seller=shs[0], share_count=shs[0].options_count(),
+                number_segments="2100,2101,2102-2252")
             app.click_save_transfer_option()
 
             # wait for form to disappear
@@ -896,7 +913,8 @@ class OptionsPlanFunctionalTestCase(BaseSeleniumTestCase):
                  '[ng_controller="OptionsController"] .panel .btn'))
             app.click_open_transfer_option()
             app.enter_transfer_option_with_segments_data(
-                buyer=shs[1], seller=shs[0])
+                buyer=shs[1], seller=shs[0], share_count=shs[0].options_count(),
+                number_segments="2100,2101,2102-2252")
             app.click_save_transfer_option()
             # wait for form to disappear
             app.wait_until_invisible(
@@ -1028,6 +1046,12 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
         """
         add position with floating point value and large count
         """
+        # seed sufficient amout of shares
+        PositionGenerator().generate(
+            buyer=self.seller, seller=None, security=self.securities[1],
+            count=15000000)
+
+        # template object
         position = PositionGenerator().generate(
             save=False, seller=self.seller, buyer=self.buyer,
             security=self.securities[1])
@@ -1272,6 +1296,11 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
         """
         confirm form error handling
         """
+        # seed more positions
+        PositionGenerator().generate(
+            buyer=self.seller, seller=None, count=88888888,
+            security=self.securities[1])
+        # position template
         position = PositionGenerator().generate(
             save=False, seller=self.seller, buyer=self.buyer,
             security=self.securities[1])
