@@ -87,7 +87,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
             p.wait_until_visible(
                 (By.CSS_SELECTOR, 'div.shareholder-number span.el-icon-pencil'))
             p.click_to_edit("shareholder-number")
-            p.edit_shareholder_number(99, "shareholder-number")
+            p.edit_field(99, "shareholder-number")
             p.save_edit("shareholder-number")
             # wait for form to disappear
             p.wait_until_invisible(
@@ -120,7 +120,7 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
             p.wait_until_visible(
                 (By.CSS_SELECTOR, 'div.company-department span.el-icon-pencil'))
             p.click_to_edit("company-department")
-            p.edit_shareholder_number('IT Security Dep.', "company-department")
+            p.edit_field('IT Security Dep.', "company-department")
             p.save_edit("company-department")
             # wait for form to disappear
             p.wait_until_invisible(
@@ -269,8 +269,9 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
             # wait for 'link'
             p.wait_until_visible(
                 (By.CSS_SELECTOR, 'div.user-email span.el-icon-pencil'))
+            p.wait_until_js_rendered()  # prevent Element is not clickable ...
             p.click_to_edit("user-email")
-            p.edit_shareholder_number(self.operator.user.email, "user-email")
+            p.edit_field(self.operator.user.email, "user-email")
             p.save_edit("user-email")
             # wait for form to disappear
             p.wait_until_invisible((By.CSS_SELECTOR, 'div.user-email form'))
