@@ -14,23 +14,80 @@
   <p class="explaination">
     {% trans "Use Transactions to record each shareholders state of shares. For initial foundation transfer shares from company to..."%}
   </p>
-  {% include "_form_errors.html" %}
-
+  
   <div class="panel panel-column" ng-hide="show_add_position || show_add_capital || show_split">
-    <a class="btn btn-focus add-position" href="" ng-click="show_add_position_form()">{% trans "Transfer Shares" %}</a>
-    <a class="btn btn-focus add-capital" href="" ng-click="show_add_capital_form()">{% trans "Increase Capital" %}</a>
-    <a class="btn btn-focus split-shares" href="" ng-click="show_split_form()">{% trans "Split Shares" %}</a>
+    <a class="btn btn-focus add-position" data-toggle="modal" data-target="#addPosition" href="" ng-click="show_add_position_form()">{% trans "Transfer Shares" %}</a>
+    <a class="btn btn-focus add-capital" href="" data-toggle="modal" data-target="#capitalForm" ng-click="show_add_capital_form()">{% trans "Increase Capital" %}</a>
+    <a class="btn btn-focus split-shares" href="" data-toggle="modal" data-target="#splitShares" ng-click="show_split_form()">{% trans "Split Shares" %}</a>
   </div>
 
-  <div id="add_position" ng-hide="!show_add_position">
-    {% include "_add_position_form.html" %}
+  <!-- MODAL ADD POSITION -->
+  <div class="modal fade" id="addPosition" tabindex="-1" role="dialog" aria-labelledby="addPositionLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="addPositionLabel">{% trans "Transfer Shares" %}</h4>
+        </div>
+        <div class="modal-body">
+          {% include "_form_errors.html" %}
+
+          <!-- add position success -->
+          <p class="alert alert-success" ng-show="position_added_success">
+            {% trans "Position added" %}
+          </p>
+          <div id="add_position">
+            {% include "_add_position_form.html" %}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="add_capital" ng-hide="!show_add_capital">
-    {% include "_add_capital_form.html" %}
+
+  <!-- MODAL CAPITAL FORM -->
+  <div class="modal fade" id="capitalForm" tabindex="-1" role="dialog" aria-labelledby="capitalFormLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="capitalFormLabel">{% trans "Increase Capital" %}</h4>
+        </div>
+        <div class="modal-body">
+          {% include "_form_errors.html" %}
+          <!-- add position success -->
+          <p class="alert alert-success" ng-show="position_added_success">
+            {% trans "Position added" %}
+          </p>
+          <div id="add_capital">
+            {% include "_add_capital_form.html" %}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="split-shares" ng-hide="!show_split">
-    {% include "_split_shares_form.html" %}
+
+  <!-- MODAL SPLIT SHARES -->
+  <div class="modal fade" id="splitShares" tabindex="-1" role="dialog" aria-labelledby="splitSharesLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="splitSharesLabel">{% trans "Split Shares" %}</h4>
+        </div>
+        <div class="modal-body">
+          {% include "_form_errors.html" %}
+          <!-- add position success -->
+          <p class="alert alert-success" ng-show="split_added_success">
+            {% trans "Split shares added" %}
+          </p>
+          <div id="split-shares">
+            {% include "_split_shares_form.html" %}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+
 
   <!-- TABLE ACTIONS -->
   {% include "_table_actions.html" %}

@@ -38,20 +38,35 @@
     </h1>
 
     <!-- ACTIONS -->
-    <div class="panel" ng-hide="show_add_shareholder" >
-      <a class="btn btn-focus" href="" ng-click="show_add_shareholder_form()">
+    <div class="panel" ng-hide="show_add_shareholder">
+      <a class="btn btn-focus" data-toggle="modal" data-target="#addShareholder" href="" ng-click="show_add_shareholder_form()">
         {% endverbatim %}{% trans "Add Shareholder" %}{% verbatim %}
       </a>
     </div>
-
-    <div id="add_shareholder" ng-hide="!show_add_shareholder">
-      {% endverbatim %}{% include "_add_shareholder_form.html" %}{% verbatim %}
+    <!-- Modal -->
+    <div class="modal fade" id="addShareholder" tabindex="-1" role="dialog" aria-labelledby="addShareholderLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="addShareholderLabel">{% endverbatim %}{% trans "Add Shareholder" %}{% verbatim %}</h4>
+          </div>
+          <div class="modal-body">
+            {% endverbatim %}
+              {% include "_form_errors.html" %}
+            {% verbatim %}
+            <!-- add shareholder success -->
+            <p class="shareholder-added-success alert alert-success" ng-show="shareholder_added_success">
+              {% endverbatim %}{% trans "Shareholderr added. record share transfers here" %}{% verbatim %}
+            </p>
+            <div id="add_shareholder" ng-hide="!user.operator_set.length  || !show_add_shareholder">
+              {% endverbatim %}{% include "_add_shareholder_form.html" %}{% verbatim %}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- add shareholder success -->
-    <p class="shareholder-added-success alert alert-success" ng-show="shareholder_added_success">
-      {% endverbatim %}{% trans "Shareholderr added. record share transfers here" %}{% verbatim %}
-    </p>
 
 	<p class="panel" ng-show="shareholders.length < 10 ">
 	{% endverbatim %}

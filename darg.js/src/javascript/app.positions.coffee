@@ -6,10 +6,12 @@ app.config ['$translateProvider', ($translateProvider) ->
     $translateProvider.useSanitizeValueStrategy('escaped')
 ]
 
-app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position', 'Split', ($scope, $http, $window, Position, Split) ->
+app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position', 'Split', '$timeout', ($scope, $http, $window, Position, Split, $timeout) ->
     $scope.positions = []
     $scope.securities = []
 
+    $scope.position_added_success = false
+    $scope.split_added_success = false
     $scope.show_add_position = false
     $scope.show_add_capital = false
     $scope.show_split_data = false
@@ -171,6 +173,10 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
             $scope.show_add_position = false
             $scope.show_add_capital = false
             $scope.newPosition = new Position()
+            $scope.position_added_success = true
+            $timeout ->
+                $scope.position_added_success = false
+            , 5000
         .then ->
             # Clear any errors
             $scope.errors = null
@@ -210,6 +216,10 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
             $scope.positions = result.data
         .then ->
             $scope.newSplit = new Split()
+            $scope.split_added_success = true
+            $timeout ->
+                $scope.split_added_success = false
+            , 5000
         .then ->
             $scope.errors = null
             $scope.show_split = false

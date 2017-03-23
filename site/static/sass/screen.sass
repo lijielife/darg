@@ -103,6 +103,19 @@ html, body
   form
     margin-bottom: 3em
 
+    input, select
+      line-height: normal
+      border: 1px solid #e0e0e0
+      border-radius: 4px
+      padding: 10px 15px
+      &:focus
+        box-shadow: unset
+        border-color: #337ab7
+    select
+      box-shadow: unset
+      padding-top: 0
+      padding-bottom: 0
+
   p
     margin: 0 0 10px
     line-height: 1.5em
@@ -201,7 +214,7 @@ html, body
   .el-icon-cogs
     font-size: 50%
 
-  .el-icon-chevron-down
+  .el-icon-chevron-down, .el-icon-chevron-up
     font-size: 75%
 
   .el-icon-cogs-wrapper
@@ -570,6 +583,26 @@ nav.navbar
       font-size: 0.8em
       padding-top: 6px
 
+//override bootstrap styles
+.form-group
+  input, select
+    margin: 5px 0
+.modal-content
+  box-shadow: none
+.modal-backdrop
+  background-color: $color-gray-lighten
+  &.in
+    opacity: .85
+.custom-form-group
+  @include display-flex(flex)
+  @include align-items(center)
+  @include justify-content(space-between)
+  @include flex-flow(row-reverse)
+  .btn-focus
+    width: 75%
+  .btn-default
+    width: 20%
+
 // -- responsive table
 .show-mobile
   display: none
@@ -674,7 +707,8 @@ div#shareholder_list
   .logo
     width: 40px
 // -- positions
-
+.optional-forms-box
+  margin-top: 10px
 // -- optionplan
 div#optionplan
   .pdf_upload_preview

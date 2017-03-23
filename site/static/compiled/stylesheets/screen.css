@@ -2674,6 +2674,21 @@ html, body {
 .core .container form {
   margin-bottom: 3em;
 }
+.core .container form input, .core .container form select {
+  line-height: normal;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 10px 15px;
+}
+.core .container form input:focus, .core .container form select:focus {
+  box-shadow: unset;
+  border-color: #337ab7;
+}
+.core .container form select {
+  box-shadow: unset;
+  padding-top: 0;
+  padding-bottom: 0;
+}
 .core .container p {
   margin: 0 0 10px;
   line-height: 1.5em;
@@ -2791,7 +2806,7 @@ html, body {
 .core .container .el-icon-cogs {
   font-size: 50%;
 }
-.core .container .el-icon-chevron-down {
+.core .container .el-icon-chevron-down, .core .container .el-icon-chevron-up {
   font-size: 75%;
 }
 .core .container .el-icon-cogs-wrapper {
@@ -3250,6 +3265,38 @@ nav.navbar .dropdown-toggle {
   padding-top: 6px;
 }
 
+.form-group input, .form-group select {
+  margin: 5px 0;
+}
+
+.modal-content {
+  box-shadow: none;
+}
+
+.modal-backdrop {
+  background-color: #f5f5f5;
+}
+.modal-backdrop.in {
+  opacity: 0.85;
+}
+
+.custom-form-group {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  -webkit-flex-flow: row-reverse;
+  flex-flow: row-reverse;
+}
+.custom-form-group .btn-focus {
+  width: 75%;
+}
+.custom-form-group .btn-default {
+  width: 20%;
+}
+
 .show-mobile {
   display: none;
 }
@@ -3429,6 +3476,10 @@ div.table-actions ul.pagination {
 
 div#shareholder_list .logo {
   width: 40px;
+}
+
+.optional-forms-box {
+  margin-top: 10px;
 }
 
 div#optionplan .pdf_upload_preview {
@@ -4090,6 +4141,15 @@ div.address-data {
   }
 }
 @media only screen and (max-width: 600px) {
+  .custom-form-group {
+    -webkit-flex-flow: column;
+    flex-flow: column;
+  }
+  .custom-form-group .btn {
+    margin-bottom: 10px;
+    width: 100%;
+  }
+
   .table-actions .row {
     -webkit-flex-flow: column;
     flex-flow: column;

@@ -388,6 +388,11 @@
         .td
           word-break: inherit
 @media only screen and (max-width: 600px)
+  .custom-form-group
+    @include flex-flow(column)
+    .btn
+      margin-bottom: 10px
+      width: 100%
   .table-actions
     .row
       [class*="col-"]

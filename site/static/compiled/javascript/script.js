@@ -372,11 +372,13 @@
   ]);
 
   app.controller('OptionsController', [
-    '$scope', '$http', '$window', '$filter', 'OptionPlan', 'OptionTransaction', function($scope, $http, $window, $filter, OptionPlan, OptionTransaction) {
+    '$scope', '$http', '$window', '$filter', 'OptionPlan', 'OptionTransaction', '$timeout', function($scope, $http, $window, $filter, OptionPlan, OptionTransaction, $timeout) {
       $scope.option_plans = [];
       $scope.optiontransactions = [];
       $scope.securities = [];
       $scope.loading = true;
+      $scope.transaction_added_success = false;
+      $scope.plan_added_success = false;
       $scope.show_add_option_transaction = false;
       $scope.show_add_option_plan = false;
       $scope.show_optional_fields = false;
@@ -571,7 +573,11 @@
           return $scope.load_all();
         }).then(function() {
           $scope.newOptionPlan = new OptionPlan();
-          return $scope.show_add_option_plan = false;
+          $scope.show_add_option_plan = false;
+          $scope.plan_added_success = true;
+          return $timeout(function() {
+            return $scope.plan_added_success = false;
+          }, 5000);
         }).then(function() {
           $scope.errors = null;
           return $window.ga('send', 'event', 'form-send', 'add-optionplan');
@@ -605,7 +611,11 @@
           return $scope.load_all();
         }).then(function() {
           $scope.newOptionTransaction = new OptionTransaction();
-          return $scope.show_add_option_transaction = false;
+          $scope.show_add_option_transaction = false;
+          $scope.transaction_added_success = true;
+          return $timeout(function() {
+            return $scope.transaction_added_success = false;
+          }, 5000);
         }).then(function() {
           $scope.errors = null;
           return $window.ga('send', 'event', 'form-send', 'add-option-transaction');
@@ -846,9 +856,11 @@
   ]);
 
   app.controller('PositionsController', [
-    '$scope', '$http', '$window', 'Position', 'Split', function($scope, $http, $window, Position, Split) {
+    '$scope', '$http', '$window', 'Position', 'Split', '$timeout', function($scope, $http, $window, Position, Split, $timeout) {
       $scope.positions = [];
       $scope.securities = [];
+      $scope.position_added_success = false;
+      $scope.split_added_success = false;
       $scope.show_add_position = false;
       $scope.show_add_capital = false;
       $scope.show_split_data = false;
@@ -1044,7 +1056,11 @@
         }).then(function() {
           $scope.show_add_position = false;
           $scope.show_add_capital = false;
-          return $scope.newPosition = new Position();
+          $scope.newPosition = new Position();
+          $scope.position_added_success = true;
+          return $timeout(function() {
+            return $scope.position_added_success = false;
+          }, 5000);
         }).then(function() {
           $scope.errors = null;
           $window.ga('send', 'event', 'form-send', 'add-transaction');
@@ -1091,7 +1107,11 @@
         return $scope.newSplit.$save().then(function(result) {
           return $scope.positions = result.data;
         }).then(function() {
-          return $scope.newSplit = new Split();
+          $scope.newSplit = new Split();
+          $scope.split_added_success = true;
+          return $timeout(function() {
+            return $scope.split_added_success = false;
+          }, 5000);
         }).then(function() {
           $scope.errors = null;
           $scope.show_split = false;
