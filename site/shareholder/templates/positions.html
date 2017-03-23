@@ -14,11 +14,11 @@
   <p class="explaination">
     {% trans "Use Transactions to record each shareholders state of shares. For initial foundation transfer shares from company to..."%}
   </p>
-
-  <div class="panel panel-column">
-    <a class="btn-inline align-left add-position" data-toggle="modal" data-target="#addPosition" href="" ng-click="show_add_position_form()">{% trans "Transfer Shares" %}</a>
-    <a class="btn-inline add-capital" href="" data-toggle="modal" data-target="#capitalForm" ng-click="show_add_capital_form()">{% trans "Increase Capital" %}</a>
-    <a class="btn-inline split-shares" href="" data-toggle="modal" data-target="#splitShares" ng-click="show_split_form()">{% trans "Split Shares" %}</a>
+  
+  <div class="panel panel-column" ng-hide="show_add_position || show_add_capital || show_split">
+    <a class="btn btn-focus add-position" data-toggle="modal" data-target="#addPosition" href="" ng-click="show_add_position_form()">{% trans "Transfer Shares" %}</a>
+    <a class="btn btn-focus add-capital" href="" data-toggle="modal" data-target="#capitalForm" ng-click="show_add_capital_form()">{% trans "Increase Capital" %}</a>
+    <a class="btn btn-focus split-shares" href="" data-toggle="modal" data-target="#splitShares" ng-click="show_split_form()">{% trans "Split Shares" %}</a>
   </div>
 
   <!-- MODAL ADD POSITION -->
@@ -31,6 +31,11 @@
         </div>
         <div class="modal-body">
           {% include "_form_errors.html" %}
+
+          <!-- add position success -->
+          <p class="alert alert-success" ng-show="position_added_success">
+            {% trans "Position added" %}
+          </p>
           <div id="add_position">
             {% include "_add_position_form.html" %}
           </div>
@@ -49,8 +54,12 @@
         </div>
         <div class="modal-body">
           {% include "_form_errors.html" %}
-          <div id="split-shares">
-            {% include "_split_shares_form.html" %}
+          <!-- add position success -->
+          <p class="alert alert-success" ng-show="position_added_success">
+            {% trans "Position added" %}
+          </p>
+          <div id="add_capital">
+            {% include "_add_capital_form.html" %}
           </div>
         </div>
       </div>
@@ -67,8 +76,12 @@
         </div>
         <div class="modal-body">
           {% include "_form_errors.html" %}
-          <div id="add_capital">
-            {% include "_add_capital_form.html" %}
+          <!-- add position success -->
+          <p class="alert alert-success" ng-show="split_added_success">
+            {% trans "Split shares added" %}
+          </p>
+          <div id="split-shares">
+            {% include "_split_shares_form.html" %}
           </div>
         </div>
       </div>

@@ -21,84 +21,107 @@
   {% include "_form_errors.html" %}
 
   {# core data #}
-  <table class="table table-striped small-font-size">
-    <tr class="buyer">
-      <td>{% trans "Buyer" %}:</td>
-      <td>
-       {% verbatim %}<a href="/shareholder/{{optiontransaction.buyer.pk}}/" >{{ optiontransaction.buyer.full_name }}</a>{% endverbatim %}
-      </td>
-    </tr>
-    <tr class="seller">
-      <td>{% trans "Seller" %}:</td>
-      <td>
+  <div class="table table-striped">
+    <div class="tr th buyer">
+      <div class="td">
+        {% trans "Buyer" %}:
+      </div>
+      <div class="td">
+        {% verbatim %}<a href="/shareholder/{{optiontransaction.buyer.pk}}/" >{{ optiontransaction.buyer.full_name }}</a>{% endverbatim %}
+      </div>
+    </div>
+    <div class="tr th seller">
+      <div class="td">
+        {% trans "Seller" %}:
+      </div>
+      <div class="td">
         {% verbatim %}<a href="/shareholder/{{optiontransaction.seller.pk}}/" >{{ optiontransaction.seller.full_name }}</a>{% endverbatim %}
-      </td>
-    </tr>
-    <tr class="certificate-id" ng-show="optiontransaction.certificate_id">
-      <td>{% trans "Certificate ID" %}:</td>
-      <td>
-        {% verbatim %}{{ optiontransaction.certificate_id }} {% endverbatim %}
-      </td>
-    </tr>
-    <tr class="number-segments" ng-show="optiontransaction.option_plan.security.track_numbers && optiontransaction.number_segments"">
-      <td>{% trans "Number Segments" %}:</td>
-      <td>
-        {% verbatim %}{{ optiontransaction.number_segments}}{% endverbatim %}
-      </td>
-    </tr>
-    <tr class="bought-at">
-      <td>{% trans "Date" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th bought-at">
+      <div class="td">
+        {% trans "Date" %}:
+      </div>
+      <div class="td">
         {% verbatim %}{{ optiontransaction.bought_at | date : 'd.MM.yy' }} {% endverbatim %}
-      </td>
-    </tr>
-    <tr class="count">
-      <td>{% trans "Count" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th count">
+      <div class="td">
+        {% trans "Count" %}:
+      </div>
+      <div class="td">
         {% verbatim %}{{ optiontransaction.count }} {% endverbatim %}
-      </td>
-    </tr>
-    <tr class="option-plan">
-      <td>{% trans "Option Plan" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th option-plan">
+      <div class="td">
+        {% trans "Option Plan" %}:
+      </div>
+      <div class="td">
         {% verbatim %}<a href="/optionsplan/{{optiontransaction.option_plan.pk}}/">{{ optiontransaction.option_plan.title }}</a>{% endverbatim %}
-      </td>
-    </tr>
-    <tr class="vesting-months" ng-show="optiontransaction.vesting_months">
-      <td>{% trans "Vesting (in months)" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th vesting-months" ng-show="optiontransaction.vesting_months">
+      <div class="td">
+        {% trans "Vesting (in months)" %}:
+      </div>
+      <div class="td">
         {% verbatim %}{{ optiontransaction.vesting_months }} {% endverbatim %}
-      </td>
-    </tr>
-    <tr class="registration-type" ng-show="optiontransaction.readable_registration_type">
-      <td>{% trans "Registration Type" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th registration-type" ng-show="optiontransaction.readable_registration_type">
+      <div class="td">
+        {% trans "Registration Type" %}:
+      </div>
+      <div class="td">
         {% verbatim %}{{ optiontransaction.readable_registration_type}}{% endverbatim %}
-      </td>
-    </tr>
-    <tr class="depot-type" ng-show="optiontransaction.readable_depot_type">
-      <td>{% trans "Depot Type" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th depot-type" ng-show="optiontransaction.readable_depot_type">
+      <div class="td">
+        {% trans "Depot Type" %}:
+      </div>
+      <div class="td">
         {% verbatim %}{{ optiontransaction.readable_depot_type}}{% endverbatim %}
-      </td>
-    </tr>
-    <tr class="stock-book-id" ng-show="optiontransaction.stock_book_id">
-      <td>{% trans "Stick Book ID" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th stock-book-id" ng-show="optiontransaction.stock_book_id">
+      <div class="td">
+        {% trans "Stick Book ID" %}:
+      </div>
+      <div class="td">
         {% verbatim %}{{ optiontransaction.stock_book_id}}{% endverbatim %}
-      </td>
-    </tr>
-  </table>
+      </div>
+    </div>
+    <div class="tr th certificate-id" ng-show="optiontransaction.certificate_id">
+      <div class="td">
+        {% trans "Certificate ID" %}:
+      </div>
+      <div class="td">
+        {% verbatim %}{{ optiontransaction.certificate_id }} {% endverbatim %}
+      </div>
+    </div>
+    <div class="tr th number-segments" ng-show="optiontransaction.option_plan.security.track_numbers && optiontransaction.number_segments">
+      <div class="td">
+        {% trans "Number Segments" %}:
+      </div>
+      <div class="td">
+        {% verbatim %}{{ optiontransaction.number_segments}}{% endverbatim %}
+      </div>
+    </div>
+  </div>
+      
 
   <!-- print func -->
   {% verbatim %}
   <div class="print-certificate">
     <a class="btn btn-focus" ng-show="!optiontransaction.printed_at && optiontransaction.certificate_id" href="{% endverbatim %}{% url "option_pdf" option_id=optiontransaction.pk %}{% verbatim %}" target="_blank">
-	  {% endverbatim %}{% trans "Print certificate" %}{% verbatim %}
-	</a>
+    {% endverbatim %}{% trans "Print certificate" %}{% verbatim %}
+  </a>
     <a class="btn btn-focus" ng-show="optiontransaction.printed_at && optiontransaction.certificate_id" href="{% endverbatim %}{% url "option_pdf" option_id=optiontransaction.pk %}{% verbatim %}" target="_blank">
-	  {% endverbatim %}{% trans "Print certificate copy" %}{% verbatim %}
-	</a>
+    {% endverbatim %}{% trans "Print certificate copy" %}{% verbatim %}
+  </a>
     <div class="note" ng-show="optiontransaction.printed_at" style="display: inline">
       {% endverbatim %}{% trans "first printed at" %}{% verbatim %}: {{ optiontransaction.printed_at  | date : 'd.MM.yy' }}
     </div>

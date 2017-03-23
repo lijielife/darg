@@ -6,13 +6,15 @@ app.config ['$translateProvider', ($translateProvider) ->
     $translateProvider.useSanitizeValueStrategy('escaped')
 ]
 
-app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'OptionPlan', 'OptionTransaction', ($scope, $http, $window, $filter, OptionPlan, OptionTransaction) ->
+app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'OptionPlan', 'OptionTransaction', '$timeout', ($scope, $http, $window, $filter, OptionPlan, OptionTransaction, $timeout) ->
 
     $scope.option_plans = []
     $scope.optiontransactions = []
     $scope.securities = []
     $scope.loading = true
 
+    $scope.transaction_added_success = false
+    $scope.plan_added_success = false
     $scope.show_add_option_transaction = false
     $scope.show_add_option_plan = false
     $scope.show_optional_fields = false
@@ -175,13 +177,17 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
             # Reset our editor to a new blank post
             $scope.newOptionPlan = new OptionPlan()
             $scope.show_add_option_plan = false
+            $scope.plan_added_success = true
+            $timeout ->
+                $scope.plan_added_success = false
+            , 5000
         .then ->
             # Clear any errors
             $scope.errors = null
             $window.ga('send', 'event', 'form-send', 'add-optionplan')
         , (rejection) ->
             $scope.errors = rejection.data
-            Raven.captureMessage('form error: ' + rejection.statusText, {
+            Raven.captureMessage('add option plan form error: ' + rejection.statusText, {
                 level: 'warning',
                 extra: { rejection: rejection },
             })
@@ -207,13 +213,17 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
             # Reset our editor to a new blank post
             $scope.newOptionTransaction = new OptionTransaction()
             $scope.show_add_option_transaction = false
+            $scope.transaction_added_success = true
+            $timeout ->
+                $scope.transaction_added_success = false
+            , 5000
         .then ->
             # Clear any errors
             $scope.errors = null
             $window.ga('send', 'event', 'form-send', 'add-option-transaction')
         , (rejection) ->
             $scope.errors = rejection.data
-            Raven.captureMessage('form error: ' + rejection.statusText, {
+            Raven.captureMessage('add option transaction form error: ' + rejection.statusText, {
                 level: 'warning',
                 extra: { rejection: rejection },
             })
@@ -285,8 +295,8 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
         startingDay: 1,
         showWeeks: false,
     }
-    $scope.open_datepicker = ->
-        $scope.datepicker.opened = true
+    $scope.toggle_datepicker = ->
+        $scope.datepicker.opened = !$scope.datepicker.opened
 
     # --- LINK
     $scope.goto_option = (option_id) ->

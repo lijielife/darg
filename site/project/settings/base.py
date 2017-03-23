@@ -30,7 +30,7 @@ def get_env_variable(var_name, fail_on_error=True):
     return env_var
 
 
-VERSION = '0.4.30'
+VERSION = '0.4.46'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
@@ -345,6 +345,8 @@ MARKDOWNX_MARKDOWN_EXTENSIONS = [
     'markdown.extensions.nl2br',
     'markdown.extensions.smarty',
 ]
+# crispy images pls
+MARKDOWNX_IMAGE_MAX_SIZE = {'size': (900, 900), 'quality': 100,}
 
 # Media path
 # Path, where images will be stored in MEDIA_ROOT folder

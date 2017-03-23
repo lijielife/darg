@@ -9,7 +9,6 @@ http://selenium-python.readthedocs.org/en/latest/page-objects.html
 import time
 import logging
 
-from django.utils.translation import gettext as _
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 
@@ -53,7 +52,7 @@ class ShareholderDetailPage(BaseDetailPage):
     def click_to_edit(self, class_name):
         el = self.wait_until_visible((
             By.XPATH,
-            u'//tr[contains(@class, "{}")]//'
+            u'//div[contains(@class, "{}")]//'
             u'span[contains(@class, "editable-click")]'.format(class_name)
         ))
         el.click()
@@ -76,7 +75,7 @@ class ShareholderDetailPage(BaseDetailPage):
         return date from inside this element
         """
         bday = self.driver.find_element_by_xpath(
-            '//tr[@class="birthday active"]/td/span')
+            '//div[contains(@class, "birthday")]//div//span')
         return bday.text
 
     def get_securities(self):
@@ -140,7 +139,9 @@ class OptionsPage(BasePage):
         select = Select(selects[0])
         select.select_by_index(2)
 
-        inputs[0].send_keys(DEFAULT_TEST_DATA.get('date'))
+        self.use_datepicker(class_name='add-optionplan',
+                            date=DEFAULT_TEST_DATA.get('date_obj'))
+        # inputs[0].send_keys(DEFAULT_TEST_DATA.get('date'))
         inputs[1].send_keys(DEFAULT_TEST_DATA.get('title'))
         inputs[2].send_keys(
             str(kwargs.get('exercise_price',
@@ -158,7 +159,9 @@ class OptionsPage(BasePage):
         select = Select(selects[0])
         select.select_by_index(2)
 
-        inputs[0].send_keys(DEFAULT_TEST_DATA.get('date'))
+        self.use_datepicker(class_name='add-optionplan',
+                            date=DEFAULT_TEST_DATA.get('date_obj'))
+        # inputs[0].send_keys(DEFAULT_TEST_DATA.get('date'))
         inputs[1].send_keys(DEFAULT_TEST_DATA.get('title'))
         inputs[2].send_keys(DEFAULT_TEST_DATA.get('exercise_price'))
         inputs[3].send_keys(kwargs.get('count',
@@ -187,8 +190,11 @@ class OptionsPage(BasePage):
         select.select_by_visible_text(
             kwargs.get('title') or DEFAULT_TEST_DATA.get('title'))
 
-        inputs[0].send_keys(
-            kwargs.get('date') or DEFAULT_TEST_DATA.get('date'))
+        self.use_datepicker(
+            class_name='add-option',
+            date=kwargs.get('date') or DEFAULT_TEST_DATA.get('date_obj'))
+        #inputs[0].send_keys(
+        #    kwargs.get('date') or DEFAULT_TEST_DATA.get('date'))
         inputs[3].send_keys(str(
             kwargs.get('count', DEFAULT_TEST_DATA.get('count'))))
         inputs[5].send_keys(DEFAULT_TEST_DATA.get('vesting_period'))
@@ -224,8 +230,11 @@ class OptionsPage(BasePage):
         select.select_by_visible_text(
             kwargs.get('title') or DEFAULT_TEST_DATA.get('title'))
 
-        inputs[0].send_keys(
-            kwargs.get('date') or DEFAULT_TEST_DATA.get('date'))
+        self.use_datepicker(
+            class_name='add-option',
+            date=kwargs.get('date') or DEFAULT_TEST_DATA.get('date_obj'))
+        # inputs[0].send_keys(
+        #    kwargs.get('date') or DEFAULT_TEST_DATA.get('date'))
         inputs[3].send_keys(kwargs.get('number_segments',
                             DEFAULT_TEST_DATA.get('share_count')))
         inputs[4].send_keys(kwargs.get('number_segments',
@@ -343,14 +352,14 @@ class OptionsPage(BasePage):
         self.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
 
-class OptionsDetailPage(BasePage):
+class OptionsPlanDetailPage(BasePage):
     """Options Detail View"""
 
     def __init__(self, driver, live_server_url, user, path):
         """ load MainPage '/' """
         self.live_server_url = live_server_url
         # prepare driver
-        super(OptionsDetailPage, self).__init__(driver)
+        super(OptionsPlanDetailPage, self).__init__(driver)
 
         # load page
         self.operator = user.operator_set.all()[0]
@@ -363,7 +372,8 @@ class OptionsDetailPage(BasePage):
         return text of security table element
         """
         el = self.driver.find_element_by_xpath(
-            '//tr[contains(@class, "security")]/td[contains(@class, "text")]')
+            '//div[contains(@class, "security")]'
+            '//div[contains(@class, "text")]')
         return el.text
 
 

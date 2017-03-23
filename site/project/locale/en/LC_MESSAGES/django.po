@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-14 21:50+0000\n"
+"POT-Creation-Date: 2017-03-16 21:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -97,24 +97,24 @@ msgstr ""
 msgid "On (date)"
 msgstr ""
 
-#: project/templates/_add_capital_form.html:27
-#: project/templates/_add_option_plan_form.html:26
-#: project/templates/_add_position_form.html:48
-#: project/templates/_split_shares_form.html:30
+#: project/templates/_add_capital_form.html:30
+#: project/templates/_add_option_plan_form.html:29
+#: project/templates/_add_position_form.html:51
+#: project/templates/_split_shares_form.html:33
 msgid "Security"
 msgstr ""
 
-#: project/templates/_add_capital_form.html:33
-#: project/templates/_add_option_plan_form.html:34
-#: project/templates/_add_option_transaction_form.html:62
-#: project/templates/_add_position_form.html:69
+#: project/templates/_add_capital_form.html:36
+#: project/templates/_add_option_plan_form.html:37
+#: project/templates/_add_option_transaction_form.html:65
+#: project/templates/_add_position_form.html:72
 #: project/templates/_add_shareholder_form.html:15
-#: project/templates/_split_shares_form.html:36
+#: project/templates/_split_shares_form.html:39
 msgid "Cancel"
 msgstr ""
 
-#: project/templates/_add_capital_form.html:34
-#: project/templates/_add_position_form.html:72
+#: project/templates/_add_capital_form.html:37
+#: project/templates/_add_position_form.html:75
 msgid "Add Position"
 msgstr ""
 
@@ -126,15 +126,15 @@ msgstr ""
 msgid "Please enter your company name:"
 msgstr ""
 
-#: project/templates/_add_company_form.html:31
+#: project/templates/_add_company_form.html:33
 msgid "Add Company"
 msgstr ""
 
-#: project/templates/_add_company_form.html:37
+#: project/templates/_add_company_form.html:39
 msgid "Please contact us at our"
 msgstr ""
 
-#: project/templates/_add_company_form.html:39
+#: project/templates/_add_company_form.html:41
 msgid ""
 "for getting more security types (common stock, preferred stock, numbered "
 "shares) added"
@@ -148,11 +148,11 @@ msgstr ""
 msgid "Board Approval Date"
 msgstr ""
 
-#: project/templates/_add_option_plan_form.html:35
+#: project/templates/_add_option_plan_form.html:38
 msgid "Add Option-Plan"
 msgstr ""
 
-#: project/templates/_add_option_plan_form.html:38
+#: project/templates/_add_option_plan_form.html:41
 msgid "Approved Option Plan PDF can be uploaded later in Plan's Edit Form"
 msgstr ""
 
@@ -160,49 +160,46 @@ msgstr ""
 msgid "Please enter your Option data:"
 msgstr ""
 
-#: project/templates/_add_option_transaction_form.html:24
-#: project/templates/_add_position_form.html:28
+#: project/templates/_add_option_transaction_form.html:27
+#: project/templates/_add_position_form.html:31
 msgid "from"
 msgstr ""
 
-#: project/templates/_add_option_transaction_form.html:27
-#: project/templates/_add_position_form.html:31
+#: project/templates/_add_option_transaction_form.html:30
+#: project/templates/_add_position_form.html:34
 msgid "Seller"
-msgstr ""
-
-#: project/templates/_add_option_transaction_form.html:33
-msgid "transferred to"
 msgstr ""
 
 #: project/templates/_add_option_transaction_form.html:36
 #: project/templates/_add_position_form.html:40
+msgid "transferred to"
+msgstr ""
+
+#: project/templates/_add_option_transaction_form.html:39
+#: project/templates/_add_position_form.html:43
 msgid "Buyer"
 msgstr ""
 
-#: project/templates/_add_option_transaction_form.html:42
+#: project/templates/_add_option_transaction_form.html:45
 msgid "Option Plan"
 msgstr ""
 
-#: project/templates/_add_option_transaction_form.html:51
-#: project/templates/_add_position_form.html:58
+#: project/templates/_add_option_transaction_form.html:54
+#: project/templates/_add_position_form.html:61
 msgid "optional fields"
 msgstr ""
 
-#: project/templates/_add_option_transaction_form.html:53
-#: project/templates/_add_position_form.html:60
+#: project/templates/_add_option_transaction_form.html:56
+#: project/templates/_add_position_form.html:63
 msgid "Depot Type"
 msgstr ""
 
-#: project/templates/_add_option_transaction_form.html:63
+#: project/templates/_add_option_transaction_form.html:66
 msgid "Add Option"
 msgstr ""
 
 #: project/templates/_add_position_form.html:3
 msgid "Please enter your position data:"
-msgstr ""
-
-#: project/templates/_add_position_form.html:37
-msgid "to"
 msgstr ""
 
 #: project/templates/_add_shareholder_form.html:3
@@ -228,7 +225,7 @@ msgid ""
 "further details and advices."
 msgstr ""
 
-#: project/templates/_split_shares_form.html:33
+#: project/templates/_split_shares_form.html:36
 msgid ""
 "Please note that the split will leave partial share rights unhandled. You "
 "must assign those options to the shareholders and either pay, trade or "
@@ -237,7 +234,7 @@ msgid ""
 "for each shareholder."
 msgstr ""
 
-#: project/templates/_split_shares_form.html:37
+#: project/templates/_split_shares_form.html:40
 msgid "Add Share Split"
 msgstr ""
 
@@ -287,7 +284,7 @@ msgstr ""
 
 #: project/templates/active_shareholder_captable.pdf.html:98
 #: project/templates/active_shareholder_captable.pdf.html:141
-#: project/templates/start.html:64
+#: project/templates/start.html:75
 msgid "Name"
 msgstr ""
 
@@ -298,7 +295,7 @@ msgstr ""
 
 #: project/templates/active_shareholder_captable.pdf.html:100
 #: project/templates/active_shareholder_captable.pdf.html:143
-#: project/templates/start.html:65
+#: project/templates/start.html:76
 msgid "Shareholder Number"
 msgstr ""
 
@@ -558,28 +555,40 @@ msgstr ""
 msgid "Shareholderr added. record share transfers here"
 msgstr ""
 
-#: project/templates/start.html:54
+#: project/templates/start.html:55
+msgid "Need more advices? Read"
+msgstr ""
+
+#: project/templates/start.html:56
+msgid "share register quickstart guide"
+msgstr ""
+
+#: project/templates/start.html:57
+msgid "our quickstart tutorial!"
+msgstr ""
+
+#: project/templates/start.html:63
 msgid "Share Ownership"
 msgstr ""
 
-#: project/templates/start.html:66
+#: project/templates/start.html:77
 #, python-format
 msgid "Shares (%%%%)"
 msgstr ""
 
-#: project/templates/start.html:70
+#: project/templates/start.html:81
 msgid "Gafi Validation failed"
 msgstr ""
 
-#: project/templates/start.html:84
+#: project/templates/start.html:95
 msgid "Total Shares distributed"
 msgstr ""
 
-#: project/templates/start.html:94
+#: project/templates/start.html:105
 msgid "Option Holders"
 msgstr ""
 
-#: project/templates/start.html:95
+#: project/templates/start.html:106
 msgid "Option Holders note"
 msgstr ""
 

@@ -8,18 +8,21 @@
       {% endverbatim %} {% trans "On (date)" %} {% verbatim %}
       <span class="input-group date-field">
           <input type="text" class="form-control"
-                 ng-model="newPosition.bought_at"
-                 uib-datepicker-popup="{{ datepicker.format }}"
-                 datepicker-options="datepicker.options"
-                 is-open="datepicker.opened"
-                 show-button-bar="true"
-                 close-text="Schliessen"
-                 clear-text="Leeren"
-                 current-text="Heute"
-                 ng-change="show_available_number_segments();"
-          />
+            ng-model="newPosition.bought_at"
+            uib-datepicker-popup="{{ datepicker.format }}"
+            datepicker-options="datepicker.options"
+            is-open="datepicker.opened"
+            show-button-bar="true"
+            close-text="Schliessen"
+            clear-text="Leeren"
+            current-text="Heute"
+            ng-change="show_available_number_segments();"
+			readonly="readonly"
+            placeholder="{{'Date'|translate}}"
+            ng-click="toggle_datepicker()"
+            />
           <span class="input-group-btn">
-            <button type="button" class="btn btn-default" ng-click="open_datepicker()"><i class="glyphicon glyphicon-calendar"></i></button>
+            <button type="button" class="btn btn-default" ng-click="toggle_datepicker()"><i class="glyphicon glyphicon-calendar"></i></button>
           </span>
         </span>
 
@@ -31,13 +34,13 @@
       {% include "_shareholder_typeahead.html" %}
       {% endwith %}
       {% verbatim %}
-
+      
       <!-- --- BUYER -- -->
-      {% endverbatim %} {% trans "to" %} {% verbatim %}
+      {% endverbatim %} {% trans "transferred to" %} {% verbatim %}
       {% endverbatim %}
       {% with model='newPosition.buyer' field_name='buyer' %}
-      {% trans "Buyer" as placeholder %}
-      {% include "_shareholder_typeahead.html" %}
+        {% trans "Buyer" as placeholder %}
+        {% include "_shareholder_typeahead.html" %}
       {% endwith %}
       {% verbatim %}
 
@@ -60,7 +63,7 @@
           <option value='' disabled>{% endverbatim %}{% trans "Depot Type" %}{% verbatim %}</option>
         </select>
         <input type="text" class="form-control" ng-model="newPosition.stock_book_id" translate translate-attr-placeholder="Stock Book ID">
-        <input type="text" class="form-control" ng-model="newPosition.vesting_months" translate translate-attr-placeholder="Vesting period in months">
+        <input type="number" class="form-control" ng-model="newPosition.vesting_months" translate translate-attr-placeholder="Vesting period in months" min="0">
         <input type="text" class="form-control" ng-model="newPosition.certificate_id" translate translate-attr-placeholder="Certificate ID">
         <div class="optional-forms-box text-center" ng-click="toggle_optional_fields()">
           <p>

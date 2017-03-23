@@ -262,6 +262,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
 
     # --- FORMS
     $scope.add_company = ->
+        $scope.errors = null
         $scope.newCompany.$save().then (result) ->
             $http.get('/services/rest/user').then (result) ->
                 $scope.user = result.data.results[0]
@@ -282,18 +283,20 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
             $scope.errors = null
         , (rejection) ->
             $scope.errors = rejection.data
-            Raven.captureMessage('form error: ' + rejection.statusText, {
+            Raven.captureMessage('add corp form error: ' + rejection.statusText, {
                 level: 'warning',
                 extra: { rejection: rejection },
             })
 
     $scope.add_shareholder = ->
+        $scope.errors = null
         $scope.newShareholder.$save().then (result) ->
             $scope.shareholders.push result
         .then ->
             # Reset our editor to a new blank post
             $scope.newShareholder = new Shareholder()
             $scope.shareholder_added_success = true
+            $scope.show_add_shareholder = false
             $timeout ->
                 $scope.shareholder_added_success = false
             , 30000
@@ -303,7 +306,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
             $window.ga('send', 'event', 'form-send', 'add-shareholder')
         , (rejection) ->
             $scope.errors = rejection.data
-            Raven.captureMessage('form error: ' + rejection.statusText, {
+            Raven.captureMessage('add shareholder form error: ' + rejection.statusText, {
                 level: 'warning',
                 extra: { rejection: rejection },
             })
@@ -327,6 +330,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
         startingDay: 1,
         showWeeks: false,
     }
-    $scope.open_datepicker = ->
-        $scope.datepicker.opened = true
+    $scope.toggle_datepicker = ->
+        $scope.datepicker.opened = !$scope.datepicker.opened
+        return false
 ]

@@ -6,10 +6,12 @@ app.config ['$translateProvider', ($translateProvider) ->
     $translateProvider.useSanitizeValueStrategy('escaped')
 ]
 
-app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position', 'Split', ($scope, $http, $window, Position, Split) ->
+app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position', 'Split', '$timeout', ($scope, $http, $window, Position, Split, $timeout) ->
     $scope.positions = []
     $scope.securities = []
 
+    $scope.position_added_success = false
+    $scope.split_added_success = false
     $scope.show_add_position = false
     $scope.show_add_capital = false
     $scope.show_split_data = false
@@ -171,6 +173,10 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
             $scope.show_add_position = false
             $scope.show_add_capital = false
             $scope.newPosition = new Position()
+            $scope.position_added_success = true
+            $timeout ->
+                $scope.position_added_success = false
+            , 5000
         .then ->
             # Clear any errors
             $scope.errors = null
@@ -178,7 +184,7 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
             $scope.addPositionLoading = false
         , (rejection) ->
             $scope.errors = rejection.data
-            Raven.captureMessage('form error: ' + rejection.statusText, {
+            Raven.captureMessage('add position form error: ' + rejection.statusText, {
                 level: 'warning',
                 extra: { rejection: rejection },
             })
@@ -210,13 +216,17 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
             $scope.positions = result.data
         .then ->
             $scope.newSplit = new Split()
+            $scope.split_added_success = true
+            $timeout ->
+                $scope.split_added_success = false
+            , 5000
         .then ->
             $scope.errors = null
             $scope.show_split = false
             $window.ga('send', 'event', 'form-send', 'add-split')
         , (rejection) ->
             $scope.errors = rejection.data
-            Raven.captureMessage('form error: ' + rejection.statusText, {
+            Raven.captureMessage('add split form error: ' + rejection.statusText, {
                 level: 'warning',
                 extra: { rejection: rejection },
             })
@@ -277,8 +287,8 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
         startingDay: 1,
         showWeeks: false,
     }
-    $scope.open_datepicker = ->
-        $scope.datepicker.opened = true
+    $scope.toggle_datepicker = ->
+        $scope.datepicker.opened = !$scope.datepicker.opened
 
     # --- LINK
     $scope.goto_position = (position_id) ->

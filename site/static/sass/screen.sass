@@ -81,8 +81,28 @@ html, body
     margin: 0.3em 0.3em 0.3em 0em
     display: inline-block
 
+  //style select [ remove dropdown arrow ]
+  select::-ms-expand
+    display: none
+  select
+    -webkit-appearance: none
+    -moz-appearance: none
+    appearance: none
+    box-shadow: unset
+    background-image: url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE2cHgiIGhlaWdodD0iMTZweCIgdmlld0JveD0iMCAwIDMwNiAzMDYiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDMwNiAzMDY7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPGc+Cgk8ZyBpZD0iZXhwYW5kLW1vcmUiPgoJCTxwb2x5Z29uIHBvaW50cz0iMjcwLjMsNTguNjUgMTUzLDE3NS45NSAzNS43LDU4LjY1IDAsOTQuMzUgMTUzLDI0Ny4zNSAzMDYsOTQuMzUgICAiIGZpbGw9IiM5NTk1OTUiLz4KCTwvZz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K)
+    background-position: 95% center
+    background-repeat: no-repeat
+  input
+    line-height: normal
+    border: 1px solid #e0e0e0
+    border-radius: 4px
+    padding: 10px 15px
+    &:focus
+      box-shadow: unset
+      border-color: #337ab7
   form
     margin-bottom: 3em
+
     input, select
       line-height: normal
       border: 1px solid #e0e0e0
@@ -201,6 +221,14 @@ html, body
     padding: 0em
     margin: 0em
 
+  // calendar icon always marked as clickable to get attention
+  // as related input should be disabled
+  .glyphicon-calendar
+    color: $color-blue
+
+  .btn
+    font-size: initial
+    font-weight: 300
   // button, but more a link and has many of them in a a row
   .btn-inline
     border: none
@@ -210,27 +238,26 @@ html, body
     font-size: 1em
     background-color: transparent
     color: $color-blue
-  .panel
-    margin-top: 1em
-    .btn-inline
-      margin-right: 1em
 
   // highlight the recommended button amongst buttons
   .btn-focus, .btn-info
     border: 1px solid $color-focus
     background-color: $color-blue
     color: $color-white
-    font-weight: bold
   .btn-danger
     border: 1px solid $color-red
-    color: $color-red
-    font-weight: bold
     color: $color-red
     background: none
   .btn-white
     background-color: $color-white !important
     color: $color-blue !important
     border: 1px solid $color-blue !important
+
+  .panel
+    margin-top: 1em
+    box-shadow: none
+    .btn-inline
+      margin-right: 1em
 
   // to remove all left spacing
   .align-left
@@ -280,7 +307,6 @@ html, body
   .navbar-username
     color: $color-dark-gray
     display: block
-    line-height: 13px
     position: relative
 .navbar-custom
   background: transparent
@@ -304,8 +330,10 @@ html, body
 .limit-letters
   max-width: 100px
   overflow: hidden
-  text-overflow: ellipsis
   display: inline-block
+  text-overflow: ellipsis
+  position: relative
+  top: 4px
 .navbar-default
   .navbar-nav
     .open
@@ -365,6 +393,8 @@ nav.navbar
 .form
   .form-control
     box-shadow: unset
+    // override bootstraps 14px
+    font-size: initial
   input
     display: block
     width: 100%
@@ -697,13 +727,13 @@ div#optionplan
 // -- shareholder detail
 .alert-gafi
   line-height: initial
-.shareholder-table__font-size-small
-  font-size: 14px
 .is-management
   .el-icon-minus-sign, .el-icon-ok-sign
     font-size: 14px !important
 table.stock
   display: table !important
+div.address-data
+  display: block !important
 
 // -- blog
 .blog
