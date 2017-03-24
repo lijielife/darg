@@ -353,6 +353,7 @@ class OptionsPage(BasePage):
 
         self.enter_option_plan_form_data()
         self.click_save_option_plan_form()
+        self.close_modal('addOptionPlan')
 
         # wait for form to disappear
         self.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))

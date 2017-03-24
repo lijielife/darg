@@ -59,7 +59,7 @@
             <p class="shareholder-added-success alert alert-success" ng-show="shareholder_added_success">
               {% endverbatim %}{% trans "Shareholderr added. record share transfers here" %}{% verbatim %}
             </p>
-            <div id="add_shareholder" ng-hide="!user.operator_set.length  || !show_add_shareholder">
+            <div id="add_shareholder" ng-hide="user.selected_company==null  || !show_add_shareholder">
               {% endverbatim %}{% include "_add_shareholder_form.html" %}{% verbatim %}
             </div>
           </div>
