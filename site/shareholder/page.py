@@ -350,6 +350,7 @@ class OptionsPage(BasePage):
     def prepare_optionplan_fixtures(self):
         """ setup options plan """
         self.click_open_create_option_plan()
+        self.wait_until_modal_opened('addOptionPlan')
 
         self.enter_option_plan_form_data()
         self.click_save_option_plan_form()
