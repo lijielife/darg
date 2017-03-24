@@ -128,20 +128,63 @@
         {% verbatim %}{{ position.vesting_months | number }}{% endverbatim %}
       </div>
     </div>
+    <div class="tr th depot-bank" ng-show="position.depot_bank">
+      <div class="td">
+        {% trans "Certificate deposited with bank" %}:
+      </div>
+      <div class="td">
+        {% verbatim %}{{ position.depot_bank.name}}{% endverbatim %}<br />
+        {% verbatim %}{{ position.depot_bank.address}}{% endverbatim %}<br />
+        {% verbatim %}{{ position.depot_bank.postal_code}} {{ position.depot_bank.city }}{% endverbatim %}<br />
+        {% verbatim %}SWIFT: {{ position.depot_bank.swift}}{% endverbatim %}<br />
+      </div>
+    </div>
+    <div class="tr th certificate-invalidation-position" ng-show="position.certificate_invalidation_position_url">
+      <div class="td">
+        {% trans "Invalidation position" %}:
+      </div>
+      <div class="td">
+        {% verbatim %}
+        <a href="{{ position.certificate_invalidation_position_url}}" title="{% endverbatim %}{% trans "Go to position" %}">
+          {% trans "Link" %}
+          {% verbatim %}
+        </a>
+        {% endverbatim %}
+      </div>
+    </div>
+    <div class="tr th certificate-invalidation-position" ng-show="position.certificate_invalidation_initial_position_url">
+      <div class="td">
+        {% trans "Invalidation source position" %}:
+      </div>
+      <div class="td">
+        {% verbatim %}
+        <a href="{{ position.certificate_invalidation_initial_position_url}}" title="{% endverbatim %}{% trans "Go to position" %}">
+          {% trans "Link" %}
+          {% verbatim %}
+        </a>
+        {% endverbatim %}
+      </div>
+    </div>
   </div>
             
 
-  <!-- print func -->
+  <!-- ACTIONS -->
   {% verbatim %}
   <div class="print-certificate">
-    <a class="btn btn-focus" ng-show="!position.printed_at && position.certificate_id" href="{% endverbatim %}{% url "position_option_pdf" option_id=position.pk %}{% verbatim %}" target="_blank">
-	  {% endverbatim %}{% trans "Print certificate" %}{% verbatim %}
-	</a>
-    <a class="btn btn-focus" ng-show="position.printed_at && position.certificate_id" href="{% endverbatim %}{% url "position_option_pdf" option_id=position.pk %}{% verbatim %}" target="_blank">
-	  {% endverbatim %}{% trans "Print certificate copy" %}{% verbatim %}
-	</a>
+    <div>
+      <a ng-click="invalidate_certificate()" class="btn btn-focus" ng-show="position.certificate_id && !position.certificate_invalidation_position_url && !position.certificate_invalidation_initial_position_url">
+        {% endverbatim %}{% trans "Destroy Share Certificate" %}{% verbatim %}
+      </a>
+      <!-- PRINT CERT -->
+      <a class="btn btn-focus" ng-show="!position.printed_at && position.certificate_id && !position.certificate_invalidation_initial_position_url" href="{% endverbatim %}{% url "position_option_pdf" option_id=position.pk %}{% verbatim %}" target="_blank">
+  	    {% endverbatim %}{% trans "Print certificate" %}{% verbatim %}
+  	  </a>
+      <a class="btn btn-focus" ng-show="position.printed_at && position.certificate_id && !position.certificate_invalidation_initial_position_url" href="{% endverbatim %}{% url "position_option_pdf" option_id=position.pk %}{% verbatim %}" target="_blank">
+  	    {% endverbatim %}{% trans "Print certificate copy" %}{% verbatim %}
+  	  </a>
+    </div>
     <div class="note" ng-show="position.printed_at" style="display: inline">
-      {% endverbatim %}{% trans "first printed at" %}{% verbatim %}: {{ position.printed_at  | date : 'd.MM.yy' }}
+      {% endverbatim %}{% trans "first at" %}{% verbatim %}: {{ position.printed_at  | date : 'd.MM.yy' }} {% endverbatim %}{% trans "printed" %}{% verbatim %}
     </div>
   </div>
   {% endverbatim %}

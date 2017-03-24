@@ -501,6 +501,7 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             # wait for form to disappear
             app.close_modal('addOptionPlan')
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
+
             app.click_open_transfer_option()
             app.show_optional_fields()
             app.enter_transfer_option_data(
@@ -510,7 +511,7 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.click_save_transfer_option()
 
             # wait for form to disappear
-            app.close_modal('addOptionPlan')
+            app.close_modal('addOptionTransaction')
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
             self.assertTrue(app.is_no_errors_displayed())
@@ -697,7 +698,7 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
             app.click_save_transfer_option()
 
             # wait for form to disappear
-            app.close_modal('addOptionPlan')
+            app.close_modal('addOptionTransaction')
             app.wait_until_invisible(
                 (By.CSS_SELECTOR, '#add_option_transaction'))
 
@@ -1292,7 +1293,6 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
             app.click_save_position()
 
             # wait for error
-            app.close_modal('addPosition')
             app.wait_until_visible((By.CSS_SELECTOR, '.form-error'))
 
             self.assertFalse(app.is_no_errors_displayed())

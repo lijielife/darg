@@ -199,6 +199,8 @@ class OptionsPage(BasePage):
             kwargs.get('count', DEFAULT_TEST_DATA.get('count'))))
         inputs[5].send_keys(DEFAULT_TEST_DATA.get('vesting_period'))
 
+        self.show_optional_fields()
+
         if kwargs.get('depot_type'):
             select = Select(selects[1])
             select.select_by_visible_text('Gesellschaftsdepot')
