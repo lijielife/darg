@@ -534,41 +534,47 @@ class OptionsFunctionalTestCase(BaseSeleniumTestCase):
         """ test that options transfer form is working properly
         if there is no buyer selected """
 
-        app = page.OptionsPage(
-            self.selenium, self.live_server_url, self.operator.user)
-        app.prepare_optionplan_fixtures()
+        try:
+            app = page.OptionsPage(
+                self.selenium, self.live_server_url, self.operator.user)
+            app.prepare_optionplan_fixtures()
 
-        self.assertTrue(app.is_option_plan_displayed(
-            OptionPlan.objects.last().security))
+            self.assertTrue(app.is_option_plan_displayed(
+                OptionPlan.objects.last().security))
 
-        app.click_open_transfer_option()
-        app.enter_transfer_option_data(seller=self.seller)
-        app.click_save_transfer_option()
+            app.click_open_transfer_option()
+            app.enter_transfer_option_data(seller=self.seller)
+            app.click_save_transfer_option()
 
-        # wait for error
-        app.wait_until_visible((By.CSS_SELECTOR, '.form-error'))
+            # wait for error
+            app.wait_until_visible((By.CSS_SELECTOR, '.form-error'))
 
-        self.assertFalse(app.is_no_errors_displayed())
+            self.assertFalse(app.is_no_errors_displayed())
+        except Exception, e:
+            self._handle_exception(e)
 
     def test_base_use_case_no_seller(self):
         """ test that options transfer form is working properly
         if there is no seller selected """
 
-        app = page.OptionsPage(
-            self.selenium, self.live_server_url, self.operator.user)
-        app.prepare_optionplan_fixtures()
+        try:
+            app = page.OptionsPage(
+                self.selenium, self.live_server_url, self.operator.user)
+            app.prepare_optionplan_fixtures()
 
-        self.assertTrue(app.is_option_plan_displayed(
-            OptionPlan.objects.last().security))
+            self.assertTrue(app.is_option_plan_displayed(
+                OptionPlan.objects.last().security))
 
-        app.click_open_transfer_option()
-        app.enter_transfer_option_data(buyer=self.buyer)
-        app.click_save_transfer_option()
+            app.click_open_transfer_option()
+            app.enter_transfer_option_data(buyer=self.buyer)
+            app.click_save_transfer_option()
 
-        # wait for error
-        app.wait_until_visible((By.CSS_SELECTOR, '.form-error'))
+            # wait for error
+            app.wait_until_visible((By.CSS_SELECTOR, '.form-error'))
 
-        self.assertFalse(app.is_no_errors_displayed())
+            self.assertFalse(app.is_no_errors_displayed())
+        except Exception, e:
+            self._handle_exception(e)
 
     @unittest.skip('not implemented')
     def test_base_use_case_no_count(self):
