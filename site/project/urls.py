@@ -134,6 +134,10 @@ urlpatterns = [
     url(r'^blog/', include('zinnia.urls', namespace='zinnia')),
     url(r'^comments/', include('django_comments.urls')),
     url(r'^markdown/', include('django_markdown.urls')),
+
+    # chrome needs this:
+    url(r'^favicon\.ico$', RedirectView.as_view(
+        url='/static/compiled/images/favicon.ico')),
 ]
 
 # admin
