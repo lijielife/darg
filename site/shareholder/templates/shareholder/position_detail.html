@@ -116,9 +116,11 @@
       <div class="td">
         {% trans "Certificate ID" %}:
       </div>
-      <div class="td">
-        {% verbatim %}{{ position.certificate_id}}{% endverbatim %}
+      {% verbatim %}
+      <div class="td" ng-class="{strikethrough: position.is_certificate_valid==false}">
+        {{ position.certificate_id}}
       </div>
+      {% endverbatim %}
     </div>
     <div class="tr th vesting-months" ng-show="position.vesting_months">
       <div class="td">
@@ -132,7 +134,7 @@
       <div class="td">
         {% trans "Certificate deposited with bank" %}:
       </div>
-      <div class="td">
+      <div class="td" ng-class="{strikethrough: position.is_certificate_valid==false}">
         {% verbatim %}{{ position.depot_bank.name}}{% endverbatim %}<br />
         {% verbatim %}{{ position.depot_bank.address}}{% endverbatim %}<br />
         {% verbatim %}{{ position.depot_bank.postal_code}} {{ position.depot_bank.city }}{% endverbatim %}<br />

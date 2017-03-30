@@ -24,7 +24,7 @@ app.factory 'User', ['$resource', ($resource) ->
 ]
 
 app.factory 'Position', ['$resource', ($resource) ->
-    $resource '/services/rest/position/:id', id: '@id'
+    $resource('/services/rest/position/:id', {id: '@id'}, invalidate: {method: 'GET', url: '/services/rest/position/:id/invalidate'})
 ]
 
 app.factory 'Split', ['$resource', ($resource) ->
