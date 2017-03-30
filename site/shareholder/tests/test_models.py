@@ -471,7 +471,8 @@ class ShareholderTestCase(TestCase):
         self.shareholder2 = ShareholderGenerator().generate(
             company=self.company)
         PositionGenerator().generate(seller=None, buyer=self.shareholder1,
-                                     security=self.security, count=10)
+                                     security=self.security, count=10,
+                                     bought_at=datetime.datetime(2013, 1, 1))
         PositionGenerator().generate(seller=self.shareholder1,
                                      buyer=self.shareholder2,
                                      security=self.security, count=2)
@@ -567,6 +568,68 @@ class ShareholderTestCase(TestCase):
             reverse("shareholder", args=(shareholder.id,)))
 
         self.assertEqual(response.status_code, 200)
+
+    def test_share_count(self):
+        """
+        return number of shares owned by shareholder or available
+        for sale by shareholder
+        """
+        now = datetime.datetime.now()
+        yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+        self.assertEqual(
+            self.shareholder1.share_count(security=self.security), 8)
+        self.assertEqual(
+            self.shareholder2.share_count(security=self.security), 2)
+        self.assertEqual(
+            self.shareholder1.share_count(security=self.security, date=now), 8)
+        self.assertEqual(
+            self.shareholder2.share_count(security=self.security, date=now), 2)
+        self.assertEqual(self.shareholder1.share_count(
+            security=self.security, date=yesterday), 10)
+        self.assertEqual(self.shareholder2.share_count(
+            security=self.security, date=yesterday), 0)
+        self.assertEqual(
+            self.shareholder1.share_count(security=self.security, date=now,
+                                          only_sellable=True), 8)
+        self.assertEqual(
+            self.shareholder2.share_count(security=self.security, date=now,
+                                          only_sellable=True), 2)
+
+    def test_share_count_with_certificates(self):
+        """
+        respect sellable aspects of certificates for shares with cert depot at
+        external banks
+        """
+        now = datetime.datetime.now()
+        # valid certificate depot
+        p1 = PositionGenerator().generate(seller=self.shareholder1,
+                                          security=self.security, count=2,
+                                          certificate_id='123453',
+                                          depot_type='0')
+
+        # issued and invalidated certificate
+        p2 = PositionGenerator().generate(
+            seller=self.shareholder1, security=self.security, count=3,
+            certificate_id='98765', depot_type='0', buyer=self.shareholder2)
+        p3 = PositionGenerator().generate(
+            seller=p2.buyer, buyer=p2.buyer, security=self.security, count=3,
+            certificate_id='98765', depot_type='1')
+        p2.certificate_invalidation_position = p3
+        p2.save()
+
+        self.assertEqual(p1.buyer.share_count(security=self.security), 2)
+        self.assertEqual(
+            p1.buyer.share_count(security=self.security, only_sellable=True), 0)
+        self.assertEqual(
+            p1.buyer.share_count(security=self.security, only_sellable=True,
+                                 date=now), 0)
+
+        self.assertEqual(p2.buyer.share_count(security=self.security), 5)
+        self.assertEqual(
+            p2.buyer.share_count(security=self.security, only_sellable=True), 5)
+        self.assertEqual(
+            p2.buyer.share_count(security=self.security, only_sellable=True,
+                                 date=now), 5)
 
     def test_share_percent(self):
         """

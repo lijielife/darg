@@ -725,14 +725,28 @@ class Shareholder(TagMixin, models.Model):
 
         return False
 
-    def share_count(self, date=None, security=None):
+    def share_count(self, date=None, security=None, only_sellable=False):
         """ total count of shares for shareholder  """
+
         qs_bought = self.buyer.all()
         qs_sold = self.seller.all()
 
+        if only_sellable:
+            # if there are certificates without invalidation (means still
+            # stored at certificate depot, on `only_sellable` request
+            # these cannot be counted as possessed shares
+            # scenario 1: exclude if it has a cert id and was not invalidated
+            # scenario 2: include if it has a cert id and was invalidated
+            # -> hide these positions which are neither invalidated
+            # nor being the invalidation position to another one
+            query = Q(certificate_id__isnull=False,
+                      certificate_invalidation_position__isnull=True,
+                      certificate_initial_position__isnull=True)
+            qs_bought = qs_bought.exclude(query)
+
         if date:
-            qs_bought = self.buyer.filter(bought_at__lte=date)
-            qs_sold = self.seller.filter(bought_at__lte=date)
+            qs_bought = qs_bought.filter(bought_at__lte=date)
+            qs_sold = qs_sold.filter(bought_at__lte=date)
 
         if security:
             qs_bought = qs_bought.filter(security=security)
@@ -748,6 +762,14 @@ class Shareholder(TagMixin, models.Model):
             options_created = 0
 
         return count_bought - count_sold - options_created
+
+    def share_count_sellable(self, date=None, security=None):
+        """
+        returns number of shares for this security on this date which
+        are truely sellable. e.g. shares owned but enlisted in
+        certificate depot are not sellable
+        """
+        return self.share_count(date, security, only_sellable=True)
 
     def share_value(self, date=None):
         """ calculate the total values of all shares for this shareholder """
@@ -1182,6 +1204,12 @@ class Position(CertificateMixin):
     depot_type = models.CharField(
         _('What kind of depot is this position stored within'), max_length=1,
         choices=DEPOT_TYPES, blank=True, null=True)
+    depot_bank = models.ForeignKey(Bank, blank=True, null=True)
+    certificate_invalidation_position = models.OneToOneField(
+        'self',
+        help_text=_('assigned position represents the change back to company '
+                    'depot from cert depot'),
+        null=True, blank=True, related_name='certificate_initial_position')
     vesting_months = models.PositiveIntegerField(blank=True, null=True)
     comment = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
