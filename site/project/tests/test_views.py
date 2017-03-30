@@ -65,11 +65,8 @@ class IndexTestCase(TestCase):
         response = self.client.get("/", follow=True)
 
         self.assertEqual(response.status_code, 200)
-        self.assertTrue("bootstrap.min.js" in response.content)
-        self.assertTrue("xeditable.min.js" in response.content)
-        self.assertTrue("xeditable.css" in response.content)
-        self.assertTrue("last css in" in response.content)
         self.assertIn(u'Login', response.content.decode('utf8'))
+        self.assertTrue("last css in" in response.content)
 
     def test_index_content_authd(self):
         """
