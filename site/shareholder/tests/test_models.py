@@ -120,7 +120,6 @@ class CompanyTestCase(TestCase):
         self.assertTrue(ot.option_plan.company.has_vested_positions())
 
 
-
 class CountryTestCase(TestCase):
 
     def test_model(self):
