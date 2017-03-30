@@ -99,7 +99,7 @@ class Bank(models.Model):
     postal_code = models.CharField(blank=True, max_length=10)
     address = models.CharField(blank=True, max_length=35)
     city = models.CharField(blank=True, max_length=35)
-    swift = models.CharField(max_length=14)
+    swift = models.CharField(max_length=14, blank=True)
     bcnr = models.CharField(max_length=5)
     branchid = models.CharField(max_length=4)
 
