@@ -2748,6 +2748,9 @@ html, body {
   margin: 1em 0 2em;
   line-height: 1.5em;
 }
+.core .container .strikethrough {
+  text-decoration: line-through;
+}
 .core .container .note {
   font-style: italic;
   font-size: 0.8em;
@@ -3378,6 +3381,7 @@ nav.navbar .dropdown-toggle {
   align-items: baseline;
   word-wrap: break-word;
   padding: 0.8em;
+  flex-wrap: wrap;
 }
 .td.flex-column {
   -webkit-flex-flow: column;
@@ -3399,6 +3403,9 @@ nav.navbar .dropdown-toggle {
 }
 .td [class*='el-icon-'] {
   padding: 0 5px;
+}
+.td div.note {
+  padding-left: 0px !important;
 }
 
 .td-width-1 {
@@ -3480,6 +3487,17 @@ div#shareholder_list .logo {
 
 .optional-forms-box {
   margin-top: 10px;
+}
+
+.optional-fields {
+  line-height: 2em;
+}
+
+.get-certificate-id {
+  top: -31px;
+  position: relative;
+  right: 10px;
+  float: right;
 }
 
 div#optionplan .pdf_upload_preview {

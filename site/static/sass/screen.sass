@@ -172,6 +172,9 @@ html, body
     margin: 1em 0 2em
     line-height: 1.5em
 
+  .strikethrough
+    text-decoration: line-through
+
   .note
     font-style: italic
     font-size: 0.8em
@@ -663,9 +666,12 @@ nav.navbar
   @include align-items(baseline)
   word-wrap: break-word
   padding: 0.8em
+  flex-wrap: wrap
   // font-size: 0.9em
   [class*='el-icon-']
     padding: 0 5px
+  div.note
+    padding-left: 0px !important
 .td-width-1
   @include flex-grow(1)
   word-break: normal
@@ -709,6 +715,14 @@ div#shareholder_list
 // -- positions
 .optional-forms-box
   margin-top: 10px
+.optional-fields
+  line-height: 2em
+.get-certificate-id
+  top: -31px
+  position: relative
+  right: 10px
+  float: right
+
 // -- optionplan
 div#optionplan
   .pdf_upload_preview
