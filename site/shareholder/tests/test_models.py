@@ -12,7 +12,8 @@ from django.test import TestCase, TransactionTestCase
 from django.test.client import Client, RequestFactory
 from django.utils.encoding import force_text
 
-from project.generators import (CompanyGenerator, CompanyShareholderGenerator,
+from project.generators import (DEFAULT_TEST_DATA, BankGenerator,
+                                CompanyGenerator, CompanyShareholderGenerator,
                                 ComplexOptionTransactionsWithSegmentsGenerator,
                                 ComplexPositionsWithSegmentsGenerator,
                                 ComplexShareholderConstellationGenerator,
@@ -20,8 +21,7 @@ from project.generators import (CompanyGenerator, CompanyShareholderGenerator,
                                 OperatorGenerator, OptionPlanGenerator,
                                 OptionTransactionGenerator, PositionGenerator,
                                 SecurityGenerator, ShareholderGenerator,
-                                TwoInitialSecuritiesGenerator, UserGenerator,
-                                DEFAULT_TEST_DATA)
+                                TwoInitialSecuritiesGenerator, UserGenerator)
 from shareholder.models import Country, Position, Security, Shareholder
 
 logger = logging.getLogger(__name__)
@@ -39,17 +39,32 @@ class CompanyTestCase(TestCase):
             company=self.company)
         self.shareholder2 = ShareholderGenerator().generate(
             company=self.company)
-        PositionGenerator().generate(seller=None, buyer=self.shareholder1,
-                                     security=self.security, count=10)
-        PositionGenerator().generate(seller=self.shareholder1,
-                                     buyer=self.shareholder2,
-                                     security=self.security, count=2)
+        self.position1 = PositionGenerator().generate(
+            seller=None, buyer=self.shareholder1, security=self.security,
+            count=10)
+        self.position2 = PositionGenerator().generate(
+            seller=self.shareholder1, buyer=self.shareholder2,
+            security=self.security, count=2)
         optionplan = OptionPlanGenerator().generate(
             company=self.company, security=self.security)
         OptionTransactionGenerator().generate(seller=self.shareholder1,
                                               buyer=self.shareholder2,
                                               security=self.security, count=2,
                                               option_plan=optionplan)
+
+    def test_get_new_certificate_id(self):
+        """
+        get fresh unused cert id
+        """
+        self.assertEqual(self.company.get_new_certificate_id(), 1)
+
+        self.position1.certificate_id = '1a'
+        self.position1.save()
+        self.assertEqual(self.company.get_new_certificate_id(), 2)
+
+        self.position2.certificate_id = '99'
+        self.position2.save()
+        self.assertEqual(self.company.get_new_certificate_id(), 100)
 
     def test_text_repr(self):
 
@@ -135,6 +150,25 @@ class CountryTestCase(TestCase):
 
 
 class PositionTestCase(TransactionTestCase):
+
+    def test_invalidate_certificate(self):
+        """
+        create a second position to invalidate a cert and return it
+        to copmany depot
+        """
+        pos = PositionGenerator().generate(
+            certificate_id='1234', depot_type='0',
+            depot_bank=BankGenerator().generate())
+
+        pos.invalidate_certificate()
+
+        pos.refresh_from_db()
+
+        self.assertIsNotNone(pos.certificate_invalidation_position)
+        ipos = pos.certificate_invalidation_position
+        self.assertEqual(ipos.certificate_id, pos.certificate_id)
+        self.assertEqual(ipos.depot_bank, pos.depot_bank)
+        self.assertEqual(ipos.depot_type, '1')
 
     def test_split_shares(self):
         """

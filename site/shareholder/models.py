@@ -2,32 +2,33 @@ import datetime
 import logging
 import math
 import os
+import re
 import time
 from collections import Counter
 from decimal import Decimal
 
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.core.validators import MinValueValidator
-from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Sum, Q
+from django.db.models import Q, Sum
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import ugettext as _
 from django_languages import fields as language_fields
+from natsort import natsort
 from rest_framework.authtoken.models import Token
 from sorl.thumbnail import get_thumbnail
-from tagging.registry import register
 from tagging.models import Tag
+from tagging.registry import register
 
 from shareholder.validators import ShareRegisterValidator
 from utils.formatters import (deflate_segments, flatten_list,
                               human_readable_segments, inflate_segments,
                               string_list_to_json)
 from utils.math import substract_list
-
 
 REGISTRATION_TYPES = [
     ('1', _('Personal ownership')),
@@ -274,6 +275,26 @@ class Company(models.Model):
             raise ValueError('too many dispo shareholders for this company')
         elif shareholders.count() == 1:
             return shareholders[0]
+
+    def get_new_certificate_id(self):
+        """
+        returns new usable certificate id
+        """
+        positions = Position.objects.filter(
+            Q(buyer__company=self) | Q(seller__company=self),
+            certificate_id__isnull=False)
+        options = OptionTransaction.objects.filter(
+            certificate_id__isnull=False,
+            option_plan__company=self)
+        positions_cert_ids = positions.values_list('certificate_id', flat=True)
+        options_cert_ids = options.values_list('certificate_id', flat=True)
+        cert_ids = set(list(positions_cert_ids) + list(options_cert_ids))
+        if cert_ids:
+            max_cert_id = natsort(cert_ids)[-1]
+            new_cert_id = int(''.join(re.findall(r'\d+', max_cert_id))) + 1
+            return new_cert_id
+        else:
+            return 1
 
     def get_operators(self):
         return self.operator_set.all().distinct()
@@ -818,16 +839,18 @@ class Shareholder(TagMixin, models.Model):
             return result
 
         # humans need names
-        if (self.user.userprofile.legal_type == 'H' and
-            not self.user.first_name or not self.user.last_name
-            ):
+        legal_type_string = self.user.userprofile.legal_type
+        user = self.user
+
+        if (legal_type_string == 'H' and not user.first_name or not
+                user.last_name):
             result['is_valid'] = False
             result['errors'].append(_(
                 'Shareholder first name or last name missing.'))
 
-        if (self.user.userprofile.legal_type == 'C' and
-            not self.user.userprofile.company_name
-            ):
+        company_name = self.user.userprofile.company_name
+
+        if (legal_type_string == 'C' and not company_name):
             result['is_valid'] = False
             result['errors'].append(_(
                 'Company name or last name missing.'))
@@ -1244,11 +1267,46 @@ class Position(CertificateMixin):
         if self.is_split:
             return _('Part of Split')
         if self.seller.is_company_shareholder():
-            return _('Share issue')
+            if not self.certificate_id:
+                return _('Share issue')
+            else:
+                return _('share issue into cert depot')
+        if self.certificate_id and not getattr(
+                self, 'certificate_initial_position', None):
+            return _('move stock to certificate depot')
+        if hasattr(self, 'certificate_initial_position'):
+            return _('stock returns from certificate depot')
         return _('Regular Ownership change')
 
     def get_total_face_value(self):
-        return self.count * self.security.face_value
+        """
+        returns total of face value times count
+        """
+        if self.security.face_value:
+            return self.count * self.security.face_value
+
+    def invalidate_certificate(self):
+        """
+        create child position to mark certificate id as invaldidated and the
+        depot type to be changed.
+        """
+        if not Position.objects.filter(
+                certificate_invalidation_position=self).exists():
+            from copy import deepcopy
+            invalidation_position = deepcopy(self)
+            invalidation_position.pk = None  # create new obj
+            invalidation_position.buyer = self.buyer
+            invalidation_position.seller = self.buyer
+            invalidation_position.comment = _('Certificate Invalidation for '
+                                              'position {}').format(self.pk)
+            invalidation_position.bought_at = datetime.datetime.now()
+            invalidation_position.depot_type = DEPOT_TYPES[1][0]
+            invalidation_position.printed_at = None
+            invalidation_position.save()
+            self.certificate_invalidation_position = invalidation_position
+            self.save()
+        else:
+            raise ValueError('position already invalidated')
 
 
 def get_option_plan_upload_path(instance, filename):
@@ -1377,3 +1435,4 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
         UserProfile.objects.create(user=instance)
+
