@@ -24,17 +24,17 @@ module.exports = (grunt) ->
             dist:
                 options: separator: ';'
                 src: [
-                  './darg.js/assets/jquery/dist/jquery.min.js',
-                  './darg.js/assets/raven-js/dist/raven.min.js',
+                  './darg.js/assets/jquery/dist/jquery.js',
+                  './darg.js/assets/raven-js/dist/raven.js',
                   './darg.js/assets/underscore/underscore.js',
                   './darg.js/assets/angular/angular.min.js',
                   './darg.js/assets/angular-mocks/angular-mocks.js',
-                  './darg.js/assets/angular-animate/angular-animate.min.js',
-                  './darg.js/assets/angular-bootstrap/ui-bootstrap-tpls.min.js',
+                  './darg.js/assets/angular-animate/angular-animate.js',
+                  './darg.js/assets/angular-bootstrap/ui-bootstrap-tpls.js',
                   './darg.js/assets/angular-resource/angular-resource.js',
                   './darg.js/assets/angular-translate/angular-translate.js',
                   './darg.js/assets/bootstrap/dist/js/bootstrap.min.js',
-                  './darg.js/assets/angular-xeditable/dist/js/xeditable.min.js',
+                  './darg.js/assets/angular-xeditable/dist/js/xeditable.js',
                   './darg.js/assets/ng-file-upload/ng-file-upload.js',
                   './darg.js/assets/angular-i18n/angular-locale_de-ch.js',
                   'compiled/javascript/application.js'
