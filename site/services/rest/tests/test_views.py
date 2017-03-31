@@ -21,7 +21,7 @@ from project.generators import (DEFAULT_TEST_DATA, BankGenerator,
                                 ShareholderGenerator,
                                 TwoInitialSecuritiesGenerator, UserGenerator)
 from project.tests.mixins import MoreAssertsTestCaseMixin
-from services.rest.serializers import SecuritySerializer
+from services.rest.serializers import SecuritySerializer, PositionSerializer
 from shareholder.models import (Operator, OptionPlan, OptionTransaction,
                                 Position, Security, Shareholder, UserProfile)
 
@@ -150,6 +150,7 @@ class BankViewTestCase(APITestCase):
         self.client.force_login(self.operator.user)
         response = self.client.post(reverse('banks'), {})
         self.assertEqual(response.status_code, 405)
+
 
 class CompanyViewSetTestCase(TestCase):
 
@@ -771,6 +772,36 @@ class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
             position.bought_at.isoformat(), '2016-05-13')
         self.assertEqual(position.number_segments, [u'1-1000000'])
 
+    def test_confirm_position(self):
+
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        seller = ShareholderGenerator().generate(company=operator.company)
+        position = PositionGenerator().generate(seller=seller)
+
+        logged_in = self.client.login(username=user.username,
+                                      password=DEFAULT_TEST_DATA['password'])
+        self.assertTrue(logged_in)
+
+        # get and prep data
+        res = self.client.login(username=user.username,
+                                password=DEFAULT_TEST_DATA['password'])
+        self.assertTrue(res)
+
+        res = self.client.get(
+            '/services/rest/position/{}'.format(position.pk),
+            format='json')
+
+        # update data
+        res = self.client.post(
+            '/services/rest/position/{}/confirm'.format(position.pk),
+            {},
+            format='json'
+            )
+
+        self.assertEqual(res.status_code, 200)
+        self.assertFalse(Position.objects.get(id=position.id).is_draft)
+
     def test_delete_position(self):
         """
         operator deletes position
@@ -779,10 +810,14 @@ class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
         user = operator.user
         position = PositionGenerator().generate(company=operator.company)
 
-        logged_in = self.client.login(username=user.username,
-                                      password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(logged_in)
+        # unauth'd
+        res = self.client.delete(
+            '/services/rest/position/{}'.format(position.pk))
 
+        self.assertEqual(res.status_code, 401)
+
+        # auth'd
+        self.client.force_login(user)
         res = self.client.delete(
             '/services/rest/position/{}'.format(position.pk))
 
@@ -827,35 +862,44 @@ class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
 
         self.assertEqual(res.status_code, 400)
 
-    def test_confirm_position(self):
-
+    def test_get_new_certificate_id(self):
+        """
+        get new unused cert id
+        """
         operator = OperatorGenerator().generate()
         user = operator.user
         seller = ShareholderGenerator().generate(company=operator.company)
-        position = PositionGenerator().generate(seller=seller)
+        position = PositionGenerator().generate(seller=seller,
+                                                certificate_id='123')
 
-        logged_in = self.client.login(username=user.username,
-                                      password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(logged_in)
+        logged_in = self.client.force_login(user)
 
-        # get and prep data
-        res = self.client.login(username=user.username,
-                                password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(res)
-
-        res = self.client.get(
-            '/services/rest/position/{}'.format(position.pk),
-            format='json')
-
-        # update data
-        res = self.client.post(
-            '/services/rest/position/{}/confirm'.format(position.pk),
-            {},
-            format='json'
-            )
-
+        res = self.client.get(reverse('position-get-new-certificate-id'))
         self.assertEqual(res.status_code, 200)
-        self.assertFalse(Position.objects.get(id=position.id).is_draft)
+        self.assertEqual(res.data, {'certificate_id': 124})
+
+
+    def test_invalidate(self):
+        """
+        invalidate a position with cert id
+        """
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        seller = ShareholderGenerator().generate(company=operator.company)
+        position = PositionGenerator().generate(seller=seller,
+                                                certificate_id='123')
+
+        logged_in = self.client.force_login(user)
+
+        res = self.client.get(reverse('position-invalidate',
+                                      kwargs={'pk': position.pk}))
+        self.assertEqual(res.status_code, 200)
+        position.refresh_from_db()
+        self.assertEqual(res.data,
+                         PositionSerializer(
+                            instance=position,
+                            context={'request': res.wsgi_request}).data)
+        self.assertIsNotNone(position.certificate_invalidation_position)
 
     def test_split_shares_GET(self):
         operator = OperatorGenerator().generate()

@@ -229,15 +229,6 @@ class PositionViewSet(viewsets.ModelViewSet):
             Q(seller__company=company)
         ).distinct().order_by('-bought_at', '-pk')
 
-    @detail_route(
-        methods=['post'], permission_classes=[UserIsOperatorPermission])
-    def confirm(self, request, pk=None):
-        """ confirm position and make it unchangable """
-        position = self.get_object()
-        position.is_draft = False
-        position.save()
-        return Response({"success": True}, status=status.HTTP_200_OK)
-
     def destroy(self, request, pk=None):
         """ delete position. but not if is_draft-False"""
 
@@ -253,6 +244,48 @@ class PositionViewSet(viewsets.ModelViewSet):
                     'errors': [_('Confirmed position cannot be deleted.')]
                 },
                 status=status.HTTP_400_BAD_REQUEST)
+
+    @detail_route(
+        methods=['post'], permission_classes=[UserIsOperatorPermission])
+    def confirm(self, request, pk=None):
+        """ confirm position and make it unchangable """
+        position = self.get_object()
+        position.is_draft = False
+        position.save()
+        return Response({"success": True}, status=status.HTTP_200_OK)
+
+    @detail_route(methods=['get'],
+                  permission_classes=[UserIsOperatorPermission])
+    def invalidate(self, request, pk):
+        """
+        invalidate issued certificate
+        """
+        position = self.get_object()
+        try:
+            position.invalidate_certificate()
+            return Response(
+                PositionSerializer(instance=position,
+                                   context={'request': request}).data,
+                status=status.HTTP_200_OK)
+
+        except ValueError as e:
+            return Response(
+                {
+                    'success': False,
+                    'errors': [_('Position cannot be invalidated. "{}"'
+                                 '').format(e)]
+                },
+                status=status.HTTP_400_BAD_REQUEST)
+
+    @list_route(methods=['get'], permission_classes=[UserIsOperatorPermission])
+    def get_new_certificate_id(self, request):
+        """
+        returns unused new certificate id
+        """
+        company = get_company_from_request(request)
+        cert_id = company.get_new_certificate_id()
+        payload = {'certificate_id': cert_id}
+        return Response(payload, status=status.HTTP_200_OK)
 
 
 class SecurityViewSet(viewsets.ModelViewSet):
