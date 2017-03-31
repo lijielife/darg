@@ -346,7 +346,7 @@ class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
         self.assertTrue(logged_in)
 
         data = {
-            "bought_at": "2016-05-13T23:00:00.000Z",
+            "bought_at": "2026-05-13T23:00:00.000Z",
             "buyer": {
                 "pk": buyer.pk,
                 "user": {
@@ -430,7 +430,7 @@ class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
         self.assertEqual(position.seller, seller)
         self.assertEqual(position.registration_type, '2')
         self.assertEqual(
-            position.bought_at.isoformat(), '2016-05-13')
+            position.bought_at.isoformat(), '2026-05-13')
         self.assertEqual(position.comment, "sdfg")
         self.assertEqual(position.stock_book_id, "666")
         self.assertEqual(position.depot_type, "1")
@@ -453,7 +453,7 @@ class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
         self.assertTrue(logged_in)
 
         data = {
-            "bought_at": "2016-05-13T23:00:00.000Z",
+            "bought_at": "2026-05-13T23:00:00.000Z",
             "buyer": {
                 "pk": buyer.pk,
                 "user": {
@@ -538,7 +538,7 @@ class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
         self.assertEqual(position.seller, seller)
         self.assertEqual(position.registration_type, '2')
         self.assertEqual(
-            position.bought_at.isoformat(), '2016-05-13')
+            position.bought_at.isoformat(), '2026-05-13')
         self.assertEqual(position.comment, "sdfg")
         self.assertEqual(position.stock_book_id, "666")
         self.assertEqual(position.depot_type, "1")
@@ -570,7 +570,7 @@ class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
         self.assertTrue(logged_in)
 
         data = {
-            "bought_at": "2016-05-13T23:00:00.000Z",
+            "bought_at": "2026-05-13T23:00:00.000Z",
             "buyer": {
                 "pk": buyer.pk,
                 "user": {
@@ -653,7 +653,7 @@ class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
         self.assertEqual(position.buyer, buyer)
         self.assertEqual(position.seller, seller)
         self.assertEqual(
-            position.bought_at.isoformat(), '2016-05-13')
+            position.bought_at.isoformat(), '2026-05-13')
         self.assertEqual(position.number_segments, [u'1-5'])
 
     def test_add_position_with_number_segment_performance(self):
@@ -682,7 +682,7 @@ class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
         self.assertTrue(logged_in)
 
         data = {
-            "bought_at": "2016-05-13T23:00:00.000Z",
+            "bought_at": "2026-05-13T23:00:00.000Z",
             "buyer": {
                 "pk": buyer.pk,
                 "user": {
@@ -752,7 +752,7 @@ class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
 
         # call with perf check
         # was 55, increased to 95
-        with self.assertLessNumQueries(58):
+        with self.assertLessNumQueries(60):
             response = self.client.post(
                 u'/services/rest/position',
                 data,
@@ -769,7 +769,7 @@ class PositionTestCase(MoreAssertsTestCaseMixin, TestCase):
         self.assertEqual(position.buyer, buyer)
         self.assertEqual(position.seller, cs)
         self.assertEqual(
-            position.bought_at.isoformat(), '2016-05-13')
+            position.bought_at.isoformat(), '2026-05-13')
         self.assertEqual(position.number_segments, [u'1-1000000'])
 
     def test_confirm_position(self):

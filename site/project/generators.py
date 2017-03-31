@@ -274,6 +274,10 @@ class PositionGenerator(object):
             kwargs2.update(
                 {'depot_type': kwargs.get('depot_type')})
 
+        if kwargs.get('depot_bank'):
+            kwargs2.update(
+                {'depot_bank': kwargs.get('depot_bank')})
+
         if kwargs.get('stock_book_id'):
             kwargs2.update(
                 {'stock_book_id': kwargs.get('stock_book_id')})
