@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-21 23:22+0000\n"
-"PO-Revision-Date: 2017-03-19 21:33+0000\n"
+"POT-Creation-Date: 2017-03-24 08:55+0000\n"
+"PO-Revision-Date: 2017-03-23 08:57+0000\n"
 "Last-Translator:   <jirka@kkd-partners.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -32,7 +32,7 @@ msgstr ""
 #: company/templates/_add_operator_form.html:15
 #: reports/templates/reports/_transaction_form.html:50
 msgid "Cancel"
-msgstr "Abbrechen"
+msgstr "Schliessen"
 
 #: company/templates/_add_operator_form.html:16
 msgid "Add Operator"
@@ -146,7 +146,7 @@ msgstr ""
 #: company/templates/company/_reset_company_modal.html:6
 #: company/templates/company/_reset_company_modal.html:15
 msgid "Close"
-msgstr "Abbrechen"
+msgstr "Schliessen"
 
 #: company/templates/company/_reset_company_modal.html:7
 msgid "Confirm company reset"
