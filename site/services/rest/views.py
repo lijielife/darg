@@ -4,27 +4,28 @@ from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
-from rest_framework import status, viewsets
+from rest_framework import filters, status, viewsets
 from rest_framework.decorators import detail_route, list_route
-from services.rest.pagination import SmallPagePagination
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import filters
 
+from services.rest.pagination import SmallPagePagination
 from services.rest.permissions import (SafeMethodsOnlyPermission,
                                        UserCanAddCompanyPermission,
                                        UserIsOperatorPermission)
-from services.rest.serializers import (AddCompanySerializer, CompanySerializer,
-                                       CountrySerializer, OperatorSerializer,
+from services.rest.serializers import (AddCompanySerializer, BankSerializer,
+                                       CompanySerializer, CountrySerializer,
+                                       OperatorSerializer,
                                        OptionHolderSerializer,
                                        OptionPlanSerializer,
                                        OptionTransactionSerializer,
                                        PositionSerializer, SecuritySerializer,
+                                       ShareholderListSerializer,
                                        ShareholderSerializer, UserSerializer,
-                                       UserWithEmailOnlySerializer,
-                                       ShareholderListSerializer)
-from shareholder.models import (Company, Country, Operator, OptionPlan,
+                                       UserWithEmailOnlySerializer)
+from shareholder.models import (Bank, Company, Country, Operator, OptionPlan,
                                 OptionTransaction, Position, Security,
                                 Shareholder)
 from utils.session import get_company_from_request
@@ -201,153 +202,6 @@ class CompanyViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED)
 
 
-# --- VIEWS
-
-class AddCompanyView(APIView):
-    """ view to initially setup a company """
-
-    queryset = Company.objects.none()
-    permission_classes = [
-        UserCanAddCompanyPermission,
-    ]
-
-    def post(self, request, format=None):
-        serializer = AddCompanySerializer(data=request.data)
-        if serializer.is_valid() and request.user.is_authenticated():
-            company = serializer.save(user=request.user)
-            # once user added a company save it to the session to allow
-            # multi company handling for single user
-            request.session['company_pk'] = company.pk
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class AddShareSplit(APIView):
-    """ creates a share split. danger: can be set to be in the past and ALL
-    following transactions must be adjusted
-    """
-    permission_classes = [
-        UserCanAddCompanyPermission,
-    ]
-
-    def _validate_data(self, data):
-        errors = {}
-        if not data.get('execute_at'):
-            errors.update({'execute_at': [_('Field may not be empty.')]})
-        if not data.get('dividend'):
-            errors.update({'dividend': [_('Field may not be empty.')]})
-        if not data.get('divisor'):
-            errors.update({'divisor': [_('Field may not be empty.')]})
-        if not data.get('security'):
-            errors.update({'security': [_('Field may not be empty.')]})
-
-        if not errors:
-            return True, {}
-        else:
-            return False, errors
-
-    def post(self, request, fomat=None):
-        data = request.data
-        is_valid, errors = self._validate_data(data)
-        if is_valid:
-            # get company and run company.split_shares(data)
-            company = get_company_from_request(request)
-            data.update({
-                'execute_at': dateutil.parser.parse(data['execute_at']),
-                'security': Security.objects.get(id=data['security']['pk'])
-            })
-            company.split_shares(data)
-
-            positions = Position.objects.filter(
-                buyer__company__operator__user=request.user).order_by(
-                    '-bought_at')
-
-            serializer = PositionSerializer(
-                positions, many=True, context={'request': request})
-            return Response(
-                {'success': True, 'data': serializer.data},
-                status=status.HTTP_201_CREATED)
-
-        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class AvailableOptionSegmentsView(APIView):
-
-    permission_classes = [UserIsOperatorPermission]
-
-    def get(self, request, optionsplan_id, shareholder_id):
-        """
-        returns available option segments from shareholder X and
-        optionplan Y
-        """
-        optionplan = get_object_or_404(OptionPlan, pk=optionsplan_id)
-        shareholder = get_object_or_404(Shareholder, pk=shareholder_id)
-
-        kwargs = {
-            'security': optionplan.security,
-            'optionplan': optionplan,
-        }
-
-        if request.GET.get('date'):
-            kwargs.update({'date': request.GET.get('date')[:10]})
-
-        return Response(shareholder.current_options_segments(**kwargs))
-
-
-class LanguageView(APIView):
-    """
-    Endpint delivering language options
-    """
-    permission_classes = (AllowAny,)
-
-    def get(self, *args, **kwargs):
-        from django_languages.languages import LANGUAGES
-        languages = []
-        for language in LANGUAGES:
-            languages.append({
-                'iso': language[0],
-                'name': language[1],
-            })
-        return Response(languages)
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    """ API endpoint to get user base info """
-    serializer_class = UserSerializer
-    permission_classes = [
-        SafeMethodsOnlyPermission,
-    ]
-
-    def get_queryset(self):
-        user = self.request.user
-        return User.objects.filter(id=user.id)
-
-
-class CountryViewSet(viewsets.ModelViewSet):
-    """ API endpoint to get user base info """
-    serializer_class = CountrySerializer
-    permission_classes = [
-        SafeMethodsOnlyPermission,
-    ]
-
-    def get_queryset(self):
-        countries = Country.objects.all()
-        return countries
-
-
-class InviteeUpdateView(APIView):
-    """ API endpoint to get user base info """
-    permission_classes = (AllowAny,)
-
-    def post(self, request, format=None):
-
-        serializer = UserWithEmailOnlySerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(username=serializer.validated_data['email'])
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 class PositionViewSet(viewsets.ModelViewSet):
     """ API endpoint to get positions """
     serializer_class = PositionSerializer
@@ -504,3 +358,162 @@ class OptionTransactionViewSet(viewsets.ModelViewSet):
                     'errors': [_('Confirmed position cannot be deleted.')]
                 },
                 status=status.HTTP_400_BAD_REQUEST)
+
+
+# --- VIEWS
+
+class AddCompanyView(APIView):
+    """ view to initially setup a company """
+
+    queryset = Company.objects.none()
+    permission_classes = [
+        UserCanAddCompanyPermission,
+    ]
+
+    def post(self, request, format=None):
+        serializer = AddCompanySerializer(data=request.data)
+        if serializer.is_valid() and request.user.is_authenticated():
+            company = serializer.save(user=request.user)
+            # once user added a company save it to the session to allow
+            # multi company handling for single user
+            request.session['company_pk'] = company.pk
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AddShareSplit(APIView):
+    """ creates a share split. danger: can be set to be in the past and ALL
+    following transactions must be adjusted
+    """
+    permission_classes = [
+        UserCanAddCompanyPermission,
+    ]
+
+    def _validate_data(self, data):
+        errors = {}
+        if not data.get('execute_at'):
+            errors.update({'execute_at': [_('Field may not be empty.')]})
+        if not data.get('dividend'):
+            errors.update({'dividend': [_('Field may not be empty.')]})
+        if not data.get('divisor'):
+            errors.update({'divisor': [_('Field may not be empty.')]})
+        if not data.get('security'):
+            errors.update({'security': [_('Field may not be empty.')]})
+
+        if not errors:
+            return True, {}
+        else:
+            return False, errors
+
+    def post(self, request, fomat=None):
+        data = request.data
+        is_valid, errors = self._validate_data(data)
+        if is_valid:
+            # get company and run company.split_shares(data)
+            company = get_company_from_request(request)
+            data.update({
+                'execute_at': dateutil.parser.parse(data['execute_at']),
+                'security': Security.objects.get(id=data['security']['pk'])
+            })
+            company.split_shares(data)
+
+            positions = Position.objects.filter(
+                buyer__company__operator__user=request.user).order_by(
+                    '-bought_at')
+
+            serializer = PositionSerializer(
+                positions, many=True, context={'request': request})
+            return Response(
+                {'success': True, 'data': serializer.data},
+                status=status.HTTP_201_CREATED)
+
+        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AvailableOptionSegmentsView(APIView):
+
+    permission_classes = [UserIsOperatorPermission]
+
+    def get(self, request, optionsplan_id, shareholder_id):
+        """
+        returns available option segments from shareholder X and
+        optionplan Y
+        """
+        optionplan = get_object_or_404(OptionPlan, pk=optionsplan_id)
+        shareholder = get_object_or_404(Shareholder, pk=shareholder_id)
+
+        kwargs = {
+            'security': optionplan.security,
+            'optionplan': optionplan,
+        }
+
+        if request.GET.get('date'):
+            kwargs.update({'date': request.GET.get('date')[:10]})
+
+        return Response(shareholder.current_options_segments(**kwargs))
+
+
+class BankView(ListAPIView):
+    """
+    endpoint for bank search
+    """
+    permission_classes = (UserIsOperatorPermission,)
+    serializer_class = BankSerializer
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name', 'short_name', 'swift', 'city')
+    ordering = ('name',)
+    queryset = Bank.objects.all()
+
+
+class LanguageView(APIView):
+    """
+    Endpint delivering language options
+    """
+    permission_classes = (AllowAny,)
+
+    def get(self, *args, **kwargs):
+        from django_languages.languages import LANGUAGES
+        languages = []
+        for language in LANGUAGES:
+            languages.append({
+                'iso': language[0],
+                'name': language[1],
+            })
+        return Response(languages)
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    """ API endpoint to get user base info """
+    serializer_class = UserSerializer
+    permission_classes = [
+        SafeMethodsOnlyPermission,
+    ]
+
+    def get_queryset(self):
+        user = self.request.user
+        return User.objects.filter(id=user.id)
+
+
+class CountryViewSet(viewsets.ModelViewSet):
+    """ API endpoint to get user base info """
+    serializer_class = CountrySerializer
+    permission_classes = [
+        SafeMethodsOnlyPermission,
+    ]
+
+    def get_queryset(self):
+        countries = Country.objects.all()
+        return countries
+
+
+class InviteeUpdateView(APIView):
+    """ API endpoint to get user base info """
+    permission_classes = (AllowAny,)
+
+    def post(self, request, format=None):
+
+        serializer = UserWithEmailOnlySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(username=serializer.validated_data['email'])
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

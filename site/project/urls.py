@@ -18,12 +18,13 @@ from zinnia.sitemaps import (AuthorSitemap, CategorySitemap, EntrySitemap,
 
 from project.forms import RegistrationForm
 from services.rest.views import (AddCompanyView, AddShareSplit,
-                                 AvailableOptionSegmentsView, CompanyViewSet,
-                                 CountryViewSet, InviteeUpdateView,
-                                 LanguageView, OperatorViewSet,
-                                 OptionPlanViewSet, OptionTransactionViewSet,
-                                 PositionViewSet, SecurityViewSet,
-                                 ShareholderViewSet, UserViewSet)
+                                 AvailableOptionSegmentsView, BankView,
+                                 CompanyViewSet, CountryViewSet,
+                                 InviteeUpdateView, LanguageView,
+                                 OperatorViewSet, OptionPlanViewSet,
+                                 OptionTransactionViewSet, PositionViewSet,
+                                 SecurityViewSet, ShareholderViewSet,
+                                 UserViewSet)
 from shareholder.views import (OptionTransactionView, PositionView,
                                ShareholderView)
 
@@ -118,6 +119,8 @@ urlpatterns = [
         r'(?P<shareholder_id>[0-9]+)', AvailableOptionSegmentsView.as_view(),
         name='available_option_segments'),  # before router!
     url(r'^services/rest/', include(router.urls)),
+    url(r'^services/rest/bank', BankView.as_view(),
+        name='banks'),
     url(r'^services/rest/invitee', InviteeUpdateView.as_view(),
         name='invitee'),
     url(r'^services/rest/language', LanguageView.as_view(),

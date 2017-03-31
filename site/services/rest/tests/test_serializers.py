@@ -2,27 +2,28 @@
 # -*- coding: utf-8 -*-
 import datetime
 
+from dateutil.parser import parse
 from django.core.urlresolvers import reverse
 from django.test import RequestFactory, TestCase
 from django.utils.translation import ugettext as _
-from dateutil.parser import parse
 from rest_framework.exceptions import ValidationError
 
-from project.tests.mixins import MoreAssertsTestCaseMixin
-from project.generators import (ComplexShareholderConstellationGenerator,
+from project.generators import (BankGenerator,
+                                ComplexPositionsWithSegmentsGenerator,
+                                ComplexShareholderConstellationGenerator,
                                 OperatorGenerator, OptionPlanGenerator,
                                 OptionTransactionGenerator, PositionGenerator,
                                 ShareholderGenerator,
-                                TwoInitialSecuritiesGenerator, UserGenerator,
-                                ComplexPositionsWithSegmentsGenerator)
-from services.rest.serializers import (AddCompanySerializer,
+                                TwoInitialSecuritiesGenerator, UserGenerator)
+from project.tests.mixins import MoreAssertsTestCaseMixin
+from services.rest.serializers import (AddCompanySerializer, BankSerializer,
                                        OptionPlanSerializer,
                                        OptionTransactionSerializer,
                                        PositionSerializer,
-                                       ShareholderSerializer,
                                        ShareholderListSerializer,
+                                       ShareholderSerializer,
                                        UserProfileSerializer)
-from shareholder.models import OptionPlan, OptionTransaction, Country, Position
+from shareholder.models import Country, OptionPlan, OptionTransaction, Position
 from utils.formatters import human_readable_segments
 
 
@@ -48,6 +49,25 @@ class AddCompanySerializerTestCase(TestCase):
         self.assertEqual(company.name, validated_data['name'])
         self.assertEqual(company.security_set.first().face_value,
                          validated_data['face_value'])
+
+
+class BankSerializerTestCase(TestCase):
+
+    def setUp(self):
+        self.bank = BankGenerator().generate()
+        self.serializer = BankSerializer(instance=self.bank)
+
+    def test_fields(self):
+        serialized = self.serializer.data
+        keys = ['pk', 'name', 'short_name', 'swift', 'address', 'city',
+                'postal_code', 'full_name']
+        self.assertEqual(serialized.keys(), keys)
+
+    def test_get_full_name(self):
+        name = self.serializer.get_full_name(self.bank)
+        self.assertIn(self.bank.name, name)
+        self.assertIn(self.bank.city, name)
+        self.assertIn(self.bank.address, name)
 
 
 class OptionPlanSerializerTestCase(TestCase):

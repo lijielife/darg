@@ -14,7 +14,7 @@ from rest_framework.exceptions import ValidationError
 
 from services.rest.mixins import FieldValidationMixin
 from services.rest.validators import DependedFieldsValidator
-from shareholder.models import (Company, Country, Operator, OptionPlan,
+from shareholder.models import (Bank, Company, Country, Operator, OptionPlan,
                                 OptionTransaction, Position, Security,
                                 Shareholder, UserProfile)
 from utils.formatters import inflate_segments, string_list_to_json
@@ -33,6 +33,26 @@ class CountrySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Country
         fields = ('url', 'iso_code', 'name')
+
+
+class BankSerializer(serializers.HyperlinkedModelSerializer):
+    """ list of countries selectable """
+    full_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Bank
+        fields = ('pk', 'name', 'short_name', 'swift', 'address', 'city',
+                  'postal_code', 'full_name')
+        extra_kwargs = {'pk': {'read_only': False}}
+
+    def get_full_name(self, obj):
+        name = u"{} ({}, {}".format(
+            obj.name, obj.city, obj.address)
+        if obj.swift:
+            name += u" | {})".format(obj.swift)
+        else:
+            name += u")"
+        return name
 
 
 class SecuritySerializer(serializers.HyperlinkedModelSerializer,

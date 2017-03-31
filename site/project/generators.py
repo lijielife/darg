@@ -10,6 +10,7 @@ from django.contrib.auth import get_user_model
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as __
 from model_mommy import random_gen
+from model_mommy import mommy
 
 from shareholder.models import (Company, Country, Operator, OptionPlan,
                                 OptionTransaction, Position, Security,
@@ -87,6 +88,12 @@ def _make_user():
     user.save()
 
     return user
+
+
+class BankGenerator(object):
+
+    def generate(self, **kwargs):
+        return mommy.make('shareholder.Bank')
 
 
 class CompanyGenerator(object):

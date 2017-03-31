@@ -7,11 +7,12 @@ from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.test import RequestFactory, TestCase
+from django.utils.translation import ugettext as _
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
-from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
-                                CompanyShareholderGenerator,
+from project.generators import (DEFAULT_TEST_DATA, BankGenerator,
+                                CompanyGenerator, CompanyShareholderGenerator,
                                 ComplexOptionTransactionsWithSegmentsGenerator,
                                 ComplexPositionsWithSegmentsGenerator,
                                 ComplexShareholderConstellationGenerator,
@@ -21,9 +22,8 @@ from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
                                 TwoInitialSecuritiesGenerator, UserGenerator)
 from project.tests.mixins import MoreAssertsTestCaseMixin
 from services.rest.serializers import SecuritySerializer
-from shareholder.models import (Operator, OptionTransaction, Position,
-                                Security, Shareholder, OptionPlan, UserProfile)
-from django.utils.translation import ugettext as _
+from shareholder.models import (Operator, OptionPlan, OptionTransaction,
+                                Position, Security, Shareholder, UserProfile)
 
 logger = logging.getLogger()
 
@@ -116,6 +116,40 @@ class AvailableOptionSegmentsViewTestCase(APITestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data, [u'1000-1200', 1666])
 
+
+class BankViewTestCase(APITestCase):
+    """
+    expose list of all swiss banks
+    """
+    def setUp(self):
+        super(BankViewTestCase, self).setUp()
+        self.bank = BankGenerator().generate()
+        self.operator = OperatorGenerator().generate()
+
+    def test_get(self):
+        response = self.client.get(reverse('banks'))
+        self.assertEqual(response.status_code, 401)
+
+    def test_get_authenticated(self):
+        self.client.force_login(self.operator.user)
+        response = self.client.get(reverse('banks'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data.get('count'), 1)
+        self.assertEqual(response.data.get('results')[0].get('pk'),
+                         self.bank.pk)
+
+    def test_search(self):
+        self.client.force_login(self.operator.user)
+        response = self.client.get(reverse('banks'), {'search': self.bank.name})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data.get('count'), 1)
+        self.assertEqual(response.data.get('results')[0].get('pk'),
+                         self.bank.pk)
+
+    def test_post(self):
+        self.client.force_login(self.operator.user)
+        response = self.client.post(reverse('banks'), {})
+        self.assertEqual(response.status_code, 405)
 
 class CompanyViewSetTestCase(TestCase):
 
