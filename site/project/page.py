@@ -323,11 +323,12 @@ class BasePage(object):
         element = wait.until(EC.element_to_be_clickable(element))
         return element
 
-    def wait_until_visible(self, element):
+    def wait_until_visible(self, element, timeout=None):
         """
         wait until element is clickable
         """
-        wait = WebDriverWait(self.driver, settings.TEST_WEBDRIVER_WAIT_TIMEOUT)
+        wait = WebDriverWait(self.driver,
+                             timeout or settings.TEST_WEBDRIVER_WAIT_TIMEOUT)
         if isinstance(element, WebElement):
             element = wait.until(EC.visibility_of(element))
         else:
