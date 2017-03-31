@@ -1,5 +1,6 @@
 import datetime
 import logging
+from dateutil.parser import parse as timeparse
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -554,11 +555,16 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
     buyer = ShareholderListSerializer(many=False, required=False)
     seller = ShareholderListSerializer(many=False, required=False)
     security = SecuritySerializer(many=False, required=True)
+    depot_bank = BankSerializer(many=False, required=False)
     bought_at = serializers.DateTimeField()  # e.g. 2015-06-02T23:00:00.000Z
     readable_number_segments = serializers.SerializerMethodField()
     readable_registration_type = serializers.SerializerMethodField()
     readable_depot_type = serializers.SerializerMethodField()
     position_type = serializers.SerializerMethodField()
+    certificate_invalidation_position_url = serializers.SerializerMethodField()
+    certificate_invalidation_initial_position_url = \
+        serializers.SerializerMethodField()
+    is_certificate_valid = serializers.SerializerMethodField()
 
     class Meta:
         model = Position
@@ -569,11 +575,36 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
             'readable_number_segments', 'registration_type',
             'readable_registration_type', 'position_type', 'depot_type',
             'readable_depot_type', 'stock_book_id', 'vesting_months',
-            'certificate_id', 'printed_at')
+            'certificate_id', 'printed_at', 'depot_bank',
+            'certificate_invalidation_position_url',
+            'certificate_invalidation_initial_position_url',
+            'is_certificate_valid')
 
     def _get_company(self):
         company = get_company_from_request(self.context.get("request"))
         return company
+
+    def get_certificate_invalidation_position_url(self, obj):
+        if obj.certificate_invalidation_position:
+            return reverse(
+                'position',
+                kwargs={'pk': obj.certificate_invalidation_position.pk})
+
+    def get_certificate_invalidation_initial_position_url(self, obj):
+        if hasattr(obj, 'certificate_initial_position'):
+            return reverse(
+                'position',
+                kwargs={'pk': obj.certificate_initial_position.pk})
+
+    def get_is_certificate_valid(self, obj):
+        if not obj.certificate_id:
+            return
+        if obj.certificate_invalidation_position:
+            return False
+        if hasattr(obj, 'certificate_initial_position'):
+            return False
+        else:
+            return True
 
     def get_readable_number_segments(self, obj):
         """
@@ -754,6 +785,11 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
             kwargs.update({
                 'certificate_id': validated_data.get("certificate_id")})
 
+        if validated_data.get("depot_bank"):
+            kwargs.update({
+                'depot_bank': Bank.objects.get(
+                    pk=validated_data.get("depot_bank")['pk'])})
+
         position = Position.objects.create(**kwargs)
 
         return position
@@ -799,12 +835,29 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
             seller = Shareholder.objects.get(
                 pk=self.initial_data.get('seller').get('pk'))
 
-            if value > seller.share_count(security=security):
+            # does the seller have enough shares to sell?
+            sellable_shares = seller.share_count_sellable(
+                security=security,
+                date=timeparse(self.initial_data.get('bought_at')))
+            if value > sellable_shares:
                 raise ValidationError(
                     _('seller does not have enough shares. max value is {}.'
-                      '').format(seller.share_count(security=security)))
+                      '').format(sellable_shares))
 
         return value
+
+    def validate_depot_bank(self, value):
+        """
+        bank is needed if certificate depot is selected
+        """
+        if self.initial_data.get('depot_type') == '0':
+            if not value:
+                raise ValidationError(
+                    _('Depot bank is mandatory if depot type is certificate '
+                      'depot'
+                      ''))
+        return value
+
 
 class OptionPlanSerializer(serializers.HyperlinkedModelSerializer):
     """
@@ -1147,7 +1200,7 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
         # seller is optional
         if self.initial_data.get('seller'):
             security = Security.objects.get(
-                pk=self.initial_data.get('option_plan').get('security').get('pk'))
+                pk=self.initial_data.get('option_plan')['security']['pk'])
             seller = Shareholder.objects.get(
                 pk=self.initial_data.get('seller').get('pk'))
 
@@ -1157,6 +1210,7 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
                       '').format(seller.options_count(security=security)))
 
         return value
+
 
 class OptionHolderSerializer(serializers.HyperlinkedModelSerializer):
     """ commented some fields for the sake of performance """

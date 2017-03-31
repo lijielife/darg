@@ -23,7 +23,8 @@ from services.rest.serializers import (AddCompanySerializer, BankSerializer,
                                        ShareholderListSerializer,
                                        ShareholderSerializer,
                                        UserProfileSerializer)
-from shareholder.models import Country, OptionPlan, OptionTransaction, Position
+from shareholder.models import (Bank, Country, OptionPlan, OptionTransaction,
+                                Position)
 from utils.formatters import human_readable_segments
 
 
@@ -248,6 +249,7 @@ class PositionSerializerTestCase(TestCase):
 
     def __serialize(self, segments):
         # create capital
+        bank = BankGenerator().generate()
         p = PositionGenerator().generate(number_segments=segments,
                                          count=8, seller=None)
         # position under test:
@@ -255,7 +257,8 @@ class PositionSerializerTestCase(TestCase):
                                                 count=8,
                                                 company=p.buyer.company,
                                                 seller=p.buyer, save=False,
-                                                security=p.security)
+                                                security=p.security,
+                                                depot_bank=bank)
         url = reverse('position-detail', kwargs={'pk': position.id})
         request = self.factory.get(url)
         # authenticated request
@@ -265,15 +268,69 @@ class PositionSerializerTestCase(TestCase):
         # prepare data
         data = PositionSerializer(
             position, context={'request': request}).data
-        # clear bad datetimedata
-        # data['buyer']['user']['userprofile']['birthday'] = None
-        # data['seller']['user']['userprofile']['birthday'] = None
-        data['bought_at'] = '2014-01-01T10:00'
+        data['bought_at'] = '2024-01-01T10:00'
         return (PositionSerializer(data=data, context={'request': request}),
                 position)
 
     def setUp(self):
         self.factory = RequestFactory()
+
+    def test_get_certificate_invalidation_position_url(self):
+        """
+        return url for cert invalidation position
+        """
+        pos = PositionGenerator().generate()
+        pos.invalidate_certificate()
+
+        serializer = PositionSerializer(instance=pos)
+        self.assertIsNotNone(
+            serializer.get_certificate_invalidation_position_url(pos))
+
+        pos = PositionGenerator().generate()
+        serializer = PositionSerializer(instance=pos)
+        self.assertIsNone(
+            serializer.get_certificate_invalidation_position_url(pos))
+
+    def test_get_certificate_invalidation_initial_position_url(self):
+        """
+        return url for initial position for an cert invalidation
+        """
+        pos = PositionGenerator().generate()
+        pos.invalidate_certificate()
+        pos2 = pos.certificate_invalidation_position
+
+        serializer = PositionSerializer(instance=pos)
+        self.assertIsNotNone(
+            serializer.get_certificate_invalidation_initial_position_url(pos2))
+
+        pos = PositionGenerator().generate()
+        serializer = PositionSerializer(instance=pos)
+        self.assertIsNone(
+            serializer.get_certificate_invalidation_initial_position_url(pos))
+
+    def test_get_is_certificate_valid(self):
+        """
+        is certificate valid or was it returned
+        """
+        pos = PositionGenerator().generate()
+        pos.invalidate_certificate()
+        pos2 = pos.certificate_invalidation_position
+
+        serializer = PositionSerializer(instance=pos)
+        self.assertFalse(
+            serializer.get_is_certificate_valid(pos))
+        self.assertFalse(
+            serializer.get_is_certificate_valid(pos2))
+
+        pos = PositionGenerator().generate()
+        serializer = PositionSerializer(instance=pos)
+        self.assertIsNone(
+            serializer.get_is_certificate_valid(pos))
+
+        pos = PositionGenerator().generate(certificate_id='123')
+        serializer = PositionSerializer(instance=pos)
+        self.assertTrue(
+            serializer.get_is_certificate_valid(pos))
 
     def test_is_valid(self):
         """
@@ -330,6 +387,7 @@ class PositionSerializerTestCase(TestCase):
             # prepare data
             position.seller = None
             position.buyer = None
+            position.depot_bank = BankGenerator().generate()
             # get test data dict
             data = PositionSerializer(
                 position, context={'request': request}).data
@@ -347,6 +405,7 @@ class PositionSerializerTestCase(TestCase):
             [1, u'3-4', u'6-9', 33],
             position.security.number_segments)
         self.assertEqual(position.registration_type, '1')
+        self.assertEqual(position.depot_bank, Bank.objects.first())
 
     def test_fields(self):
         operator = OperatorGenerator().generate()
@@ -361,8 +420,13 @@ class PositionSerializerTestCase(TestCase):
 
         self.assertTrue(len(serializer.data) > 0)
         position_data = serializer.data[0]
+        keys = position_data.keys()
         self.assertIsNotNone(position_data['stock_book_id'])
         self.assertIsNotNone(position_data['depot_type'])
+        self.assertIn('depot_bank', keys)
+        self.assertIn('certificate_invalidation_position_url', keys)
+        self.assertIn('certificate_invalidation_initial_position_url', keys)
+        self.assertIn('is_certificate_valid', keys)
 
     def test_validate_certificate_id(self):
         """ certificate id must be unique """
@@ -401,6 +465,22 @@ class PositionSerializerTestCase(TestCase):
         # success
         count = position.seller.share_count(security=position.security)
         self.assertEqual(count, serializer.validate_count(count))
+
+    def test_validate_depot_bank(self):
+        """
+        force depot banks set if that is depot type 0 (cert depot)
+        """
+        serializer, position = self.__serialize('1, 3, 4, 6-9, 33')
+
+        serializer.initial_data['depot_type'] = '1'
+        self.assertEqual(serializer.validate_depot_bank(dict()), {})
+
+        serializer.initial_data['depot_type'] = '0'
+        self.assertEqual(serializer.validate_depot_bank('somevalue'),
+                         'somevalue')
+
+        with self.assertRaises(ValidationError):
+            serializer.validate_depot_bank(None)
 
 
 class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin, TestCase):
