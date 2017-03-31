@@ -484,15 +484,15 @@ class PositionPage(BasePage):
 
         if position.depot_type:
             select = Select(selects[1])
-            select.select_by_visible_text('Gesellschaftsdepot')
+            select.select_by_visible_text('Zertifikatsdepot')
 
         if position.stock_book_id:
-            inputs[7].clear()
-            inputs[7].send_keys(position.stock_book_id)
+            inputs[-2].clear()
+            inputs[-2].send_keys(position.stock_book_id)
 
         if position.certificate_id:
-            inputs[9].clear()
-            inputs[9].send_keys(position.certificate_id)
+            inputs[7].clear()
+            inputs[7].send_keys(position.certificate_id)
 
     def show_optional_fields(self):
         self.driver.find_element_by_class_name('el-icon-chevron-down').click()

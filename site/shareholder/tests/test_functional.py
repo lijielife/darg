@@ -1068,7 +1068,7 @@ class PositionFunctionalTestCase(BaseSeleniumTestCase):
                           app.get_position_row_data()[0].split('\n')[0])
             position = Position.objects.last()
             self.assertEqual(position.stock_book_id, '444')
-            self.assertEqual(position.depot_type, '1')
+            self.assertEqual(position.depot_type, '0')
             self.assertEqual(position.certificate_id, '88888')
 
         except Exception, e:
