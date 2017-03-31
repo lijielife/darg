@@ -38809,6 +38809,19 @@ $provide.value("$locale", {
           });
         });
       };
+      $scope.search_banks = function(term) {
+        var paramss;
+        paramss = {
+          search: term
+        };
+        return $http.get('/services/rest/bank', {
+          params: paramss
+        }).then(function(response) {
+          return response.data.results.map(function(item) {
+            return item;
+          });
+        });
+      };
       $scope.search = function() {
         var params, paramss;
         params = {};
@@ -38925,6 +38938,16 @@ $provide.value("$locale", {
               rejection: rejection
             }
           });
+        });
+      };
+      $scope.get_new_certificate_id = function() {
+        return $http({
+          method: 'GET',
+          url: '/services/rest/position/get_new_certificate_id'
+        }).then((function(response) {
+          return $scope.newPosition.certificate_id = response.data.certificate_id;
+        }), function(response) {
+          return $scope.errors = response.errors;
         });
       };
       $scope.show_add_position_form = function() {

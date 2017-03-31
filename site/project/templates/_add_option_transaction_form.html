@@ -24,20 +24,18 @@
           </span>
         </span>
         <!-- --- SELLER -- -->
-        {% endverbatim %} {% trans "from" %} {% verbatim %}
         {% endverbatim %}
-        {% with model='newOptionTransaction.seller' field_name='seller' %}
+        {% with model='newOptionTransaction.seller' field_name='seller' rest_search_method="search_shareholders" %}
           {% trans "Seller" as placeholder %}
-          {% include "_shareholder_typeahead.html" %}
+          {% include "_typeahead.html" %}
         {% endwith %}
         {% verbatim %}
 
         <!-- --- BUYER -- -->
-        {% endverbatim %} {% trans "transferred to" %} {% verbatim %}
         {% endverbatim %}
-        {% with model='newOptionTransaction.buyer' field_name='buyer' %}
+        {% with model='newOptionTransaction.buyer' field_name='buyer' rest_search_method="search_shareholders" %}
           {% trans "Buyer" as placeholder %}
-          {% include "_shareholder_typeahead.html" %}
+          {% include "_typeahead.html" %}
         {% endwith %}
         {% verbatim %}
 

@@ -288,10 +288,11 @@
       <div class="td">{% trans "issued" %}</div>
       {% endif %}
       <div class="td">
-        {% trans "shares owned" %}
+        <div>{% trans "shares owned" %}</div>
         {% if shareholder.is_company_shareholder %}
         <div class="note">{% trans "cleaned by options count" %}</div>
         {% endif %}
+        <div class="note">{% trans "including shares inside certificate depot" %}</div>
       </div>
       <div class="td">{% trans "options owned" %}</div>
       {% if security.track_numbers %}

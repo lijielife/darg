@@ -2,13 +2,14 @@
 {% verbatim %}
 <input type="text" ng-model="{% endverbatim %}{{ model }}{% verbatim %}" 
                    placeholder="{% endverbatim %}{{ placeholder }}{% verbatim %}" 
-                   uib-typeahead="shareholder as shareholder.full_name for shareholder in search_shareholders($viewValue)" 
+                   uib-typeahead="obj as obj.full_name for obj in {% endverbatim %}{{ rest_search_method }}{% verbatim %}($viewValue)" 
                    typeahead-loading="loading_{% endverbatim %}{{ field_name }}{% verbatim %}" 
                    typeahead-no-results="no_{% endverbatim %}{{ field_name }}{% verbatim %}" 
                    class="form-control {% endverbatim %}{{ field_name }}{% verbatim %}"
                    translate translate-attr-placeholder="{% endverbatim %}{{ placeholder }}{% verbatim %}"
                    typeahead-wait-ms="300"
-                   ng-change="show_available_number_segments();" >
+                   {% endverbatim %}{% if field_namei == "buyer" or field_name == "seller" %}ng-change="show_available_number_segments();" {% endif %}{% verbatim %}
+                   >
 
 <i ng-show="loading_{% endverbatim %}{{ field_name }}{% verbatim %}" class="glyphicon glyphicon-refresh"></i>
 

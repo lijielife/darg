@@ -130,6 +130,12 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
             response.data.results.map (item) ->
                 item
 
+    $scope.search_banks = (term) ->
+        paramss = {search: term}
+        $http.get('/services/rest/bank', {params: paramss}).then (response) ->
+            response.data.results.map (item) ->
+                item
+
     $scope.search = ->
         # FIXME - its not company specific
         # respect ordering and search
@@ -231,6 +237,15 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
                 extra: { rejection: rejection },
             })
 
+    $scope.get_new_certificate_id = ->
+        $http(
+            method: 'GET'
+            url: '/services/rest/position/get_new_certificate_id').then ((response) ->
+       	 	    $scope.newPosition.certificate_id = response.data.certificate_id
+            ), (response) ->
+                $scope.errors = response.errors
+
+    # --- DISPLAY LOGIC
     $scope.show_add_position_form = ->
         $scope.show_add_position = true
         $scope.show_add_capital = false
@@ -275,7 +290,7 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
                     url = url + '?date=' + $scope.newPosition.bought_at.toISOString()
                 $http.get(url).then (result) ->
                     if $scope.newPosition.security.pk of result.data and result.data[$scope.newPosition.security.pk].length > 0
-           	            $scope.numberSegmentsAvailable = gettext('Available security segments from this shareholder on selected date or now: ') + result.data[$scope.newPosition.security.pk]
+                           $scope.numberSegmentsAvailable = gettext('Available security segments from this shareholder on selected date or now: ') + result.data[$scope.newPosition.security.pk]
                     else
                         $scope.numberSegmentsAvailable = gettext('Available security segments from this shareholder on selected date or now: None')
 
