@@ -14,7 +14,7 @@ describe 'Unit: Testing Position Controller', ->
 
   describe 'methods', ->
     it 'should have certificate invalidation method', ->
-      # expect($scope.invalidate_certificate).toEqual jasmine.any(Function)
+      expect($scope.invalidate_certificate).toEqual jasmine.any(Function)
       return
     return
   

@@ -320,7 +320,6 @@ class PositionDetailFunctionalTestCase(BaseSeleniumTestCase):
                 self.position.certificate_id,
                 self.page.get_field('certificate-id'))
 
-
         except Exception, e:
             self._handle_exception(e)
 
@@ -389,13 +388,19 @@ class OptionTransactionDetailFunctionalTestCase(BaseSeleniumTestCase):
             # wait for angular load
             time.sleep(1)
             self.assertIn(
-                reverse('shareholder', kwargs={'pk': self.optiontransaction.seller.pk}),
+                reverse('shareholder',
+                        kwargs={'pk': self.optiontransaction.seller.pk}),
                 self.page.get_url('seller'))
             self.assertIn(
-                reverse('shareholder', kwargs={'pk': self.optiontransaction.buyer.pk}),
+                reverse('shareholder',
+                        kwargs={'pk': self.optiontransaction.buyer.pk}),
                 self.page.get_url('buyer'))
             self.assertIn(
-                reverse('optionplan', kwargs={'optionsplan_id': self.optiontransaction.option_plan.pk}),
+                reverse(
+                    'optionplan',
+                    kwargs={
+                        'optionsplan_id': self.optiontransaction.option_plan.pk
+                    }),
                 self.page.get_url('option-plan'))
 
         except Exception, e:
@@ -800,7 +805,8 @@ class OptionsPlanFunctionalTestCase(BaseSeleniumTestCase):
                 number_segments='1050', count=1)
             app.click_save_option_plan_form()
             # wait for error
-            app.wait_until_visible((By.CSS_SELECTOR, '#addOptionPlan .form-error'))
+            app.wait_until_visible((
+                By.CSS_SELECTOR, '#addOptionPlan .form-error'))
 
             # attempt to fix unstable @CI
             # FIXME remove once stable
@@ -824,7 +830,8 @@ class OptionsPlanFunctionalTestCase(BaseSeleniumTestCase):
                 number_segments='1667', count=2)
             app.click_save_option_plan_form()
             # wait for error
-            app.wait_until_visible((By.CSS_SELECTOR, '#addOptionPlan .form-error'))
+            app.wait_until_visible((
+                By.CSS_SELECTOR, '#addOptionPlan .form-error'))
             self.assertEqual(
                 app.get_form_errors(),
                 [u'Anzahl: Anzahl der Aktien in den Aktiennummern ist nicht '
@@ -840,7 +847,8 @@ class OptionsPlanFunctionalTestCase(BaseSeleniumTestCase):
             app.click_save_option_plan_form()
             # wait for error to disappear
             app.close_modal('addOptionPlan')
-            app.wait_until_invisible((By.CSS_SELECTOR, '#addOptionPlan .form-error'))
+            app.wait_until_invisible((
+                By.CSS_SELECTOR, '#addOptionPlan .form-error'))
 
             # attempt to fix unstable @CI
             # FIXME remove once stable
