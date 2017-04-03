@@ -38,7 +38,8 @@ mots-vides>=2015.2.6
 django-contrib-comments>=1.7.1
 pyparsing
 django-xmlrpc
-django-blog-zinnia>=0.18.1
+# 0.17 for dj 1.9...
+django-blog-zinnia==0.17
 # git+https://github.com/Fantomas42/django-blog-zinnia.git@develop#egg=django-blog-zinnia
 Pillow
 django-app-namespace-template-loader
