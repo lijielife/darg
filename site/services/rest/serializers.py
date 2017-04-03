@@ -179,6 +179,7 @@ class AddCompanySerializer(serializers.Serializer):
         if value < 0:
             raise ValidationError(
                 'share count "%s" must be larger then 0'.format(value))
+        return value
 
 class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
     """ serialize additional user data """
