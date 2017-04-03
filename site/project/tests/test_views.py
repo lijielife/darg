@@ -229,7 +229,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
             shareholder_list.append(ShareholderGenerator().generate(
                 company=company, number=str(x)))
         shareholder_list = sorted(
-            shareholder_list, key=lambda t: t.user.last_name)
+            shareholder_list, key=lambda t: t.user.last_name.lower())
 
         # initial share creation
         PositionGenerator().generate(

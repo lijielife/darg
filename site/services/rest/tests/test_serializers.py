@@ -51,6 +51,19 @@ class AddCompanySerializerTestCase(TestCase):
         self.assertEqual(company.security_set.first().face_value,
                          validated_data['face_value'])
 
+    def test_create_negative_share_count(self):
+        """ see https://goo.gl/HDQB1t for users doing that """
+        validated_data = {
+            'user': UserGenerator().generate(),
+            'share_count': -33,
+            'founded_at': datetime.datetime.now().date(),
+            'name': u'Mühleggbahn AG',
+            'face_value': 22,
+        }
+        with self.assertRaises(ValidationError):
+            self.serializer.validate_share_count(
+                validated_data['share_count'])
+
 
 class BankSerializerTestCase(TestCase):
 
