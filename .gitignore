@@ -6,6 +6,7 @@
 npm-debug.log
 db.sqlite3
 darg.js/node_modules/
+darg.js/darg.js
 site/static/.sass-cache/
 site/media/static/
 site/media/cache
