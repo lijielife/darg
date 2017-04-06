@@ -28,7 +28,8 @@ sorl-thumbnail
 djrill
 diff-match-patch
 model_mommy>=1.3.1
-twilio
+# required by two factor auth
+twilio==5.7.0
 
 #-- zinnia reqs
 django-mptt>=0.8.5
