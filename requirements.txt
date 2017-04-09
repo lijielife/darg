@@ -11,6 +11,8 @@ django-sendfile
 git+https://github.com/patroqueeet/django-two-factor-auth.git@master#egg=django-two-factor-auth
 django-otp
 
+# PYTHON
+naturalsort
 raven
 cssmin==0.2.0
 jsmin==2.0.11
@@ -53,6 +55,7 @@ django-markdownx
 git+https://github.com/patroqueeet/django-flatpage-meta.git@master#egg=flatpage_meta
 #-- end blog
 
+# DEV EHLPER
 ipdbplugin
 wand
 nose-progressive

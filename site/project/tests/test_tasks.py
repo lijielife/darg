@@ -24,6 +24,7 @@ class TaskTestCase(TestCase):
                                         ordering='-share_count')
         self.assertEqual(len(res), 9)
 
+        # order by share percent
         res = _get_captable_pdf_context(self.shs[0].company,
                                         ordering='-share_percent')
         self.assertEqual(len(res), 9)
@@ -34,6 +35,7 @@ class TaskTestCase(TestCase):
                 float(sh.share_percent()),
                 float(res['active_shareholders'][idx-1].share_percent()))
 
+        # order by share_count
         res = _get_captable_pdf_context(self.shs[0].company,
                                         ordering='-share_count')
         self.assertEqual(len(res), 9)
@@ -44,6 +46,28 @@ class TaskTestCase(TestCase):
                 int(sh.share_count(security=self.sec)),
                 int(res['active_shareholders'][idx-1].share_count(
                     security=self.sec)))
+
+        # order by number
+        res = _get_captable_pdf_context(self.shs[0].company,
+                                        ordering='-number')
+        self.assertEqual(len(res), 9)
+        for idx, sh in enumerate(res['active_shareholders']):
+            if idx == 0:
+                continue
+            self.assertLessEqual(
+                sh.number,
+                res['active_shareholders'][idx-1].number)
+
+        # order by number
+        res = _get_captable_pdf_context(self.shs[0].company,
+                                        ordering='-user__last_name')
+        self.assertEqual(len(res), 9)
+        for idx, sh in enumerate(res['active_shareholders']):
+            if idx == 0:
+                continue
+            self.assertLessEqual(
+                sh.user.last_name,
+                res['active_shareholders'][idx-1].user.last_name.lower())
 
     def test_order_queryset(self):
 
