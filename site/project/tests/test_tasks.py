@@ -17,6 +17,10 @@ class TaskTestCase(TestCase):
     def setUp(self):
         self.shs, self.sec = (
             ComplexShareholderConstellationGenerator().generate())
+        # have at least one unicode sh number (failed on test prev.)
+        sh = self.shs[0]
+        sh.number = u'ü' + sh.number
+        sh.save()
 
     def test_get_captable_pdf_context(self):
 
@@ -58,7 +62,7 @@ class TaskTestCase(TestCase):
                 sh.number,
                 res['active_shareholders'][idx-1].number)
 
-        # order by number
+        # order by user last name
         res = _get_captable_pdf_context(self.shs[0].company,
                                         ordering='-user__last_name')
         self.assertEqual(len(res), 9)
