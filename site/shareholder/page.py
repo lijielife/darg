@@ -58,8 +58,9 @@ class ShareholderDetailPage(BaseDetailPage):
         el.click()
 
     def edit_field(self, value, class_name):
-        el = self.driver.find_element_by_class_name(class_name)
-        el = el.find_element_by_class_name('editable-input')
+        xpath = ('//*[contains(@class, "{}")]'
+                 '//*[contains(@class, "editable-input")]'.format(class_name))
+        el = self.wait_until_visible((By.XPATH, xpath))
         el.clear()
         el.send_keys(str(value))
 
