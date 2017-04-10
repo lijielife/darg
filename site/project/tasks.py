@@ -5,7 +5,7 @@ import time
 import StringIO
 import csv
 import logging
-from natsort import natsort
+from natsort import natsorted
 
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
@@ -76,11 +76,11 @@ def _order_queryset(queryset, ordering):
         unsorted_results = queryset.all()
         try:
             if callable(getattr(unsorted_results[0], funcname)):
-                return natsort(
+                return natsorted(
                     unsorted_results, key=lambda t:
-                        str(getattr(t, funcname)() or 0), reverse=reverse)
+                        unicode(getattr(t, funcname)() or 0), reverse=reverse)
             else:
-                return natsort(
+                return natsorted(
                     unsorted_results, key=lambda t:
                         getattr(t, funcname), reverse=reverse)
 

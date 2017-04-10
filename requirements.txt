@@ -12,7 +12,7 @@ git+https://github.com/patroqueeet/django-two-factor-auth.git@master#egg=django-
 django-otp
 
 # PYTHON
-naturalsort
+natsort
 raven
 cssmin==0.2.0
 jsmin==2.0.11
