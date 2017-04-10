@@ -18,7 +18,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import ugettext as _
 from django_languages import fields as language_fields
-from natsort import natsort
+from natsort import natsorted
 from rest_framework.authtoken.models import Token
 from sorl.thumbnail import get_thumbnail
 from tagging.models import Tag
@@ -290,7 +290,7 @@ class Company(models.Model):
         options_cert_ids = options.values_list('certificate_id', flat=True)
         cert_ids = set(list(positions_cert_ids) + list(options_cert_ids))
         if cert_ids:
-            max_cert_id = natsort(cert_ids)[-1]
+            max_cert_id = natsorted(cert_ids)[-1]
             new_cert_id = int(''.join(re.findall(r'\d+', max_cert_id))) + 1
             return new_cert_id
         else:
