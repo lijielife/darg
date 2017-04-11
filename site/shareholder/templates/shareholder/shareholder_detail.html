@@ -243,7 +243,7 @@
 	  {% verbatim %}{{ shareholder.share_value | currency }}{% endverbatim %}
 	</p>
 	{# company shareholder does not have voting rights #}
-    <p>{% trans "Voting rights total count" %}: {% verbatim %}{{ shareholder.vote_count }}{% endverbatim %}</p>
+    <p>{% trans "Voting rights total count" %}: {% verbatim %}{{ shareholder.vote_count|number }}{% endverbatim %}</p>
     <p>{% trans "Voting rights percent" %}: {% verbatim %}{{ shareholder.vote_percent | percentage:4 }}{% endverbatim %}</p>
   {% endif %}
 
