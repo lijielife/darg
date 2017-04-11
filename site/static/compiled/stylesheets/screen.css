@@ -2364,7 +2364,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   }
 }
 .date-field .input-group-btn .btn {
-  padding: 7px 12px 10px;
+  padding: 7px 12px 9px;
   border: 1px solid #ccc;
 }
 .date-field .form-control[readonly] {
