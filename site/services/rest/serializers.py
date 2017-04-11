@@ -335,10 +335,13 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         return company the user selected last
         """
 
-        op = Operator.objects.filter(
-            user=obj,
-            company__pk=get_company_from_request(self.context['request']).pk
-        ).first()
+        try:
+            op = Operator.objects.filter(
+                user=obj,
+                company__pk=get_company_from_request(self.context['request']).pk
+            ).first()
+        except ValueError:
+            return None
 
         if op:
             return reverse('company-detail',
