@@ -131,15 +131,15 @@ class BasePage(object):
         btns = el.find_elements_by_xpath(
             '//*[contains(@class, "date-field")]//'
             'span[@class="input-group-btn"]//button'
-        )
-        for btn in btns:
-            if btn.is_displayed():
-                btn.click()
-                # wait until rendered
-                self.wait_until_present((By.CLASS_NAME, 'uib-datepicker-popup'))
-                return
+            )
+        btn = btns[0]
+        if btn.is_displayed():
+            btn.click()
+            # wait until rendered
+            self.wait_until_present((By.CLASS_NAME, 'uib-datepicker-popup'))
+            return
 
-        raise Exception('Clickable button not found')
+        raise Exception('button to open datepicker not visible')
 
     def click_datepicker_next_month(self):
         # handle multiple datepickers

@@ -43,8 +43,9 @@ class CompanyPage(BasePage):
         field.send_keys(email)
 
     def enter_string(self, css_class, string, clear=False):
-        el = self.driver.find_element_by_class_name(css_class)
-        el = el.find_element_by_tag_name('input')
+        el = self.wait_until_visible((
+            By.XPATH, '//*[contains(@class, "{}")]//input'.format(css_class)
+            ))
         if clear:
             el.clear()
         el.send_keys(string)
