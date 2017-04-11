@@ -201,6 +201,15 @@ class CompanyViewSet(viewsets.ModelViewSet):
             context={'request': request}).data,
             status=status.HTTP_201_CREATED)
 
+    def destroy(self, request, pk):
+        """
+        delete company
+        """
+        session = request.session
+        del session['company_pk']
+        session.save()
+        return super(CompanyViewSet, self).destroy(request, pk)
+
 
 class PositionViewSet(viewsets.ModelViewSet):
     """ API endpoint to get positions """
