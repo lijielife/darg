@@ -132,14 +132,15 @@ class BasePage(object):
             '//*[contains(@class, "date-field")]//'
             'span[@class="input-group-btn"]//button'
             )
-        btn = btns[0]
-        if btn.is_displayed():
-            btn.click()
-            # wait until rendered
-            self.wait_until_present((By.CLASS_NAME, 'uib-datepicker-popup'))
-            return
+        btns = [btn for btn in btns if btn.is_displayed()]
 
-        raise Exception('button to open datepicker not visible')
+        if not len(btns) > 0:
+           raise Exception('no datepicker button present or visible')
+
+        btns[0].click()
+        # wait until rendered
+        self.wait_until_present((By.CLASS_NAME, 'uib-datepicker-popup'))
+        return
 
     def click_datepicker_next_month(self):
         # handle multiple datepickers
