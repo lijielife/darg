@@ -32,11 +32,6 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
             company=self.operator.company)
         self.seller = ShareholderGenerator().generate(
             company=self.operator.company)
-        self.cs = CompanyShareholderGenerator().generate(
-            company=self.operator.company)
-        PositionGenerator().generate(
-            buyer=self.buyer, seller=self.cs, count=3,
-            security=self.operator.company.security_set.first())
 
     def tearDown(self):
         Security.objects.all().delete()
@@ -45,6 +40,11 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
         """
         test if all data is shown properly
         """
+        self.cs = CompanyShareholderGenerator().generate(
+            company=self.operator.company)
+        PositionGenerator().generate(
+            buyer=self.buyer, seller=self.cs, count=3,
+            security=self.operator.company.security_set.first())
         try:
 
             p = page.ShareholderDetailPage(
