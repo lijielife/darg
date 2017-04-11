@@ -119,7 +119,7 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],  # static template dirs. not used
+        'DIRS': ['project/templates'],  # required to load two factor tpls
         # 'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
