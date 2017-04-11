@@ -2626,6 +2626,7 @@ html, body {
 .core .container {
   margin-top: 6em;
   width: 1000px;
+  .hidden-display: none;
 }
 .core .container:before {
   content: "";
