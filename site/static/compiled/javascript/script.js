@@ -38919,6 +38919,7 @@ $provide.value("$locale", {
       };
       $scope.add_position = function() {
         var bought_at;
+        $scope.errors = null;
         $scope.addPositionLoading = true;
         if ($scope.newPosition.bought_at) {
           bought_at = $scope.newPosition.bought_at;

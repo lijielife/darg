@@ -162,6 +162,7 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
 
     # --- LOGIC
     $scope.add_position = ->
+        $scope.errors = null
         $scope.addPositionLoading = true
         if $scope.newPosition.bought_at
             # http://stackoverflow.com/questions/1486476/json-stringify-changes-time-of-date-because-of-utc
