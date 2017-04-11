@@ -202,6 +202,7 @@ class AddCompanySerializer(serializers.Serializer):
                 'share count "%s" must be larger then 0'.format(value))
         return value
 
+
 class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
     """ serialize additional user data """
     # country = CountrySerializer(many=False)
