@@ -176,6 +176,16 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
             self.assertTrue(
                 self.selenium.find_element_by_css_selector('#navbar ul')
                 .is_displayed())
+            # captable is hidden after company add, so the user is not confused
+            # and can enter a single shareholder first
+            self.assertFalse(
+                self.selenium.find_element_by_css_selector('#captable')
+                .is_displayed())
+            # but it's shown on refresh
+            p.refresh()
+            self.assertTrue(
+                p.wait_until_visible((By.CSS_SELECTOR, '#captable'))
+                .is_displayed())
 
         except Exception, e:
             self._handle_exception(e)

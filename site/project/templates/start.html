@@ -78,17 +78,17 @@
 	</p>
 
 	<!-- --- SHARES --- -->
-	<h2 ng-show="shareholders.length > 1" >{% endverbatim %}{% trans "Share Ownership" %}{% verbatim %}</h2>
+	<h2 ng-hide="hide_captable" >{% endverbatim %}{% trans "Share Ownership" %}{% verbatim %}</h2>
 
     <!-- TABLE ACTIONS -->
 	{% endverbatim %}
-	<div ng-hide="shareholders.length < 2">
+	<div ng-hide="hide_captable">
 	{% include "_table_actions.html" %}
 	</div>
 	{% verbatim %}
 
     <!-- TABLE -->
-    <div class="table" ng-hide="shareholders.length < 2">
+    <div class="table" id="captable" ng-hide="hide_captable">
       <div class="tr th hide-mobile">
         <div class="td td-width-2 ">{% endverbatim %}{% trans "Name" %}{% verbatim %}</div>
         <div class="td text-right-flex">{% endverbatim %}{% trans "Shareholder Number" %}{% verbatim %}</div>

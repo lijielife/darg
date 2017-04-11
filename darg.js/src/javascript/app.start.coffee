@@ -48,6 +48,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
     ]
 
     $scope.show_add_shareholder = false
+    $scope.hide_captable = false
 
     # empty form data
     $scope.newShareholder = new Shareholder()
@@ -272,6 +273,9 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
             # Reset our editor to a new blank post
             $scope.newCompany = new Company()
             $window.ga('send', 'event', 'form-send', 'add-company')
+            # on company create hide captable in next step so the user is not
+            # confused. reenable on first shareholder add
+            $scope.hide_captable = true
         .then ->
             # Clear any errors
             $scope.errors = null
@@ -294,6 +298,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
             $timeout ->
                 $scope.shareholder_added_success = false
             , 30000
+            $scope.hide_captable = false
         .then ->
             # Clear any errors
             $scope.errors = null

@@ -39458,6 +39458,7 @@ $provide.value("$locale", {
         }
       ];
       $scope.show_add_shareholder = false;
+      $scope.hide_captable = false;
       $scope.newShareholder = new Shareholder();
       $scope.newCompany = new CompanyAdd();
       $scope.reset_search_params = function() {
@@ -39717,7 +39718,8 @@ $provide.value("$locale", {
           return $scope.show_full_menu();
         }).then(function() {
           $scope.newCompany = new Company();
-          return $window.ga('send', 'event', 'form-send', 'add-company');
+          $window.ga('send', 'event', 'form-send', 'add-company');
+          return $scope.hide_captable = true;
         }).then(function() {
           return $scope.errors = null;
         }, function(rejection) {
@@ -39738,9 +39740,10 @@ $provide.value("$locale", {
           $scope.newShareholder = new Shareholder();
           $scope.shareholder_added_success = true;
           $scope.show_add_shareholder = false;
-          return $timeout(function() {
+          $timeout(function() {
             return $scope.shareholder_added_success = false;
           }, 30000);
+          return $scope.hide_captable = false;
         }).then(function() {
           $scope.errors = null;
           return $window.ga('send', 'event', 'form-send', 'add-shareholder');
