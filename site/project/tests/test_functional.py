@@ -139,9 +139,10 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
         except Exception, e:
             self._handle_exception(e)
 
-    def test_ticket_96(self):
+    def test_add_company(self):
         """
         add company with face value with decimals and large share count
+        see #96
         """
         user = UserGenerator().generate()
         value = '4.5'
@@ -153,6 +154,10 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
             # wait for form
             p.wait_until_visible((By.CSS_SELECTOR, '#add_company'))
             self.assertTrue(p.is_add_company_form_displayed())
+            # menue is hidden
+            self.assertFalse(
+                self.selenium.find_element_by_css_selector('#navbar ul')
+                .is_displayed())
 
             p.enter_add_company_data(value=value, count=count)
             p.click_save_add_company()
@@ -167,6 +172,10 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
             self.assertEqual(DEFAULT_TEST_DATA['company_name'], company.name)
             cs = company.get_company_shareholder()
             self.assertTrue(cs.buyer.first().value, value)
+            # menue is displayed
+            self.assertTrue(
+                self.selenium.find_element_by_css_selector('#navbar ul')
+                .is_displayed())
 
         except Exception, e:
             self._handle_exception(e)

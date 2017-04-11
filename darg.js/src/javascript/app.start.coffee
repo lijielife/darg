@@ -267,6 +267,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
             # update user and company
             $scope.load_user()
             $scope.load_all_shareholders()  # new shareholder is added, reload
+            $scope.show_full_menu()  # remove hidden class from menu items
         .then ->
             # Reset our editor to a new blank post
             $scope.newCompany = new Company()
@@ -304,7 +305,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
                 extra: { rejection: rejection },
             })
 
-
+    # --- DISPLAY
     $scope.show_add_shareholder_form = ->
         $scope.show_add_shareholder = true
 
@@ -314,6 +315,8 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
     $scope.goto_shareholder = (shareholder_id) ->
         window.location = "/shareholder/"+shareholder_id+"/"
 
+    $scope.show_full_menu = ->
+        $('#navbar ul').removeClass('hidden')
 
     # --- DATEPICKER
     $scope.datepicker = { opened: false }

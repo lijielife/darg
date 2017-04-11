@@ -21,25 +21,24 @@
         {% url 'start' as start_url %}
         {% url 'options' as options_url %}
         {% url 'positions' as positions_url %}
-		{% url 'reports' as reports_url %}
+        {% url 'reports' as reports_url %}
 
         <div id="navbar" class="navbar-collapse collapse" aria-expanded="false" style="height: 1px;">
-          <ul class="nav navbar-nav">
+          <ul class="nav navbar-nav {% if not request.user.operator_set.exists %}hidden{% endif %}">
+
             {% if request.user.is_authenticated %}
-              <li {% ifequal request.path start_url %}class="active"{% endifequal %}>
-                <a href="{{start_url}}">{% trans "Start" %}</a>
-              </li>
-              <li {% ifequal request.path positions_url %}class="active"{% endifequal %}>
-                <a href="{{ positions_url }}">{% trans "Positions" %}</a>
-              </li>
-              {% if request.user.operator_set.exists %}
-              <li {% ifequal request.path options_url %}class="active"{% endifequal %}>
-                <a href="{{options_url}}">{% trans "Options" %}</a>
-              </li>
-              <li {% ifequal request.path reports_url %}class="active"{% endifequal %}>
-                <a href="{{reports_url}}">{% trans "Reports" %}</a>
-              </li>
-			  {% endif %}
+            <li {% ifequal request.path start_url %}class="active"{% endifequal %}>
+              <a href="{{start_url}}">{% trans "Start" %}</a>
+            </li>
+            <li class="{% ifequal request.path positions_url %}active{% endifequal %}">
+              <a href="{{ positions_url }}">{% trans "Positions" %}</a>
+            </li>
+            <li class="{% ifequal request.path options_url %}active{% endifequal %}">
+              <a href="{{options_url}}">{% trans "Options" %}</a>
+            </li>
+            <li class="{% ifequal request.path reports_url %}active{% endifequal %}">
+              <a href="{{reports_url}}">{% trans "Reports" %}</a>
+            </li>
             {% endif %}
           </ul>
 
@@ -65,13 +64,13 @@
                         <a href="/rosetta/" target="_blank">{% trans "I18N" %}</a>
                       </li>
                     {% endif %}
-					  {% if request.user.userprofile.is_multi_company_allowed %}
+                      {% if request.user.userprofile.is_multi_company_allowed %}
                       <li>
                         <a href="{% url "company_list" %}" title="{% trans "Select Company" %}" class="btn-inline">
                           {% trans "Select Company" %}
                         </a>
                       </li>
-					  {% endif %}
+                      {% endif %}
                       <li>
                         <a href="{% url "auth_password_change" %}" title="{% trans "Reset password" %}" class="btn-inline">
                           {% trans "Change password" %}
