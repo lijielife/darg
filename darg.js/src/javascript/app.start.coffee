@@ -28,7 +28,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
     $scope.ordering_options = [
         {'name': gettext('Email'), 'value': 'user__email'},
         {'name': gettext('Shareholder Number'), 'value': 'number'},
-        {'name': gettext('Last Name'), 'value': 'user__last_name'},
+        {'name': gettext('Last Name'), 'value': 'user__last_name,user__userprofile__company_name'},
         # {'name': gettext('Clear'), 'value': null},
     ]
 

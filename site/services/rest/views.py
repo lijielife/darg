@@ -48,7 +48,8 @@ class ShareholderViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('user__first_name', 'user__last_name', 'user__email',
                      'number', 'user__userprofile__company_name', 'number')
-    ordering_fields = ('user__last_name', 'user__email', 'number')
+    ordering_fields = ('user__last_name', 'user__email', 'number',
+                       'user__userprofile__company_name')
 
     def get_object(self):
         try:

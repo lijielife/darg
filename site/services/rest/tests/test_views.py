@@ -1438,6 +1438,36 @@ class ShareholderTestCase(TestCase):
         self.assertEqual(numbers, sorted(numbers, key=lambda s: s.lower(),
                          reverse=True))
 
+    def test_ordering_combined(self):
+        """ combined ordering for last name and company name of user """
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        ComplexShareholderConstellationGenerator().generate(
+            company=operator.company, shareholder_count=10)
+
+        self.client.force_login(user)
+
+        profiles = UserProfile.objects.filter(
+            user__shareholder__company=operator.company).order_by('-pk')
+        corps = [u'A Corp AG', u'B Corp AG']
+        for idx, profile in enumerate(profiles[:2]):
+            user = profile.user
+            user.first_name = u''
+            user.last_name = u''
+            user.save()
+            profile.company_name = corps[idx]
+            profile.save()
+
+        res = self.client.get(
+            '/services/rest/shareholders?'
+            'ordering=user__last_name,user__userprofile__company_name')
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['count'], 13)
+        self.assertEqual(
+            [s.get('full_name') for s in res.data['results'][:2]],
+            corps)
+
     def test_pagination(self):
         operator = OperatorGenerator().generate()
         user = operator.user

@@ -39432,7 +39432,7 @@ $provide.value("$locale", {
           'value': 'number'
         }, {
           'name': gettext('Last Name'),
-          'value': 'user__last_name'
+          'value': 'user__last_name,user__userprofile__company_name'
         }
       ];
       $scope.optionholder_next = false;
