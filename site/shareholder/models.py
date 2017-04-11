@@ -665,6 +665,27 @@ class Shareholder(TagMixin, models.Model):
 
         return False
 
+    def cumulated_face_value(self, security=None, date=None):
+        """
+        return face value of security * share count
+        """
+        if security:
+            if security.face_value:
+                return (self.share_count(security=security, date=date) *
+                        security.face_value)
+            else:
+                return 'n/a'
+
+        # get total
+        securities = self.company.security_set.all()
+        cface_value = 0
+        for sec in securities:
+            if sec.face_value:
+                cface_value += (self.share_count(security=sec, date=date) *
+                                sec.face_value)
+
+        return cface_value
+
     def get_full_name(self):
         # return first, last, company name
         name = u""
@@ -1435,4 +1456,3 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
         UserProfile.objects.create(user=instance)
-

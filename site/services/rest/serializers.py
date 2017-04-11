@@ -393,6 +393,7 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
             'readable_mailing_type',
             'vote_count', 'vote_percent',
             'is_management',
+            'cumulated_face_value',
         )
 
     def create(self, validated_data):

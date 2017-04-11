@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import datetime
+from decimal import Decimal
 
 from dateutil.parser import parse
 from django.core.urlresolvers import reverse
@@ -584,6 +585,8 @@ class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin, TestCase):
         self.assertEqual(profile_data['postal_code'], profile.postal_code)
         self.assertEqual(profile_data['city'], profile.city)
         self.assertEqual(serializer.data[0]['mailing_type'], qs[0].mailing_type)
+        self.assertEqual(serializer.data[0]['cumulated_face_value'],
+                         Decimal(shs[0].cumulated_face_value()))
 
         # assure none is empty
         for k in profile_data.keys():

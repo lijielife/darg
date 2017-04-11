@@ -11,7 +11,8 @@ from django.utils.translation import ugettext as _
 from selenium.webdriver.common.by import By
 
 from project.base import BaseSeleniumTestCase
-from project.generators import (ComplexOptionTransactionsWithSegmentsGenerator,
+from project.generators import (CompanyShareholderGenerator,
+                                ComplexOptionTransactionsWithSegmentsGenerator,
                                 ComplexPositionsWithSegmentsGenerator,
                                 OperatorGenerator, OptionPlanGenerator,
                                 OptionTransactionGenerator, PositionGenerator,
@@ -31,6 +32,11 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
             company=self.operator.company)
         self.seller = ShareholderGenerator().generate(
             company=self.operator.company)
+        self.cs = CompanyShareholderGenerator().generate(
+            company=self.operator.company)
+        PositionGenerator().generate(
+            buyer=self.buyer, seller=self.cs, count=3,
+            security=self.operator.company.security_set.first())
 
     def tearDown(self):
         Security.objects.all().delete()
@@ -68,6 +74,8 @@ class ShareholderDetailFunctionalTestCase(BaseSeleniumTestCase):
                           p.get_field('legal-type'))
             self.assertIn(profile.initial_registration_at.strftime('%-d.%m.%y'),
                           p.get_field('initial_registration_at'))
+            self.assertIn(str(float(self.buyer.cumulated_face_value())),
+                          p.get_field('cumulated-face-value'))
 
         except Exception, e:
             self._handle_exception(e)

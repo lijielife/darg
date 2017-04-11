@@ -510,6 +510,34 @@ class ShareholderTestCase(TestCase):
                                      buyer=self.shareholder2,
                                      security=self.security, count=2)
 
+    def test_cumulated_face_value(self):
+        """
+        calculate total face value invested
+        """
+        self.assertEqual(self.shareholder2.cumulated_face_value(),
+                         Decimal('200.0000'))
+        self.assertEqual(
+            self.shareholder2.cumulated_face_value(security=self.security),
+            Decimal('200.0000'))
+        self.assertEqual(
+            self.shareholder2.cumulated_face_value(
+                security=self.security, date=datetime.datetime(2011, 1, 1)),
+            Decimal('0.0000'))
+        self.assertEqual(
+            self.shareholder2.cumulated_face_value(
+                security=self.security, date=datetime.datetime(2111, 1, 1)),
+            Decimal('200.0000'))
+
+        # one more sec
+        self.security2 = SecurityGenerator().generate(count=10, face_value=100,
+                                                      company=self.company)
+        self.assertEqual(self.shareholder2.cumulated_face_value(),
+                         Decimal('200.0000'))
+        self.assertEqual(
+            self.shareholder2.cumulated_face_value(security=self.security),
+            Decimal('200.0000'))
+
+
     def test_index(self):
 
         response = self.client.get("/", follow=True)
