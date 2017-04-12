@@ -19,6 +19,11 @@ module.exports = (grunt) ->
                 expand: true
                 src: 'compiled/javascript/script.js'
                 dest: '../site/static/'
+            assets:
+                expand: true
+                cwd: 'darg.js/assets/'
+                src: '*'
+                dest: '../site/static/compiled/contrib'
 
         concat:
             dist:
