@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-11 08:11+0000\n"
-"PO-Revision-Date: 2017-03-23 08:57+0000\n"
+"POT-Creation-Date: 2017-04-12 09:10+0000\n"
+"PO-Revision-Date: 2017-04-12 09:10+0000\n"
 "Last-Translator:   <jirka@kkd-partners.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Translated-Using: django-rosetta 0.7.12\n"
 
-#: company/page.py:59
+#: company/page.py:60
 msgid "DELETE"
 msgstr "LÖSCHEN"
 
@@ -30,7 +30,6 @@ msgstr ""
 "Administrator für dieses Unternehmen anzulegen."
 
 #: company/templates/_add_operator_form.html:15
-#: reports/templates/reports/_transaction_form.html:50
 msgid "Cancel"
 msgstr "Schliessen"
 
@@ -164,8 +163,7 @@ msgstr ""
 msgid "Delete now without return"
 msgstr "Endgültig löschen"
 
-#: company/templates/company_select.html:7 templates/menu.html:70
-#: templates/menu.html:71
+#: company/templates/company_select.html:7
 msgid "Select Company"
 msgstr "Unternehmen wählen"
 
@@ -176,554 +174,6 @@ msgstr "Wählen Sie das zu bearbeitende Unternehmen "
 #: company/templates/company_select.html:33
 msgid "add company"
 msgstr "Unternehmen hinzufügen"
-
-#: reports/templates/reports/_captable_form.html:8
-msgid "Sort by:"
-msgstr "Sortieren nach:"
-
-#: reports/templates/reports/_transaction_form.html:8
-msgid "from"
-msgstr "von"
-
-#: reports/templates/reports/_transaction_form.html:27
-msgid "to"
-msgstr "bis"
-
-#: reports/templates/reports/_transaction_form.html:47
-msgid "Security"
-msgstr "Aktienart"
-
-#: reports/templates/reports/_transaction_form.html:51
-msgid "Download"
-msgstr "Herunterladen"
-
-#: reports/templates/reports/index.html:6 templates/menu.html:40
-msgid "Reports"
-msgstr "Downloads"
-
-#: reports/templates/reports/index.html:6 templates/base.html:9
-#: templates/flatpages/default.html:9
-msgid "brand name"
-msgstr "das-aktienregister.ch"
-
-#: reports/templates/reports/index.html:16
-msgid "Reports and Downloads for "
-msgstr "Downloads für"
-
-#: reports/templates/reports/index.html:19
-msgid ""
-"Use CSV for Excel like Downloads. Follow this <a href='https://goo.gl/"
-"aQ2gVx'>guide for instructions</a>."
-msgstr ""
-"Verwenden Sie CSV für Excel-Downloads. Folgen Sie  <a href='https://goo.gl/"
-"aQ2gVx'>diesen Guide für das Öffnen in Excel</a>."
-
-#: reports/templates/reports/index.html:26
-msgid "Download active Shareholders as"
-msgstr "Aktive Gesellschafter als"
-
-#: reports/templates/reports/index.html:27
-msgid "Download active Shareholders as PDF"
-msgstr "Aktive Gesellschafter als PDF herunterladen"
-
-#: reports/templates/reports/index.html:29
-msgid "PDF"
-msgstr "PDF"
-
-#: reports/templates/reports/index.html:31
-msgid "Download active Shareholders as CSV"
-msgstr "Aktive Gesellschafter als CSV herunterladen"
-
-#: reports/templates/reports/index.html:32
-msgid "CSV"
-msgstr "CSV"
-
-#: reports/templates/reports/index.html:41
-msgid "Transactions per security in period"
-msgstr "Transaktionen pro Aktientyp im Zeitraum"
-
-#: reports/templates/reports/index.html:46
-#: reports/templates/reports/index.html:47
-msgid "Address data of all shareholders"
-msgstr "Adressdaten aller aktiven Gesellschafter"
-
-#: reports/templates/reports/index.html:52
-msgid "Printed Certificates"
-msgstr "Gedruckte Urkunden"
-
-#: reports/templates/reports/index.html:59
-msgid ""
-"No printed certificates are available. Please print a certificate via a "
-"transaction or option transaction"
-msgstr ""
-"Keine Urkunden/Zertifikate bisher gedruckt. Bitte drucken Sie vorher "
-"mindestens eine Urkunde über die Detailansicht einer <a href=\"/positions/"
-"\">Transaktion</a> oder <a href=\"/options/\">Optionstransaktion</a>."
-
-#: reports/templates/reports/index.html:64
-msgid "Vested Shares"
-msgstr "Aktien mit Sperrfristen"
-
-#: reports/templates/reports/index.html:71
-msgid ""
-"no vested positions yet. please add vesting data to either transaction or "
-"option transaction"
-msgstr ""
-"Keine Positionen mit Sperrfristen vorhanden. Bitte legen Sie vorher "
-"mindestens eine Position mit Sperrfrist unter <a href=\"/positions/"
-"\">Transaktion</a> oder <a href=\"/options/\">Optionstransaktion</a> an."
-
-#: reports/templates/reports/index.html:75
-msgid "Depot Statement per Shareholder"
-msgstr "Depotauszug pro Gesellschafter"
-
-#: templates/_messages.html:7
-msgid "Important:"
-msgstr "Wichtig:"
-
-#: templates/base.html:9
-msgid "Das Aktienregister title content"
-msgstr "Online-Aktienbuch - Aktionäre beeindrucken"
-
-#: templates/base.html:10
-msgid ""
-"Das Aktienregister - Perfekte Aktionariatsverwaltung: Schnelligkeit und "
-"Effizienz fuer kleine AGs, vollumfaengliches Aktienregister fuer "
-"Publikumsgesellschaften"
-msgstr ""
-"Willkommen bei Das-Aktienregister.ch - Die besten Aktienbuch Vorlagen/Muster "
-"(Excel) herunterladen oder effizient Aktienbuch online führen & PDF "
-"herunterladen."
-
-#: templates/base_auth.html:15
-msgid "The Share Register, 2016"
-msgstr "Das Aktienregister, 2016"
-
-#: templates/base_auth.html:17
-msgid "do you know our"
-msgstr "Kennen Sie unseren"
-
-#: templates/base_auth.html:18
-msgid "our blog"
-msgstr "Blog"
-
-#: templates/menu.html:30
-msgid "Start"
-msgstr "Start"
-
-#: templates/menu.html:33
-msgid "Positions"
-msgstr "Transaktionen"
-
-#: templates/menu.html:37
-msgid "Options"
-msgstr "Optionen"
-
-#: templates/menu.html:51
-msgid "Logged in as"
-msgstr "Eingeloggt als "
-
-#: templates/menu.html:62
-msgid "Admin"
-msgstr "Admin"
-
-#: templates/menu.html:65
-msgid "I18N"
-msgstr "I18N"
-
-#: templates/menu.html:76 templates/registration/password_reset_form.html:4
-#: templates/registration/password_reset_form.html:14
-#: templates/registration/password_reset_form.html:33
-msgid "Reset password"
-msgstr "Passwort zurücksetzen"
-
-#: templates/menu.html:77 templates/registration/password_change_form.html:4
-#: templates/registration/password_change_form.html:12
-msgid "Change password"
-msgstr "Passwort ändern"
-
-#: templates/menu.html:80
-msgid "Security Settings"
-msgstr "Sicherheitseinstellungen"
-
-#: templates/menu.html:82
-msgid "Logout"
-msgstr "Logout"
-
-#: templates/menu.html:88 templates/two_factor/core/login.html:61
-msgid "Register"
-msgstr "Registrieren"
-
-#: templates/menu.html:91 templates/registration/registration_form.html:26
-#: templates/two_factor/core/login.html:12
-msgid "Login"
-msgstr "Login"
-
-#: templates/registration/logout.html:10
-msgid "Logged Out"
-msgstr "Ausgeloggt"
-
-#: templates/registration/logout.html:11
-msgid "You are now logged out. Go to "
-msgstr "Sie sind jetzt ausgeloggt. Gehen Sie zu"
-
-#: templates/registration/logout.html:11
-msgid "Start page"
-msgstr "Startseite"
-
-#: templates/registration/password_change_done.html:12
-msgid "Password successfully changed!"
-msgstr "Passwort erfolgreich geändert"
-
-#: templates/registration/password_change_done.html:15
-msgid "You changed your password. Resume here:"
-msgstr "Sie haben Ihr Passwort geändert. Hier geht's weiter:"
-
-#: templates/registration/password_reset_complete.html:4
-msgid "Password reset complete"
-msgstr "Passwort zurücksetzen erfolgreich"
-
-#: templates/registration/password_reset_complete.html:13
-msgid "Your password reset is complete"
-msgstr "Passwort zurücksetzen ist beendet"
-
-#: templates/registration/password_reset_complete.html:16
-msgid "Your password has been reset!"
-msgstr "Ihr Passwort wurde zurückgesetzt!"
-
-#: templates/registration/password_reset_complete.html:17
-msgid "You may now"
-msgstr "Sie können jetzt"
-
-#: templates/registration/password_reset_complete.html:17
-msgid "log in"
-msgstr "Login"
-
-#: templates/registration/password_reset_confirm.html:4
-#: templates/registration/password_reset_confirm.html:12
-msgid "Confirm password reset"
-msgstr "Passwort zurücksetzen bestätigen"
-
-#: templates/registration/password_reset_confirm.html:18
-msgid "Enter your new password below to reset your password:"
-msgstr "Geben Sie Ihr neues Passwort ein:"
-
-#: templates/registration/password_reset_confirm.html:31
-msgid "Set password"
-msgstr "Passwort speichern"
-
-#: templates/registration/password_reset_confirm.html:39
-msgid ""
-"The password reset link was invalid, possibly because it has already been "
-"used.  Please request a new password reset."
-msgstr ""
-"Der Link zum Passwort-zurücksetzen ist nicht gültig. Wahrscheinlich wurde er "
-"bereits benutzt. Bitte fragen Sie diesen erneut an."
-
-#: templates/registration/password_reset_done.html:4
-#: templates/registration/password_reset_done.html:14
-msgid "Password reset"
-msgstr "Passwort zurücksetzen"
-
-#: templates/registration/password_reset_done.html:17
-msgid ""
-"\n"
-"    We have sent you an email with a link to reset your password.  Please "
-"check\n"
-"    your email and click the link to continue.\n"
-"    "
-msgstr ""
-"\n"
-"Wir haben Ihnen eine Email mit einem Link zum Zurücksetzen Ihres Passwortes "
-"gesendet. Bitte öffnen Sie Ihre Email und klicken Sie diesen Link."
-
-#: templates/registration/password_reset_email.html:3
-msgid "Greetings"
-msgstr "Mit besten Grüssen"
-
-#: templates/registration/password_reset_email.html:5
-#, python-format
-msgid ""
-"\n"
-"You are receiving this email because you (or someone pretending to be you)\n"
-"requested that your password be reset on the %(domain)s site.  If you do "
-"not\n"
-"wish to reset your password, please ignore this message.\n"
-msgstr ""
-"\n"
-"Sie erhalten diese Email da Sie (oder jemand der vorgibt Sie zu sein) das "
-"Zurücksetzen des Passworts auf der Seite %(domain)s angefragt haben. Falls "
-"Sie dies nicht waren, ignorieren Sie bitte diese Email.\n"
-
-#: templates/registration/password_reset_email.html:11
-msgid ""
-"\n"
-"To reset your password, please click the following link, or copy and paste "
-"it\n"
-"into your web browser:\n"
-msgstr ""
-"\n"
-"Um ihr Passwort zurückzusetzen, klicken Sie bitte den folgenden Link oder "
-"kopieren Sie diesen in die Adress-Leiste Ihres Browsers:\n"
-
-#: templates/registration/password_reset_email.html:18
-msgid "Your username, in case you've forgotten:"
-msgstr "Ihr Nutzername, falls Sie Ihn vergessen haben:"
-
-#: templates/registration/password_reset_email.html:21
-msgid "Best regards"
-msgstr "Mit besten Grüssen"
-
-#: templates/registration/password_reset_email.html:22
-msgid "Management"
-msgstr "Team"
-
-#: templates/registration/password_reset_form.html:17
-msgid ""
-"\n"
-"    Forgot your password?  Enter your email in the form below and we'll send "
-"you instructions for creating a new one.\n"
-"    "
-msgstr ""
-"\n"
-"Sie haben Ihr Passwort vergessen? Geben Sie Ihre Email in das Formular unten "
-"ein. Wir senden Ihnen genauere Instruktionen für die Erstellung eines neuen "
-"zu."
-
-#: templates/registration/registration_complete.html:11
-msgid "Registration Complete"
-msgstr "Registrierung vollständig"
-
-#: templates/registration/registration_complete.html:12
-msgid "You are now registered."
-msgstr "Sie sind jetzt registriert."
-
-#: templates/registration/registration_complete.html:12
-msgid "Start here to create your company"
-msgstr "Starten Sie hier mit den  Anlegen des Unternehmens"
-
-#: templates/registration/registration_form.html:11
-msgid "Register Here"
-msgstr ""
-"Starten Sie jetzt Ihr Online-Aktienbuch und beeindrucken Sie Ihre Aktionäre!"
-
-#: templates/registration/registration_form.html:21
-msgid "Sign up now"
-msgstr "Jetzt registrieren"
-
-#: templates/registration/registration_form.html:25
-msgid "Already registered?"
-msgstr "Bereits registriert?"
-
-#: templates/registration/registration_form.html:29
-#: templates/two_factor/core/login.html:68
-msgid "Do you know our "
-msgstr "Kennen Sie unseren"
-
-#: templates/registration/registration_form.html:29
-#: templates/two_factor/core/login.html:69
-msgid "Blog"
-msgstr "Blog"
-
-#: templates/two_factor/core/backup_tokens.html:6
-msgid "Backup Tokens"
-msgstr "Backup-Token"
-
-#: templates/two_factor/core/backup_tokens.html:7
-msgid ""
-"Backup tokens can be used when your primary and backup\n"
-"      phone numbers aren't available. The backup tokens below can be used\n"
-"      for login verification. If you've used up all your backup tokens, you\n"
-"      can generate a new set of backup tokens. Only the backup tokens shown\n"
-"      below will be valid."
-msgstr ""
-"Backup-Token können verwendet werden wenn sowohl die erste und zweite "
-"registrierte Telefonnummer nicht zur Verfügung stehen. Diese Token können "
-"verwendet werden, um sich anzumelden. Wenn Sie alle Token verwendet haben, "
-"können Sie entsprechend neue generieren. Nur die unten angezeigten Token "
-"sind valide."
-
-#: templates/two_factor/core/backup_tokens.html:19
-msgid "Print these tokens and keep them somewhere safe."
-msgstr "Drucken Sie diese Token aus und verwahren Sie diese sicher."
-
-#: templates/two_factor/core/backup_tokens.html:21
-msgid "You don't have any backup codes yet."
-msgstr "Sie haben noch keine Backup-Token"
-
-#: templates/two_factor/core/backup_tokens.html:26
-msgid "Back to Account Security"
-msgstr "Zurück zu Sicherheitseinstellungen"
-
-#: templates/two_factor/core/backup_tokens.html:27
-msgid "Generate Tokens"
-msgstr "Token erstellen"
-
-#: templates/two_factor/core/login.html:15
-msgid "Enter your credentials."
-msgstr "Bitte geben Sie Ihre Zugangsdaten ein"
-
-#: templates/two_factor/core/login.html:18
-msgid "We are calling your phone right now, please enter the digits you hear."
-msgstr ""
-"Wir rufen Sie gerade an. Bitte geben Sie die Zahlenkombination ein, welche "
-"Ihnen am Telefon angesagt wird."
-
-#: templates/two_factor/core/login.html:20
-msgid ""
-"We sent you a text message, please enter the tokens we\n"
-"      sent."
-msgstr ""
-"Wir haben Ihnen eine Text-Nachricht gesendet. Bitte geben Sie den "
-"zugesendeten Token ein."
-
-#: templates/two_factor/core/login.html:23
-msgid ""
-"Please enter the tokens generated by your token\n"
-"        generator."
-msgstr ""
-"Bitte geben Sie den Token ein, welchen Ihr Token-Generator (Google "
-"Authenticator) erzeugt hat."
-
-#: templates/two_factor/core/login.html:27
-msgid ""
-"Use this form for entering backup tokens for logging in.\n"
-"      These tokens have been generated for you to print and keep safe. "
-"Please\n"
-"      enter one of these backup tokens to login to your account."
-msgstr ""
-"Verwenden Sie dieses Formular um Backup-Token für das Login einzugeben. "
-"Diese Token wurden von Ihnen vorab generiert und ausgedruckt. Bitte geben "
-"Sie jetzt einen dieser Backup-Token ein, um sich in Ihr Konto einzuloggen."
-
-#: templates/two_factor/core/login.html:39
-msgid "Or, alternatively, use one of your backup phones:"
-msgstr "Oder verwenden Sie alternativ eine Ihrer Backup-Telefonnummern:"
-
-#: templates/two_factor/core/login.html:49
-msgid "As a last resort, you can use a backup token:"
-msgstr "Als letzte Sicherheit können Sie Backup-Token verwenden:"
-
-#: templates/two_factor/core/login.html:52
-msgid "Use Backup Token"
-msgstr "Verwenden Sie die Backup-Token"
-
-#: templates/two_factor/core/login.html:60
-msgid "Not  a member?"
-msgstr "Noch nicht registriert?"
-
-#: templates/two_factor/core/login.html:64
-msgid "Password lost?"
-msgstr "Passwort vergessen?"
-
-#: templates/two_factor/core/login.html:65
-msgid "Reset Password"
-msgstr "Passwort zurücksetzen"
-
-#: templates/two_factor/profile/disable.html:6
-msgid "Disable Two-factor Authentication"
-msgstr "Zwei-Faktor-Authentifizierung deaktivieren"
-
-#: templates/two_factor/profile/disable.html:7
-msgid ""
-"You are about to disable two-factor authentication. This\n"
-"    compromises your account security, are you sure?"
-msgstr ""
-"Sie wollen die Zwei-Faktor-Authentifizierung deaktivieren. Dies wird die "
-"Sicherheit Ihrer Daten reduzieren. Sind Sie sicher?"
-
-#: templates/two_factor/profile/disable.html:15
-msgid "Disable"
-msgstr "Deaktivieren"
-
-#: templates/zinnia/base.html:10
-msgid "RSS feed of latest entries"
-msgstr "RSS Feed der neuesten Beiträge"
-
-#: templates/zinnia/base.html:11
-msgid "RSS feed of latest discussions"
-msgstr "RSS Feed der neuesten Kommentare"
-
-#: templates/zinnia/base.html:25
-msgid "Recent comments"
-msgstr "Neue Kommentare"
-
-#: templates/zinnia/base.html:31
-msgid "Recent linkbacks"
-msgstr "Neue Linkbacks"
-
-#: templates/zinnia/base.html:38
-msgid "Shortcuts"
-msgstr "Verweise"
-
-#: templates/zinnia/base.html:42
-msgid "Category list"
-msgstr "Kategorien"
-
-#: templates/zinnia/base.html:43
-msgid "Categories"
-msgstr "Kategorien"
-
-#: templates/zinnia/base.html:47
-msgid "Author list"
-msgstr "Authoren"
-
-#: templates/zinnia/base.html:48
-msgid "Authors"
-msgstr "Authoren"
-
-#: templates/zinnia/base.html:51
-msgid "Tag list"
-msgstr "Tags"
-
-#: templates/zinnia/base.html:52
-msgid "Tags"
-msgstr "Tags"
-
-#: templates/zinnia/base.html:55 templates/zinnia/base.html:56
-#: templates/zinnia/skeleton.html:79 templates/zinnia/skeleton.html:80
-msgid "Sitemap"
-msgstr "Sitemap"
-
-#: templates/zinnia/base.html:58
-msgid "RSS Feed of latest entries"
-msgstr "RSS Feed der letzten Artikel"
-
-#: templates/zinnia/base.html:59
-msgid "RSS Feed"
-msgstr "RSS Feed"
-
-#: templates/zinnia/base.html:66
-msgid "Tools"
-msgstr "Werkzeuge"
-
-#: templates/zinnia/base.html:71 templates/zinnia/base.html:73
-msgid "Dashboard"
-msgstr "Übersicht"
-
-#: templates/zinnia/base.html:79 templates/zinnia/base.html:81
-msgid "Post an entry"
-msgstr "Artikel verfassen"
-
-#: templates/zinnia/base.html:88 templates/zinnia/base.html:90
-msgid "Log out"
-msgstr "Logout"
-
-#: templates/zinnia/skeleton.html:9
-msgid "Alles ueber Aktienregister."
-msgstr "Alles über Das Aktienregister"
-
-#: templates/zinnia/skeleton.html:54 templates/zinnia/skeleton.html:86
-msgid "Search"
-msgstr "Suche"
-
-#: templates/zinnia/skeleton.html:71
-msgid "Useful links"
-msgstr "Links"
-
-#: templates/zinnia/skeleton.html:74 templates/zinnia/skeleton.html:75
-msgid "Weblog index"
-msgstr "Blog Start"
 
 #: utils/geo.py:31
 msgid "German"
@@ -736,6 +186,437 @@ msgstr "Gesellschafter für Dispoaktien"
 #: utils/import_backends.py:340
 msgid "Default OptionPlan for {}"
 msgstr "Default Optionsplan für {}"
+
+#~ msgid "Sort by:"
+#~ msgstr "Sortieren nach:"
+
+#~ msgid "from"
+#~ msgstr "von"
+
+#~ msgid "to"
+#~ msgstr "bis"
+
+#~ msgid "Security"
+#~ msgstr "Aktienart"
+
+#~ msgid "Download"
+#~ msgstr "Herunterladen"
+
+#~ msgid "Reports"
+#~ msgstr "Downloads"
+
+#~ msgid "brand name"
+#~ msgstr "das-aktienregister.ch"
+
+#~ msgid "Reports and Downloads for "
+#~ msgstr "Downloads für"
+
+#~ msgid ""
+#~ "Use CSV for Excel like Downloads. Follow this <a href='https://goo.gl/"
+#~ "aQ2gVx'>guide for instructions</a>."
+#~ msgstr ""
+#~ "Verwenden Sie CSV für Excel-Downloads. Folgen Sie  <a href='https://goo."
+#~ "gl/aQ2gVx'>diesen Guide für das Öffnen in Excel</a>."
+
+#~ msgid "Download active Shareholders as"
+#~ msgstr "Aktive Gesellschafter"
+
+#~ msgid "Download active Shareholders as PDF"
+#~ msgstr "Aktive Gesellschafter als PDF herunterladen"
+
+#~ msgid "PDF"
+#~ msgstr "PDF"
+
+#~ msgid "Download active Shareholders as CSV"
+#~ msgstr "Aktive Gesellschafter als CSV herunterladen"
+
+#~ msgid "CSV"
+#~ msgstr "CSV"
+
+#~ msgid "Transactions per security in period"
+#~ msgstr "Transaktionen pro Aktientyp im Zeitraum"
+
+#~ msgid "Address data of all shareholders"
+#~ msgstr "Adressdaten aller aktiven Gesellschafter"
+
+#~ msgid "Printed Certificates"
+#~ msgstr "Gedruckte Urkunden"
+
+#~ msgid ""
+#~ "No printed certificates are available. Please print a certificate via a "
+#~ "transaction or option transaction"
+#~ msgstr ""
+#~ "Keine Urkunden/Zertifikate bisher gedruckt. Bitte drucken Sie vorher "
+#~ "mindestens eine Urkunde über die Detailansicht einer <a href=\"/positions/"
+#~ "\">Transaktion</a> oder <a href=\"/options/\">Optionstransaktion</a>."
+
+#~ msgid "Vested Shares"
+#~ msgstr "Aktien mit Sperrfristen"
+
+#~ msgid ""
+#~ "no vested positions yet. please add vesting data to either transaction or "
+#~ "option transaction"
+#~ msgstr ""
+#~ "Keine Positionen mit Sperrfristen vorhanden. Bitte legen Sie vorher "
+#~ "mindestens eine Position mit Sperrfrist unter <a href=\"/positions/"
+#~ "\">Transaktion</a> oder <a href=\"/options/\">Optionstransaktion</a> an."
+
+#~ msgid "Depot Statement per Shareholder"
+#~ msgstr "Depotauszug pro Gesellschafter"
+
+#~ msgid "Important:"
+#~ msgstr "Wichtig:"
+
+#~ msgid "Das Aktienregister title content"
+#~ msgstr "Online-Aktienbuch - Aktionäre beeindrucken"
+
+#~ msgid ""
+#~ "Das Aktienregister - Perfekte Aktionariatsverwaltung: Schnelligkeit und "
+#~ "Effizienz fuer kleine AGs, vollumfaengliches Aktienregister fuer "
+#~ "Publikumsgesellschaften"
+#~ msgstr ""
+#~ "Willkommen bei Das-Aktienregister.ch - Die besten Aktienbuch Vorlagen/"
+#~ "Muster (Excel) herunterladen oder effizient Aktienbuch online führen & "
+#~ "PDF herunterladen."
+
+#~ msgid "The Share Register, 2016"
+#~ msgstr "Das Aktienregister, 2016"
+
+#~ msgid "do you know our"
+#~ msgstr "Kennen Sie unseren"
+
+#~ msgid "our blog"
+#~ msgstr "Blog"
+
+#~ msgid "Start"
+#~ msgstr "Start"
+
+#~ msgid "Positions"
+#~ msgstr "Transaktionen"
+
+#~ msgid "Options"
+#~ msgstr "Optionen"
+
+#~ msgid "Logged in as"
+#~ msgstr "Eingeloggt als "
+
+#~ msgid "Admin"
+#~ msgstr "Admin"
+
+#~ msgid "I18N"
+#~ msgstr "I18N"
+
+#~ msgid "Reset password"
+#~ msgstr "Passwort zurücksetzen"
+
+#~ msgid "Change password"
+#~ msgstr "Passwort ändern"
+
+#~ msgid "Security Settings"
+#~ msgstr "Sicherheitseinstellungen"
+
+#~ msgid "Logout"
+#~ msgstr "Logout"
+
+#~ msgid "Register"
+#~ msgstr "Registrieren"
+
+#~ msgid "Login"
+#~ msgstr "Login"
+
+#~ msgid "Logged Out"
+#~ msgstr "Ausgeloggt"
+
+#~ msgid "You are now logged out. Go to "
+#~ msgstr "Sie sind jetzt ausgeloggt. Gehen Sie zu"
+
+#~ msgid "Start page"
+#~ msgstr "Startseite"
+
+#~ msgid "Password successfully changed!"
+#~ msgstr "Passwort erfolgreich geändert"
+
+#~ msgid "You changed your password. Resume here:"
+#~ msgstr "Sie haben Ihr Passwort geändert. Hier geht's weiter:"
+
+#~ msgid "Password reset complete"
+#~ msgstr "Passwort zurücksetzen erfolgreich"
+
+#~ msgid "Your password reset is complete"
+#~ msgstr "Passwort zurücksetzen ist beendet"
+
+#~ msgid "Your password has been reset!"
+#~ msgstr "Ihr Passwort wurde zurückgesetzt!"
+
+#~ msgid "You may now"
+#~ msgstr "Sie können jetzt"
+
+#~ msgid "log in"
+#~ msgstr "Login"
+
+#~ msgid "Confirm password reset"
+#~ msgstr "Passwort zurücksetzen bestätigen"
+
+#~ msgid "Enter your new password below to reset your password:"
+#~ msgstr "Geben Sie Ihr neues Passwort ein:"
+
+#~ msgid "Set password"
+#~ msgstr "Passwort speichern"
+
+#~ msgid ""
+#~ "The password reset link was invalid, possibly because it has already been "
+#~ "used.  Please request a new password reset."
+#~ msgstr ""
+#~ "Der Link zum Passwort-zurücksetzen ist nicht gültig. Wahrscheinlich wurde "
+#~ "er bereits benutzt. Bitte fragen Sie diesen erneut an."
+
+#~ msgid "Password reset"
+#~ msgstr "Passwort zurücksetzen"
+
+#~ msgid ""
+#~ "\n"
+#~ "    We have sent you an email with a link to reset your password.  Please "
+#~ "check\n"
+#~ "    your email and click the link to continue.\n"
+#~ "    "
+#~ msgstr ""
+#~ "\n"
+#~ "Wir haben Ihnen eine Email mit einem Link zum Zurücksetzen Ihres "
+#~ "Passwortes gesendet. Bitte öffnen Sie Ihre Email und klicken Sie diesen "
+#~ "Link."
+
+#~ msgid "Greetings"
+#~ msgstr "Mit besten Grüssen"
+
+#~ msgid ""
+#~ "\n"
+#~ "You are receiving this email because you (or someone pretending to be "
+#~ "you)\n"
+#~ "requested that your password be reset on the %(domain)s site.  If you do "
+#~ "not\n"
+#~ "wish to reset your password, please ignore this message.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Sie erhalten diese Email da Sie (oder jemand der vorgibt Sie zu sein) das "
+#~ "Zurücksetzen des Passworts auf der Seite %(domain)s angefragt haben. "
+#~ "Falls Sie dies nicht waren, ignorieren Sie bitte diese Email.\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "To reset your password, please click the following link, or copy and "
+#~ "paste it\n"
+#~ "into your web browser:\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Um ihr Passwort zurückzusetzen, klicken Sie bitte den folgenden Link oder "
+#~ "kopieren Sie diesen in die Adress-Leiste Ihres Browsers:\n"
+
+#~ msgid "Your username, in case you've forgotten:"
+#~ msgstr "Ihr Nutzername, falls Sie Ihn vergessen haben:"
+
+#~ msgid "Best regards"
+#~ msgstr "Mit besten Grüssen"
+
+#~ msgid "Management"
+#~ msgstr "Team"
+
+#~ msgid ""
+#~ "\n"
+#~ "    Forgot your password?  Enter your email in the form below and we'll "
+#~ "send you instructions for creating a new one.\n"
+#~ "    "
+#~ msgstr ""
+#~ "\n"
+#~ "Sie haben Ihr Passwort vergessen? Geben Sie Ihre Email in das Formular "
+#~ "unten ein. Wir senden Ihnen genauere Instruktionen für die Erstellung "
+#~ "eines neuen zu."
+
+#~ msgid "Registration Complete"
+#~ msgstr "Registrierung vollständig"
+
+#~ msgid "You are now registered."
+#~ msgstr "Sie sind jetzt registriert."
+
+#~ msgid "Start here to create your company"
+#~ msgstr "Starten Sie hier mit den  Anlegen des Unternehmens"
+
+#~ msgid "Register Here"
+#~ msgstr ""
+#~ "Starten Sie jetzt Ihr Online-Aktienbuch und beeindrucken Sie Ihre "
+#~ "Aktionäre!"
+
+#~ msgid "Sign up now"
+#~ msgstr "Jetzt registrieren"
+
+#~ msgid "Already registered?"
+#~ msgstr "Bereits registriert?"
+
+#~ msgid "Do you know our "
+#~ msgstr "Kennen Sie unseren"
+
+#~ msgid "Blog"
+#~ msgstr "Blog"
+
+#~ msgid "Backup Tokens"
+#~ msgstr "Backup-Token"
+
+#~ msgid ""
+#~ "Backup tokens can be used when your primary and backup\n"
+#~ "      phone numbers aren't available. The backup tokens below can be "
+#~ "used\n"
+#~ "      for login verification. If you've used up all your backup tokens, "
+#~ "you\n"
+#~ "      can generate a new set of backup tokens. Only the backup tokens "
+#~ "shown\n"
+#~ "      below will be valid."
+#~ msgstr ""
+#~ "Backup-Token können verwendet werden wenn sowohl die erste und zweite "
+#~ "registrierte Telefonnummer nicht zur Verfügung stehen. Diese Token können "
+#~ "verwendet werden, um sich anzumelden. Wenn Sie alle Token verwendet "
+#~ "haben, können Sie entsprechend neue generieren. Nur die unten angezeigten "
+#~ "Token sind valide."
+
+#~ msgid "Print these tokens and keep them somewhere safe."
+#~ msgstr "Drucken Sie diese Token aus und verwahren Sie diese sicher."
+
+#~ msgid "You don't have any backup codes yet."
+#~ msgstr "Sie haben noch keine Backup-Token"
+
+#~ msgid "Back to Account Security"
+#~ msgstr "Zurück zu Sicherheitseinstellungen"
+
+#~ msgid "Generate Tokens"
+#~ msgstr "Token erstellen"
+
+#~ msgid "Enter your credentials."
+#~ msgstr "Bitte geben Sie Ihre Zugangsdaten ein"
+
+#~ msgid ""
+#~ "We are calling your phone right now, please enter the digits you hear."
+#~ msgstr ""
+#~ "Wir rufen Sie gerade an. Bitte geben Sie die Zahlenkombination ein, "
+#~ "welche Ihnen am Telefon angesagt wird."
+
+#~ msgid ""
+#~ "We sent you a text message, please enter the tokens we\n"
+#~ "      sent."
+#~ msgstr ""
+#~ "Wir haben Ihnen eine Text-Nachricht gesendet. Bitte geben Sie den "
+#~ "zugesendeten Token ein."
+
+#~ msgid ""
+#~ "Please enter the tokens generated by your token\n"
+#~ "        generator."
+#~ msgstr ""
+#~ "Bitte geben Sie den Token ein, welchen Ihr Token-Generator (Google "
+#~ "Authenticator) erzeugt hat."
+
+#~ msgid ""
+#~ "Use this form for entering backup tokens for logging in.\n"
+#~ "      These tokens have been generated for you to print and keep safe. "
+#~ "Please\n"
+#~ "      enter one of these backup tokens to login to your account."
+#~ msgstr ""
+#~ "Verwenden Sie dieses Formular um Backup-Token für das Login einzugeben. "
+#~ "Diese Token wurden von Ihnen vorab generiert und ausgedruckt. Bitte geben "
+#~ "Sie jetzt einen dieser Backup-Token ein, um sich in Ihr Konto einzuloggen."
+
+#~ msgid "Or, alternatively, use one of your backup phones:"
+#~ msgstr "Oder verwenden Sie alternativ eine Ihrer Backup-Telefonnummern:"
+
+#~ msgid "As a last resort, you can use a backup token:"
+#~ msgstr "Als letzte Sicherheit können Sie Backup-Token verwenden:"
+
+#~ msgid "Use Backup Token"
+#~ msgstr "Verwenden Sie die Backup-Token"
+
+#~ msgid "Not  a member?"
+#~ msgstr "Noch nicht registriert?"
+
+#~ msgid "Password lost?"
+#~ msgstr "Passwort vergessen?"
+
+#~ msgid "Reset Password"
+#~ msgstr "Passwort zurücksetzen"
+
+#~ msgid "Disable Two-factor Authentication"
+#~ msgstr "Zwei-Faktor-Authentifizierung deaktivieren"
+
+#~ msgid ""
+#~ "You are about to disable two-factor authentication. This\n"
+#~ "    compromises your account security, are you sure?"
+#~ msgstr ""
+#~ "Sie wollen die Zwei-Faktor-Authentifizierung deaktivieren. Dies wird die "
+#~ "Sicherheit Ihrer Daten reduzieren. Sind Sie sicher?"
+
+#~ msgid "Disable"
+#~ msgstr "Deaktivieren"
+
+#~ msgid "RSS feed of latest entries"
+#~ msgstr "RSS Feed der neuesten Beiträge"
+
+#~ msgid "RSS feed of latest discussions"
+#~ msgstr "RSS Feed der neuesten Kommentare"
+
+#~ msgid "Recent comments"
+#~ msgstr "Neue Kommentare"
+
+#~ msgid "Recent linkbacks"
+#~ msgstr "Neue Linkbacks"
+
+#~ msgid "Shortcuts"
+#~ msgstr "Verweise"
+
+#~ msgid "Category list"
+#~ msgstr "Kategorien"
+
+#~ msgid "Categories"
+#~ msgstr "Kategorien"
+
+#~ msgid "Author list"
+#~ msgstr "Authoren"
+
+#~ msgid "Authors"
+#~ msgstr "Authoren"
+
+#~ msgid "Tag list"
+#~ msgstr "Tags"
+
+#~ msgid "Tags"
+#~ msgstr "Tags"
+
+#~ msgid "Sitemap"
+#~ msgstr "Sitemap"
+
+#~ msgid "RSS Feed of latest entries"
+#~ msgstr "RSS Feed der letzten Artikel"
+
+#~ msgid "RSS Feed"
+#~ msgstr "RSS Feed"
+
+#~ msgid "Tools"
+#~ msgstr "Werkzeuge"
+
+#~ msgid "Dashboard"
+#~ msgstr "Übersicht"
+
+#~ msgid "Post an entry"
+#~ msgstr "Artikel verfassen"
+
+#~ msgid "Log out"
+#~ msgstr "Logout"
+
+#~ msgid "Alles ueber Aktienregister."
+#~ msgstr "Alles über Das Aktienregister"
+
+#~ msgid "Search"
+#~ msgstr "Suche"
+
+#~ msgid "Useful links"
+#~ msgstr "Links"
+
+#~ msgid "Weblog index"
+#~ msgstr "Blog Start"
 
 #~ msgid "Log in"
 #~ msgstr "Login"

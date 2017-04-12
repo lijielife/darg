@@ -303,7 +303,8 @@ LOCALE_PATHS = (
     # './services/locale/',
     os.path.join(BASE_DIR, 'i18n', 'locale'),
     os.path.join(BASE_DIR, 'shareholder', 'locale'),
-    os.path.join(BASE_DIR, 'services', 'locale')
+    os.path.join(BASE_DIR, 'services', 'locale'),
+    os.path.join(BASE_DIR, 'reports', 'locale'),
 )
 
 # --- Sentry

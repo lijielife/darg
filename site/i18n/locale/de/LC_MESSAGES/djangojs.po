@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-03-16 21:01+0000\n"
-"PO-Revision-Date: 2017-03-16 21:00+0000\n"
+"PO-Revision-Date: 2017-04-12 09:15+0000\n"
 "Last-Translator:   <jirka@kkd-partners.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -256,7 +256,8 @@ msgid ""
 msgstr "Aktionär hält aktuell keine Optionen."
 
 #: static/compiled/javascript/script.js:683
-msgid "No security segments available for option plan on selected date or now."
+msgid ""
+"No security segments available for option plan on selected date or now."
 msgstr ""
 "Es sind aktuell keine Aktiennummern für den Optionsplan am ausgewählten "
 "Datum verfügbar."
@@ -286,11 +287,11 @@ msgstr "Gesellschafter Nummer (absteigend)"
 
 #: static/compiled/javascript/script.js:1251
 msgid "Share Percent Ownership"
-msgstr "Prozentualer Anteil der Wertpapiere"
+msgstr "Prozentualer Anteil"
 
 #: static/compiled/javascript/script.js:1254
 msgid "Share Percent Ownership (descending)"
-msgstr "Prozentualer Anteil der Wertpapiere (absteigend)"
+msgstr "Prozentualer Anteil (absteigend)"
 
 #: static/compiled/javascript/script.js:1347
 msgid "Human Being"

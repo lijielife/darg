@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-11 08:11+0000\n"
-"PO-Revision-Date: 2017-04-11 08:12+0000\n"
+"POT-Creation-Date: 2017-04-12 09:10+0000\n"
+"PO-Revision-Date: 2017-04-12 09:19+0000\n"
 "Last-Translator:   <jirka@kkd-partners.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -23,8 +23,8 @@ msgstr ""
 msgid "Personal ownership"
 msgstr "Eigenbestand"
 
-#: shareholder/models.py:35 shareholder/tests/test_functional.py:982
-#: shareholder/tests/test_functional.py:1577
+#: shareholder/models.py:35 shareholder/tests/test_functional.py:990
+#: shareholder/tests/test_functional.py:1585
 msgid "Personal representation"
 msgstr "Eigene Rechnung"
 
@@ -48,7 +48,7 @@ msgstr "Unzustellbar"
 msgid "Postal Mail"
 msgstr "Briefversand"
 
-#: shareholder/models.py:47 shareholder/tests/test_functional.py:182
+#: shareholder/models.py:47 shareholder/tests/test_functional.py:190
 msgid "via Email"
 msgstr "Emailversand"
 
@@ -135,7 +135,7 @@ msgstr "Aktiensplit von {} für {} mit Verhältnis {}:{}. Ausgabe neuer Aktien."
 msgid "Human Being"
 msgstr "Natürliche Person"
 
-#: shareholder/models.py:585 shareholder/tests/test_functional.py:153
+#: shareholder/models.py:585 shareholder/tests/test_functional.py:161
 msgid "Corporate"
 msgstr "Juristische Person"
 
@@ -271,15 +271,15 @@ msgstr "Aktienausgabe"
 
 #: shareholder/models.py:1294
 msgid "share issue into cert depot"
-msgstr ""
+msgstr "Aktienausgabe  ins Zertifikatsdepot"
 
 #: shareholder/models.py:1297
 msgid "move stock to certificate depot"
-msgstr ""
+msgstr "Übertragung der Aktien ins Zertifikatsdepot"
 
 #: shareholder/models.py:1299
 msgid "stock returns from certificate depot"
-msgstr ""
+msgstr "Aktienübertragung aus dem Zertifikatsdepot"
 
 #: shareholder/models.py:1300
 msgid "Regular Ownership change"
@@ -855,7 +855,7 @@ msgstr "Aktiennummern"
 msgid "Delete shareholder"
 msgstr "Gesellschafter löschen"
 
-#: shareholder/tests/test_functional.py:285
+#: shareholder/tests/test_functional.py:293
 msgid "This email is already taken by another user/shareholder."
 msgstr ""
 "Diese E-Mail wird bereits von einem anderen Nutzer/Gesellschafter verwendet."

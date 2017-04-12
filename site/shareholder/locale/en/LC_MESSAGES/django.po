@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-11 08:11+0000\n"
+"POT-Creation-Date: 2017-04-12 09:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,8 +21,8 @@ msgstr ""
 msgid "Personal ownership"
 msgstr ""
 
-#: shareholder/models.py:35 shareholder/tests/test_functional.py:982
-#: shareholder/tests/test_functional.py:1577
+#: shareholder/models.py:35 shareholder/tests/test_functional.py:990
+#: shareholder/tests/test_functional.py:1585
 msgid "Personal representation"
 msgstr ""
 
@@ -46,7 +46,7 @@ msgstr ""
 msgid "Postal Mail"
 msgstr ""
 
-#: shareholder/models.py:47 shareholder/tests/test_functional.py:182
+#: shareholder/models.py:47 shareholder/tests/test_functional.py:190
 msgid "via Email"
 msgstr ""
 
@@ -120,7 +120,7 @@ msgstr ""
 msgid "Human Being"
 msgstr ""
 
-#: shareholder/models.py:585 shareholder/tests/test_functional.py:153
+#: shareholder/models.py:585 shareholder/tests/test_functional.py:161
 msgid "Corporate"
 msgstr ""
 
@@ -824,7 +824,7 @@ msgstr ""
 msgid "Delete shareholder"
 msgstr ""
 
-#: shareholder/tests/test_functional.py:285
+#: shareholder/tests/test_functional.py:293
 msgid "This email is already taken by another user/shareholder."
 msgstr ""
 
