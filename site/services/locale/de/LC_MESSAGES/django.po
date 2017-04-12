@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-04-11 08:11+0000\n"
-"PO-Revision-Date: 2017-03-24 08:56+0000\n"
+"PO-Revision-Date: 2017-04-11 20:39+0000\n"
 "Last-Translator:   <jirka@kkd-partners.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -28,8 +28,8 @@ msgid ""
 "Number Segment Range start smaller/equal then end '{}'. Please use 1, 2, 3, "
 "4-10."
 msgstr ""
-"Fehler Aktiennummernsegment: Anfangswert grösser als Endwert '{}'. Korrektes "
-"Format: 4-9."
+"Fehler Aktiennummernsegment: Anfangswert grösser als Endwert '{}'. Korrektes"
+" Format: 4-9."
 
 #: services/rest/serializers.py:268
 msgid ""
@@ -51,8 +51,7 @@ msgstr "Sie wurden als Administrator für das Unternehmen \"{}\" hinzugefügt."
 msgid ""
 "Dear,\n"
 "\n"
-"you have been granted edit privileges for this company on the share "
-"register\n"
+"you have been granted edit privileges for this company on the share register\n"
 "\n"
 "Kind regards\n"
 "\n"
@@ -60,8 +59,7 @@ msgid ""
 msgstr ""
 "Liebe(r) Nutzer(In),\n"
 "\n"
-"Ihnen wurden gerade Bearbeitungsrechte für dieses Unternehmen im "
-"Aktienregister eingerichtet.\n"
+"Ihnen wurden gerade Bearbeitungsrechte für dieses Unternehmen im Aktienregister eingerichtet.\n"
 "\n"
 "Mit besten Grüssen\n"
 "\n"
@@ -95,8 +93,7 @@ msgstr "Ungültige Aktiennummern (1,2,3,4-9)."
 
 #: services/rest/serializers.py:682 services/rest/serializers.py:1068
 msgid "Segments \"{}\" must be owned by seller \"{}\". Available are {}"
-msgstr ""
-"Aktiennummer \"{}\" gehört nicht zu Verkäufer \"{}\". Verfügbar sind \"{}\"."
+msgstr "Aktiennummer \"{}\" gehört nicht zu Verkäufer \"{}\". Verfügbar sind \"{}\"."
 
 #: services/rest/serializers.py:695 services/rest/serializers.py:995
 #: services/rest/serializers.py:1080
@@ -124,7 +121,10 @@ msgstr "Anzahl Aktien {} muss größer als Null sein."
 
 #: services/rest/serializers.py:850
 msgid "seller does not have enough shares. max value is {}."
-msgstr "Verkäufer besitzt nur {} Aktien."
+msgstr ""
+"Verkäufer besitzt nur {} verkaufbare Aktien. Oder hat diese im "
+"Zertifikatsdepot und muss diese erst ins Gesellschaftsdepot übertragen. Oder"
+" Sperrfristen greifen."
 
 #: services/rest/serializers.py:862
 msgid "Depot bank is mandatory if depot type is certificate depot"
@@ -141,22 +141,20 @@ msgid "Invalid or empty security numbers segments."
 msgstr "Ungültige Aktiennummern. Valide sind: \"1,2,3,4-9\"."
 
 #: services/rest/serializers.py:983
-msgid ""
-"Segments \"{}\" must be owned by company shareholder \"{}\". Available are {}"
-msgstr ""
-"Aktiennummer \"{}\" gehört nicht zu Verkäufer \"{}\". Verfügbar sind \"{}\"."
+msgid "Segments \"{}\" must be owned by company shareholder \"{}\". Available are {}"
+msgstr "Aktiennummer \"{}\" gehört nicht zu Verkäufer \"{}\". Verfügbar sind \"{}\"."
 
 #: services/rest/serializers.py:1092
 msgid ""
 "Segment {} is not reserved for options inside a option plan and cannot be "
 "transfered to a option holder. Available are: {}"
 msgstr ""
-"Aktiennummer(n) {} ist nicht reserviert für einen Optionsplan and kann nicht "
-"an einen Optionsinhaber transferiert werden. Verfügbar sind aber: {}."
+"Aktiennummer(n) {} ist nicht reserviert für einen Optionsplan and kann nicht"
+" an einen Optionsinhaber transferiert werden. Verfügbar sind aber: {}."
 
 #: services/rest/serializers.py:1215
 msgid "seller does not have enough options. max value is {}."
-msgstr "Verkäufer besitzt nur {} Optionen."
+msgstr "Verkäufer besitzt nur {} verkaufbare Optionen."
 
 #: services/rest/tests/test_serializers.py:627
 msgid "Human Being"
