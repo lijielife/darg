@@ -1,0 +1,121 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-04-12 09:10+0000\n"
+"PO-Revision-Date: 2017-04-12 09:24+0000\n"
+"Last-Translator:   <jirka@kkd-partners.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Translated-Using: django-rosetta 0.7.12\n"
+
+#: reports/templates/reports/_captable_form.html:8
+msgid "Sort by:"
+msgstr "Sortieren nach:"
+
+#: reports/templates/reports/_transaction_form.html:8
+msgid "from"
+msgstr "von"
+
+#: reports/templates/reports/_transaction_form.html:27
+msgid "to"
+msgstr "bis"
+
+#: reports/templates/reports/_transaction_form.html:47
+msgid "Security"
+msgstr "Wertpapier"
+
+#: reports/templates/reports/_transaction_form.html:50
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: reports/templates/reports/_transaction_form.html:51
+msgid "Download"
+msgstr "Herunterladen"
+
+#: reports/templates/reports/index.html:6
+msgid "Reports"
+msgstr "Berichte"
+
+#: reports/templates/reports/index.html:6
+msgid "brand name"
+msgstr "www.das-aktienregister.ch"
+
+#: reports/templates/reports/index.html:16
+msgid "Reports and Downloads for "
+msgstr "Berichte und Downloads für"
+
+#: reports/templates/reports/index.html:19
+msgid ""
+"Use CSV for Excel like Downloads. Follow this <a "
+"href='https://goo.gl/aQ2gVx'>guide for instructions</a>."
+msgstr ""
+"Verwenden Sie CSV für Downloads für MS Excel. Folgen Sie dieser <a "
+"href='https://goo.gl/aQ2gVx'>Anleitung zum Import/a>."
+
+#: reports/templates/reports/index.html:24
+msgid "Download active Shareholders"
+msgstr "Aktive Gesellschafter herunterladen"
+
+#: reports/templates/reports/index.html:28
+msgid "Download active Shareholders as PDF"
+msgstr "Aktive Gesellschafter als PDF herunterladen"
+
+#: reports/templates/reports/index.html:30
+msgid "PDF"
+msgstr "PDF"
+
+#: reports/templates/reports/index.html:32
+msgid "Download active Shareholders as CSV"
+msgstr "Aktive Gesellschafter als CSV herunterladen"
+
+#: reports/templates/reports/index.html:33
+msgid "CSV"
+msgstr "CSV"
+
+#: reports/templates/reports/index.html:43
+msgid "Transactions per security in period"
+msgstr "Transaktionen pro Wertpapier im Zeitraum"
+
+#: reports/templates/reports/index.html:48
+#: reports/templates/reports/index.html:49
+msgid "Address data of all shareholders"
+msgstr "Adressdaten aller Gesellschafter"
+
+#: reports/templates/reports/index.html:54
+msgid "Printed Certificates"
+msgstr "Gedruckte Zertifikate"
+
+#: reports/templates/reports/index.html:61
+msgid ""
+"No printed certificates are available. Please print a certificate via a "
+"transaction or option transaction"
+msgstr ""
+"Es sind keine Urkunden vorhanden. Bitte drucken sie zuerst mindestens eine "
+"Urkunde via einer Transaktion oder Option."
+
+#: reports/templates/reports/index.html:66
+msgid "Vested Shares"
+msgstr "Aktien mit Sperrfrist"
+
+#: reports/templates/reports/index.html:73
+msgid ""
+"no vested positions yet. please add vesting data to either transaction or "
+"option transaction"
+msgstr ""
+"Keine Positionen mit Sperrfrist vorhanden. Bitte fügen Sie vorher "
+"Sperrfristen zu Transaktionen oder Optionen hinzu."
+
+#: reports/templates/reports/index.html:77
+msgid "Depot Statement per Shareholder"
+msgstr "Kontoauszug pro Gesellschafter"

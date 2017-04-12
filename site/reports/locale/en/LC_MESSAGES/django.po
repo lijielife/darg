@@ -1,0 +1,113 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-04-12 09:10+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: reports/templates/reports/_captable_form.html:8
+msgid "Sort by:"
+msgstr ""
+
+#: reports/templates/reports/_transaction_form.html:8
+msgid "from"
+msgstr ""
+
+#: reports/templates/reports/_transaction_form.html:27
+msgid "to"
+msgstr ""
+
+#: reports/templates/reports/_transaction_form.html:47
+msgid "Security"
+msgstr ""
+
+#: reports/templates/reports/_transaction_form.html:50
+msgid "Cancel"
+msgstr ""
+
+#: reports/templates/reports/_transaction_form.html:51
+msgid "Download"
+msgstr ""
+
+#: reports/templates/reports/index.html:6
+msgid "Reports"
+msgstr ""
+
+#: reports/templates/reports/index.html:6
+msgid "brand name"
+msgstr ""
+
+#: reports/templates/reports/index.html:16
+msgid "Reports and Downloads for "
+msgstr ""
+
+#: reports/templates/reports/index.html:19
+msgid ""
+"Use CSV for Excel like Downloads. Follow this <a href='https://goo.gl/"
+"aQ2gVx'>guide for instructions</a>."
+msgstr ""
+
+#: reports/templates/reports/index.html:24
+msgid "Download active Shareholders"
+msgstr ""
+
+#: reports/templates/reports/index.html:28
+msgid "Download active Shareholders as PDF"
+msgstr ""
+
+#: reports/templates/reports/index.html:30
+msgid "PDF"
+msgstr ""
+
+#: reports/templates/reports/index.html:32
+msgid "Download active Shareholders as CSV"
+msgstr ""
+
+#: reports/templates/reports/index.html:33
+msgid "CSV"
+msgstr ""
+
+#: reports/templates/reports/index.html:43
+msgid "Transactions per security in period"
+msgstr ""
+
+#: reports/templates/reports/index.html:48
+#: reports/templates/reports/index.html:49
+msgid "Address data of all shareholders"
+msgstr ""
+
+#: reports/templates/reports/index.html:54
+msgid "Printed Certificates"
+msgstr ""
+
+#: reports/templates/reports/index.html:61
+msgid ""
+"No printed certificates are available. Please print a certificate via a "
+"transaction or option transaction"
+msgstr ""
+
+#: reports/templates/reports/index.html:66
+msgid "Vested Shares"
+msgstr ""
+
+#: reports/templates/reports/index.html:73
+msgid ""
+"no vested positions yet. please add vesting data to either transaction or "
+"option transaction"
+msgstr ""
+
+#: reports/templates/reports/index.html:77
+msgid "Depot Statement per Shareholder"
+msgstr ""
