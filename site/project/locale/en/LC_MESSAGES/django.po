@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-19 20:46+0000\n"
+"POT-Creation-Date: 2017-04-13 20:26+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,67 +24,67 @@ msgid ""
 "of Service</a>"
 msgstr ""
 
-#: project/tasks.py:95
+#: project/tasks.py:103
 msgid "Welcome to Das Aktienregister - Your new password"
 msgstr ""
 
-#: project/tasks.py:123
+#: project/tasks.py:131
 msgid "Your pdf captable file"
 msgstr ""
 
-#: project/tasks.py:125 project/tasks.py:189
+#: project/tasks.py:133 project/tasks.py:197
 msgid "Your file is attached to this email"
 msgstr ""
 
-#: project/tasks.py:130
+#: project/tasks.py:138
 msgid "PDF Captable/Active Shareholders"
 msgstr ""
 
-#: project/tasks.py:150 project/tests/test_views.py:538 project/views.py:37
+#: project/tasks.py:158 project/tests/test_views.py:538 project/views.py:37
 msgid "shareholder number"
 msgstr ""
 
-#: project/tasks.py:150 project/views.py:37
+#: project/tasks.py:158 project/views.py:37
 msgid "last name"
 msgstr ""
 
-#: project/tasks.py:150 project/views.py:37
+#: project/tasks.py:158 project/views.py:37
 msgid "first name"
 msgstr ""
 
-#: project/tasks.py:151 project/views.py:38
+#: project/tasks.py:159 project/views.py:38
 msgid "email"
 msgstr ""
 
-#: project/tasks.py:151 project/views.py:346
+#: project/tasks.py:159 project/views.py:346
 msgid "share count"
 msgstr ""
 
-#: project/tasks.py:151
+#: project/tasks.py:159
 msgid "votes share percent"
 msgstr ""
 
-#: project/tasks.py:152 project/views.py:39
+#: project/tasks.py:160 project/views.py:39
 msgid "language ISO"
 msgstr ""
 
-#: project/tasks.py:152 project/views.py:39
+#: project/tasks.py:160 project/views.py:39
 msgid "language full"
 msgstr ""
 
-#: project/tasks.py:156
+#: project/tasks.py:164
 msgid "Share IDs"
 msgstr ""
 
-#: project/tasks.py:181
+#: project/tasks.py:189
 msgid "None"
 msgstr ""
 
-#: project/tasks.py:187
+#: project/tasks.py:195
 msgid "Your csv captable file"
 msgstr ""
 
-#: project/tasks.py:194
+#: project/tasks.py:202
 msgid "CSV Captable/Active Shareholders"
 msgstr ""
 

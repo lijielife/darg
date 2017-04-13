@@ -775,15 +775,13 @@ class Shareholder(TagMixin, models.Model):
 
         # humans need names
         if (self.user.userprofile.legal_type == 'H' and
-            not self.user.first_name or not self.user.last_name
-            ):
+                not self.user.first_name or not self.user.last_name):
             result['is_valid'] = False
             result['errors'].append(_(
                 'Shareholder first name or last name missing.'))
 
         if (self.user.userprofile.legal_type == 'C' and
-            not self.user.userprofile.company_name
-            ):
+                not self.user.userprofile.company_name):
             result['is_valid'] = False
             result['errors'].append(_(
                 'Company name or last name missing.'))
@@ -1048,6 +1046,7 @@ class Security(models.Model):
         ('P', _('Preferred Stock')),
         ('C', _('Common Stock')),
         ('R', _('Registered Shares')),
+        ('V', _('Registered share with restricted transferability')),
         # ('O', 'Option'),
         # ('W', 'Warrant'),
         # ('V', 'Convertible Instrument'),

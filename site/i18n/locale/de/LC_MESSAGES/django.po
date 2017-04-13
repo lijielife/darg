@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-19 20:46+0000\n"
+"POT-Creation-Date: 2017-04-13 20:26+0000\n"
 "PO-Revision-Date: 2017-03-19 21:33+0000\n"
 "Last-Translator:   <jirka@kkd-partners.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -164,19 +164,16 @@ msgstr ""
 msgid "Delete now without return"
 msgstr "Endgültig löschen"
 
-#: company/templates/company_select.html:7 templates/menu.html:71
-#: templates/menu.html:72
-#| msgid "reset company"
+#: company/templates/company_select.html:7 templates/menu.html:70
+#: templates/menu.html:71
 msgid "Select Company"
 msgstr "Unternehmen wählen"
 
 #: company/templates/company_select.html:15
-#| msgid "Start here to create your company"
 msgid "Select your company"
 msgstr "Wählen Sie das zu bearbeitende Unternehmen "
 
 #: company/templates/company_select.html:33
-#| msgid "reset company"
 msgid "add company"
 msgstr "Unternehmen hinzufügen"
 
@@ -209,76 +206,74 @@ msgstr "Downloads"
 msgid "brand name"
 msgstr "das-aktienregister.ch"
 
-#: reports/templates/reports/index.html:17
+#: reports/templates/reports/index.html:16
 msgid "Reports and Downloads for "
 msgstr "Downloads für"
 
-#: reports/templates/reports/index.html:20
+#: reports/templates/reports/index.html:19
 msgid ""
-"Use CSV for Excel like Downloads. Follow this <a "
-"href='https://goo.gl/aQ2gVx'>guide for instructions</a>."
+"Use CSV for Excel like Downloads. Follow this <a href='https://goo.gl/"
+"aQ2gVx'>guide for instructions</a>."
 msgstr ""
-"Verwenden Sie CSV für Excel-Downloads. Folgen Sie  <a "
-"href='https://goo.gl/aQ2gVx'>diesen Guide für das Öffnen in Excel</a>."
+"Verwenden Sie CSV für Excel-Downloads. Folgen Sie  <a href='https://goo.gl/"
+"aQ2gVx'>diesen Guide für das Öffnen in Excel</a>."
 
-#: reports/templates/reports/index.html:27
+#: reports/templates/reports/index.html:26
 msgid "Download active Shareholders as"
 msgstr "Aktive Gesellschafter als"
 
-#: reports/templates/reports/index.html:28
+#: reports/templates/reports/index.html:27
 msgid "Download active Shareholders as PDF"
 msgstr "Aktive Gesellschafter als PDF herunterladen"
 
-#: reports/templates/reports/index.html:29
+#: reports/templates/reports/index.html:28
 msgid "PDF"
 msgstr "PDF"
 
-#: reports/templates/reports/index.html:31
+#: reports/templates/reports/index.html:30
 msgid "Download active Shareholders as CSV"
 msgstr "Aktive Gesellschafter als CSV herunterladen"
 
-#: reports/templates/reports/index.html:32
+#: reports/templates/reports/index.html:31
 msgid "CSV"
 msgstr "CSV"
 
-#: reports/templates/reports/index.html:41
+#: reports/templates/reports/index.html:40
 msgid "Transactions per security in period"
 msgstr "Transaktionen pro Aktientyp im Zeitraum"
 
+#: reports/templates/reports/index.html:45
 #: reports/templates/reports/index.html:46
-#: reports/templates/reports/index.html:47
 msgid "Address data of all shareholders"
 msgstr "Adressdaten aller aktiven Gesellschafter"
 
-#: reports/templates/reports/index.html:52
+#: reports/templates/reports/index.html:51
 msgid "Printed Certificates"
 msgstr "Gedruckte Urkunden"
 
-#: reports/templates/reports/index.html:59
+#: reports/templates/reports/index.html:58
 msgid ""
 "No printed certificates are available. Please print a certificate via a "
 "transaction or option transaction"
 msgstr ""
 "Keine Urkunden/Zertifikate bisher gedruckt. Bitte drucken Sie vorher "
-"mindestens eine Urkunde über die Detailansicht einer <a "
-"href=\"/positions/\">Transaktion</a> oder <a "
-"href=\"/options/\">Optionstransaktion</a>."
+"mindestens eine Urkunde über die Detailansicht einer <a href=\"/positions/"
+"\">Transaktion</a> oder <a href=\"/options/\">Optionstransaktion</a>."
 
-#: reports/templates/reports/index.html:64
+#: reports/templates/reports/index.html:63
 msgid "Vested Shares"
 msgstr "Aktien mit Sperrfristen"
 
-#: reports/templates/reports/index.html:71
+#: reports/templates/reports/index.html:70
 msgid ""
 "no vested positions yet. please add vesting data to either transaction or "
 "option transaction"
 msgstr ""
 "Keine Positionen mit Sperrfristen vorhanden. Bitte legen Sie vorher "
-"mindestens eine Position mit Sperrfrist unter <a "
-"href=\"/positions/\">Transaktion</a> oder <a "
-"href=\"/options/\">Optionstransaktion</a> an."
+"mindestens eine Position mit Sperrfrist unter <a href=\"/positions/"
+"\">Transaktion</a> oder <a href=\"/options/\">Optionstransaktion</a> an."
 
-#: reports/templates/reports/index.html:75
+#: reports/templates/reports/index.html:74
 msgid "Depot Statement per Shareholder"
 msgstr "Depotauszug pro Gesellschafter"
 
@@ -296,8 +291,8 @@ msgid ""
 "Effizienz fuer kleine AGs, vollumfaengliches Aktienregister fuer "
 "Publikumsgesellschaften"
 msgstr ""
-"Willkommen bei Das-Aktienregister.ch - Die besten Aktienbuch Vorlagen/Muster"
-" (Excel) herunterladen oder effizient Aktienbuch online führen & PDF "
+"Willkommen bei Das-Aktienregister.ch - Die besten Aktienbuch Vorlagen/Muster "
+"(Excel) herunterladen oder effizient Aktienbuch online führen & PDF "
 "herunterladen."
 
 #: templates/base_auth.html:15
@@ -324,42 +319,42 @@ msgstr "Transaktionen"
 msgid "Options"
 msgstr "Optionen"
 
-#: templates/menu.html:52
+#: templates/menu.html:51
 msgid "Logged in as"
 msgstr "Eingeloggt als "
 
-#: templates/menu.html:63
+#: templates/menu.html:62
 msgid "Admin"
 msgstr "Admin"
 
-#: templates/menu.html:66
+#: templates/menu.html:65
 msgid "I18N"
 msgstr "I18N"
 
-#: templates/menu.html:77 templates/registration/password_reset_form.html:4
+#: templates/menu.html:76 templates/registration/password_reset_form.html:4
 #: templates/registration/password_reset_form.html:14
 #: templates/registration/password_reset_form.html:33
 msgid "Reset password"
 msgstr "Passwort zurücksetzen"
 
-#: templates/menu.html:78 templates/registration/password_change_form.html:4
+#: templates/menu.html:77 templates/registration/password_change_form.html:4
 #: templates/registration/password_change_form.html:12
 msgid "Change password"
 msgstr "Passwort ändern"
 
-#: templates/menu.html:81
+#: templates/menu.html:80
 msgid "Security Settings"
 msgstr "Sicherheitseinstellungen"
 
-#: templates/menu.html:83
+#: templates/menu.html:82
 msgid "Logout"
 msgstr "Logout"
 
-#: templates/menu.html:89 templates/two_factor/core/login.html:61
+#: templates/menu.html:88 templates/two_factor/core/login.html:61
 msgid "Register"
 msgstr "Registrieren"
 
-#: templates/menu.html:92 templates/registration/registration_form.html:26
+#: templates/menu.html:91 templates/registration/registration_form.html:26
 #: templates/two_factor/core/login.html:12
 msgid "Login"
 msgstr "Login"
@@ -422,8 +417,8 @@ msgid ""
 "The password reset link was invalid, possibly because it has already been "
 "used.  Please request a new password reset."
 msgstr ""
-"Der Link zum Passwort-zurücksetzen ist nicht gültig. Wahrscheinlich wurde er"
-" bereits benutzt. Bitte fragen Sie diesen erneut an."
+"Der Link zum Passwort-zurücksetzen ist nicht gültig. Wahrscheinlich wurde er "
+"bereits benutzt. Bitte fragen Sie diesen erneut an."
 
 #: templates/registration/password_reset_done.html:4
 #: templates/registration/password_reset_done.html:14
@@ -433,12 +428,14 @@ msgstr "Passwort zurücksetzen"
 #: templates/registration/password_reset_done.html:17
 msgid ""
 "\n"
-"    We have sent you an email with a link to reset your password.  Please check\n"
+"    We have sent you an email with a link to reset your password.  Please "
+"check\n"
 "    your email and click the link to continue.\n"
 "    "
 msgstr ""
 "\n"
-"Wir haben Ihnen eine Email mit einem Link zum Zurücksetzen Ihres Passwortes gesendet. Bitte öffnen Sie Ihre Email und klicken Sie diesen Link."
+"Wir haben Ihnen eine Email mit einem Link zum Zurücksetzen Ihres Passwortes "
+"gesendet. Bitte öffnen Sie Ihre Email und klicken Sie diesen Link."
 
 #: templates/registration/password_reset_email.html:3
 msgid "Greetings"
@@ -449,20 +446,25 @@ msgstr "Mit besten Grüssen"
 msgid ""
 "\n"
 "You are receiving this email because you (or someone pretending to be you)\n"
-"requested that your password be reset on the %(domain)s site.  If you do not\n"
+"requested that your password be reset on the %(domain)s site.  If you do "
+"not\n"
 "wish to reset your password, please ignore this message.\n"
 msgstr ""
 "\n"
-"Sie erhalten diese Email da Sie (oder jemand der vorgibt Sie zu sein) das Zurücksetzen des Passworts auf der Seite %(domain)s angefragt haben. Falls Sie dies nicht waren, ignorieren Sie bitte diese Email.\n"
+"Sie erhalten diese Email da Sie (oder jemand der vorgibt Sie zu sein) das "
+"Zurücksetzen des Passworts auf der Seite %(domain)s angefragt haben. Falls "
+"Sie dies nicht waren, ignorieren Sie bitte diese Email.\n"
 
 #: templates/registration/password_reset_email.html:11
 msgid ""
 "\n"
-"To reset your password, please click the following link, or copy and paste it\n"
+"To reset your password, please click the following link, or copy and paste "
+"it\n"
 "into your web browser:\n"
 msgstr ""
 "\n"
-"Um ihr Passwort zurückzusetzen, klicken Sie bitte den folgenden Link oder kopieren Sie diesen in die Adress-Leiste Ihres Browsers:\n"
+"Um ihr Passwort zurückzusetzen, klicken Sie bitte den folgenden Link oder "
+"kopieren Sie diesen in die Adress-Leiste Ihres Browsers:\n"
 
 #: templates/registration/password_reset_email.html:18
 msgid "Your username, in case you've forgotten:"
@@ -479,11 +481,14 @@ msgstr "Team"
 #: templates/registration/password_reset_form.html:17
 msgid ""
 "\n"
-"    Forgot your password?  Enter your email in the form below and we'll send you instructions for creating a new one.\n"
+"    Forgot your password?  Enter your email in the form below and we'll send "
+"you instructions for creating a new one.\n"
 "    "
 msgstr ""
 "\n"
-"Sie haben Ihr Passwort vergessen? Geben Sie Ihre Email in das Formular unten ein. Wir senden Ihnen genauere Instruktionen für die Erstellung eines neuen zu."
+"Sie haben Ihr Passwort vergessen? Geben Sie Ihre Email in das Formular unten "
+"ein. Wir senden Ihnen genauere Instruktionen für die Erstellung eines neuen "
+"zu."
 
 #: templates/registration/registration_complete.html:11
 msgid "Registration Complete"
@@ -583,7 +588,8 @@ msgstr ""
 #: templates/two_factor/core/login.html:27
 msgid ""
 "Use this form for entering backup tokens for logging in.\n"
-"      These tokens have been generated for you to print and keep safe. Please\n"
+"      These tokens have been generated for you to print and keep safe. "
+"Please\n"
 "      enter one of these backup tokens to login to your account."
 msgstr ""
 "Verwenden Sie dieses Formular um Backup-Token für das Login einzugeben. "

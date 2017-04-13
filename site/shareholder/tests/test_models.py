@@ -120,7 +120,6 @@ class CompanyTestCase(TestCase):
         self.assertTrue(ot.option_plan.company.has_vested_positions())
 
 
-
 class CountryTestCase(TestCase):
 
     def test_model(self):
@@ -894,3 +893,13 @@ class SecurityTestCase(TestCase):
                                      security=security, seller=p1.buyer)
 
         self.assertEqual(security.calculate_count(), 10)
+
+    def test_restricted_registered_shares(self):
+        """
+        we do have registered shares with restricted transferability
+        """
+        company = CompanyGenerator().generate()
+        security = SecurityGenerator().generate(company=company)
+        security.title = 'V'
+        security.save()
+        self.assertIn('Vinkuliert', security.get_title_display())
