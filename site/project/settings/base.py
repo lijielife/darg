@@ -267,6 +267,9 @@ MEDIA_ROOT = 'media'  # used also by zinnia for path inside static. is relative
 
 MEDIA_URL = '/media/'
 
+# --- SHAREHOLDERS APP
+COMPANY_INITIAL_FIRST_NAME = u'Unternehmen'
+
 # --- REGISTRATION
 REGISTRATION_OPEN = True        # If True, users can register
 ACCOUNT_ACTIVATION_DAYS = 7     # One-week activation window; you may, of cour

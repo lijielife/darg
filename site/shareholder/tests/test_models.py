@@ -5,6 +5,8 @@ import logging
 import math
 from decimal import Decimal
 
+from django.conf import settings
+from django.contrib.auth.models import User
 from django.core import mail
 from django.core.urlresolvers import reverse
 from django.db.models import Q
@@ -22,12 +24,60 @@ from project.generators import (DEFAULT_TEST_DATA, BankGenerator,
                                 OptionTransactionGenerator, PositionGenerator,
                                 SecurityGenerator, ShareholderGenerator,
                                 TwoInitialSecuritiesGenerator, UserGenerator)
-from shareholder.models import Country, Position, Security, Shareholder
+from shareholder.models import (Country, Position, Security, Shareholder,
+                                UserProfile, create_auth_token)
 
 logger = logging.getLogger(__name__)
 
 
 # --- MODEL TESTS
+class SignalTestCase(TestCase):
+
+    def _strip_related_user_objects(self, user):
+        profile = user.userprofile
+        profile.delete()
+        token = user.auth_token
+        token.delete()
+
+    def test_create_auth_token_corp_user(self):
+        """ signal must create api token and userprofile for new user obj """
+        # use generator and remove token and user profile objs
+        instance = UserGenerator().generate()
+        self._strip_related_user_objects(instance)
+
+        # make corp shareholder user
+        instance.first_name = settings.COMPANY_INITIAL_FIRST_NAME
+        instance.save()
+
+        class Sender(object):
+            pass
+
+        create_auth_token(Sender(), instance=instance, created=True)
+
+        instance = User.objects.get(pk=instance.pk)
+        self.assertTrue(hasattr(instance, 'userprofile'))
+        self.assertTrue(isinstance(instance.userprofile, UserProfile))
+        profile = instance.userprofile
+        profile.refresh_from_db()
+        self.assertEqual(profile.legal_type, 'C')
+
+    def test_create_auth_token_private_user(self):
+        """ signal must create api token and userprofile for new user obj """
+        # use generator and remove token and user profile objs
+        instance = UserGenerator().generate()
+        self._strip_related_user_objects(instance)
+
+        class Sender(object):
+            pass
+
+        create_auth_token(Sender(), instance=instance, created=True)
+
+        instance = User.objects.get(pk=instance.pk)
+        profile = instance.userprofile
+        profile.refresh_from_db()
+        self.assertEqual(instance.userprofile.legal_type, 'H')
+
+
 class CompanyTestCase(TestCase):
 
     def setUp(self):
@@ -1018,3 +1068,13 @@ class SecurityTestCase(TestCase):
                                      security=security, seller=p1.buyer)
 
         self.assertEqual(security.calculate_count(), 10)
+
+    def test_restricted_registered_shares(self):
+        """
+        we do have registered shares with restricted transferability
+        """
+        company = CompanyGenerator().generate()
+        security = SecurityGenerator().generate(company=company)
+        security.title = 'V'
+        security.save()
+        self.assertIn('Vinkuliert', security.get_title_display())

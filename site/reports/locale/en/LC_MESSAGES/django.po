@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-12 09:10+0000\n"
+"POT-Creation-Date: 2017-04-13 23:56+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,55 +59,55 @@ msgid ""
 "aQ2gVx'>guide for instructions</a>."
 msgstr ""
 
-#: reports/templates/reports/index.html:24
-msgid "Download active Shareholders"
+#: reports/templates/reports/index.html:26
+msgid "Download active Shareholders as"
 msgstr ""
 
-#: reports/templates/reports/index.html:28
+#: reports/templates/reports/index.html:27
 msgid "Download active Shareholders as PDF"
 msgstr ""
 
-#: reports/templates/reports/index.html:30
+#: reports/templates/reports/index.html:29
 msgid "PDF"
 msgstr ""
 
-#: reports/templates/reports/index.html:32
+#: reports/templates/reports/index.html:31
 msgid "Download active Shareholders as CSV"
 msgstr ""
 
-#: reports/templates/reports/index.html:33
+#: reports/templates/reports/index.html:32
 msgid "CSV"
 msgstr ""
 
-#: reports/templates/reports/index.html:43
+#: reports/templates/reports/index.html:41
 msgid "Transactions per security in period"
 msgstr ""
 
-#: reports/templates/reports/index.html:48
-#: reports/templates/reports/index.html:49
+#: reports/templates/reports/index.html:46
+#: reports/templates/reports/index.html:47
 msgid "Address data of all shareholders"
 msgstr ""
 
-#: reports/templates/reports/index.html:54
+#: reports/templates/reports/index.html:52
 msgid "Printed Certificates"
 msgstr ""
 
-#: reports/templates/reports/index.html:61
+#: reports/templates/reports/index.html:59
 msgid ""
 "No printed certificates are available. Please print a certificate via a "
 "transaction or option transaction"
 msgstr ""
 
-#: reports/templates/reports/index.html:66
+#: reports/templates/reports/index.html:64
 msgid "Vested Shares"
 msgstr ""
 
-#: reports/templates/reports/index.html:73
+#: reports/templates/reports/index.html:71
 msgid ""
 "no vested positions yet. please add vesting data to either transaction or "
 "option transaction"
 msgstr ""
 
-#: reports/templates/reports/index.html:77
+#: reports/templates/reports/index.html:75
 msgid "Depot Statement per Shareholder"
 msgstr ""

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-16 21:01+0000\n"
-"PO-Revision-Date: 2017-04-12 09:15+0000\n"
+"POT-Creation-Date: 2017-04-13 23:56+0000\n"
+"PO-Revision-Date: 2017-04-13 23:57+0000\n"
 "Last-Translator:   <jirka@kkd-partners.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -26,17 +26,17 @@ msgstr "Vorname"
 
 #: static/compiled/javascript/i18n_noop.js:4
 #: static/compiled/javascript/i18n_noop.js:24
-#: static/compiled/javascript/script.js:1233
-#: static/compiled/javascript/script.js:1535
-#: static/compiled/javascript/script.js:1557
+#: static/compiled/javascript/script.js:7374
+#: static/compiled/javascript/script.js:7693
+#: static/compiled/javascript/script.js:7715
 msgid "Last Name"
 msgstr "Nachname"
 
 #: static/compiled/javascript/i18n_noop.js:5
 #: static/compiled/javascript/i18n_noop.js:25
-#: static/compiled/javascript/script.js:1245
-#: static/compiled/javascript/script.js:1532
-#: static/compiled/javascript/script.js:1554
+#: static/compiled/javascript/script.js:7386
+#: static/compiled/javascript/script.js:7690
+#: static/compiled/javascript/script.js:7712
 msgid "Shareholder Number"
 msgstr "Gesellschafter Nummer"
 
@@ -82,7 +82,7 @@ msgstr "Wertpapier"
 
 #: static/compiled/javascript/i18n_noop.js:16
 #: static/compiled/javascript/i18n_noop.js:18
-#: static/compiled/javascript/script.js:1239
+#: static/compiled/javascript/script.js:7380
 msgid "Share Count"
 msgstr "Anzahl Aktien"
 
@@ -203,12 +203,12 @@ msgid "Vesting period in months"
 msgstr "Sperrfrist/Vesting (in Monaten)"
 
 #: static/compiled/javascript/i18n_noop.js:50
-#: static/compiled/javascript/script.js:318
+#: static/compiled/javascript/script.js:6361
 msgid "Input"
 msgstr "Eingabe hier"
 
 #: static/compiled/javascript/i18n_noop.js:51
-#: static/compiled/javascript/script.js:320
+#: static/compiled/javascript/script.js:6363
 msgid "Please enter DELETE"
 msgstr "Bitte geben Sie \"LÖSCHEN\" ein."
 
@@ -224,97 +224,108 @@ msgstr "Vorname"
 msgid "last_name"
 msgstr "Nachname"
 
-#: static/compiled/javascript/script.js:309
+#: static/compiled/javascript/script.js:6352
 msgid "DELETE"
 msgstr "LÖSCHEN"
 
-#: static/compiled/javascript/script.js:389
-#: static/compiled/javascript/script.js:861
+#: static/compiled/javascript/script.js:6435
+#: static/compiled/javascript/script.js:6978
 msgid "Sperrdepot"
 msgstr "Sperrdepot"
 
-#: static/compiled/javascript/script.js:392
-#: static/compiled/javascript/script.js:864
+#: static/compiled/javascript/script.js:6438
+#: static/compiled/javascript/script.js:6981
 msgid "Zertifikatsdepot"
 msgstr "Zertifikatsdepot"
 
-#: static/compiled/javascript/script.js:395
-#: static/compiled/javascript/script.js:867
+#: static/compiled/javascript/script.js:6441
+#: static/compiled/javascript/script.js:6984
 msgid "Gesellschaftsdepot"
 msgstr "Gesellschaftsdepot"
 
-#: static/compiled/javascript/script.js:660
-#: static/compiled/javascript/script.js:681
+#: static/compiled/javascript/script.js:6614
+#: static/compiled/javascript/script.js:7166
+msgid ""
+"This shareholder was not found inside the database. Please add as a "
+"shareholder, then enter name here and click the right one inside the "
+"provided list"
+msgstr ""
+"Der Aktionär wurde nicht gefunden. Bitte wählen Sie diesen aus der "
+"angezeigten Liste aus. Wird keine Liste angezeigt, prüfen Sie Ihre Eingabe "
+"oder legen Sie den Aktionär neu an."
+
+#: static/compiled/javascript/script.js:6730
+#: static/compiled/javascript/script.js:6751
 msgid "Available security segments for option plan on selected date or now: "
 msgstr ""
 "Verfügbare Aktiennummern für Optionen vom Verkäufer zum ausgewählten Datum "
 "oder heute: "
 
-#: static/compiled/javascript/script.js:662
+#: static/compiled/javascript/script.js:6732
 msgid ""
 "Available security segments for option plan on selected date or now: None"
 msgstr "Aktionär hält aktuell keine Optionen."
 
-#: static/compiled/javascript/script.js:683
+#: static/compiled/javascript/script.js:6753
 msgid ""
 "No security segments available for option plan on selected date or now."
 msgstr ""
 "Es sind aktuell keine Aktiennummern für den Optionsplan am ausgewählten "
 "Datum verfügbar."
 
-#: static/compiled/javascript/script.js:1157
+#: static/compiled/javascript/script.js:7323
 msgid ""
 "Available security segments from this shareholder on selected date or now: "
 msgstr "Verfügbare Aktiennummern vom Verkäufer zum ausgewählten Datum: "
 
-#: static/compiled/javascript/script.js:1159
+#: static/compiled/javascript/script.js:7325
 msgid ""
 "Available security segments from this shareholder on selected date or now: "
 "None"
 msgstr "Aktionär hält aktuell keine Aktien."
 
-#: static/compiled/javascript/script.js:1236
+#: static/compiled/javascript/script.js:7377
 msgid "Last Name (descending)"
 msgstr "Nachname (absteigend)"
 
-#: static/compiled/javascript/script.js:1242
+#: static/compiled/javascript/script.js:7383
 msgid "Share Count (descending)"
 msgstr "Anzahl Aktien (absteigend)"
 
-#: static/compiled/javascript/script.js:1248
+#: static/compiled/javascript/script.js:7389
 msgid "Shareholder Number (descending)"
 msgstr "Gesellschafter Nummer (absteigend)"
 
-#: static/compiled/javascript/script.js:1251
+#: static/compiled/javascript/script.js:7392
 msgid "Share Percent Ownership"
 msgstr "Prozentualer Anteil"
 
-#: static/compiled/javascript/script.js:1254
+#: static/compiled/javascript/script.js:7395
 msgid "Share Percent Ownership (descending)"
 msgstr "Prozentualer Anteil (absteigend)"
 
-#: static/compiled/javascript/script.js:1347
+#: static/compiled/javascript/script.js:7505
 msgid "Human Being"
 msgstr "Natürliche Person"
 
-#: static/compiled/javascript/script.js:1350
+#: static/compiled/javascript/script.js:7508
 msgid "Corporate"
 msgstr "Juristische Person"
 
-#: static/compiled/javascript/script.js:1356
+#: static/compiled/javascript/script.js:7514
 msgid "Not deliverable"
 msgstr "Unzustellbar"
 
-#: static/compiled/javascript/script.js:1359
+#: static/compiled/javascript/script.js:7517
 msgid "Postal Mail"
 msgstr "Briefversand"
 
-#: static/compiled/javascript/script.js:1362
+#: static/compiled/javascript/script.js:7520
 msgid "via Email"
 msgstr "Emailversand"
 
-#: static/compiled/javascript/script.js:1529
-#: static/compiled/javascript/script.js:1551
+#: static/compiled/javascript/script.js:7687
+#: static/compiled/javascript/script.js:7709
 msgid "Email"
 msgstr "Email"
 

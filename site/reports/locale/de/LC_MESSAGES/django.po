@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-12 09:10+0000\n"
-"PO-Revision-Date: 2017-04-12 09:24+0000\n"
+"POT-Creation-Date: 2017-04-13 23:56+0000\n"
+"PO-Revision-Date: 2017-04-13 23:57+0000\n"
 "Last-Translator:   <jirka@kkd-partners.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -63,40 +63,41 @@ msgstr ""
 "Verwenden Sie CSV für Downloads für MS Excel. Folgen Sie dieser <a "
 "href='https://goo.gl/aQ2gVx'>Anleitung zum Import/a>."
 
-#: reports/templates/reports/index.html:24
-msgid "Download active Shareholders"
-msgstr "Aktive Gesellschafter herunterladen"
+#: reports/templates/reports/index.html:26
+#| msgid "Download active Shareholders"
+msgid "Download active Shareholders as"
+msgstr "Aktive Gesellschafter herunterladen als"
 
-#: reports/templates/reports/index.html:28
+#: reports/templates/reports/index.html:27
 msgid "Download active Shareholders as PDF"
 msgstr "Aktive Gesellschafter als PDF herunterladen"
 
-#: reports/templates/reports/index.html:30
+#: reports/templates/reports/index.html:29
 msgid "PDF"
 msgstr "PDF"
 
-#: reports/templates/reports/index.html:32
+#: reports/templates/reports/index.html:31
 msgid "Download active Shareholders as CSV"
 msgstr "Aktive Gesellschafter als CSV herunterladen"
 
-#: reports/templates/reports/index.html:33
+#: reports/templates/reports/index.html:32
 msgid "CSV"
 msgstr "CSV"
 
-#: reports/templates/reports/index.html:43
+#: reports/templates/reports/index.html:41
 msgid "Transactions per security in period"
 msgstr "Transaktionen pro Wertpapier im Zeitraum"
 
-#: reports/templates/reports/index.html:48
-#: reports/templates/reports/index.html:49
+#: reports/templates/reports/index.html:46
+#: reports/templates/reports/index.html:47
 msgid "Address data of all shareholders"
 msgstr "Adressdaten aller Gesellschafter"
 
-#: reports/templates/reports/index.html:54
+#: reports/templates/reports/index.html:52
 msgid "Printed Certificates"
 msgstr "Gedruckte Zertifikate"
 
-#: reports/templates/reports/index.html:61
+#: reports/templates/reports/index.html:59
 msgid ""
 "No printed certificates are available. Please print a certificate via a "
 "transaction or option transaction"
@@ -104,11 +105,11 @@ msgstr ""
 "Es sind keine Urkunden vorhanden. Bitte drucken sie zuerst mindestens eine "
 "Urkunde via einer Transaktion oder Option."
 
-#: reports/templates/reports/index.html:66
+#: reports/templates/reports/index.html:64
 msgid "Vested Shares"
 msgstr "Aktien mit Sperrfrist"
 
-#: reports/templates/reports/index.html:73
+#: reports/templates/reports/index.html:71
 msgid ""
 "no vested positions yet. please add vesting data to either transaction or "
 "option transaction"
@@ -116,6 +117,6 @@ msgstr ""
 "Keine Positionen mit Sperrfrist vorhanden. Bitte fügen Sie vorher "
 "Sperrfristen zu Transaktionen oder Optionen hinzu."
 
-#: reports/templates/reports/index.html:77
+#: reports/templates/reports/index.html:75
 msgid "Depot Statement per Shareholder"
 msgstr "Kontoauszug pro Gesellschafter"

@@ -51,6 +51,11 @@ class AddCompanySerializerTestCase(TestCase):
         self.assertEqual(company.name, validated_data['name'])
         self.assertEqual(company.security_set.first().face_value,
                          validated_data['face_value'])
+        self.assertEqual(company.shareholder_set.count(), 1)
+        # check corp shareholder
+        cs = company.get_company_shareholder()
+        self.assertEqual(cs.user.email, u'')
+        self.assertEqual(cs.user.userprofile.legal_type, u'C')
 
     def test_create_negative_share_count(self):
         """ see https://goo.gl/HDQB1t for users doing that """

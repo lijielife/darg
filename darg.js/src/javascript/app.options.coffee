@@ -12,6 +12,7 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
     $scope.optiontransactions = []
     $scope.securities = []
     $scope.loading = true
+    $scope.errors = {}
 
     $scope.transaction_added_success = false
     $scope.plan_added_success = false
@@ -164,7 +165,17 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
             $scope.search_params.query = params.search
 
     # -- LOGIC
+    $scope.validate_shareholder = (obj, attr)->
+        value = obj[attr]
+        if (typeof value == 'string')
+            $scope.errors[attr] = {
+                non_field_error: 
+                    gettext('This shareholder was not found inside the database. Please add as a shareholder, then enter name here and click the right one inside the provided list')}
+            return false
+        return true
+
     $scope.add_option_plan = ->
+        $scope.addPositionLoading = true
         if $scope.newOptionPlan.board_approved_at
             date = $scope.newOptionPlan.board_approved_at
             # http://stackoverflow.com/questions/1486476/json-stringify-changes-time-of-date-because-of-utc
@@ -183,7 +194,7 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
             , 5000
         .then ->
             # Clear any errors
-            $scope.errors = null
+            $scope.errors = {}
             $window.ga('send', 'event', 'form-send', 'add-optionplan')
         , (rejection) ->
             $scope.errors = rejection.data
@@ -195,9 +206,20 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
                 $scope.newOptionPlan.board_approved_at = date
 
     $scope.add_option_transaction = ->
+        # reset errors
+        self.errors = {}
+
+        # validation:
+        if (
+            !$scope.validate_shareholder($scope.newOptionTransaction, 'buyer') ||
+            !$scope.validate_shareholder($scope.newOptionTransaction, 'seller')
+        )
+            return
+
         # replace optionplan obj by hyperlinked url
         if $scope.newOptionTransaction.option_plan
             p = $scope.newOptionTransaction.option_plan
+        # remove timezone offset
         if $scope.newOptionTransaction.bought_at
             date = $scope.newOptionTransaction.bought_at
             date.setHours(date.getHours() - date.getTimezoneOffset() / 60)
@@ -219,7 +241,7 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
             , 5000
         .then ->
             # Clear any errors
-            $scope.errors = null
+            $scope.errors = {}
             $window.ga('send', 'event', 'form-send', 'add-option-transaction')
         , (rejection) ->
             $scope.errors = rejection.data
