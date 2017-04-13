@@ -7,7 +7,6 @@ from django.core.mail import mail_managers, send_mail
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.db.models import Q
-from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -155,7 +154,7 @@ class AddCompanySerializer(serializers.Serializer):
                 username=username,
                 first_name=settings.COMPANY_INITIAL_FIRST_NAME,
                 last_name=company.name[:30],
-                email='info+{}@darg.ch'.format(slugify(company.name))
+                email=u''  # [#208] - artificial email confused user
             )
             shareholder = Shareholder.objects.create(
                 user=companyuser, company=company, number='0')
