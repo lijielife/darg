@@ -1828,7 +1828,10 @@
         });
       };
       $scope.add_company = function() {
+        var founded_at;
         $scope.errors = null;
+        founded_at = $scope.newCompany.founded_at;
+        $scope.newCompany.founded_at.setHours(founded_at.getHours() - founded_at.getTimezoneOffset() / 60);
         return $scope.newCompany.$save().then(function(result) {
           $scope.load_user();
           return $scope.load_all_shareholders();

@@ -263,6 +263,8 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
     # --- FORMS
     $scope.add_company = ->
         $scope.errors = null
+        founded_at = $scope.newCompany.founded_at
+        $scope.newCompany.founded_at.setHours(founded_at.getHours() - founded_at.getTimezoneOffset() / 60)
         $scope.newCompany.$save().then (result) ->
             # update user and company
             $scope.load_user()

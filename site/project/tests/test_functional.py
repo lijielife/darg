@@ -1,17 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import datetime
 import time
 
 from selenium.webdriver.common.by import By
 
 from project import page
 from project.base import BaseSeleniumTestCase
-from project.generators import (CompanyShareholderGenerator,
+from project.generators import (DEFAULT_TEST_DATA, CompanyShareholderGenerator,
                                 ComplexOptionTransactionsWithSegmentsGenerator,
                                 OperatorGenerator, ShareholderGenerator,
-                                TwoInitialSecuritiesGenerator, UserGenerator,
-                                DEFAULT_TEST_DATA)
+                                TwoInitialSecuritiesGenerator, UserGenerator)
 from shareholder.models import Security, Shareholder
 
 
@@ -165,6 +165,7 @@ class StartFunctionalTestCase(BaseSeleniumTestCase):
             self.assertEqual(DEFAULT_TEST_DATA['company_name'], company.name)
             cs = company.get_company_shareholder()
             self.assertTrue(cs.buyer.first().value, value)
+            self.assertEqual(company.founded_at, datetime.date.today())
 
         except Exception, e:
             self._handle_exception(e)
