@@ -1323,6 +1323,12 @@ register(Shareholder)
 # must be inside a file which is imported by django on startup
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
+    """ create rest API access token and user profile obj on
+    User obj create """
+
     if created:
         Token.objects.create(user=instance)
-        UserProfile.objects.create(user=instance)
+        profile = UserProfile.objects.create(user=instance)
+        if instance.first_name == settings.COMPANY_INITIAL_FIRST_NAME:
+            profile.legal_type = 'C'
+            profile.save()

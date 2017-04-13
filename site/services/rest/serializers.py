@@ -153,7 +153,8 @@ class AddCompanySerializer(serializers.Serializer):
             # create company user
             companyuser = User.objects.create(
                 username=username,
-                first_name='Unternehmen:', last_name=company.name[:30],
+                first_name=settings.COMPANY_INITIAL_FIRST_NAME,
+                last_name=company.name[:30],
                 email='info+{}@darg.ch'.format(slugify(company.name))
             )
             shareholder = Shareholder.objects.create(
@@ -180,6 +181,7 @@ class AddCompanySerializer(serializers.Serializer):
             raise ValidationError(
                 'share count "%s" must be larger then 0'.format(value))
         return value
+
 
 class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
     """ serialize additional user data """
