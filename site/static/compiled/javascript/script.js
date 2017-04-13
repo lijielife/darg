@@ -377,6 +377,7 @@
       $scope.optiontransactions = [];
       $scope.securities = [];
       $scope.loading = true;
+      $scope.errors = {};
       $scope.show_add_option_transaction = false;
       $scope.show_add_option_plan = false;
       $scope.show_optional_fields = false;
@@ -560,8 +561,20 @@
           return $scope.search_params.query = params.search;
         });
       };
+      $scope.validate_shareholder = function(obj, attr) {
+        var value;
+        value = obj[attr];
+        if (typeof value === 'string') {
+          $scope.errors[attr] = {
+            non_field_error: gettext('This shareholder was not found inside the database. Please add as a shareholder, then enter name here and click the right one inside the provided list')
+          };
+          return false;
+        }
+        return true;
+      };
       $scope.add_option_plan = function() {
         var date;
+        $scope.addPositionLoading = true;
         if ($scope.newOptionPlan.board_approved_at) {
           date = $scope.newOptionPlan.board_approved_at;
           date.setHours(date.getHours() - date.getTimezoneOffset() / 60);
@@ -573,7 +586,7 @@
           $scope.newOptionPlan = new OptionPlan();
           return $scope.show_add_option_plan = false;
         }).then(function() {
-          $scope.errors = null;
+          $scope.errors = {};
           return $window.ga('send', 'event', 'form-send', 'add-optionplan');
         }, function(rejection) {
           $scope.errors = rejection.data;
@@ -590,6 +603,10 @@
       };
       $scope.add_option_transaction = function() {
         var date, p;
+        self.errors = {};
+        if (!$scope.validate_shareholder($scope.newOptionTransaction, 'buyer') || !$scope.validate_shareholder($scope.newOptionTransaction, 'seller')) {
+          return;
+        }
         if ($scope.newOptionTransaction.option_plan) {
           p = $scope.newOptionTransaction.option_plan;
         }
@@ -607,7 +624,7 @@
           $scope.newOptionTransaction = new OptionTransaction();
           return $scope.show_add_option_transaction = false;
         }).then(function() {
-          $scope.errors = null;
+          $scope.errors = {};
           return $window.ga('send', 'event', 'form-send', 'add-option-transaction');
         }, function(rejection) {
           $scope.errors = rejection.data;
@@ -849,6 +866,7 @@
     '$scope', '$http', '$window', 'Position', 'Split', function($scope, $http, $window, Position, Split) {
       $scope.positions = [];
       $scope.securities = [];
+      $scope.errors = {};
       $scope.show_add_position = false;
       $scope.show_add_capital = false;
       $scope.show_split_data = false;
@@ -1028,8 +1046,23 @@
           return $scope.search_params.query = params.search;
         });
       };
+      $scope.validate_shareholder = function(obj, attr) {
+        var value;
+        value = obj[attr];
+        if (typeof value === 'string') {
+          $scope.errors[attr] = {
+            non_field_error: gettext('This shareholder was not found inside the database. Please add as a shareholder, then enter name here and click the right one inside the provided list')
+          };
+          return false;
+        }
+        return true;
+      };
       $scope.add_position = function() {
         var bought_at;
+        self.errors = {};
+        if (!$scope.validate_shareholder($scope.newPosition, 'buyer') || !$scope.validate_shareholder($scope.newPosition, 'seller')) {
+          return;
+        }
         $scope.addPositionLoading = true;
         if ($scope.newPosition.bought_at) {
           bought_at = $scope.newPosition.bought_at;
@@ -1046,7 +1079,7 @@
           $scope.show_add_capital = false;
           return $scope.newPosition = new Position();
         }).then(function() {
-          $scope.errors = null;
+          $scope.errors = {};
           $window.ga('send', 'event', 'form-send', 'add-transaction');
           return $scope.addPositionLoading = false;
         }, function(rejection) {
@@ -1085,15 +1118,17 @@
       };
       $scope.add_split = function() {
         var execute_at;
-        execute_at = $scope.newSplit.execute_at;
-        execute_at.setHours(execute_at.getHours() - execute_at.getTimezoneOffset() / 60);
+        if ($scope.newSplit.execute_at) {
+          execute_at = $scope.newSplit.execute_at;
+          execute_at.setHours(execute_at.getHours() - execute_at.getTimezoneOffset() / 60);
+        }
         $scope.newSplit.execute_at = execute_at;
         return $scope.newSplit.$save().then(function(result) {
           return $scope.positions = result.data;
         }).then(function() {
           return $scope.newSplit = new Split();
         }).then(function() {
-          $scope.errors = null;
+          $scope.errors = {};
           $scope.show_split = false;
           return $window.ga('send', 'event', 'form-send', 'add-split');
         }, function(rejection) {
@@ -1136,7 +1171,8 @@
         $scope.show_add_position = false;
         $scope.show_add_capital = false;
         $scope.newPosition = new Position();
-        return $scope.show_split = false;
+        $scope.show_split = false;
+        return $scope.errors = {};
       };
       $scope.show_split_form = function() {
         $scope.show_add_position = false;

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-16 21:01+0000\n"
+"POT-Creation-Date: 2017-04-13 23:28+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,17 +24,17 @@ msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:4
 #: static/compiled/javascript/i18n_noop.js:24
-#: static/compiled/javascript/script.js:1233
-#: static/compiled/javascript/script.js:1535
-#: static/compiled/javascript/script.js:1557
+#: static/compiled/javascript/script.js:1252
+#: static/compiled/javascript/script.js:1571
+#: static/compiled/javascript/script.js:1593
 msgid "Last Name"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:5
 #: static/compiled/javascript/i18n_noop.js:25
-#: static/compiled/javascript/script.js:1245
-#: static/compiled/javascript/script.js:1532
-#: static/compiled/javascript/script.js:1554
+#: static/compiled/javascript/script.js:1264
+#: static/compiled/javascript/script.js:1568
+#: static/compiled/javascript/script.js:1590
 msgid "Shareholder Number"
 msgstr ""
 
@@ -80,7 +80,7 @@ msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:16
 #: static/compiled/javascript/i18n_noop.js:18
-#: static/compiled/javascript/script.js:1239
+#: static/compiled/javascript/script.js:1258
 msgid "Share Count"
 msgstr ""
 
@@ -227,17 +227,17 @@ msgid "DELETE"
 msgstr ""
 
 #: static/compiled/javascript/script.js:389
-#: static/compiled/javascript/script.js:861
+#: static/compiled/javascript/script.js:862
 msgid "Sperrdepot"
 msgstr ""
 
 #: static/compiled/javascript/script.js:392
-#: static/compiled/javascript/script.js:864
+#: static/compiled/javascript/script.js:865
 msgid "Zertifikatsdepot"
 msgstr ""
 
 #: static/compiled/javascript/script.js:395
-#: static/compiled/javascript/script.js:867
+#: static/compiled/javascript/script.js:868
 msgid "Gesellschaftsdepot"
 msgstr ""
 
@@ -255,58 +255,65 @@ msgstr ""
 msgid "No security segments available for option plan on selected date or now."
 msgstr ""
 
-#: static/compiled/javascript/script.js:1157
+#: static/compiled/javascript/script.js:1037
+msgid ""
+"This shareholder was not found inside the database. Please add as a "
+"shareholder, then enter name here and click the right one inside the "
+"provided list"
+msgstr ""
+
+#: static/compiled/javascript/script.js:1176
 msgid ""
 "Available security segments from this shareholder on selected date or now: "
 msgstr ""
 
-#: static/compiled/javascript/script.js:1159
+#: static/compiled/javascript/script.js:1178
 msgid ""
 "Available security segments from this shareholder on selected date or now: "
 "None"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1236
+#: static/compiled/javascript/script.js:1255
 msgid "Last Name (descending)"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1242
+#: static/compiled/javascript/script.js:1261
 msgid "Share Count (descending)"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1248
+#: static/compiled/javascript/script.js:1267
 msgid "Shareholder Number (descending)"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1251
+#: static/compiled/javascript/script.js:1270
 msgid "Share Percent Ownership"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1254
+#: static/compiled/javascript/script.js:1273
 msgid "Share Percent Ownership (descending)"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1347
+#: static/compiled/javascript/script.js:1383
 msgid "Human Being"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1350
+#: static/compiled/javascript/script.js:1386
 msgid "Corporate"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1356
+#: static/compiled/javascript/script.js:1392
 msgid "Not deliverable"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1359
+#: static/compiled/javascript/script.js:1395
 msgid "Postal Mail"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1362
+#: static/compiled/javascript/script.js:1398
 msgid "via Email"
 msgstr ""
 
-#: static/compiled/javascript/script.js:1529
-#: static/compiled/javascript/script.js:1551
+#: static/compiled/javascript/script.js:1565
+#: static/compiled/javascript/script.js:1587
 msgid "Email"
 msgstr ""
