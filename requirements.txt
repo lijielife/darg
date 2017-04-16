@@ -10,6 +10,9 @@ django-sendfile
 # django-two-factor-auth
 git+https://github.com/patroqueeet/django-two-factor-auth.git@master#egg=django-two-factor-auth
 django-otp
+django-model-utils
+# django rest api filter capabilities:
+django-filter
 
 # PYTHON
 natsort
