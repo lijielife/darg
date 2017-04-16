@@ -8,6 +8,7 @@ from django.test import TestCase
 
 from utils.formatters import (deflate_segments, flatten_list, inflate_segments,
                               string_list_to_json)
+from utils.http import url_with_domain
 from utils.math import substract_list
 from utils.user import make_username
 
@@ -142,3 +143,8 @@ class UtilsTestCase(TestCase):
         res = substract_list(l1, l2)
 
         self.assertEqual(res, [])
+
+    def test_url_with_domain(self):
+        """ returns url with domain for path without needing the request """
+        self.assertEqual(url_with_domain('/some/path/'),
+                         'https://example.com/some/path/')
