@@ -7,11 +7,12 @@ import logging
 import random
 
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as __
-from model_mommy import random_gen
-from model_mommy import mommy
+from model_mommy import mommy, random_gen
 
+from reports.models import Report
 from shareholder.models import (Company, Country, Operator, OptionPlan,
                                 OptionTransaction, Position, Security,
                                 Shareholder, UserProfile)
@@ -368,6 +369,21 @@ class OptionTransactionGenerator(object):
 
         return position
 
+
+class ReportGenerator(object):
+
+    def generate(self, **kwargs):
+
+        rkwargs = {
+            'eta': timezone.now(),
+            'company': CompanyGenerator().generate(),
+            'user': UserGenerator().generate(),
+        }
+        rkwargs.update(kwargs)
+
+        report = Report.objects.create(**rkwargs)
+
+        return report
 
 class TwoInitialSecuritiesGenerator(object):
 
