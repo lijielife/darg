@@ -23,7 +23,11 @@ module.exports = (grunt) ->
             assets:
                 expand: true
                 cwd: 'darg.js/assets/'
-                src: '**'
+                src: [
+                    './bootstrap/dist/css/bootstrap.css',
+                    './angular-xeditable/dist/css/xeditable.css',
+                    './bootstrap/dist/fonts/glyphicons-halflings-regular.*'
+                ]
                 dest: '../site/static/compiled/contrib'
 
         concat:
