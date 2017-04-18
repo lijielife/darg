@@ -13,6 +13,7 @@ from django.utils.translation import ugettext as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
+from reports.models import Report
 from services.rest.mixins import FieldValidationMixin
 from services.rest.validators import DependedFieldsValidator
 from shareholder.models import (Bank, Company, Country, Operator, OptionPlan,
@@ -101,8 +102,6 @@ class CompanySerializer(serializers.HyperlinkedModelSerializer):
     )
     founded_at = serializers.DateField()
     profile_url = serializers.SerializerMethodField()
-    captable_pdf_url = serializers.SerializerMethodField()
-    captable_csv_url = serializers.SerializerMethodField()
     logo_url = serializers.SerializerMethodField()
     vote_count = serializers.SerializerMethodField()
     vote_count_floating = serializers.SerializerMethodField()
@@ -114,18 +113,12 @@ class CompanySerializer(serializers.HyperlinkedModelSerializer):
                   # not needed as of now, adding one more db query
                   # 'shareholder_count',
                   'security_set', 'founded_at',
-                  'provisioned_capital', 'profile_url', 'captable_pdf_url',
-                  'captable_csv_url', 'logo_url', 'vote_count', 'vote_ratio',
+                  'provisioned_capital', 'profile_url',
+                  'logo_url', 'vote_count', 'vote_ratio',
                   'vote_count_floating')
 
     def get_profile_url(self, obj):
         return reverse('company', kwargs={'company_id': obj.id})
-
-    def get_captable_pdf_url(self, obj):
-        return reverse('captable_pdf', kwargs={'company_id': obj.id})
-
-    def get_captable_csv_url(self, obj):
-        return reverse('captable_csv', kwargs={'company_id': obj.id})
 
     def get_logo_url(self, obj):
         return obj.get_logo_url()
@@ -1243,3 +1236,28 @@ class OptionHolderSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_full_name(self, obj):
         return obj.get_full_name()
+
+
+class ReportSerializer(serializers.HyperlinkedModelSerializer):
+    """ representing a generated report """
+    url = serializers.SerializerMethodField()
+
+    class Meta:
+        fields = ('file_type', 'report_type', 'order_by', 'url', 'created_at',
+                  'eta', 'company', 'user', 'downloaded_at', 'generated_at')
+        model = Report
+        extra_kwargs = {
+            'url': {'read_only': True},
+            'created_at': {'read_only': True},
+            'eta': {'read_only': True},
+            'company': {'read_only': True},
+            'user': {'read_only': True},
+            'downloaded_at': {'read_only': True},
+            'generated_at': {'read_only': True},
+        }
+
+    def get_url(self, obj):
+        """ return file download url """
+        if obj.file:
+            return reverse('reports:download', kwargs={'report_id': obj.pk})
+        return ''

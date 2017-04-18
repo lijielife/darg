@@ -24,10 +24,12 @@ from services.rest.views import (AddCompanyView, AddShareSplit,
                                  OperatorViewSet, OptionPlanViewSet,
                                  OptionTransactionViewSet, PositionViewSet,
                                  SecurityViewSet, ShareholderViewSet,
-                                 UserViewSet)
+                                 UserViewSet, ReportViewSet)
 from shareholder.views import (OptionTransactionView, PositionView,
                                ShareholderView)
 
+
+# API routes
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'shareholders', ShareholderViewSet, base_name="shareholders")
 router.register(r'operators', OperatorViewSet, base_name="operators")
@@ -39,11 +41,16 @@ router.register(r'optionplan', OptionPlanViewSet, base_name="optionplan")
 router.register(r'optiontransaction', OptionTransactionViewSet,
                 base_name="optiontransaction")
 router.register(r'security', SecurityViewSet, base_name="security")
+router.register(r'report', ReportViewSet, base_name="report")
 
+
+# JS I18N CONF
 js_info_dict = {
-    'packages': ('project', 'shareholder', 'utils', 'services',),
+    'packages': ('project', 'shareholder', 'utils', 'services', 'reports'),
 }
 
+
+# SITEMAP conf
 sitemaps = {'tags': TagSitemap,
             'blog': EntrySitemap,
             'authors': AuthorSitemap,

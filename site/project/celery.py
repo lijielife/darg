@@ -44,8 +44,12 @@ def backup():
 
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
+
     from shareholder.tasks import update_banks_from_six
+    from reports.tasks import prerender_reports
     sender.add_periodic_task(
         crontab(hour=3, minute=0), backup.s())  # Nightly backups at 3AM
     sender.add_periodic_task(
         crontab(hour=4, minute=0, day_of_month=1), update_banks_from_six.s())
+    sender.add_periodic_task(
+        crontab(hour=2, minute=0), prerender_reports.s())

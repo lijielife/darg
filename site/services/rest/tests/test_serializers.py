@@ -7,6 +7,7 @@ from dateutil.parser import parse
 from django.core.urlresolvers import reverse
 from django.test import RequestFactory, TestCase
 from django.utils.translation import ugettext as _
+from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
 from project.generators import (BankGenerator,
@@ -14,13 +15,13 @@ from project.generators import (BankGenerator,
                                 ComplexShareholderConstellationGenerator,
                                 OperatorGenerator, OptionPlanGenerator,
                                 OptionTransactionGenerator, PositionGenerator,
-                                ShareholderGenerator,
+                                ReportGenerator, ShareholderGenerator,
                                 TwoInitialSecuritiesGenerator, UserGenerator)
 from project.tests.mixins import MoreAssertsTestCaseMixin
 from services.rest.serializers import (AddCompanySerializer, BankSerializer,
                                        OptionPlanSerializer,
                                        OptionTransactionSerializer,
-                                       PositionSerializer,
+                                       PositionSerializer, ReportSerializer,
                                        ShareholderListSerializer,
                                        ShareholderSerializer,
                                        UserProfileSerializer)
@@ -495,6 +496,35 @@ class PositionSerializerTestCase(TestCase):
 
         with self.assertRaises(ValidationError):
             serializer.validate_depot_bank(None)
+
+
+class ReportSerializerTestCase(TestCase):
+
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.report = ReportGenerator().generate()
+        url = reverse('reports:download', kwargs={'report_id': self.report.pk})
+        self.request = self.factory.get(url)
+        self.serializer = ReportSerializer(
+            instance=self.report, context={'request': self.request})
+        self.serialized_data = self.serializer.data
+
+    def test_get_url(self):
+        """ render url for download report """
+        self.report.render()
+        self.report.refresh_from_db()
+        self.assertEqual(self.serializer.get_url(self.report),
+                         '/reports/{}/download'.format(self.report.pk))
+
+    def test_fields(self):
+        """ do all fields respond properly """
+        self.report.downloaded_at = timezone.now()
+        self.report.generated_at = timezone.now()
+        self.serializer = ReportSerializer(
+            instance=self.report, context={'request': self.request})
+        self.serialized_data = self.serializer.data
+        for field in self.serializer.fields.keys():
+            self.assertIsNotNone(self.serialized_data.get(field))
 
 
 class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin, TestCase):

@@ -374,6 +374,8 @@ class ReportGenerator(object):
 
     def generate(self, **kwargs):
 
+        save = kwargs.pop('save', True)
+
         rkwargs = {
             'eta': timezone.now(),
             'company': CompanyGenerator().generate(),
@@ -383,7 +385,10 @@ class ReportGenerator(object):
         }
         rkwargs.update(kwargs)
 
-        report = Report.objects.create(**rkwargs)
+        if save:
+            report = Report.objects.create(**rkwargs)
+        else:
+            report = Report(**rkwargs)
 
         return report
 
