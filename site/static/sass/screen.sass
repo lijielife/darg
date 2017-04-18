@@ -16,6 +16,7 @@
 @import animate
 @import datepicker
 @import spinner
+@import reports
 
 // custom
 @import blockquote
@@ -126,15 +127,15 @@ html, body
     background-color: transparent
 
   h1
-    font-size: 3em
+    font-size: 2em
     margin-bottom: .5em
   h2
-    font-size: 2em
+    font-size: 1.5em
     margin-bottom: 1em
     margin-top: 1.25em
 
   h3
-    font-size: 1.5em
+    font-size: 1.2em
     margin-bottom: .125em
 
   h4
@@ -258,6 +259,25 @@ html, body
     color: $color-blue !important
     border: 1px solid $color-blue !important
 
+  // container for .btn-image to align inside the viewport
+  .btn-panel
+    margin: 1em 0em 2em
+  // btn for large icon/image and small text. usually used to have user choose
+  // an option from x variants. example pdf download @ reports page
+  .btn-image
+    padding: 1em 2em
+    border: 1px solid $color-gray
+    border-radius: 4px
+    background-color: transparent
+    .icon
+      width: 50px
+      height: 50px
+      background-size: 50px
+  // highlight a selected button from btn-panel
+  .selected
+    border-color: $color-blue
+    background-color: $color-gray-lighten
+    
   .panel
     margin-top: 1em
     box-shadow: none
