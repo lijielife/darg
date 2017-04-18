@@ -66,6 +66,7 @@ INSTALLED_APPS = (
     'registration',
     'rest_framework',
     'rest_framework.authtoken',
+    'django_filters',
     'raven.contrib.django.raven_compat',
     'sorl.thumbnail',
     'djrill',
