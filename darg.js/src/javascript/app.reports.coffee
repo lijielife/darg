@@ -1,4 +1,12 @@
-app = angular.module 'js.darg.app.reports', ['js.darg.api', 'pascalprecht.translate', 'ui.bootstrap']
+app = angular.module 'js.darg.app.reports', ['js.darg.api', 'pascalprecht.translate', 'ui.bootstrap', 'angularMoment']
+
+# load moment locale
+app.run (amMoment) ->
+  amMoment.changeLocale 'de'
+  return
+
+# make amp timezone aware
+angular.module('js.darg.app.reports').constant 'angularMomentConfig', timezone: 'Name of Timezone'
 
 app.config ['$translateProvider', ($translateProvider) ->
     $translateProvider.translations('de', django.catalog)
@@ -6,7 +14,7 @@ app.config ['$translateProvider', ($translateProvider) ->
     $translateProvider.useSanitizeValueStrategy('escaped')
 ]
 
-app.controller 'ReportsController', ['$scope', '$http', 'Shareholder', ($scope, $http, Shareholder) ->
+app.controller 'ReportsController', ['$scope', '$http', 'Shareholder', 'Report', ($scope, $http, Shareholder, Report) ->
 
     $scope.transactions_download_params = {}
     $scope.securities = []
@@ -15,7 +23,6 @@ app.controller 'ReportsController', ['$scope', '$http', 'Shareholder', ($scope, 
     $scope.transaction_download_url = ''
 
     # captable
-    $scope.show_captable_form = false
     $scope.captable_orderings = [
         {title: gettext('Last Name'), value: 'user__last_name'},
         {title: gettext('Last Name (descending)'), value: 'user__last_name_desc'},
@@ -26,14 +33,7 @@ app.controller 'ReportsController', ['$scope', '$http', 'Shareholder', ($scope, 
         {title: gettext('Share Percent Ownership'), value: 'share_percent'},
         {title: gettext('Share Percent Ownership (descending)'), value: 'share_percent_desc'},
     ]
-    $scope.captable_report = {ordering: $scope.captable_orderings[6]}
-    $scope.captable_csv_url = ''
-    $scope.captable_pdf_url = ''
-
-    # intial data
-    $http.get('/services/rest/security').then (result) ->
-        angular.forEach result.data.results, (item) ->
-            $scope.securities.push item
+    $scope.last_captable_report = new Report({order_by: $scope.captable_orderings[6], file_type:'PDF', report_type:'captable'})
 
     # --- dynamic props
     # transaction download url
@@ -42,13 +42,73 @@ app.controller 'ReportsController', ['$scope', '$http', 'Shareholder', ($scope, 
             $scope.enable_transaction_download = true
             $scope.transaction_download_url = '/company/'+company_id+'/download/transactions?from='+$scope.transactions_download_params.from.toISOString()+'&to='+$scope.transactions_download_params.to.toISOString()+'&security='+$scope.transactions_download_params.security.pk
 
-    # transaction download url
-    $scope.$watchCollection 'captable_report', (captable_report)->
-        ext = ''
-        if captable_report.ordering
-            ext = '?ordering=' + captable_report.ordering.value
-        $scope.captable_csv_url = '/company/'+company_id+'/download/pdf' + ext
-        $scope.captable_pdf_url =  '/company/'+company_id+'/download/csv' + ext
+    # --- LOGIC
+    $scope.add_captable_report = ->
+        # previous report existing
+        if $scope.last_captable_report.pk
+            delete $scope.last_captable_report.pk
+
+        # preprocess ordering
+        $scope.last_captable_report.order_by = $scope.last_captable_report.order_by.value
+
+        # save
+        $scope.captable_loading = true
+        $scope.last_captable_report.$save().then (result) ->
+            $scope.last_captable_report = new Report($scope.get_report_from_api_result({data: results: [result]}))
+            $scope.captable_loading=false
+        , (rejection) ->
+            $scope.captable_loading=false
+            Raven.captureMessage('report creation error: ' + rejection.statusText, {
+                level: 'error',
+                extra: { rejection: rejection },
+            })
+
+    $scope.get_all_securities = ->
+        $http.get('/services/rest/security').then (result) ->
+            $scope.securities = result.data.results
+        , (rejection) ->
+            Raven.captureMessage('security loading error: ' + rejection.statusText, {
+                level: 'error',
+                extra: { rejection: rejection },
+            })
+            
+
+    $scope.get_captable_report = ->
+        params = {
+            order_by: $scope.last_captable_report.order_by.value,
+            report_type: $scope.last_captable_report.report_type,
+            file_type: $scope.last_captable_report.file_type,
+            limit: 1,
+        }
+        $scope.captable_loading = true
+        $http.get('/services/rest/report', {params:params}).then (result) ->
+            if result.data.results.length > 0
+                $scope.last_captable_report = new Report($scope.get_report_from_api_result(result))
+            else
+                # if we don't have that report yet, make ablank one:
+                params.order_by = $scope.lookup_ordering(params.order_by)
+                $scope.last_captable_report = new Report(params)
+            $scope.captable_loading=false
+        , (rejection) ->
+            $scope.captable_loading=false
+            Raven.captureMessage('report loading error: ' + rejection.statusText, {
+                level: 'error',
+                extra: { rejection: rejection },
+            })
+
+    $scope.get_report_from_api_result = (result) ->
+        report = result.data.results[0]
+        report.order_by = $scope.lookup_ordering(result.data.results[0].order_by)
+        return report
+
+    $scope.lookup_ordering = (order_by) ->
+        orderings = $scope.captable_orderings.filter (obj) ->
+            return obj.value == order_by
+        return orderings[0] 
+
+    # --- INITIAL DATA
+    $scope.get_all_securities()
+    $scope.get_captable_report()
 
     # --- display toggles
     $scope.toggle_transaction_form = ->
@@ -56,12 +116,6 @@ app.controller 'ReportsController', ['$scope', '$http', 'Shareholder', ($scope, 
             $scope.show_transaction_form = false
         else
             $scope.show_transaction_form = true
-
-    $scope.toggle_captable_form = ->
-        if $scope.show_captable_form
-            $scope.show_captable_form = false
-        else
-            $scope.show_captable_form = true
 
     # --- DATEPICKER
     $scope.datepicker1 = { opened: false }

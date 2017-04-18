@@ -46,3 +46,7 @@ app.factory 'OptionTransaction', ['$resource', ($resource) ->
 app.factory 'Invitee', ['$resource', ($resource) ->
     $resource '/services/rest/invitee/:id', id: '@id'
 ]
+
+app.factory 'Report', ['$resource', ($resource) ->
+    $resource '/services/rest/report/:id', id: '@id'
+]
