@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-12 09:10+0000\n"
-"PO-Revision-Date: 2017-04-12 09:24+0000\n"
+"POT-Creation-Date: 2017-04-15 18:06+0000\n"
+"PO-Revision-Date: 2017-04-15 18:17+0000\n"
 "Last-Translator:   <jirka@kkd-partners.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -19,9 +19,169 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Translated-Using: django-rosetta 0.7.12\n"
 
+#: reports/models.py:20
+#| msgid "Download active Shareholders"
+msgid "Active Shareholders"
+msgstr "Aktive Gesellschafter"
+
+#: reports/models.py:24
+msgid "Last Name"
+msgstr "Nachname"
+
+#: reports/models.py:25
+msgid "Last Name (descending)"
+msgstr "Nachname (absteigend)"
+
+#: reports/models.py:26
+msgid "Share Count"
+msgstr "Anzahl Aktien"
+
+#: reports/models.py:27
+msgid "Share Count (descending)"
+msgstr "Anzahl Aktien (absteigend)"
+
+#: reports/models.py:28
+msgid "Shareholder Number"
+msgstr "Aktionärsnummer"
+
+#: reports/models.py:29
+msgid "Shareholder Number (descending)"
+msgstr "Aktionärsnummer (absteigend)"
+
+#: reports/models.py:30
+msgid "Share Percent Ownership"
+msgstr "Prozent Aktienanteil"
+
+#: reports/models.py:31
+msgid "Share Percent Ownership (descending)"
+msgstr "Prozent Aktienanteil(absteigend)"
+
+#: reports/models.py:53
+msgid "Estimated rendering completion time"
+msgstr "Geschätzte Dauer für die Erstellung des Berichts"
+
+#: reports/models.py:54
+msgid "file creation datetime"
+msgstr "Dauer zur Erstellung der Datei"
+
+#: reports/models.py:57
+msgid "time it took to generate the file in seconds"
+msgstr "Dauer der Dateierstellung in Sekunden"
+
+#: reports/tasks.py:160
+msgid "Your pdf captable file"
+msgstr "Ihre Aktionärsübersicht als PDF"
+
+#: reports/tasks.py:161 reports/tasks.py:229
+msgid "Your file is attached to this email"
+msgstr "Ihre Datei ist diese Email angehängt."
+
+#: reports/tasks.py:162
+#| msgid "Download active Shareholders"
+msgid "PDF Captable/Active Shareholders"
+msgstr "Aktive Gesellschafter"
+
+#: reports/tasks.py:186
+msgid "shareholder number"
+msgstr "Aktionärsnummer"
+
+#: reports/tasks.py:186
+#| msgid "brand name"
+msgid "last name"
+msgstr "Nachname"
+
+#: reports/tasks.py:186
+#| msgid "brand name"
+msgid "first name"
+msgstr "Vorname"
+
+#: reports/tasks.py:187
+msgid "email"
+msgstr "Email"
+
+#: reports/tasks.py:187
+msgid "share count"
+msgstr "Aktienzahl"
+
+#: reports/tasks.py:187
+msgid "votes share percent"
+msgstr "Stimmrechte in Prozent"
+
+#: reports/tasks.py:188
+msgid "language ISO"
+msgstr "Sprache ISO-Code"
+
+#: reports/tasks.py:188
+msgid "language full"
+msgstr "Sprache"
+
+#: reports/tasks.py:192
+msgid "Share IDs"
+msgstr "Aktiennummern"
+
+#: reports/tasks.py:217
+msgid "None"
+msgstr "Keine"
+
+#: reports/tasks.py:228
+msgid "Your csv captable file"
+msgstr "Ihre Aktionärsübersicht"
+
+#: reports/tasks.py:230
+#| msgid "Download active Shareholders"
+msgid "CSV Captable/Active Shareholders"
+msgstr "Aktive Gesellschafter"
+
 #: reports/templates/reports/_captable_form.html:8
+msgid "This report is currently generated anew. ETA:"
+msgstr "Dieser Bericht wird aktuell erstellt. Geschätzte Fertigstellung:"
+
+#: reports/templates/reports/_captable_form.html:10
+msgid "Refresh"
+msgstr "Aktualisieren"
+
+#: reports/templates/reports/_captable_form.html:10
+msgid "to see status."
+msgstr "um den aktuellen Status zu sehen"
+
+#: reports/templates/reports/_captable_form.html:13
+msgid "This report was just recently created and not yet viewed."
+msgstr "Dieser Report wurde neue erstellt und noch nicht angeschaut."
+
+#: reports/templates/reports/_captable_form.html:15
+#| msgid "Download"
+msgid "Download now"
+msgstr "Jetzt herunterladen"
+
+#: reports/templates/reports/_captable_form.html:20
+msgid "Select Format"
+msgstr "Format auswählen"
+
+#: reports/templates/reports/_captable_form.html:25
+msgid "PDF"
+msgstr "PDF"
+
+#: reports/templates/reports/_captable_form.html:30
+msgid "CSV"
+msgstr "CSV"
+
+#: reports/templates/reports/_captable_form.html:38
 msgid "Sort by:"
 msgstr "Sortieren nach:"
+
+#: reports/templates/reports/_captable_form.html:57
+#: reports/templates/reports/index.html:24
+msgid "Download active Shareholders"
+msgstr "Aktive Gesellschafter herunterladen"
+
+#: reports/templates/reports/_captable_form.html:61
+msgid "File generated at "
+msgstr "Datei erstellt"
+
+#: reports/templates/reports/_captable_form.html:64
+#: reports/templates/reports/_captable_form.html:71
+msgid "Generate fresh file"
+msgstr "Datei neu generieren"
 
 #: reports/templates/reports/_transaction_form.html:8
 msgid "from"
@@ -63,40 +223,25 @@ msgstr ""
 "Verwenden Sie CSV für Downloads für MS Excel. Folgen Sie dieser <a "
 "href='https://goo.gl/aQ2gVx'>Anleitung zum Import/a>."
 
-#: reports/templates/reports/index.html:24
-msgid "Download active Shareholders"
-msgstr "Aktive Gesellschafter herunterladen"
-
-#: reports/templates/reports/index.html:28
-msgid "Download active Shareholders as PDF"
-msgstr "Aktive Gesellschafter als PDF herunterladen"
-
-#: reports/templates/reports/index.html:30
-msgid "PDF"
-msgstr "PDF"
-
-#: reports/templates/reports/index.html:32
-msgid "Download active Shareholders as CSV"
-msgstr "Aktive Gesellschafter als CSV herunterladen"
-
 #: reports/templates/reports/index.html:33
-msgid "CSV"
-msgstr "CSV"
+#| msgid "Download"
+msgid "Other Downloads"
+msgstr "Andere Berichte/Downloads"
 
-#: reports/templates/reports/index.html:43
+#: reports/templates/reports/index.html:37
 msgid "Transactions per security in period"
 msgstr "Transaktionen pro Wertpapier im Zeitraum"
 
-#: reports/templates/reports/index.html:48
-#: reports/templates/reports/index.html:49
+#: reports/templates/reports/index.html:42
+#: reports/templates/reports/index.html:43
 msgid "Address data of all shareholders"
 msgstr "Adressdaten aller Gesellschafter"
 
-#: reports/templates/reports/index.html:54
+#: reports/templates/reports/index.html:48
 msgid "Printed Certificates"
 msgstr "Gedruckte Zertifikate"
 
-#: reports/templates/reports/index.html:61
+#: reports/templates/reports/index.html:55
 msgid ""
 "No printed certificates are available. Please print a certificate via a "
 "transaction or option transaction"
@@ -104,11 +249,11 @@ msgstr ""
 "Es sind keine Urkunden vorhanden. Bitte drucken sie zuerst mindestens eine "
 "Urkunde via einer Transaktion oder Option."
 
-#: reports/templates/reports/index.html:66
+#: reports/templates/reports/index.html:60
 msgid "Vested Shares"
 msgstr "Aktien mit Sperrfrist"
 
-#: reports/templates/reports/index.html:73
+#: reports/templates/reports/index.html:67
 msgid ""
 "no vested positions yet. please add vesting data to either transaction or "
 "option transaction"
@@ -116,6 +261,16 @@ msgstr ""
 "Keine Positionen mit Sperrfrist vorhanden. Bitte fügen Sie vorher "
 "Sperrfristen zu Transaktionen oder Optionen hinzu."
 
-#: reports/templates/reports/index.html:77
+#: reports/templates/reports/index.html:71
 msgid "Depot Statement per Shareholder"
 msgstr "Kontoauszug pro Gesellschafter"
+
+#: reports/views.py:23
+msgid "Permission denied"
+msgstr "Zugriff verboten"
+
+#~ msgid "Download active Shareholders as PDF"
+#~ msgstr "Aktive Gesellschafter als PDF herunterladen"
+
+#~ msgid "Download active Shareholders as CSV"
+#~ msgstr "Aktive Gesellschafter als CSV herunterladen"

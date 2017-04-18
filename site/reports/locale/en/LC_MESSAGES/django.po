@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-12 09:10+0000\n"
+"POT-Creation-Date: 2017-04-15 18:06+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,8 +17,162 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: reports/models.py:20
+msgid "Active Shareholders"
+msgstr ""
+
+#: reports/models.py:24
+msgid "Last Name"
+msgstr ""
+
+#: reports/models.py:25
+msgid "Last Name (descending)"
+msgstr ""
+
+#: reports/models.py:26
+msgid "Share Count"
+msgstr ""
+
+#: reports/models.py:27
+msgid "Share Count (descending)"
+msgstr ""
+
+#: reports/models.py:28
+msgid "Shareholder Number"
+msgstr ""
+
+#: reports/models.py:29
+msgid "Shareholder Number (descending)"
+msgstr ""
+
+#: reports/models.py:30
+msgid "Share Percent Ownership"
+msgstr ""
+
+#: reports/models.py:31
+msgid "Share Percent Ownership (descending)"
+msgstr ""
+
+#: reports/models.py:53
+msgid "Estimated rendering completion time"
+msgstr ""
+
+#: reports/models.py:54
+msgid "file creation datetime"
+msgstr ""
+
+#: reports/models.py:57
+msgid "time it took to generate the file in seconds"
+msgstr ""
+
+#: reports/tasks.py:160
+msgid "Your pdf captable file"
+msgstr ""
+
+#: reports/tasks.py:161 reports/tasks.py:229
+msgid "Your file is attached to this email"
+msgstr ""
+
+#: reports/tasks.py:162
+msgid "PDF Captable/Active Shareholders"
+msgstr ""
+
+#: reports/tasks.py:186
+msgid "shareholder number"
+msgstr ""
+
+#: reports/tasks.py:186
+msgid "last name"
+msgstr ""
+
+#: reports/tasks.py:186
+msgid "first name"
+msgstr ""
+
+#: reports/tasks.py:187
+msgid "email"
+msgstr ""
+
+#: reports/tasks.py:187
+msgid "share count"
+msgstr ""
+
+#: reports/tasks.py:187
+msgid "votes share percent"
+msgstr ""
+
+#: reports/tasks.py:188
+msgid "language ISO"
+msgstr ""
+
+#: reports/tasks.py:188
+msgid "language full"
+msgstr ""
+
+#: reports/tasks.py:192
+msgid "Share IDs"
+msgstr ""
+
+#: reports/tasks.py:217
+msgid "None"
+msgstr ""
+
+#: reports/tasks.py:228
+msgid "Your csv captable file"
+msgstr ""
+
+#: reports/tasks.py:230
+msgid "CSV Captable/Active Shareholders"
+msgstr ""
+
 #: reports/templates/reports/_captable_form.html:8
+msgid "This report is currently generated anew. ETA:"
+msgstr ""
+
+#: reports/templates/reports/_captable_form.html:10
+msgid "Refresh"
+msgstr ""
+
+#: reports/templates/reports/_captable_form.html:10
+msgid "to see status."
+msgstr ""
+
+#: reports/templates/reports/_captable_form.html:13
+msgid "This report was just recently created and not yet viewed."
+msgstr ""
+
+#: reports/templates/reports/_captable_form.html:15
+msgid "Download now"
+msgstr ""
+
+#: reports/templates/reports/_captable_form.html:20
+msgid "Select Format"
+msgstr ""
+
+#: reports/templates/reports/_captable_form.html:25
+msgid "PDF"
+msgstr ""
+
+#: reports/templates/reports/_captable_form.html:30
+msgid "CSV"
+msgstr ""
+
+#: reports/templates/reports/_captable_form.html:38
 msgid "Sort by:"
+msgstr ""
+
+#: reports/templates/reports/_captable_form.html:57
+#: reports/templates/reports/index.html:24
+msgid "Download active Shareholders"
+msgstr ""
+
+#: reports/templates/reports/_captable_form.html:61
+msgid "File generated at "
+msgstr ""
+
+#: reports/templates/reports/_captable_form.html:64
+#: reports/templates/reports/_captable_form.html:71
+msgid "Generate fresh file"
 msgstr ""
 
 #: reports/templates/reports/_transaction_form.html:8
@@ -59,55 +213,43 @@ msgid ""
 "aQ2gVx'>guide for instructions</a>."
 msgstr ""
 
-#: reports/templates/reports/index.html:24
-msgid "Download active Shareholders"
-msgstr ""
-
-#: reports/templates/reports/index.html:28
-msgid "Download active Shareholders as PDF"
-msgstr ""
-
-#: reports/templates/reports/index.html:30
-msgid "PDF"
-msgstr ""
-
-#: reports/templates/reports/index.html:32
-msgid "Download active Shareholders as CSV"
-msgstr ""
-
 #: reports/templates/reports/index.html:33
-msgid "CSV"
+msgid "Other Downloads"
 msgstr ""
 
-#: reports/templates/reports/index.html:43
+#: reports/templates/reports/index.html:37
 msgid "Transactions per security in period"
 msgstr ""
 
-#: reports/templates/reports/index.html:48
-#: reports/templates/reports/index.html:49
+#: reports/templates/reports/index.html:42
+#: reports/templates/reports/index.html:43
 msgid "Address data of all shareholders"
 msgstr ""
 
-#: reports/templates/reports/index.html:54
+#: reports/templates/reports/index.html:48
 msgid "Printed Certificates"
 msgstr ""
 
-#: reports/templates/reports/index.html:61
+#: reports/templates/reports/index.html:55
 msgid ""
 "No printed certificates are available. Please print a certificate via a "
 "transaction or option transaction"
 msgstr ""
 
-#: reports/templates/reports/index.html:66
+#: reports/templates/reports/index.html:60
 msgid "Vested Shares"
 msgstr ""
 
-#: reports/templates/reports/index.html:73
+#: reports/templates/reports/index.html:67
 msgid ""
 "no vested positions yet. please add vesting data to either transaction or "
 "option transaction"
 msgstr ""
 
-#: reports/templates/reports/index.html:77
+#: reports/templates/reports/index.html:71
 msgid "Depot Statement per Shareholder"
+msgstr ""
+
+#: reports/views.py:23
+msgid "Permission denied"
 msgstr ""
