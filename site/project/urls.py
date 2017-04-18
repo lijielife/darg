@@ -51,6 +51,7 @@ sitemaps = {'tags': TagSitemap,
             'pages': FlatPageSitemap,
             }
 
+# main url conf
 urlpatterns = [
     # web views
     url(r'^$', 'project.views.index', name='index'),  # landing page
@@ -69,10 +70,6 @@ urlpatterns = [
         name='company_list'),
     url(r'^company/(?P<company_id>[0-9]+)/$', 'company.views.company',
         name='company'),
-    url(r'^company/(?P<company_id>[0-9]+)/download/csv$',
-        'project.views.captable_csv', name='captable_csv'),
-    url(r'^company/(?P<company_id>[0-9]+)/download/pdf$',
-        'project.views.captable_pdf', name='captable_pdf'),
     url(r'^company/(?P<company_id>[0-9]+)/download/contacts$',
         'project.views.contacts_csv', name='contacts_csv'),
     url(r'^company/(?P<company_id>[0-9]+)/download/transactions$',
@@ -99,7 +96,7 @@ urlpatterns = [
         name='optionplan_download_img'),
 
     # reports
-    url(r'^reports/', include('reports.urls')),
+    url(r'^reports/', include('reports.urls', namespace='reports')),
 
     # --- auth
     # disable dj registration login

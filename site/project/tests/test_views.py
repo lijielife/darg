@@ -18,11 +18,12 @@ from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
                                 OperatorGenerator, PositionGenerator,
                                 SecurityGenerator, ShareholderGenerator,
                                 TwoInitialSecuritiesGenerator, UserGenerator,
-                                OptionTransactionGenerator)
+                                OptionTransactionGenerator, ReportGenerator)
 from project.tests.mixins import MoreAssertsTestCaseMixin
 from project.views import _get_contacts, _get_transactions
 from shareholder.models import (Company, OptionTransaction, Security,
                                 Shareholder, UserProfile)
+from utils.http import get_file_content_as_string
 
 
 def _add_company_to_user_via_rest(user):
@@ -247,36 +248,31 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
             buyer=shareholder_list[0], count=20, value=20,
             seller=shareholder_list[2])
 
-        # run test
-        response = self.client.get(
-            reverse('captable_csv', kwargs={"company_id": company.id}))
-
-        # not logged in user
-        self.assertEqual(response.status_code, 302)
-
         # login and retest
-        user = UserGenerator().generate()
+        report = ReportGenerator().generate(company=company, file_type='CSV')
+        report.render()
+        user = report.user
         OperatorGenerator().generate(user=user, company=company)
-        is_loggedin = self.client.login(username=user.username,
-                                        password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(is_loggedin)
-        with self.assertLessNumQueries(59):
-            response = self.client.get(reverse('captable_csv',
-                                       kwargs={"company_id": company.id}))
+        self.client.force_login(user)
+        response = self.client.get(reverse('reports:download',
+                                   kwargs={"report_id": report.id}))
 
         # assert response code
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
+
         # assert proper csv
-        f_, content = self._get_attachment_content()
+        content = get_file_content_as_string(response)
         lines = content.split('\r\n')
         lines.pop()  # remove last element based on final '\r\n'
         for row in lines:
             self.assertEqual(row.count(','), 7)
         self.assertEqual(len(lines), 3)  # ensure we have the right data
         # assert company itself
-        self.assertIn(shareholder_list[0].number, [f.split(',')[0] for f in lines])
+        self.assertIn(shareholder_list[0].number,
+                      [f.split(',')[0] for f in lines])
         # assert share owner
-        self.assertIn(shareholder_list[1].number, [f.split(',')[0] for f in lines])
+        self.assertIn(shareholder_list[1].number,
+                      [f.split(',')[0] for f in lines])
         # assert shareholder witout position not in there
         for line in lines:
             self.assertNotEqual(line[0], shareholder_list[3].number)
@@ -315,139 +311,52 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
             seller=shareholder_list[2])
 
         # login and retest
-        user = UserGenerator().generate()
+        report = ReportGenerator().generate(company=company, file_type='CSV')
+        report.render()
+        user = report.user
         OperatorGenerator().generate(user=user, company=company)
-        is_loggedin = self.client.login(username=user.username,
-                                        password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(is_loggedin)
-        response = self.client.get(reverse('captable_csv',
-                                   kwargs={"company_id": company.id}))
+        self.client.force_login(user)
+        response = self.client.get(reverse('reports:download',
+                                   kwargs={"report_id": report.id}))
 
         # assert response code
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
         # assert proper csv
-        lines = response.content.split('\r\n')
+        content = get_file_content_as_string(response)
+        lines = content.split('\r\n')
         lines.pop()  # remove last element based on final '\r\n'
         for row in lines:
             if row == lines[0]:  # skip first row
                 continue
-            self.assertEqual(row.count(','), 7)
+            self.assertEqual(row.count(','), 8)
             fields = row.split(',')
             s = Shareholder.objects.get(company=company, number=fields[0])
             text = s.current_segments(security)
             if text:
                 self.assertTrue(text in fields[8])
-
-    def test_csv_download_with_missing_operator(self):
-        """ rest download of captable csv """
-
-        # data
-        company = CompanyGenerator().generate()
-        shareholder_list = []
-        for x in range(1, 6):  # don't statt with 0, Generators 'if' will fail
-            shareholder_list.append(ShareholderGenerator().generate(
-                company=company, number=str(x)))
-
-        # initial share creation
-        PositionGenerator().generate(
-            buyer=shareholder_list[0], count=1000, value=10)
-        # single transaction
-        PositionGenerator().generate(
-            buyer=shareholder_list[1], count=10, value=10,
-            seller=shareholder_list[0])
-        # shareholder bought and sold
-        PositionGenerator().generate(buyer=shareholder_list[2], count=20,
-                                     value=20, seller=shareholder_list[0])
-        PositionGenerator().generate(buyer=shareholder_list[0], count=20,
-                                     value=20, seller=shareholder_list[2])
-
-        # run test
-        response = self.client.get(
-            reverse('captable_csv', kwargs={"company_id": company.id}))
-
-        # not logged in user
-        self.assertEqual(response.status_code, 302)
-
-        # login and retest
-        user = UserGenerator().generate()
-        is_loggedin = self.client.login(username=user.username,
-                                        password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(is_loggedin)
-        response = self.client.get(
-            reverse('captable_csv', kwargs={"company_id": company.id}))
-
-        # assert response code
-        self.assertEqual(response.status_code, 403)
-
-    def test_pdf_download(self):
-        """ test download of captable pdf """
-        company = CompanyGenerator().generate()
-        # run test
-        response = self.client.get(
-            reverse('captable_pdf', kwargs={"company_id": company.id}))
-
-        # not logged in user
-        self.assertEqual(response.status_code, 302)
-
-        # login and retest
-        user = UserGenerator().generate()
-        OperatorGenerator().generate(user=user, company=company)
-        is_loggedin = self.client.login(username=user.username,
-                                        password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(is_loggedin)
-        with self.assertLessNumQueries(13):
-            response = self.client.get(
-                reverse('captable_pdf', kwargs={"company_id": company.id}))
-
-        # assert response code
-        self.assertEqual(response.status_code, 302)
-        # assert proper csv
-        f_, content = self._get_attachment_content()
-        self.assertTrue(content.startswith('%PDF'))
+            self.assertIn(_('None'), fields[8])
 
     def test_pdf_download_with_number_segments(self):
         """ test download of captable pdf """
         company = CompanyGenerator().generate()
         secs = TwoInitialSecuritiesGenerator().generate(company=company)
+        report = ReportGenerator().generate(company=company)
+        report.render()
+        user = report.user
+        OperatorGenerator().generate(user=user, company=company)
         security = secs[1]
         security.track_numbers = True
         security.save()
 
-        # login and retest
-        user = UserGenerator().generate()
-        OperatorGenerator().generate(user=user, company=company)
-        is_loggedin = self.client.login(username=user.username,
-                                        password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(is_loggedin)
-        response = self.client.get(reverse('captable_pdf',
-                                           kwargs={"company_id": company.id}))
+        self.client.force_login(user)
+        response = self.client.get(reverse('reports:download',
+                                           kwargs={"report_id": report.id}))
 
         # assert response code
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
         # assert proper csv
-        f_, content = self._get_attachment_content()
+        content = get_file_content_as_string(response)
         self.assertTrue(content.startswith('%PDF'))
-
-    def test_pdf_download_with_missing_operator(self):
-        """ test download of captable pdf """
-        company = CompanyGenerator().generate()
-        # run test
-        response = self.client.get(
-            reverse('captable_pdf', kwargs={"company_id": company.id}))
-
-        # not logged in user
-        self.assertEqual(response.status_code, 302)
-
-        # login and retest
-        user = UserGenerator().generate()
-        is_loggedin = self.client.login(username=user.username,
-                                        password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(is_loggedin)
-        response = self.client.get(
-            reverse('captable_pdf', kwargs={"company_id": company.id}))
-
-        # assert response code
-        self.assertEqual(response.status_code, 403)
 
     def test_printed_certificates_csv(self):
         """

@@ -378,12 +378,15 @@ class ReportGenerator(object):
             'eta': timezone.now(),
             'company': CompanyGenerator().generate(),
             'user': UserGenerator().generate(),
+            'report_type': 'captable',
+            'file_type': 'PDF',
         }
         rkwargs.update(kwargs)
 
         report = Report.objects.create(**rkwargs)
 
         return report
+
 
 class TwoInitialSecuritiesGenerator(object):
 
