@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-04-15 18:06+0000\n"
-"PO-Revision-Date: 2017-04-15 18:17+0000\n"
+"PO-Revision-Date: 2017-04-18 13:17+0000\n"
 "Last-Translator:   <jirka@kkd-partners.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -146,7 +146,7 @@ msgstr "um den aktuellen Status zu sehen"
 
 #: reports/templates/reports/_captable_form.html:13
 msgid "This report was just recently created and not yet viewed."
-msgstr "Dieser Report wurde neue erstellt und noch nicht angeschaut."
+msgstr "Dieser Report wurde neu erstellt und noch nicht angeschaut."
 
 #: reports/templates/reports/_captable_form.html:15
 #| msgid "Download"

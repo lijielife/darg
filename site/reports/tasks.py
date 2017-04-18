@@ -164,7 +164,7 @@ def render_captable_pdf(company_id, report_id, user_id=None, ordering=None,
                      url=url_with_domain(report.get_absolute_url()))
 
     if not track_downloads:
-        report.downloaded_at = datetime.datetime.now()
+        report.downloaded_at = timezone.now()
         report.save()
 
 
@@ -235,8 +235,8 @@ def render_captable_csv(company_id, report_id, user_id=None, ordering=None,
                      file_desc=_('CSV Captable/Active Shareholders'),
                      url=url_with_domain(report.get_absolute_url()))
 
-    if track_downloads:
-        report.downloaded_at = datetime.datetime.now()
+    if not track_downloads:
+        report.downloaded_at = timezone.now()
         report.save()
 
 

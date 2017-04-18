@@ -1285,9 +1285,20 @@ class ReportViewSetTestCase(APITestCase):
         self.assertEqual(qs.count(), 2)
         self.assertNotIn(self.report3, list(qs))
 
-    def test_perform_create(self):
+    def test_perform_create_pdf(self):
         """ create report with adding some automatic data """
         data = {'report_type': 'captable', 'file_type': 'PDF',
+                'order_by': 'share_count'}
+        serializer = ReportSerializer(
+            data=data)
+        serializer.is_valid()
+        report = self.view.perform_create(serializer)
+        self.assertIsNotNone(report.eta)
+        self.assertIsNone(report.downloaded_at)
+
+    def test_perform_create_csv(self):
+        """ create report with adding some automatic data """
+        data = {'report_type': 'captable', 'file_type': 'CSV',
                 'order_by': 'share_count'}
         serializer = ReportSerializer(
             data=data)
