@@ -4,7 +4,7 @@
 {% block body_block %}
 
   {% block header %}
-    {% include "menu.html" %}
+    {% include "_menu.html" %}
   {% endblock %}
 
 <div class="container">
