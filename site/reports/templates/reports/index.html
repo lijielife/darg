@@ -9,34 +9,30 @@
 {% block ng_app %}js.darg.app.reports{% endblock %}
 
 {% block content %}
-<div ng_controller="ReportsController">
+<div ng_controller="ReportsController" id="reports">
   {% include "_messages.html" %}
   {% include "_form_errors.html" %}
   <script>var company_id = {{company.id}};</script>
-  <h2>{% trans "Reports and Downloads for " %} {{company}}</h2>
+  <h1>{% trans "Reports and Downloads for " %} {{company}}</h1>
   <!-- INTRO -->
   <div class="note">
     {% trans "Use CSV for Excel like Downloads. Follow this <a href='https://goo.gl/aQ2gVx'>guide for instructions</a>." %}
   </div>
 
   <div>
-    <ul>
-      <!-- CAPTABLE -->
-      <li>
-        {% trans "Download active Shareholders as" %}
-        <a href="{% verbatim %}{{ captable_csv_url }}{% endverbatim %}" title="{% trans "Download active Shareholders as PDF" %}" class="btn btn-inline">
-		  <img src="{% static "compiled/images/pdf-icon.png" %}" alt="pdf icon" width="20px"/>
-          {% trans "PDF" %}
-        </a> |
-        <a href="{% verbatim %}{{ captable_pdf_url }}{% endverbatim %}" title="{% trans "Download active Shareholders as CSV" %}" class="btn btn-inline">
-          {% trans "CSV" %}
-        </a>
-        <span class="el-icon-envelope"></span>
-        <span class="el-icon-chevron-down" ng-click="toggle_captable_form()"></span>
-  	  {% include "reports/_captable_form.html" %} 
-      </li>
+    <h2>
+      {% trans "Download active Shareholders" %}
+	</h2>
+    <!-- CAPTABLE -->
+	<div>
+	  {% include "reports/_captable_form.html" %} 
+    </div>
 
-      <!-- TRANSACTIONS -->
+    <!-- TRANSACTIONS -->
+    <h2>
+      {% trans "Other Downloads" %}
+	</h2>
+    <ul>
       <li>
         {% trans "Transactions per security in period" %}
         <span class="el-icon-chevron-down" ng-click="toggle_transaction_form()"></span>

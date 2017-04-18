@@ -1,20 +1,73 @@
 {% load i18n %}
+{% load static %}
 
+<div class="captable">
 
-{% verbatim %}
-<div ng-show="show_captable_form">
+  <!-- alerts -->
+  <div class="alert alert-info" ng-show="last_captable_report.eta && !last_captable_report.generated_at">
+    {% trans "This report is currently generated anew. ETA:" %}
+    {% verbatim %}<span am-time-ago="last_captable_report.eta"></span>{% endverbatim %}.
+    <a href="." >{% trans "Refresh" %} <span class="el-icon-refresh"></span></a> {% trans "to see status." %}
+  </div>
+  <div class="alert alert-success" ng-show="last_captable_report.generated_at && !last_captable_report.downloaded_at && last_captable_report.url">
+    {% trans "This report was just recently created and not yet viewed." %}
+    <a href="{% verbatim %}{{ last_captable_report.url }}{% endverbatim %}">
+      {% trans "Download now" %}
+    </a>
+  </div>
+
+  <!-- FORM -->
+  <p>{% trans "Select Format" %}</p>
+  <div class="btn-panel">
+
+    <button ng-click="last_captable_report.file_type='PDF'; get_captable_report()" class="btn btn-image pdf" ng-class="{selected: last_captable_report.file_type=='PDF'}">
+      <div class="icon"></div>
+      <div class="name">{% trans "PDF" %}</div>
+    </button>
+    
+    <button ng-click="last_captable_report.file_type='CSV'; get_captable_report()" class="btn btn-image csv" ng-class="{selected: last_captable_report.file_type=='CSV'}">
+      <div class="icon"></div>
+      <div class="name">{% trans "CSV" %}</div>
+    </button>
+
+  </div>
+
+  {% verbatim %}
   <form class="form-inline add-information-inline form">
     <div class="form-group block-level">
-      {% endverbatim %}{% trans "Sort by:" %}{% verbatim %}
-      <span class="input-group date-field">
+      <p>{% endverbatim %}{% trans "Sort by:" %}{% verbatim %}</p>
+      <span class="input-group">
         <select class="form-control security" 
-                ng-model="captable_report.ordering" 
-                ng-options="ordering as ordering.title for ordering in captable_orderings" 
+                ng-model="last_captable_report.order_by" 
+                ng-options="ordering as ordering.title for ordering in captable_orderings"
                 translate 
-                translate-attr-placeholder="Sort by">
+                translate-attr-placeholder="Sort by"
+                ng-change="get_captable_report()">
         </select>
       </span>
     </div>
   </form>
+  {% endverbatim %}
+
+  <a href="{% verbatim %}{{ last_captable_report.url }}{% endverbatim %}" 
+     class="btn btn-focus" 
+     ng-hide="!last_captable_report.generated_at || !last_captable_report.url" 
+     ng-class="{disabled: captable_loading}">
+
+    {% trans "Download active Shareholders" %}
+
+  </a>
+  <div class="note" ng-show="last_captable_report.generated_at && last_captable_report.url">
+    {% trans "File generated at " %}
+    {% verbatim %}<span am-time-ago="last_captable_report.generated_at"></span>{% endverbatim %}.
+    <button ng-click="add_captable_report()" class="btn btn-inline" ng-class="{disabled: captable_loading}">
+      {% trans "Generate fresh file" %}
+    </button>
+  </div>
+  <button ng-click="add_captable_report()" 
+          class="btn btn-white" 
+          ng-show="!last_captable_report.generated_at || !last_captable_report.url" 
+          ng-class="{disabled: captable_loading}">
+    {% trans "Generate fresh file" %}
+  </button>
 </div>
-{% endverbatim %}
