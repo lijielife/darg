@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-19 20:03+0000\n"
+"POT-Creation-Date: 2017-04-19 20:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -73,16 +73,16 @@ msgstr ""
 msgid "Number must be unique for this company"
 msgstr ""
 
-#: services/rest/serializers.py:673 services/rest/serializers.py:1052
+#: services/rest/serializers.py:673 services/rest/serializers.py:1060
 msgid "Invalid security numbers segments."
 msgstr ""
 
-#: services/rest/serializers.py:679 services/rest/serializers.py:1065
+#: services/rest/serializers.py:679 services/rest/serializers.py:1073
 msgid "Segments \"{}\" must be owned by seller \"{}\". Available are {}"
 msgstr ""
 
-#: services/rest/serializers.py:692 services/rest/serializers.py:992
-#: services/rest/serializers.py:1077
+#: services/rest/serializers.py:692 services/rest/serializers.py:1000
+#: services/rest/serializers.py:1085
 msgid "Number of shares in segments ({}) does not match count {}"
 msgstr ""
 
@@ -91,42 +91,42 @@ msgid ""
 "Segment {} is blocked for options and cannot be transfered to a shareholder."
 msgstr ""
 
-#: services/rest/serializers.py:822 services/rest/serializers.py:1191
+#: services/rest/serializers.py:825 services/rest/serializers.py:1199
 msgid "Certificate ID {} is already used in transaction or option transaction"
 msgstr ""
 
-#: services/rest/serializers.py:831 services/rest/serializers.py:1200
+#: services/rest/serializers.py:834 services/rest/serializers.py:1208
 msgid "count {} must be greater then 0"
 msgstr ""
 
-#: services/rest/serializers.py:847
+#: services/rest/serializers.py:850
 msgid "seller does not have enough shares. max value is {}."
 msgstr ""
 
-#: services/rest/serializers.py:859
+#: services/rest/serializers.py:862
 msgid "Depot bank is mandatory if depot type is certificate depot"
 msgstr ""
 
-#: services/rest/serializers.py:889
+#: services/rest/serializers.py:897
 msgid "Not a pdf file."
 msgstr ""
 
-#: services/rest/serializers.py:969
+#: services/rest/serializers.py:977
 msgid "Invalid or empty security numbers segments."
 msgstr ""
 
-#: services/rest/serializers.py:980
+#: services/rest/serializers.py:988
 msgid ""
 "Segments \"{}\" must be owned by company shareholder \"{}\". Available are {}"
 msgstr ""
 
-#: services/rest/serializers.py:1089
+#: services/rest/serializers.py:1097
 msgid ""
 "Segment {} is not reserved for options inside a option plan and cannot be "
 "transfered to a option holder. Available are: {}"
 msgstr ""
 
-#: services/rest/serializers.py:1212
+#: services/rest/serializers.py:1220
 msgid "seller does not have enough options. max value is {}."
 msgstr ""
 

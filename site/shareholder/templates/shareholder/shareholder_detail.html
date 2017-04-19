@@ -205,7 +205,8 @@
     </div>
     <div class="tr th birthday">
       <div class="td">
-        {% trans "Shareholder Birthday" %}:
+        {% trans "Format: dd.mm.yy" as msg%}
+        {% trans "Shareholder Birthday" %}{% context_help msg %}:
       </div>
       <div class="td date-field">
         {% verbatim %}

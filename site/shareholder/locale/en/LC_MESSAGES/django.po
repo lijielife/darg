@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-19 20:03+0000\n"
+"POT-Creation-Date: 2017-04-19 20:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -718,131 +718,135 @@ msgid "Shareholder Language"
 msgstr ""
 
 #: shareholder/templates/shareholder/shareholder_detail.html:208
+msgid "Format: dd.mm.yy"
+msgstr ""
+
+#: shareholder/templates/shareholder/shareholder_detail.html:209
 msgid "Shareholder Birthday"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:235
+#: shareholder/templates/shareholder/shareholder_detail.html:236
 msgid "Owned Stock"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:237
+#: shareholder/templates/shareholder/shareholder_detail.html:238
 msgid "total shares owned"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:238
+#: shareholder/templates/shareholder/shareholder_detail.html:239
 msgid "Count Shares Owned Total"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:240
+#: shareholder/templates/shareholder/shareholder_detail.html:241
 msgid "total values of all shares based on face value"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:241
+#: shareholder/templates/shareholder/shareholder_detail.html:242
 msgid "Total face value"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:244
+#: shareholder/templates/shareholder/shareholder_detail.html:245
 #, python-format
 msgid "%% of shares floating"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:249
+#: shareholder/templates/shareholder/shareholder_detail.html:250
 msgid "Value of all shares according to last transaction"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:253
+#: shareholder/templates/shareholder/shareholder_detail.html:254
 msgid "Voting rights total count"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:254
+#: shareholder/templates/shareholder/shareholder_detail.html:255
 msgid "Voting rights percent"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:260
+#: shareholder/templates/shareholder/shareholder_detail.html:261
 msgid "total capital of the company. math: all shares existing * face value"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:261
+#: shareholder/templates/shareholder/shareholder_detail.html:262
 msgid "Provisioned Capital"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:264
+#: shareholder/templates/shareholder/shareholder_detail.html:265
 msgid "Provisioned Share Count"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:268
+#: shareholder/templates/shareholder/shareholder_detail.html:269
 msgid "Share Count Floating"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:271
+#: shareholder/templates/shareholder/shareholder_detail.html:272
 msgid "total votes count based on existing shares"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:272
+#: shareholder/templates/shareholder/shareholder_detail.html:273
 msgid "Total votes count based on shares existing"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:275
+#: shareholder/templates/shareholder/shareholder_detail.html:276
 msgid ""
 "total votes count effective. excludes unregistered/dispo shares and shares "
 "in company ownership"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:276
+#: shareholder/templates/shareholder/shareholder_detail.html:277
 msgid "Total votes count based on shares floating"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:277
+#: shareholder/templates/shareholder/shareholder_detail.html:278
 msgid "Does include shares used for options. Without options it would be"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:280
+#: shareholder/templates/shareholder/shareholder_detail.html:281
 msgid "Total option count based on shares dedicated to options"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:281
+#: shareholder/templates/shareholder/shareholder_detail.html:282
 msgid "Total option count based on shares dedicated to options floating"
-msgstr ""
-
-#: shareholder/templates/shareholder/shareholder_detail.html:288
-#: shareholder/templates/shareholder/shareholder_detail.html:307
-msgid "security"
 msgstr ""
 
 #: shareholder/templates/shareholder/shareholder_detail.html:289
 #: shareholder/templates/shareholder/shareholder_detail.html:308
+msgid "security"
+msgstr ""
+
+#: shareholder/templates/shareholder/shareholder_detail.html:290
+#: shareholder/templates/shareholder/shareholder_detail.html:309
 msgid "cusip"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:291
-#: shareholder/templates/shareholder/shareholder_detail.html:310
+#: shareholder/templates/shareholder/shareholder_detail.html:292
+#: shareholder/templates/shareholder/shareholder_detail.html:311
 msgid "issued"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:294
-#: shareholder/templates/shareholder/shareholder_detail.html:312
+#: shareholder/templates/shareholder/shareholder_detail.html:295
+#: shareholder/templates/shareholder/shareholder_detail.html:313
 msgid "shares owned"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:296
+#: shareholder/templates/shareholder/shareholder_detail.html:297
 msgid "cleaned by options count"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:298
+#: shareholder/templates/shareholder/shareholder_detail.html:299
 msgid "including shares inside certificate depot"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:300
-#: shareholder/templates/shareholder/shareholder_detail.html:313
+#: shareholder/templates/shareholder/shareholder_detail.html:301
+#: shareholder/templates/shareholder/shareholder_detail.html:314
 msgid "options owned"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:302
-#: shareholder/templates/shareholder/shareholder_detail.html:315
+#: shareholder/templates/shareholder/shareholder_detail.html:303
+#: shareholder/templates/shareholder/shareholder_detail.html:316
 msgid "share segments"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:321
+#: shareholder/templates/shareholder/shareholder_detail.html:322
 msgid "Delete shareholder"
 msgstr ""
 

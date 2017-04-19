@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-19 20:03+0000\n"
-"PO-Revision-Date: 2017-04-12 09:10+0000\n"
+"POT-Creation-Date: 2017-04-19 20:59+0000\n"
+"PO-Revision-Date: 2017-04-19 20:28+0000\n"
 "Last-Translator:   <jirka@kkd-partners.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -37,67 +37,91 @@ msgstr "Schliessen"
 msgid "Add Operator"
 msgstr "Administrator hinzufügen"
 
-#: company/templates/company.html:16
+#: company/templates/company.html:17
 msgid "Company Details for"
 msgstr "Unternehmensdaten für"
 
-#: company/templates/company.html:25
+#: company/templates/company.html:26
 msgid "Company Logo"
 msgstr "Logo des Unternehmens"
 
-#: company/templates/company.html:36
+#: company/templates/company.html:37
 msgid "Upload success"
 msgstr "Hochladen erfolgreich"
 
-#: company/templates/company.html:47
+#: company/templates/company.html:48
 msgid "Data"
 msgstr "Daten"
 
-#: company/templates/company.html:50
+#: company/templates/company.html:51
 msgid "Company Name"
 msgstr "Name des Unternehmens"
 
-#: company/templates/company.html:62
+#: company/templates/company.html:63
 msgid "Company Share Count"
 msgstr "Anzahl der Aktien des Unternehmens"
 
-#: company/templates/company.html:75
+#: company/templates/company.html:76
 msgid "Company founding date"
 msgstr "Gründungsdatum des Unternehmens"
 
-#: company/templates/company.html:99
+#: company/templates/company.html:100
 msgid "Provisioned Capital (Liberiertes Kapital)"
 msgstr "Liberiertes/eingelegtes Kapital"
 
-#: company/templates/company.html:112
+#: company/templates/company.html:113
 msgid "CHF for one vote based on face value of securities"
 msgstr "Anzahl CHF für ein Stimmrecht (Basis Nennwert der Aktien)"
 
-#: company/templates/company.html:125
+#: company/templates/company.html:127
+msgid "total votes count based on existing shares"
+msgstr ""
+
+#: company/templates/company.html:128
 msgid "Total Vote Count"
 msgstr "Stimmrechte gesamt"
 
-#: company/templates/company.html:135
-msgid "Total Vote Count Floating"
-msgstr "Stimmrechte gesamt (ohne vom Unternehmen gehaltene Aktien)"
+#: company/templates/company.html:139
+msgid ""
+"total votes count effective. excludes unregistered/dispo shares and shares "
+"in company ownership"
+msgstr ""
 
-#: company/templates/company.html:145
+#: company/templates/company.html:140
+msgid "Total Vote Count Floating"
+msgstr "Stimmrechte effektiv"
+
+#: company/templates/company.html:151
 msgid "Company Headquarter Country"
 msgstr "Land des Unternehmenssitzes"
 
-#: company/templates/company.html:159
+#: company/templates/company.html:166
 msgid "Securities"
 msgstr "Aktienart"
 
-#: company/templates/company.html:167 company/tests/test_views.py:54
+#: company/templates/company.html:169
+#, fuzzy
+#| msgid "Security"
+msgid "security"
+msgstr "Aktienart"
+
+#: company/templates/company.html:170
+msgid "cusip"
+msgstr ""
+
+#: company/templates/company.html:171
+msgid "count"
+msgstr ""
+
+#: company/templates/company.html:181 company/tests/test_views.py:54
 msgid "tracking security numbers for owners enabled. segments:"
 msgstr "Nummerierte Aktiensegmente:"
 
-#: company/templates/company.html:180
+#: company/templates/company.html:195
 msgid "Please contact us at our"
 msgstr "Bitte kontaktieren Sie uns unter"
 
-#: company/templates/company.html:182
+#: company/templates/company.html:197
 msgid ""
 "for getting more security types (common stock, preferred stock, numbered "
 "shares) added"
@@ -105,35 +129,35 @@ msgstr ""
 "um mehr Wertpapierarten (Vorzugsaktien, Stammaktien, Aktien mit "
 "verschiedenen Nennwerten, Nummerierte Aktien) zu erhalten."
 
-#: company/templates/company.html:189
+#: company/templates/company.html:203
 msgid "Administrators"
 msgstr "Administratoren"
 
-#: company/templates/company.html:190
+#: company/templates/company.html:204
 msgid "add operator"
 msgstr "Administrator hinzufügen"
 
-#: company/templates/company.html:218
+#: company/templates/company.html:232
 msgid "Option Plans"
 msgstr "Optionsplan"
 
-#: company/templates/company.html:224
+#: company/templates/company.html:238
 msgid "Options Plan Name"
 msgstr "Name des Optionsplanes"
 
-#: company/templates/company.html:227
+#: company/templates/company.html:241
 msgid "Edit Option Plan"
 msgstr "Optionsplan editieren"
 
-#: company/templates/company.html:238
+#: company/templates/company.html:252
 msgid "Administration"
 msgstr "Verwaltung"
 
-#: company/templates/company.html:242
+#: company/templates/company.html:256
 msgid "reset company"
 msgstr "Unternehmen zurücksetzen"
 
-#: company/templates/company.html:245
+#: company/templates/company.html:259
 msgid ""
 "the company, shareholders, transactions, options, and all other assigned "
 "data are deleted. the user can then create the company anew and start fresh"
@@ -195,9 +219,6 @@ msgstr "Default Optionsplan für {}"
 
 #~ msgid "to"
 #~ msgstr "bis"
-
-#~ msgid "Security"
-#~ msgstr "Aktienart"
 
 #~ msgid "Download"
 #~ msgstr "Herunterladen"
