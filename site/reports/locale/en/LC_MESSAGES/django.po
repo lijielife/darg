@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-15 18:06+0000\n"
+"POT-Creation-Date: 2017-04-19 19:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,111 +17,111 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: reports/models.py:20
+#: reports/models.py:21
 msgid "Active Shareholders"
 msgstr ""
 
-#: reports/models.py:24
+#: reports/models.py:25
 msgid "Last Name"
 msgstr ""
 
-#: reports/models.py:25
+#: reports/models.py:26
 msgid "Last Name (descending)"
 msgstr ""
 
-#: reports/models.py:26
+#: reports/models.py:27
 msgid "Share Count"
 msgstr ""
 
-#: reports/models.py:27
+#: reports/models.py:28
 msgid "Share Count (descending)"
 msgstr ""
 
-#: reports/models.py:28
+#: reports/models.py:29
 msgid "Shareholder Number"
 msgstr ""
 
-#: reports/models.py:29
+#: reports/models.py:30
 msgid "Shareholder Number (descending)"
 msgstr ""
 
-#: reports/models.py:30
+#: reports/models.py:31
 msgid "Share Percent Ownership"
 msgstr ""
 
-#: reports/models.py:31
+#: reports/models.py:32
 msgid "Share Percent Ownership (descending)"
 msgstr ""
 
-#: reports/models.py:53
+#: reports/models.py:54
 msgid "Estimated rendering completion time"
 msgstr ""
 
-#: reports/models.py:54
+#: reports/models.py:55
 msgid "file creation datetime"
 msgstr ""
 
-#: reports/models.py:57
+#: reports/models.py:58
 msgid "time it took to generate the file in seconds"
 msgstr ""
 
-#: reports/tasks.py:160
+#: reports/tasks.py:161
 msgid "Your pdf captable file"
 msgstr ""
 
-#: reports/tasks.py:161 reports/tasks.py:229
+#: reports/tasks.py:162 reports/tasks.py:234
 msgid "Your file is attached to this email"
 msgstr ""
 
-#: reports/tasks.py:162
+#: reports/tasks.py:163
 msgid "PDF Captable/Active Shareholders"
 msgstr ""
 
-#: reports/tasks.py:186
+#: reports/tasks.py:188
 msgid "shareholder number"
 msgstr ""
 
-#: reports/tasks.py:186
+#: reports/tasks.py:188
 msgid "last name"
 msgstr ""
 
-#: reports/tasks.py:186
+#: reports/tasks.py:188
 msgid "first name"
 msgstr ""
 
-#: reports/tasks.py:187
+#: reports/tasks.py:189
 msgid "email"
 msgstr ""
 
-#: reports/tasks.py:187
+#: reports/tasks.py:189
 msgid "share count"
 msgstr ""
 
-#: reports/tasks.py:187
+#: reports/tasks.py:189
 msgid "votes share percent"
 msgstr ""
 
-#: reports/tasks.py:188
+#: reports/tasks.py:190
 msgid "language ISO"
 msgstr ""
 
-#: reports/tasks.py:188
+#: reports/tasks.py:190
 msgid "language full"
 msgstr ""
 
-#: reports/tasks.py:192
+#: reports/tasks.py:194
 msgid "Share IDs"
 msgstr ""
 
-#: reports/tasks.py:217
+#: reports/tasks.py:222
 msgid "None"
 msgstr ""
 
-#: reports/tasks.py:228
+#: reports/tasks.py:233
 msgid "Your csv captable file"
 msgstr ""
 
-#: reports/tasks.py:230
+#: reports/tasks.py:235
 msgid "CSV Captable/Active Shareholders"
 msgstr ""
 

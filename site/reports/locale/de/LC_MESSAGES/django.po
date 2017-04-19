@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-15 18:06+0000\n"
+"POT-Creation-Date: 2017-04-19 19:16+0000\n"
 "PO-Revision-Date: 2017-04-18 13:17+0000\n"
 "Last-Translator:   <jirka@kkd-partners.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,116 +19,111 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Translated-Using: django-rosetta 0.7.12\n"
 
-#: reports/models.py:20
-#| msgid "Download active Shareholders"
+#: reports/models.py:21
 msgid "Active Shareholders"
 msgstr "Aktive Gesellschafter"
 
-#: reports/models.py:24
+#: reports/models.py:25
 msgid "Last Name"
 msgstr "Nachname"
 
-#: reports/models.py:25
+#: reports/models.py:26
 msgid "Last Name (descending)"
 msgstr "Nachname (absteigend)"
 
-#: reports/models.py:26
+#: reports/models.py:27
 msgid "Share Count"
 msgstr "Anzahl Aktien"
 
-#: reports/models.py:27
+#: reports/models.py:28
 msgid "Share Count (descending)"
 msgstr "Anzahl Aktien (absteigend)"
 
-#: reports/models.py:28
+#: reports/models.py:29
 msgid "Shareholder Number"
 msgstr "Aktionärsnummer"
 
-#: reports/models.py:29
+#: reports/models.py:30
 msgid "Shareholder Number (descending)"
 msgstr "Aktionärsnummer (absteigend)"
 
-#: reports/models.py:30
+#: reports/models.py:31
 msgid "Share Percent Ownership"
 msgstr "Prozent Aktienanteil"
 
-#: reports/models.py:31
+#: reports/models.py:32
 msgid "Share Percent Ownership (descending)"
 msgstr "Prozent Aktienanteil(absteigend)"
 
-#: reports/models.py:53
+#: reports/models.py:54
 msgid "Estimated rendering completion time"
 msgstr "Geschätzte Dauer für die Erstellung des Berichts"
 
-#: reports/models.py:54
+#: reports/models.py:55
 msgid "file creation datetime"
 msgstr "Dauer zur Erstellung der Datei"
 
-#: reports/models.py:57
+#: reports/models.py:58
 msgid "time it took to generate the file in seconds"
 msgstr "Dauer der Dateierstellung in Sekunden"
 
-#: reports/tasks.py:160
+#: reports/tasks.py:161
 msgid "Your pdf captable file"
 msgstr "Ihre Aktionärsübersicht als PDF"
 
-#: reports/tasks.py:161 reports/tasks.py:229
+#: reports/tasks.py:162 reports/tasks.py:234
 msgid "Your file is attached to this email"
 msgstr "Ihre Datei ist diese Email angehängt."
 
-#: reports/tasks.py:162
-#| msgid "Download active Shareholders"
+#: reports/tasks.py:163
 msgid "PDF Captable/Active Shareholders"
 msgstr "Aktive Gesellschafter"
 
-#: reports/tasks.py:186
+#: reports/tasks.py:188
 msgid "shareholder number"
 msgstr "Aktionärsnummer"
 
-#: reports/tasks.py:186
-#| msgid "brand name"
+#: reports/tasks.py:188
 msgid "last name"
 msgstr "Nachname"
 
-#: reports/tasks.py:186
-#| msgid "brand name"
+#: reports/tasks.py:188
 msgid "first name"
 msgstr "Vorname"
 
-#: reports/tasks.py:187
+#: reports/tasks.py:189
 msgid "email"
 msgstr "Email"
 
-#: reports/tasks.py:187
+#: reports/tasks.py:189
 msgid "share count"
 msgstr "Aktienzahl"
 
-#: reports/tasks.py:187
+#: reports/tasks.py:189
 msgid "votes share percent"
 msgstr "Stimmrechte in Prozent"
 
-#: reports/tasks.py:188
+#: reports/tasks.py:190
 msgid "language ISO"
 msgstr "Sprache ISO-Code"
 
-#: reports/tasks.py:188
+#: reports/tasks.py:190
 msgid "language full"
 msgstr "Sprache"
 
-#: reports/tasks.py:192
+#: reports/tasks.py:194
 msgid "Share IDs"
 msgstr "Aktiennummern"
 
-#: reports/tasks.py:217
+#: reports/tasks.py:222
 msgid "None"
 msgstr "Keine"
 
-#: reports/tasks.py:228
+#: reports/tasks.py:233
 msgid "Your csv captable file"
 msgstr "Ihre Aktionärsübersicht"
 
-#: reports/tasks.py:230
-#| msgid "Download active Shareholders"
+#: reports/tasks.py:235
 msgid "CSV Captable/Active Shareholders"
 msgstr "Aktive Gesellschafter"
 
@@ -149,7 +144,6 @@ msgid "This report was just recently created and not yet viewed."
 msgstr "Dieser Report wurde neu erstellt und noch nicht angeschaut."
 
 #: reports/templates/reports/_captable_form.html:15
-#| msgid "Download"
 msgid "Download now"
 msgstr "Jetzt herunterladen"
 
@@ -217,14 +211,13 @@ msgstr "Berichte und Downloads für"
 
 #: reports/templates/reports/index.html:19
 msgid ""
-"Use CSV for Excel like Downloads. Follow this <a "
-"href='https://goo.gl/aQ2gVx'>guide for instructions</a>."
+"Use CSV for Excel like Downloads. Follow this <a href='https://goo.gl/"
+"aQ2gVx'>guide for instructions</a>."
 msgstr ""
 "Verwenden Sie CSV für Downloads für MS Excel. Folgen Sie dieser <a "
 "href='https://goo.gl/aQ2gVx'>Anleitung zum Import/a>."
 
 #: reports/templates/reports/index.html:33
-#| msgid "Download"
 msgid "Other Downloads"
 msgstr "Andere Berichte/Downloads"
 

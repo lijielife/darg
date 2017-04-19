@@ -2751,6 +2751,15 @@ html, body {
 .core .container strong {
   font-weight: bold;
 }
+.core .container .context-help {
+  border: 1px solid #337ab7;
+  border-radius: 50%;
+  width: 15px;
+  padding: 0px 5px;
+  font-size: small;
+  color: #337ab7;
+  font-weight: bold;
+}
 .core .container .el-icon-exclamation-sign {
   display: inline-block;
 }

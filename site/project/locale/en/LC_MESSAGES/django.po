@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-15 18:06+0000\n"
+"POT-Creation-Date: 2017-04-19 19:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -442,7 +442,7 @@ msgstr ""
 msgid "Gratis Aktienbuch-Muster"
 msgstr ""
 
-#: project/templates/index.html:36 project/tests/test_views.py:80
+#: project/templates/index.html:36 project/tests/test_views.py:81
 msgid "My Dashboard"
 msgstr ""
 
@@ -970,17 +970,21 @@ msgstr ""
 msgid "Weblog index"
 msgstr ""
 
-#: project/tests/test_views.py:138 project/views.py:202
+#: project/tests/test_views.py:139 project/views.py:202
 msgid ""
 "You have already an existing user account. Please login or reset your "
 "password."
 msgstr ""
 
-#: project/tests/test_views.py:535 project/views.py:36
+#: project/tests/test_views.py:337
+msgid "None"
+msgstr ""
+
+#: project/tests/test_views.py:444 project/views.py:36
 msgid "shareholder number"
 msgstr ""
 
-#: project/tests/test_views.py:580 project/views.py:93
+#: project/tests/test_views.py:489 project/views.py:93
 msgid "date"
 msgstr ""
 

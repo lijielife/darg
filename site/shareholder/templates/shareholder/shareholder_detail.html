@@ -1,6 +1,7 @@
 {% extends "base_auth.html" %}
 {% load i18n %}
 {% load l10n %}
+{% load context_help %}
 
 {% block title %}
   <TITLE>{% trans "Shareholder" %}: {{ shareholder.get_full_name }} (#{{ shareholder.number }}) - Das Aktienregister</TITLE>
@@ -256,9 +257,11 @@
     {% if shareholder.company.get_total_share_count_floating %}
       <p>{% trans "Share Count Floating" %}: {{shareholder.company.get_total_share_count_floating }}</p>
     {% endif %}
-    <p>{% trans "Total votes count based on shares existing" %}: {{shareholder.company.get_total_votes }}</p>
+    {% trans "total votes count based on existing shares" as msg %}
+    <p>{% trans "Total votes count based on shares existing" %} {% context_help msg %}: {{shareholder.company.get_total_votes }}</p>
     <p>
-	  {% trans "Total votes count based on shares floating" %}: {{shareholder.company.get_total_votes_floating }}
+      {% trans "total votes count effective. excludes unregistered/dispo shares and shares in company ownership" as msg %}
+      {% trans "Total votes count based on shares floating" %}{% context_help msg %}: {{shareholder.company.get_total_votes_floating }}
 	  <div class="note">{% trans "Does include shares used for options. Without options it would be" %}: {{shareholder.company.get_total_votes_eligible }}</div>
 	</p>
     <p>{% trans "Total option count based on shares dedicated to options" %}: {{shareholder.company.get_total_options }}</p>
