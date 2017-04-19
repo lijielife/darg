@@ -45660,10 +45660,12 @@ return deCh;
           return $scope.errors = null;
         }, function(rejection) {
           $scope.errors = rejection.data;
-          return Raven.captureMessage('add corp form error: ' + rejection.statusText, {
+          return Raven.captureMessage('add corp form error', {
             level: 'warning',
             extra: {
-              rejection: rejection
+              rejection: rejection,
+              config: rejection.config,
+              status: rejection.status
             }
           });
         });

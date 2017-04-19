@@ -281,9 +281,9 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
             $scope.errors = null
         , (rejection) ->
             $scope.errors = rejection.data
-            Raven.captureMessage('add corp form error: ' + rejection.statusText, {
+            Raven.captureMessage('add corp form error', {
                 level: 'warning',
-                extra: { rejection: rejection },
+                extra: { rejection: rejection, config: rejection.config, status: rejection.status },
             })
 
     $scope.add_shareholder = ->
