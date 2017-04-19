@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 import datetime
 import os
 
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -44,7 +44,7 @@ class Report(TimeStampedModel):
     each single generated file as a report
     """
     company = models.ForeignKey(Company)
-    user = models.ForeignKey(User, blank=True, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
     file_type = models.CharField(choices=REPORT_FILE_TYPES, max_length=3)
     report_type = models.CharField(choices=REPORT_TYPES, max_length=100)
     # cannot be named ordering due to DRF ordering filter
