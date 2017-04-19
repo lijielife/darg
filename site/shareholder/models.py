@@ -375,11 +375,15 @@ class Company(models.Model):
     def get_total_votes_floating(self, security=None):
         """
         returns total amount of votes owned by regular shareholers. excludes
-        votes owned by company and options
+        votes owned by company and non-registered votes
         """
         company_votes = self.get_company_shareholder().vote_count(
             security=security)
-        return self.get_total_votes(security=security) - company_votes
+        ds = self.get_dispo_shareholder()
+        dispo_votes = ds and self.get_dispo_shareholder().vote_count(
+                security=security) or 0
+        return (self.get_total_votes(security=security) - company_votes -
+                dispo_votes)
 
     def get_total_votes_in_options(self, security=None):
         qs = self.security_set.all()

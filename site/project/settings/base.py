@@ -400,6 +400,9 @@ SWISS_BANKS_DOWNLOAD_URL = ('https://www.six-interbank-clearing.com/dam'
                             '/downloads/bc-bank-master/bcbankenstamm')
 
 
+# app internal settings
+DISPO_SHAREHOLDER_NUMBER = '9999999999'
+
 # need to differentiate instances
 def backup_filename(databasename, servername, datetime, extension,
                     content_type):

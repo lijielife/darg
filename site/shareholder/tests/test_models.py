@@ -120,6 +120,12 @@ class CompanyTestCase(TestCase):
         """
         self.assertEqual(self.company.get_total_votes_floating(), 2*100/2)
 
+        ds = ShareholderGenerator().generate(company=self.company)
+        ds.set_dispo_shareholder()
+        PositionGenerator().generate(
+            seller=self.shareholder1, security=self.security, count=1, buyer=ds)
+        self.assertEqual(self.company.get_total_votes_floating(), 2*100/2)
+
     def test_has_printed_certificates(self):
         ot = OptionTransactionGenerator().generate()
         self.assertFalse(ot.option_plan.company.has_printed_certificates())
@@ -487,6 +493,52 @@ class UserProfileTestCase(TestCase):
         self.assertEqual(profile.province, 'Some Province')
 
 
+class SecurityTestCase(TestCase):
+
+    def test_fields(self):
+        security = SecurityGenerator().generate()
+
+        self.assertTrue(hasattr(security, 'track_numbers'))
+        self.assertTrue(hasattr(security, 'face_value'))
+        self.assertTrue(hasattr(security, 'number_segments'))
+
+        segments = [1, 2, 3, '4-6']
+        security.number_segments = segments
+        security.save()
+
+        # refresh from db
+        s = Security.objects.get(id=security.id)
+        self.assertEqual(s.number_segments, segments)
+
+    def test_count_in_segments(self):
+        """
+        count shares in segments
+        """
+        security = SecurityGenerator().generate()
+
+        segments = '1, 3,4, 99-1000'
+        count = security.count_in_segments(segments)
+        self.assertEqual(count, 905)
+
+        segments = [1, 3, 4, 5, u'99-1000']
+        count = security.count_in_segments(segments)
+        self.assertEqual(count, 906)
+
+    def test_calculate_count(self):
+        """
+        how many shares are existing based on positions
+        """
+        company = CompanyGenerator().generate()
+        security = SecurityGenerator().generate(company=company)
+        # 1 cap increase and one sale position
+        p1 = PositionGenerator().generate(company=company, seller=None,
+                                          security=security, count=10)
+        PositionGenerator().generate(company=company, count=2,
+                                     security=security, seller=p1.buyer)
+
+        self.assertEqual(security.calculate_count(), 10)
+
+
 class ShareholderTestCase(TestCase):
 
     fixtures = ['initial.json']
@@ -536,7 +588,6 @@ class ShareholderTestCase(TestCase):
         self.assertEqual(
             self.shareholder2.cumulated_face_value(security=self.security),
             Decimal('200.0000'))
-
 
     def test_index(self):
 
@@ -972,49 +1023,3 @@ class ShareholderTestCase(TestCase):
         self.assertEqual(self.shareholder2.vote_percent(), 0.25)
         self.assertEqual(shareholder3.vote_percent(), 0.5)
         self.assertEqual(shareholder4.vote_percent(), 0.25)
-
-
-class SecurityTestCase(TestCase):
-
-    def test_fields(self):
-        security = SecurityGenerator().generate()
-
-        self.assertTrue(hasattr(security, 'track_numbers'))
-        self.assertTrue(hasattr(security, 'face_value'))
-        self.assertTrue(hasattr(security, 'number_segments'))
-
-        segments = [1, 2, 3, '4-6']
-        security.number_segments = segments
-        security.save()
-
-        # refresh from db
-        s = Security.objects.get(id=security.id)
-        self.assertEqual(s.number_segments, segments)
-
-    def test_count_in_segments(self):
-        """
-        count shares in segments
-        """
-        security = SecurityGenerator().generate()
-
-        segments = '1, 3,4, 99-1000'
-        count = security.count_in_segments(segments)
-        self.assertEqual(count, 905)
-
-        segments = [1, 3, 4, 5, u'99-1000']
-        count = security.count_in_segments(segments)
-        self.assertEqual(count, 906)
-
-    def test_calculate_count(self):
-        """
-        how many shares are existing based on positions
-        """
-        company = CompanyGenerator().generate()
-        security = SecurityGenerator().generate(company=company)
-        # 1 cap increase and one sale position
-        p1 = PositionGenerator().generate(company=company, seller=None,
-                                          security=security, count=10)
-        PositionGenerator().generate(company=company, count=2,
-                                     security=security, seller=p1.buyer)
-
-        self.assertEqual(security.calculate_count(), 10)
