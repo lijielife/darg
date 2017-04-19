@@ -357,7 +357,10 @@ class Company(models.Model):
         total_shares = self.get_total_share_count(security=security)
         company_shareholder_count = self.get_company_shareholder().share_count(
             security=security)
-        return total_shares - company_shareholder_count
+        ds = self.get_dispo_shareholder()
+        dispo_shares = ds and self.get_dispo_shareholder().share_count(
+                security=security) or 0
+        return total_shares - company_shareholder_count - dispo_shares
 
     def get_total_votes(self, security=None):
         """

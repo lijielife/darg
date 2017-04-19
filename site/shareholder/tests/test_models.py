@@ -106,6 +106,18 @@ class CompanyTestCase(TestCase):
         self.assertEqual(company.get_all_option_plan_segments(),
                          [2222, u'3000-4011', u'1000-2000'])
 
+    def test_get_total_share_count_floating(self):
+        """
+        how many votes are owned by shareholders outside company
+        """
+        self.assertEqual(self.company.get_total_share_count_floating(), 2)
+
+        ds = ShareholderGenerator().generate(company=self.company)
+        ds.set_dispo_shareholder()
+        PositionGenerator().generate(
+            seller=self.shareholder1, security=self.security, count=1, buyer=ds)
+        self.assertEqual(self.company.get_total_share_count_floating(), 2)
+
     def test_get_total_votes(self):
         """
         how many votes does a company have?
