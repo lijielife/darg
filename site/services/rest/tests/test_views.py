@@ -1308,7 +1308,7 @@ class ReportViewSetTestCase(APITestCase):
         self.assertIsNone(report.downloaded_at)
 
 
-class ShareholderTestCase(TestCase):
+class ShareholderViewSetTestCase(TestCase):
     fixtures = ['initial.json']
 
     def setUp(self):
@@ -1804,6 +1804,20 @@ class ShareholderTestCase(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(len(res.data['results']), 1)
         self.assertIn(query, res.data['results'][0]['full_name'])
+
+    def test_get_new_shareholder_number(self):
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        shareholder = ShareholderGenerator().generate(company=operator.company)
+        shareholder.number = u'789'
+        shareholder.save()
+
+        self.client.force_login(user)
+
+        res = self.client.get(
+            reverse('shareholders-get-new-shareholder-number'))
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data, {'number': 790})
 
 
 class SecurityTestCase(APITestCase):

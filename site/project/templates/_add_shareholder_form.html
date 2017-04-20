@@ -8,7 +8,12 @@
       <input type="text" class="form-control" ng-model="newShareholder.user.first_name" translate translate-attr-placeholder="First Name"/>
       <input type="text" class="form-control" ng-model="newShareholder.user.last_name" translate translate-attr-placeholder="Last Name"/>
       <input type="email" class="form-control" ng-model="newShareholder.user.email" translate translate-attr-placeholder="Email"/>
-      <input type="text" class="form-control" ng-model="newShareholder.number" translate translate-attr-placeholder="Shareholder Number"/>
+	  <div>
+        <input type="text" class="form-control" ng-model="newShareholder.number" translate translate-attr-placeholder="Shareholder Number"/>
+        <span class="get-shareholder-number label label-default form-field-generate-btn" ng-click="get_new_shareholder_number()" ng-show="!newShareholder.number">
+          {% endverbatim %}{% trans "generate" %}{% verbatim %}
+        </span>
+	  </div>
       <input type="hidden" class="form-control" ng-model="newShareholder.company.id" value="{{user.company[0].id}}"/>
     </div>
     <div class="form-group custom-form-group">

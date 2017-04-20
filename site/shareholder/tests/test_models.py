@@ -68,6 +68,20 @@ class CompanyTestCase(TestCase):
         self.position2.save()
         self.assertEqual(self.company.get_new_certificate_id(), 100)
 
+    def test_get_new_shareholder_number(self):
+        """ get new unused shareholder number """
+        self.shareholder1.number = u'A23.B'
+        self.shareholder1.save()
+        self.shareholder2.number = u'98..'
+        self.shareholder2.save()
+        self.shareholder3 = ShareholderGenerator().generate(
+            company=self.company)
+        self.shareholder3.number = u'100'
+        self.shareholder3.save()
+        self.shareholder3.set_dispo_shareholder()
+
+        self.assertEqual(self.company.get_new_shareholder_number(), 99)
+
     def test_text_repr(self):
 
         optiontransaction, shs = \

@@ -45453,9 +45453,11 @@ return deCh;
         return $http.get('/services/rest/user').then(function(result) {
           $scope.loading = true;
           $scope.user = result.data.results[0];
-          return $http.get($scope.user.selected_company).then(function(result1) {
-            return $scope.company = result1.data;
-          });
+          if ($scope.user.selected_company) {
+            return $http.get($scope.user.selected_company).then(function(result1) {
+              return $scope.company = result1.data;
+            });
+          }
         })["finally"](function() {
           return $scope.loading = false;
         });
@@ -45688,6 +45690,19 @@ return deCh;
         }, function(rejection) {
           $scope.errors = rejection.data;
           return Raven.captureMessage('add shareholder form error: ' + rejection.statusText, {
+            level: 'warning',
+            extra: {
+              rejection: rejection
+            }
+          });
+        });
+      };
+      $scope.get_new_shareholder_number = function() {
+        return $http.get('/services/rest/shareholders/get_new_shareholder_number').then(function(response) {
+          return $scope.newShareholder.number = response.data.number;
+        }, function(rejection) {
+          $scope.errors = rejection.data;
+          return Raven.captureMessage('retrieve new shareholder number error: ' + rejection.statusText, {
             level: 'warning',
             extra: {
               rejection: rejection

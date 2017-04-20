@@ -298,6 +298,24 @@ class Company(models.Model):
         else:
             return 1
 
+    def get_new_shareholder_number(self):
+        """
+        returns new usable shareholder number
+        """
+        qs = self.shareholder_set.all()
+        dispo_sh = self.get_dispo_shareholder()
+        if dispo_sh:
+            qs = qs.exclude(pk=dispo_sh.pk)
+
+        numbers = qs.values_list('number', flat=True)
+        if numbers:
+            numbers = [''.join(re.findall(r'\d+', n)) for n in numbers]
+            max_number = natsorted(numbers, reverse=True)[0]
+            new_number = int(max_number) + 1
+            return new_number
+        else:
+            return 1
+
     def get_operators(self):
         return self.operator_set.all().distinct()
 

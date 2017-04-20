@@ -99,7 +99,7 @@ class ShareholderViewSet(viewsets.ModelViewSet):
                 })
         return Response(data, status=status.HTTP_200_OK)
 
-    @list_route(methods=['get'])
+    @list_route(methods=['get'], permission_classes=[UserIsOperatorPermission])
     def company_number_segments(self, request):
         company = get_company_from_request(request)
         shareholder = company.get_company_shareholder()
@@ -117,8 +117,8 @@ class ShareholderViewSet(viewsets.ModelViewSet):
                 })
         return Response(data, status=status.HTTP_200_OK)
 
-    @list_route(methods=['get'])
-    def option_holder(self, request, pk=None):
+    @list_route(methods=['get'], permission_classes=[UserIsOperatorPermission])
+    def option_holder(self, request):
         """
         returns the captable part for all option holders
         """
@@ -126,7 +126,7 @@ class ShareholderViewSet(viewsets.ModelViewSet):
         if not self.request.session.get('company_pk'):
             return Response(Shareholder.objects.none())
 
-        company = Company.objects.get(pk=self.request.session.get('company_pk'))
+        company = get_company_from_request(request)
 
         ohs = company.get_active_option_holders()
         ohs = self.filter_queryset(ohs)
@@ -138,6 +138,16 @@ class ShareholderViewSet(viewsets.ModelViewSet):
         serializer = OptionHolderSerializer(
             ohs, many=True, context={'request': request})
         return Response(serializer.data)
+
+    @list_route(methods=['get'], permission_classes=[UserIsOperatorPermission])
+    def get_new_shareholder_number(self, request):
+        """
+        returns unused new unused shareholder number
+        """
+        company = get_company_from_request(request)
+        number = company.get_new_shareholder_number()
+        payload = {'number': number}
+        return Response(payload, status=status.HTTP_200_OK)
 
 
 class OperatorViewSet(viewsets.ModelViewSet):
