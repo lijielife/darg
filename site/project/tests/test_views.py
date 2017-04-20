@@ -197,13 +197,12 @@ class TrackingTestCase(TestCase):
 
         is_loggedin = self.client.login(
             username=user.username, password='invalid_pw')
-
         self.assertFalse(is_loggedin)
 
         response = self.client.get(reverse('start'), follow=True)
-
         self.assertEqual(response.status_code, 200)
-        self.assertTrue('Login' in response.content)  # redirect to login
+        # redirect to login
+        self.assertIn(_('Register'), response.content.decode('utf-8'))
 
 
 class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):

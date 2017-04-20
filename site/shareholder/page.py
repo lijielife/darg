@@ -76,7 +76,7 @@ class ShareholderDetailPage(BaseDetailPage):
         return date from inside this element
         """
         bday = self.driver.find_element_by_xpath(
-            '//div[contains(@class, "birthday")]//div//span')
+            '//div[contains(@class, "birthday")]//div//span[contains(@class, "editable")]')
         return bday.text
 
     def get_securities(self):
