@@ -15,7 +15,8 @@
     {% trans "Use Transactions to record each shareholders state of shares. For initial foundation transfer shares from company to..."%}
   </p>
   
-  <div class="panel panel-column" ng-hide="show_add_position || show_add_capital || show_split">
+  <!-- OPEN FORM BTNS -->
+  <div class="panel panel-column">
     <a class="btn btn-focus add-position" data-toggle="modal" data-target="#addPosition" href="" ng-click="show_add_position_form()">{% trans "Transfer Shares" %}</a>
     <a class="btn btn-focus add-capital" href="" data-toggle="modal" data-target="#capitalForm" ng-click="show_add_capital_form()">{% trans "Increase Capital" %}</a>
     <a class="btn btn-focus split-shares" href="" data-toggle="modal" data-target="#splitShares" ng-click="show_split_form()">{% trans "Split Shares" %}</a>

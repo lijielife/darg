@@ -11,10 +11,10 @@
 {% block content %}
 <div ng_controller="StartController">
 
-  <!-- FORM ERRORS -->
-  {% include "_form_errors.html" %}
 
   <div id="add_company" class="add-company-container" ng-show="user.selected_company==null && !loading">
+    <!-- FORM ERRORS for add company only-->
+    {% include "_form_errors.html" %}
     {% include "_add_company_form.html" %}
   </div>
 
@@ -38,7 +38,7 @@
     </h1>
 
     <!-- ACTIONS -->
-    <div class="panel" ng-hide="show_add_shareholder">
+    <div class="panel">
       <a class="btn btn-focus" data-toggle="modal" data-target="#addShareholder" href="" ng-click="show_add_shareholder_form()">
         {% endverbatim %}{% trans "Add Shareholder" %}{% verbatim %}
       </a>
