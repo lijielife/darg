@@ -644,6 +644,20 @@ class UserProfile(models.Model):
             raise ValidationError(_('user company must have legal type set to '
                                     'company'))
 
+    def get_address(self):
+        """ return string with full address """
+        fields = ['street', 'street2', 'pobox', 'postal_code', 'city']
+        fields = [field for field in fields if getattr(self, field, None)]
+        parts = [getattr(self, field) for field in fields]
+        address = u", ".join(parts)
+        if self.c_o:
+            address += u"c/o: {}".format(self.c_o)
+        if self.pobox:
+            address += u"POBOX: {}".format(self.pobox)
+        if self.country:
+            address += u", {}".format(self.country.name)
+        return address
+
 
 class Shareholder(TagMixin, models.Model):
 
@@ -695,6 +709,90 @@ class Shareholder(TagMixin, models.Model):
 
         return cface_value
 
+    def current_segments(self, security, date=None):
+        """
+        returns deflated segments which are owned by this shareholder.
+        includes segments blocked for options.
+        """
+        logger.info('current items: starting')
+        date = date or datetime.datetime.now()
+
+        # all pos before date
+        qs_bought = self.buyer.filter(bought_at__lte=date)
+        qs_sold = self.seller.filter(bought_at__lte=date)
+
+        qs_bought = qs_bought.filter(security=security)
+        qs_sold = qs_sold.filter(security=security)
+
+        logger.info('current items: qs done')
+        # -- flat list of bought items
+        segments_bought = qs_bought.values_list(
+            'number_segments', flat=True)
+        # flatten, unsorted with duplicates
+        segments_bought = [
+            segment for sublist in segments_bought for segment in sublist]
+
+        # flat list of sold segments
+        segments_sold = qs_sold.values_list(
+            'number_segments', flat=True)
+        segments_sold = [
+            segment for sublist in segments_sold for segment in sublist]
+        logger.info('current items: flat lists done. inflating...')
+
+        segments_owning = []
+
+        # inflate to have int only
+        segments_bought = inflate_segments(segments_bought)
+        segments_sold = inflate_segments(segments_sold)
+        logger.info('current items: iterating through bought segments...')
+
+        segments_owning = substract_list(segments_bought, segments_sold)
+        logger.info('current items: finished')
+        return deflate_segments(segments_owning)
+
+    def current_options_segments(self, security, optionplan=None, date=None):
+        """
+        returns deflated segments which are owned by this shareholder.
+        includes segments blocked for options.
+        """
+        date = date or datetime.datetime.now().date()
+
+        if optionplan:
+            qs_bought = self.option_buyer.filter(option_plan=optionplan)
+            qs_sold = self.option_seller.filter(option_plan=optionplan)
+
+        # all pos before date
+        qs_bought = self.option_buyer.filter(bought_at__lte=date)
+        qs_sold = self.option_seller.filter(bought_at__lte=date)
+
+        qs_bought = qs_bought.filter(option_plan__security=security)
+        qs_sold = qs_sold.filter(option_plan__security=security)
+
+        # -- flat list of bought items
+        segments_bought = qs_bought.values_list(
+            'number_segments', flat=True)
+        # flatten, unsorted with duplicates
+        segments_bought = [
+            segment for sublist in segments_bought for segment in sublist]
+
+        # flat list of sold segments
+        segments_sold = qs_sold.values_list(
+            'number_segments', flat=True)
+        segments_sold = [
+            segment for sublist in segments_sold for segment in sublist]
+
+        segments_owning = []
+
+        # inflate to have int only
+        segments_bought = inflate_segments(segments_bought)
+        segments_sold = inflate_segments(segments_sold)
+
+        counter_bought = Counter(segments_bought)
+        counter_sold = Counter(segments_sold)
+        # set as items can occur only once
+        segments_owning = set(counter_bought - counter_sold)
+        return deflate_segments(segments_owning)
+
     def get_full_name(self):
         # return first, last, company name
         name = u""
@@ -724,6 +822,28 @@ class Shareholder(TagMixin, models.Model):
             )
         return text
 
+    def get_certificate_ids(self, security):
+        """ return id and issue date of all certificates which are valid """
+        positions = self.buyer.filter(
+            certificate_id__isnull=False,
+            certificate_invalidation_position__isnull=True,
+        ).values_list('certificate_id', 'bought_at')
+        return list(set([(u"{} ({})".format(p[0], p[1])) for p in positions]))
+
+    def get_depot_types(self, security):
+        """ return list of depot types used by shareholder for security. used
+        in csv export """
+        positions = self.buyer.filter(security=security)
+        return list(set([p.get_depot_type_display() for p
+                         in positions if p.depot_type]))
+
+    def get_stock_book_ids(self, security):
+        """ return list of depot types used by shareholder for security. used
+        in csv export """
+        positions = self.buyer.filter(security=security)
+        return list(set([p.stock_book_id for p in positions
+                         if p.stock_book_id]))
+
     def has_vested_shares(self):
         """ does the shareholder hold or did hold in the past any vested
         shares """
@@ -741,144 +861,6 @@ class Shareholder(TagMixin, models.Model):
         """
         return self.company.get_dispo_shareholder() == self
 
-    def set_dispo_shareholder(self):
-        """ mark this shareholder as disposhareholder """
-        if (
-                self.company.get_dispo_shareholder() and
-                self.company.get_dispo_shareholder() != self
-        ):
-            raise ValueError('disposhareholder already set')
-
-        self.set_tag(DISPO_SHAREHOLDER_TAG)
-
-    def share_percent(self, date=None):
-        """
-        returns percentage of shares in the understanding of voting rights.
-        hence related to free floating capital.
-        """
-        total = self.company.share_count
-        cs = self.company.get_company_shareholder()
-
-        # we use % as voting rights, hence company does not have it
-        if self == cs:
-            return False
-
-        # this shareholder total count
-        count = sum(self.buyer.all().values_list('count', flat=True)) - \
-            sum(self.seller.all().values_list('count', flat=True))
-
-        # id we have company.share_count set
-        # don't count as total what company currently owns = free floating cap
-        if total:
-
-            # we have no other shareholders
-            if total == cs.share_count(date):
-                return "{:.2f}".format(float(0))
-
-            # do the math
-            return "{:.2f}".format(
-                count / float(total-cs.share_count(date)) * 100)
-
-        return False
-
-    def share_count(self, date=None, security=None, only_sellable=False,
-                    expired_vesting=False, without_vesting=False):
-        """ total count of shares for shareholder. `date` is the date on which
-        the shares should be counted for `security` or all securities.
-        `only_sellable` excludes shares within the certificate depot.
-        `expired_vesting` gets the count for all shares with vesting_months
-        but where the vesting period is over. `without_vesting` gets
-        share count for all pkgds which don't have a vesting at all
-        """
-
-        qs_bought = self.buyer.all()
-        qs_sold = self.seller.all()
-
-        if without_vesting:
-            # vesting applied to this shareholder is only applied in buyer
-            # data, seller data is new vesting data for the buyer
-            qs_bought = self.buyer.filter(vesting_months__isnull=True)
-
-        if only_sellable:
-            # if there are certificates without invalidation (means still
-            # stored at certificate depot, on `only_sellable` request
-            # these cannot be counted as possessed shares
-            # scenario 1: exclude if it has a cert id and was not invalidated
-            # scenario 2: include if it has a cert id and was invalidated
-            # -> hide these positions which are neither invalidated
-            # nor being the invalidation position to another one
-            query = Q(certificate_id__isnull=False,
-                      certificate_invalidation_position__isnull=True,
-                      certificate_initial_position__isnull=True)
-            qs_bought = qs_bought.exclude(query)
-
-        if date:
-            qs_bought = qs_bought.filter(bought_at__lte=date)
-            qs_sold = qs_sold.filter(bought_at__lte=date)
-
-        if security:
-            qs_bought = qs_bought.filter(security=security)
-            qs_sold = qs_sold.filter(security=security)
-
-        if expired_vesting:
-            # for each buyer position with vesting_months applied, we need to
-            # check if the vesting was expired. placed at the end of method
-            # because it's a very expensive method and we might have excluded
-            # all options till now already
-            pks = []
-            now = timezone.now()
-            for pos in qs_bought:
-                if pos.vesting_months:
-                    expires_at = pos.bought_at + relativedelta(
-                        months=pos.vesting_months)
-                    if expires_at <= now.date():
-                        pks.append(pos.pk)
-                else:
-                    pks.append(pos.pk)
-            qs_bought = self.buyer.filter(pk__in=pks)
-
-        count_bought = sum(qs_bought.values_list('count', flat=True))
-        count_sold = sum(qs_sold.values_list('count', flat=True))
-
-        # clean company shareholder count by options count
-        if self.is_company_shareholder():
-            options_created = self.company.get_total_options(security=security)
-        else:
-            options_created = 0
-
-        return count_bought - count_sold - options_created
-
-    def share_count_sellable(self, date=None, security=None):
-        """
-        returns number of shares for this security on this date which
-        are truely sellable. e.g. shares owned but enlisted in
-        certificate depot are not sellable
-
-        also excludes vested shares
-        """
-        # we can skip this expensive code if vestig does not apply:
-        if not self.has_vested_shares():
-            return self.share_count(date, security, only_sellable=True)
-
-        return self.share_count(date, security, only_sellable=True,
-                                expired_vesting=True)
-
-    def share_value(self, date=None):
-        """ calculate the total values of all shares for this shareholder """
-        share_count = self.share_count(date=date)
-        if share_count == 0:
-            return 0
-
-        # last payed price
-        position = Position.objects.filter(
-            buyer__company=self.company,
-            value__gt=0
-        ).order_by('-bought_at', '-id').first()
-        if position:
-            return share_count * position.value
-        else:
-            return 0
-
     def last_traded_share_price(self, date=None, security=None):
         qs = Position.objects.filter(buyer__company=self.company)
         if date:
@@ -890,60 +872,6 @@ class Shareholder(TagMixin, models.Model):
                 'No Transactions available to calculate recent share price')
 
         return qs.latest('bought_at').value
-
-    def validate_gafi(self):
-        """ returns dict with indication if all data is correct to match
-        swiss fatf gafi regulations """
-        result = {"is_valid": True, "errors": []}
-
-        # applies only for swiss corps
-        if (
-            not self.company.country or
-            self.company.country.iso_code.lower() != 'ch'
-        ):
-            return result
-
-        # missing profile leads to global warning
-        if not hasattr(self.user, 'userprofile'):
-            result['is_valid'] = False
-            result['errors'].append(_("Missing all data required for #GAFI."))
-            return result
-
-        # humans need names
-        legal_type_string = self.user.userprofile.legal_type
-        user = self.user
-
-        if (legal_type_string == 'H' and not user.first_name or not
-                user.last_name):
-            result['is_valid'] = False
-            result['errors'].append(_(
-                'Shareholder first name or last name missing.'))
-
-        company_name = self.user.userprofile.company_name
-
-        if (legal_type_string == 'C' and not company_name):
-            result['is_valid'] = False
-            result['errors'].append(_(
-                'Company name or last name missing.'))
-
-        if not self.user.userprofile.birthday:
-            result['is_valid'] = False
-            result['errors'].append(_('Shareholder birthday missing.'))
-
-        if not self.user.userprofile.country:
-            result['is_valid'] = False
-            result['errors'].append(_('Shareholder origin/country missing.'))
-
-        if (
-            not self.user.userprofile.city or
-            not self.user.userprofile.postal_code or
-            not self.user.userprofile.street
-        ):
-            result['is_valid'] = False
-            result['errors'].append(_(
-                'Shareholder address or address details missing.'))
-
-        return result
 
     def options_percent(self, date=None):
         """ returns percentage of shares owned compared to corps
@@ -1047,89 +975,197 @@ class Shareholder(TagMixin, models.Model):
                 deflate_segments(failed_segments),
                 deflate_segments(segments_owning))
 
-    def current_segments(self, security, date=None):
+    def set_dispo_shareholder(self):
+        """ mark this shareholder as disposhareholder """
+        if (
+                self.company.get_dispo_shareholder() and
+                self.company.get_dispo_shareholder() != self
+        ):
+            raise ValueError('disposhareholder already set')
+
+        self.set_tag(DISPO_SHAREHOLDER_TAG)
+
+    def share_percent(self, date=None, security=None):
         """
-        returns deflated segments which are owned by this shareholder.
-        includes segments blocked for options.
+        returns percentage of shares in the understanding of shares related
+        to the total amount of shares existing. not voting rights.
+        hence related to free floating capital.
         """
-        logger.info('current items: starting')
-        date = date or datetime.datetime.now()
+        total = self.company.share_count
+        cs = self.company.get_company_shareholder()
 
-        # all pos before date
-        qs_bought = self.buyer.filter(bought_at__lte=date)
-        qs_sold = self.seller.filter(bought_at__lte=date)
+        # we use % as voting rights, hence company does not have it
+        if self == cs:
+            return False
 
-        qs_bought = qs_bought.filter(security=security)
-        qs_sold = qs_sold.filter(security=security)
+        # this shareholder total count
+        count = self.share_count(date=date, security=security)
 
-        logger.info('current items: qs done')
-        # -- flat list of bought items
-        segments_bought = qs_bought.values_list(
-            'number_segments', flat=True)
-        # flatten, unsorted with duplicates
-        segments_bought = [
-            segment for sublist in segments_bought for segment in sublist]
+        # if we have company.share_count set
+        # don't count as total what company currently owns = free floating cap
+        if total:
+            cs_count = cs.share_count(date=date, security=security)
+            # we have no other shareholders
+            if total == cs_count:
+                return "{:.2f}".format(float(0))
 
-        # flat list of sold segments
-        segments_sold = qs_sold.values_list(
-            'number_segments', flat=True)
-        segments_sold = [
-            segment for sublist in segments_sold for segment in sublist]
-        logger.info('current items: flat lists done. inflating...')
+            # do the math
+            return "{:.2f}".format(
+                count / float(total-cs_count) * 100)
 
-        segments_owning = []
+        return False
 
-        # inflate to have int only
-        segments_bought = inflate_segments(segments_bought)
-        segments_sold = inflate_segments(segments_sold)
-        logger.info('current items: iterating through bought segments...')
-
-        segments_owning = substract_list(segments_bought, segments_sold)
-        logger.info('current items: finished')
-        return deflate_segments(segments_owning)
-
-    def current_options_segments(self, security, optionplan=None, date=None):
+    def share_count(self, date=None, security=None, only_sellable=False,
+                    expired_vesting=False, without_vesting=False):
+        """ total count of shares for shareholder. `date` is the date on which
+        the shares should be counted for `security` or all securities.
+        `only_sellable` excludes shares within the certificate depot.
+        `expired_vesting` gets the count for all shares with vesting_months
+        but where the vesting period is over. `without_vesting` gets
+        share count for all pkgds which don't have a vesting at all
         """
-        returns deflated segments which are owned by this shareholder.
-        includes segments blocked for options.
+
+        qs_bought = self.buyer.all()
+        qs_sold = self.seller.all()
+
+        if without_vesting:
+            # vesting applied to this shareholder is only applied in buyer
+            # data, seller data is new vesting data for the buyer
+            qs_bought = self.buyer.filter(vesting_months__isnull=True)
+
+        if only_sellable:
+            # if there are certificates without invalidation (means still
+            # stored at certificate depot, on `only_sellable` request
+            # these cannot be counted as possessed shares
+            # scenario 1: exclude if it has a cert id and was not invalidated
+            # scenario 2: include if it has a cert id and was invalidated
+            # -> hide these positions which are neither invalidated
+            # nor being the invalidation position to another one
+            query = Q(certificate_id__isnull=False,
+                      certificate_invalidation_position__isnull=True,
+                      certificate_initial_position__isnull=True)
+            qs_bought = qs_bought.exclude(query)
+
+        if date:
+            qs_bought = qs_bought.filter(bought_at__lte=date)
+            qs_sold = qs_sold.filter(bought_at__lte=date)
+
+        if security:
+            qs_bought = qs_bought.filter(security=security)
+            qs_sold = qs_sold.filter(security=security)
+
+        if expired_vesting:
+            # for each buyer position with vesting_months applied, we need to
+            # check if the vesting was expired. placed at the end of method
+            # because it's a very expensive method and we might have excluded
+            # all options till now already
+            pks = []
+            now = timezone.now()
+            for pos in qs_bought:
+                if pos.vesting_months:
+                    expires_at = pos.bought_at + relativedelta(
+                        months=pos.vesting_months)
+                    if expires_at <= now.date():
+                        pks.append(pos.pk)
+                else:
+                    pks.append(pos.pk)
+            qs_bought = self.buyer.filter(pk__in=pks)
+
+        count_bought = sum(qs_bought.values_list('count', flat=True))
+        count_sold = sum(qs_sold.values_list('count', flat=True))
+
+        # clean company shareholder count by options count
+        if self.is_company_shareholder():
+            options_created = self.company.get_total_options(security=security)
+        else:
+            options_created = 0
+
+        return count_bought - count_sold - options_created
+
+    def share_count_sellable(self, date=None, security=None):
         """
-        date = date or datetime.datetime.now().date()
+        returns number of shares for this security on this date which
+        are truely sellable. e.g. shares owned but enlisted in
+        certificate depot are not sellable
 
-        if optionplan:
-            qs_bought = self.option_buyer.filter(option_plan=optionplan)
-            qs_sold = self.option_seller.filter(option_plan=optionplan)
+        also excludes vested shares
+        """
+        # we can skip this expensive code if vestig does not apply:
+        if not self.has_vested_shares():
+            return self.share_count(date, security, only_sellable=True)
 
-        # all pos before date
-        qs_bought = self.option_buyer.filter(bought_at__lte=date)
-        qs_sold = self.option_seller.filter(bought_at__lte=date)
+        return self.share_count(date, security, only_sellable=True,
+                                expired_vesting=True)
 
-        qs_bought = qs_bought.filter(option_plan__security=security)
-        qs_sold = qs_sold.filter(option_plan__security=security)
+    def share_value(self, date=None):
+        """ calculate the total values of all shares for this shareholder """
+        share_count = self.share_count(date=date)
+        if share_count == 0:
+            return 0
 
-        # -- flat list of bought items
-        segments_bought = qs_bought.values_list(
-            'number_segments', flat=True)
-        # flatten, unsorted with duplicates
-        segments_bought = [
-            segment for sublist in segments_bought for segment in sublist]
+        # last payed price
+        position = Position.objects.filter(
+            buyer__company=self.company,
+            value__gt=0
+        ).order_by('-bought_at', '-id').first()
+        if position:
+            return share_count * position.value
+        else:
+            return 0
 
-        # flat list of sold segments
-        segments_sold = qs_sold.values_list(
-            'number_segments', flat=True)
-        segments_sold = [
-            segment for sublist in segments_sold for segment in sublist]
+    def validate_gafi(self):
+        """ returns dict with indication if all data is correct to match
+        swiss fatf gafi regulations """
+        result = {"is_valid": True, "errors": []}
 
-        segments_owning = []
+        # applies only for swiss corps
+        if (
+            not self.company.country or
+            self.company.country.iso_code.lower() != 'ch'
+        ):
+            return result
 
-        # inflate to have int only
-        segments_bought = inflate_segments(segments_bought)
-        segments_sold = inflate_segments(segments_sold)
+        # missing profile leads to global warning
+        if not hasattr(self.user, 'userprofile'):
+            result['is_valid'] = False
+            result['errors'].append(_("Missing all data required for #GAFI."))
+            return result
 
-        counter_bought = Counter(segments_bought)
-        counter_sold = Counter(segments_sold)
-        # set as items can occur only once
-        segments_owning = set(counter_bought - counter_sold)
-        return deflate_segments(segments_owning)
+        # humans need names
+        legal_type_string = self.user.userprofile.legal_type
+        user = self.user
+
+        if (legal_type_string == 'H' and not user.first_name or not
+                user.last_name):
+            result['is_valid'] = False
+            result['errors'].append(_(
+                'Shareholder first name or last name missing.'))
+
+        company_name = self.user.userprofile.company_name
+
+        if (legal_type_string == 'C' and not company_name):
+            result['is_valid'] = False
+            result['errors'].append(_(
+                'Company name or last name missing.'))
+
+        if not self.user.userprofile.birthday:
+            result['is_valid'] = False
+            result['errors'].append(_('Shareholder birthday missing.'))
+
+        if not self.user.userprofile.country:
+            result['is_valid'] = False
+            result['errors'].append(_('Shareholder origin/country missing.'))
+
+        if (
+            not self.user.userprofile.city or
+            not self.user.userprofile.postal_code or
+            not self.user.userprofile.street
+        ):
+            result['is_valid'] = False
+            result['errors'].append(_(
+                'Shareholder address or address details missing.'))
+
+        return result
 
     def vote_count(self, date=None, security=None):
         """
@@ -1145,7 +1181,7 @@ class Shareholder(TagMixin, models.Model):
 
         return int(votes)
 
-    def vote_percent(self, date=None):
+    def vote_percent(self, date=None, security=None):
         """
         returns percentage of the users voting rights compared to total voting
         rights existing
@@ -1162,7 +1198,7 @@ class Shareholder(TagMixin, models.Model):
             return None
 
         # how much percent of these eligible votes does the shareholder have?
-        return (self.vote_count(date) /
+        return (self.vote_count(date=date, security=security) /
                 float(total_votes_eligible))
 
 

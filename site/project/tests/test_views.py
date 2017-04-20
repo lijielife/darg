@@ -1,7 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
+import csv
 import datetime
+import StringIO
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -261,17 +262,18 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
 
         # assert proper csv
         content = get_file_content_as_string(response)
-        lines = content.split('\r\n')
-        lines.pop()  # remove last element based on final '\r\n'
+        fileobj = StringIO.StringIO(content)
+        reader = csv.reader(fileobj, delimiter=',')
+        lines = list(reader)
         for row in lines:
-            self.assertEqual(row.count(','), 7)
-        self.assertEqual(len(lines), 3)  # ensure we have the right data
+            self.assertEqual(len(row), 28)
+        self.assertEqual(len(lines), 6)  # ensure we have the right data
         # assert company itself
         self.assertIn(shareholder_list[0].number,
-                      [f.split(',')[0] for f in lines])
+                      [f[0] for f in lines])
         # assert share owner
         self.assertIn(shareholder_list[1].number,
-                      [f.split(',')[0] for f in lines])
+                      [f[0] for f in lines])
         # assert shareholder witout position not in there
         for line in lines:
             self.assertNotEqual(line[0], shareholder_list[3].number)
@@ -327,13 +329,13 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
         for row in lines:
             if row == lines[0]:  # skip first row
                 continue
-            self.assertEqual(row.count(','), 8)
+            self.assertEqual(row.count(','), 31)
             fields = row.split(',')
             s = Shareholder.objects.get(company=company, number=fields[0])
             text = s.current_segments(security)
             if text:
                 self.assertTrue(text in fields[8])
-            self.assertIn(_('None'), fields[8])
+            self.assertIn(_('None'), fields[31])
 
     def test_pdf_download_with_number_segments(self):
         """ test download of captable pdf """

@@ -45,6 +45,61 @@ def _get_captable_pdf_context(company, ordering):
     return context
 
 
+def _collect_csv_data(shareholder, security):
+    # hide "None" strings
+    def to_string_or_empty(value):
+        if value and isinstance(value, list):
+            # remove NoneTypes
+            value = [v for v in value if v]
+            value = u" , ".join(value)
+        return unicode(value or u'')
+
+    row = [
+        shareholder.number,
+        shareholder.user.userprofile.get_legal_type_display(),
+        list(set([s.get_registration_type_display() for s
+                  in shareholder.buyer.all()])),
+        shareholder.user.userprofile.company_department,
+        shareholder.user.userprofile.title,
+        shareholder.user.userprofile.salutation,
+        shareholder.user.last_name,
+        shareholder.user.first_name,
+        shareholder.user.userprofile.get_address(),
+        shareholder.user.userprofile.postal_code,
+        shareholder.user.userprofile.city,
+        shareholder.user.userprofile.birthday,
+        shareholder.get_mailing_type_display(),
+        shareholder.user.userprofile.nationality,
+        security,
+        security.cusip,
+        security.face_value,
+        shareholder.get_certificate_ids(security=security),
+        shareholder.get_stock_book_ids(security=security),
+        shareholder.get_depot_types(security=security),
+        shareholder.user.email,
+        shareholder.share_count(security=security),
+        shareholder.share_percent(security=security),
+        shareholder.vote_percent(security=security),
+        shareholder.cumulated_face_value(security=security),
+        shareholder.is_management,
+        shareholder.user.userprofile.language,
+        shareholder.user.userprofile.get_language_display(),
+    ]
+    # remove any kind of empty data and replace by empty string. make all utf8
+    row = [to_string_or_empty(val) for val in row]
+
+    # handle track numbers
+    if security.track_numbers:
+        segments = human_readable_segments(
+            shareholder.current_segments(security)) or _('None')
+        text = "{}: {} ".format(
+            security.get_title_display(),
+            segments
+        )
+        row.append(text)
+    return row
+
+
 def _parse_ordering(ordering):
     """
     parse ordering from js:
@@ -185,8 +240,15 @@ def render_captable_csv(company_id, report_id, user_id=None, ordering=None,
     # removed share percent due to heavy sql impact. killed perf for higher
     # shareholder count
     header = [
-        _(u'shareholder number'), _(u'last name'), _(u'first name'),
-        _(u'email'), _(u'share count'),  _(u'votes share percent'),
+        _(u'shareholder number'), _('legal type'), _('registration types'),
+        _('company_department'), _('title'), _('salutation'), _(u'last name'),
+        _(u'first name'), _('address'), _('postal_code'), _('city'),
+        _('birthday'), _('mailing_type'), _('nationality'), _('security type'),
+        _('cusip'), _('face_value'), _('certificate_ids (issue date)'),
+        _('stock book id'), _('depot_type'),
+        _(u'email'), _(u'share count'),  _(u'share percent'),
+        _('votes percent'),
+        _('cumulated face value'), _('is management'),
         _(u'language ISO'), _('language full')]
 
     has_track_numbers = track_numbers_secs.exists()
@@ -203,26 +265,13 @@ def render_captable_csv(company_id, report_id, user_id=None, ordering=None,
     queryset = company.get_active_shareholders()
     queryset = _order_queryset(queryset, ordering)
     for shareholder in queryset:
-        row = [
-            shareholder.number,
-            shareholder.user.last_name,
-            shareholder.user.first_name,
-            shareholder.user.email,
-            shareholder.share_count(),
-            shareholder.share_percent() or '--',
-            shareholder.user.userprofile.language,
-            shareholder.user.userprofile.get_language_display(),
-        ]
-        if has_track_numbers:
-            text = ""
-            for sec in track_numbers_secs:
-                text += "{}: {} ".format(
-                    sec.get_title_display(),
-                    human_readable_segments(shareholder.current_segments(sec) or
-                                            [_('None')])
-                )
-            row.append(text)
-        writer.writerow([unicode(s).encode("utf-8") for s in row])
+        for security in company.security_set.all():
+            if shareholder.share_count(security=security):
+                row = _collect_csv_data(shareholder, security)
+            else:
+                continue
+
+            writer.writerow([unicode(s).encode("utf-8") for s in row])
 
     # post process
     csvfile.seek(0)
