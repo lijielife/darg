@@ -4,6 +4,7 @@ import datetime
 import logging
 import math
 from decimal import Decimal
+from dateutil.relativedelta import relativedelta
 
 from django.core import mail
 from django.core.urlresolvers import reverse
@@ -11,6 +12,7 @@ from django.db.models import Q
 from django.test import TestCase, TransactionTestCase
 from django.test.client import Client, RequestFactory
 from django.utils.encoding import force_text
+from django.utils import timezone
 
 from project.generators import (DEFAULT_TEST_DATA, BankGenerator,
                                 CompanyGenerator, CompanyShareholderGenerator,
@@ -617,6 +619,18 @@ class ShareholderTestCase(TestCase):
         self.assertTrue(s.is_company_shareholder())
         self.assertFalse(s2.is_company_shareholder())
 
+    def test_has_vested_shares(self):
+        shareholder3 = ShareholderGenerator().generate(
+            company=self.company)
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=self.shareholder2,
+                                     security=self.security, count=10,
+                                     bought_at=datetime.datetime(2013, 1, 1),
+                                     vesting_months=5)
+        self.assertTrue(self.shareholder2.has_vested_shares())   # regular sh
+        self.assertFalse(self.shareholder1.has_vested_shares())  # corp shareh
+        self.assertFalse(shareholder3.has_vested_shares())       # fresh sh
+
     def test_validate_gafi(self):
         """ test the gafi validation """
 
@@ -718,6 +732,80 @@ class ShareholderTestCase(TestCase):
         self.assertEqual(
             self.shareholder2.share_count(security=self.security, date=now,
                                           only_sellable=True), 2)
+
+    def test_share_count_without_vesting(self):
+        """ count shares of shareholder which are not affected by any vesting
+        """
+        # add position with vesting
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=self.shareholder2,
+                                     security=self.security, count=4,
+                                     vesting_months=36)
+        self.assertEqual(
+            self.shareholder2.share_count(without_vesting=True), 2)
+
+    def test_share_count_expired_vesting(self):
+        """ count shares which have no vesting or where the vesting is expired
+
+        scenario:
+        * two owned without vesting (@setUp)
+        * one owned with vesting expired
+        * three owned with vesting not expired
+        """
+        oneyearago = timezone.now() - relativedelta(years=1)
+        oneyearahead = timezone.now() + relativedelta(years=1)
+        # unexpired
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=self.shareholder2,
+                                     security=self.security, count=3,
+                                     vesting_months=36, bought_at=oneyearago)
+        # expired
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=self.shareholder2,
+                                     security=self.security, count=1,
+                                     vesting_months=6, bought_at=oneyearago)
+
+        # one year ahead not to be calculated
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=self.shareholder2,
+                                     security=self.security, count=1,
+                                     vesting_months=6, bought_at=oneyearahead)
+
+        # one sold in the past with vesting for the buyer
+        PositionGenerator().generate(seller=self.shareholder2,
+                                     buyer=self.shareholder1,
+                                     security=self.security, count=1,
+                                     vesting_months=6, bought_at=oneyearago)
+
+        self.assertEqual(self.shareholder2.share_count(
+            date=timezone.now().date(), expired_vesting=True), 2)
+
+    def test_share_count_sellable(self):
+        """ get count of shares sellable excluding vested shares and shares with
+        certificate depot assigned
+        """
+        # sellable, no cert depot, no vesting @ setUp() with count=2
+
+        # vesting only
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=self.shareholder2,
+                                     security=self.security, count=1,
+                                     vesting_months=6)
+
+        # cert depot only
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=self.shareholder2,
+                                     security=self.security, count=1,
+                                     depot_type='0', certificate_id='9876')
+
+        # vesting and cert depot
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=self.shareholder2,
+                                     security=self.security, count=1,
+                                     vesting_months=24, depot_type='0',
+                                     certificate_id='987')
+
+        self.assertEqual(self.shareholder2.share_count_sellable(), 2)
 
     def test_share_count_with_certificates(self):
         """

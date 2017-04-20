@@ -643,6 +643,7 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
         security = initial_data.get('security')
         company = get_company_from_request(self.context.get("request"))
 
+        # --- TRACK NUMBERS validation
         if security and Security.objects.get(
                 company=company, title=security.get('title'),
                 face_value=security.get('face_value')).track_numbers:
@@ -655,6 +656,7 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
                     initial_data.get('number_segments'))
             else:
                 segments = initial_data.get('number_segments')
+
             # if we have seller (non capital increase)
             if initial_data.get('seller'):
                 logger.info('validation: get seller segments...')
@@ -728,7 +730,7 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
             face_value=validated_data.get('security').get('face_value')
         )
 
-        # regular security transaction
+        # ------- regular security transaction
         if validated_data.get("seller") and validated_data.get("buyer"):
             buyer = Shareholder.objects.get(
                 company=company,
@@ -742,7 +744,7 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
             )
             kwargs.update({"seller": seller, 'registration_type': '2'})
 
-        # capital increase
+        # -------- capital increase
         else:
             buyer = company.get_company_shareholder()
             company.share_count = company.share_count + \
@@ -757,6 +759,7 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
             company.save()
             kwargs.update({'registration_type': '1'})
 
+        # ------- common logic
         kwargs.update({
             "buyer": buyer,
             "bought_at": validated_data.get("bought_at"),
@@ -844,8 +847,9 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
                 date=timeparse(self.initial_data.get('bought_at')))
             if value > sellable_shares:
                 raise ValidationError(
-                    _('seller does not have enough shares. max value is {}.'
-                      '').format(sellable_shares))
+                    _('seller does not have enough shares. max value is {}. '
+                      'shares can be blocked by cert depot or vesting.').format(
+                        sellable_shares))
 
         return value
 

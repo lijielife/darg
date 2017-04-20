@@ -7,6 +7,7 @@ import time
 from collections import Counter
 from decimal import Decimal
 
+from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import ValidationError
@@ -16,6 +17,7 @@ from django.db import models
 from django.db.models import Q, Sum
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django_languages import fields as language_fields
 from natsort import natsorted
@@ -722,6 +724,11 @@ class Shareholder(TagMixin, models.Model):
             )
         return text
 
+    def has_vested_shares(self):
+        """ does the shareholder hold or did hold in the past any vested
+        shares """
+        return self.buyer.filter(vesting_months__isnull=False).exists()
+
     def is_company_shareholder(self):
         """
         returns bool if shareholder is company shareholder
@@ -774,11 +781,23 @@ class Shareholder(TagMixin, models.Model):
 
         return False
 
-    def share_count(self, date=None, security=None, only_sellable=False):
-        """ total count of shares for shareholder  """
+    def share_count(self, date=None, security=None, only_sellable=False,
+                    expired_vesting=False, without_vesting=False):
+        """ total count of shares for shareholder. `date` is the date on which
+        the shares should be counted for `security` or all securities.
+        `only_sellable` excludes shares within the certificate depot.
+        `expired_vesting` gets the count for all shares with vesting_months
+        but where the vesting period is over. `without_vesting` gets
+        share count for all pkgds which don't have a vesting at all
+        """
 
         qs_bought = self.buyer.all()
         qs_sold = self.seller.all()
+
+        if without_vesting:
+            # vesting applied to this shareholder is only applied in buyer
+            # data, seller data is new vesting data for the buyer
+            qs_bought = self.buyer.filter(vesting_months__isnull=True)
 
         if only_sellable:
             # if there are certificates without invalidation (means still
@@ -801,6 +820,23 @@ class Shareholder(TagMixin, models.Model):
             qs_bought = qs_bought.filter(security=security)
             qs_sold = qs_sold.filter(security=security)
 
+        if expired_vesting:
+            # for each buyer position with vesting_months applied, we need to
+            # check if the vesting was expired. placed at the end of method
+            # because it's a very expensive method and we might have excluded
+            # all options till now already
+            pks = []
+            now = timezone.now()
+            for pos in qs_bought:
+                if pos.vesting_months:
+                    expires_at = pos.bought_at + relativedelta(
+                        months=pos.vesting_months)
+                    if expires_at <= now.date():
+                        pks.append(pos.pk)
+                else:
+                    pks.append(pos.pk)
+            qs_bought = self.buyer.filter(pk__in=pks)
+
         count_bought = sum(qs_bought.values_list('count', flat=True))
         count_sold = sum(qs_sold.values_list('count', flat=True))
 
@@ -817,8 +853,15 @@ class Shareholder(TagMixin, models.Model):
         returns number of shares for this security on this date which
         are truely sellable. e.g. shares owned but enlisted in
         certificate depot are not sellable
+
+        also excludes vested shares
         """
-        return self.share_count(date, security, only_sellable=True)
+        # we can skip this expensive code if vestig does not apply:
+        if not self.has_vested_shares():
+            return self.share_count(date, security, only_sellable=True)
+
+        return self.share_count(date, security, only_sellable=True,
+                                expired_vesting=True)
 
     def share_value(self, date=None):
         """ calculate the total values of all shares for this shareholder """
