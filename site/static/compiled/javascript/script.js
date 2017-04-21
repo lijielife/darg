@@ -44253,7 +44253,7 @@ return deCh;
       };
       $scope.add_option_transaction = function() {
         var date, p;
-        self.errors = {};
+        $scope.errors = {};
         if (!$scope.validate_shareholder($scope.newOptionTransaction, 'buyer') || !$scope.validate_shareholder($scope.newOptionTransaction, 'seller')) {
           return;
         }
@@ -44772,7 +44772,7 @@ return deCh;
       };
       $scope.add_position = function() {
         var bought_at;
-        self.errors = {};
+        $scope.errors = {};
         if (!$scope.validate_shareholder($scope.newPosition, 'buyer') || !$scope.validate_shareholder($scope.newPosition, 'seller')) {
           return;
         }

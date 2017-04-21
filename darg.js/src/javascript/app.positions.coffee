@@ -173,7 +173,7 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
 
     $scope.add_position = ->
         # reset errors
-        self.errors = {}
+        $scope.errors = {}
 
         # validation:
         if (
@@ -182,8 +182,10 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
         )
             return
 
+        # show loading state
         $scope.addPositionLoading = true
-
+        
+        # convert date obj
         if $scope.newPosition.bought_at
             # http://stackoverflow.com/questions/1486476/json-stringify-changes-time-of-date-because-of-utc
             bought_at = $scope.newPosition.bought_at

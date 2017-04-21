@@ -15,6 +15,7 @@ site/media/media
 site/media/private
 site/media/public
 site/media/f
+site/celerybeat-schedule
 build/*
 src/*
 site/project/settings/dev_local.py

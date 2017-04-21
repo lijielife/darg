@@ -207,7 +207,7 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
 
     $scope.add_option_transaction = ->
         # reset errors
-        self.errors = {}
+        $scope.errors = {}
 
         # validation:
         if (
