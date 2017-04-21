@@ -1,4 +1,4 @@
-Django==1.11
+Django==1.10.7
 django-registration-redux>=1.4
 djangorestframework>=3.4.1
 django-nose>=1.4.3
