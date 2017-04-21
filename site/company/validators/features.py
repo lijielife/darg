@@ -36,7 +36,7 @@ class ShareholderCountPlanValidator(BaseCompanyValidator):
                 and shareholder_count > max_shareholder_count):
             error_message = self.message.format(
                 **dict(count=shareholder_count,
-                       max_shareholder=max_shareholder_count))
+                       max_shareholders=max_shareholder_count))
             self.raise_execption(error_message, code=self.code)
 
 
@@ -82,8 +82,10 @@ class ShareholderCreateMaxCountValidator(BaseCompanyValidator):
         plan = settings.DJSTRIPE_PLANS.get(
             self.company.get_current_subscription_plan(), {})
         shareholders_feature = plan.get('features', {}).get('shareholders', {})
-        max_shareholders = shareholders_feature.get('max')
-        return MaxValueValidator(max_shareholders)(company_shareholders + 1)
+        max_shareholders = shareholders_feature.get('max', None)
+        if max_shareholders is not None:
+            validator = MaxValueValidator(max_shareholders)
+            return validator(company_shareholders + 1)
 
 
 class SecurityCreateMaxCountValidator(BaseCompanyValidator):
@@ -97,5 +99,6 @@ class SecurityCreateMaxCountValidator(BaseCompanyValidator):
         plan = settings.DJSTRIPE_PLANS.get(
             self.company.get_current_subscription_plan(), {})
         security_feature = plan.get('features', {}).get('securities', {})
-        max_securities = security_feature.get('max')
-        return MaxValueValidator(max_securities)(company_securities + 1)
+        max_securities = security_feature.get('max', None)
+        if max_securities is not None:
+            return MaxValueValidator(max_securities)(company_securities + 1)

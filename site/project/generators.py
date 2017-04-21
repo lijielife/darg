@@ -77,7 +77,8 @@ def _make_user():
         province="Some Province",
         postal_code="12345",
         birthday=datetime.datetime.now(),
-        company_name="SomeCorp"
+        company_name="SomeCorp",
+        initial_registration_at=datetime.datetime.now()
         )
     )
 
@@ -93,7 +94,7 @@ class CompanyGenerator(object):
 
         word = random.choice(_make_wordlist())
         name = kwargs.get('name') or u'{} àäå A.B.'.format(word)
-        share_count = kwargs.get('share_count') or 3
+        share_count = kwargs.get('share_count') or 100
         country = kwargs.get('country') or CountryGenerator().generate()
 
         kwargs2 = {
@@ -371,7 +372,15 @@ class ComplexShareholderConstellationGenerator(object):
 
     def generate(self, **kwargs):
 
-        company = kwargs.get('company') or CompanyGenerator().generate()
+        company = kwargs.get('company') or CompanyGenerator().generate(
+            share_count=100000)
+
+        # we need more shares for resp number of shs
+        if kwargs.get('shareholder_count'):
+            company.share_count = (company.share_count *
+                                   kwargs.get('shareholder_count'))
+            company.save()
+
         shareholder_count = kwargs.get('shareholder_count', 10)
 
         # intial securities
@@ -389,19 +398,23 @@ class ComplexShareholderConstellationGenerator(object):
         shareholders = [cs]
         # initial share seeding
         for i in range(0, shareholder_count):
-            shareholders.append(PositionGenerator().generate(
-                company=company, security=s1, seller=cs).buyer)
+            if cs.share_count(security=s1):
+                shareholders.append(PositionGenerator().generate(
+                    company=company, security=s1, seller=cs,
+                    count=random.randint(1, int(
+                        cs.share_count(security=s1)) / shareholder_count)
+                    ).buyer)
 
         # two shareholders sold again
         shareholders.append(
             PositionGenerator().generate(
                 company=company,
-                seller=shareholders[3],
+                seller=shareholders[-2],
                 security=s1).buyer)
         shareholders.append(
             PositionGenerator().generate(
                 company=company,
-                seller=shareholders[6],
+                seller=shareholders[-1],
                 security=s1).buyer)
 
         return shareholders, s1

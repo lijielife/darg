@@ -83,7 +83,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
                 $scope.optionholder_current=result.data.current
 
     $scope.load_all_shareholders = ->
-        # FIXME - its not company specific
+        # FIXME - its not company specific, also subscription dependent
         $scope.reset_search_params()
         $scope.search_params.query = null
         $http.get('/services/rest/shareholders').then (result) ->
@@ -97,9 +97,10 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
                 $scope.total=result.data.count
             if result.data.current
                 $scope.current=result.data.current
+        # FIXME: handle errors (403 Permission denied when no subscription)
 
     $scope.load_all_shareholders()
-          
+
 
     $http.get('/services/rest/user').then (result) ->
         $scope.user = result.data.results[0]
@@ -110,9 +111,10 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
                 $scope.user.operator_set[key].company = result1.data
                 # fetch option holders for this company
                 $scope.load_option_holders(result1.data.pk)
+
         # update option holders if we have the company id
-        if $scope.user.operator_set && $scope.user.operator_set[0].company.pk
-           $scope.load_option_holders($scope.user.operator_set[0].company.pk)
+        # if $scope.user.operator_set && $scope.user.operator_set[0].company.pk
+        #    $scope.load_option_holders($scope.user.operator_set[0].company.pk)
 
     .finally ->
         $scope.loading = false
@@ -271,7 +273,8 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
                         $scope.user.operator_set[key].company = result1.data
             .then ->
                 # load shs and option holders
-                $scope.load_all_shareholders()
+                # NOTE: since subscription, shareholders depend on active plan
+                # $scope.load_all_shareholders()
 
         .then ->
             # Reset our editor to a new blank post

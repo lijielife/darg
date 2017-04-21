@@ -13,8 +13,7 @@ import stripe
 
 from djstripe import settings as djstripe_settings
 
-from utils.mail import is_valid_email
-from utils.pdf import render_pdf
+import utils
 
 
 # logger = logging.getLogger(__name__)
@@ -62,7 +61,7 @@ class CompanyAppConfig(AppConfig):
                     # get email address from stripe data
                     recipient = (data.get('email') or data.get('name') or
                                  data.get('active_card', {}).get('name'))
-                    if is_valid_email(recipient):
+                    if utils.mail.is_valid_email(recipient):
                         subscriber.email = recipient
                         subscriber.save()
 
@@ -174,8 +173,7 @@ class CompanyAppConfig(AppConfig):
             )
 
             if context['include_vat']:
-                net = self.amount / (100 + settings.COMPANY_INVOICE_VAT) * 100
-                vat_value = self.amount - net
+                vat_value = utils.get_vat(self.amount)
                 context.update(dict(
                     vat=settings.COMPANY_INVOICE_VAT,
                     vat_value=vat_value
@@ -220,7 +218,11 @@ class CompanyAppConfig(AppConfig):
 
             activate_lang(settings.LANGUAGE_CODE)
             template = get_template(self.customer.subscriber.invoice_template)
-            pdf = render_pdf(template.render(context))
+            try:
+                pdf = utils.pdf.render_pdf(template.render(context))
+            except Exception as ex:
+                logger.exception(ex)
+                pdf = None
 
             if not pdf:
                 error_message = _(
@@ -231,13 +233,13 @@ class CompanyAppConfig(AppConfig):
                 return None
 
             with open(pdf_filepath, 'w') as f:
-                f.write(pdf.getvalue())
+                f.write(pdf)
 
             return pdf_filepath
 
         Invoice._generate_invoice_pdf = _generate_invoice_pdf
 
-        def _get_invoice_pdf_path_for_company(self, company):
+        def _get_invoice_pdf_dir_for_company(self, company):
             """
             returns a unique directory path to for the charge
             """
@@ -248,14 +250,14 @@ class CompanyAppConfig(AppConfig):
                 os.makedirs(path)
             return path
 
-        Invoice._get_invoice_pdf_path_for_company = (
-            _get_invoice_pdf_path_for_company)
+        Invoice._get_invoice_pdf_dir_for_company = (
+            _get_invoice_pdf_dir_for_company)
 
         def _get_pdf_filepath(self):
             """
             return complete filepath to PDF
             """
-            pdf_dir = self._get_invoice_pdf_path_for_company(
+            pdf_dir = self._get_invoice_pdf_dir_for_company(
                 self.customer.subscriber)
             pdf_filename = u'{}-{}.pdf'.format(
                 settings.COMPANY_INVOICE_FILENAME, self.pk)
@@ -298,8 +300,7 @@ class CompanyAppConfig(AppConfig):
             )
 
             if context['include_vat']:
-                net = self.total / (100 + settings.COMPANY_INVOICE_VAT) * 100
-                vat_value = self.total - net
+                vat_value = utils.get_vat(self.total)
                 context.update(dict(
                     vat=settings.COMPANY_INVOICE_VAT,
                     vat_value=vat_value

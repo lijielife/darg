@@ -34,7 +34,7 @@ def get_env_variable(var_name, fail_on_error=True):
     return env_var
 
 
-VERSION = '0.4.7'
+VERSION = '0.4.15'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
@@ -204,6 +204,11 @@ LOGGING = {
         'sentry': {
             'level': 'WARNING',
             'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler'
+        },
+        'test_logging_handler': {
+            'level': 'DEBUG',
+            'class': 'project.tests.helper.TestLoggingHandler',
+            'formatter': 'simple'
         },
     },
     'loggers': {
@@ -569,7 +574,7 @@ SUBSCRIPTION_FEATURES = collections.OrderedDict((
 DEFAULT_HTTP_PROTOCOL = 'https'  # used by djstripe when sending emails
 
 COMPANY_INVOICES_ROOT = os.path.join(SENDFILE_ROOT, 'company', 'invoices')
-# NOTE: charge id will be added to invoice filename
+# NOTE: invoice id will be added to invoice filename
 COMPANY_INVOICE_FILENAME = u'das-aktienregister-rechnung'
 # whether to include VAT in company (pdf) invoices or not
 COMPANY_INVOICE_INCLUDE_VAT = True

@@ -103,7 +103,7 @@ class CompanySerializer(SubscriptionSerializerMixin,
                   'is_statement_sending_enabled', 'statement_sending_date',
                   'vote_count', 'vote_ratio', 'vote_count_floating',
                   'current_subscription', 'subscription_features',
-                  'subscription_permissions') + Company.STREET_FIELDS
+                  'subscription_permissions') + Company.ADDRESS_FIELDS
 
     def get_profile_url(self, obj):
         return reverse('company', kwargs={'company_id': obj.id})
@@ -195,7 +195,7 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
                   'birthday', 'company_name', 'language', 'readable_language',
                   'readable_legal_type', 'legal_type', 'company_department',
                   'title', 'salutation', 'street2', 'pobox', 'c_o',
-                  'nationality')
+                  'nationality', 'initial_registration_at')
 
     def get_readable_language(self, obj):
         return obj.get_language_display()
@@ -347,7 +347,8 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
             'full_name',
             'mailing_type',
             'readable_mailing_type',
-            'vote_count', 'vote_percent'
+            'vote_count', 'vote_percent',
+            'is_management',
         )
 
     def create(self, validated_data):
@@ -466,6 +467,7 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
             userprofile.save()
 
         shareholder.number = validated_data['number']
+        shareholder.is_management = validated_data['is_management']
         if 'mailing_type' in validated_data.keys():
             shareholder.mailing_type = validated_data['mailing_type']
         shareholder.save()
@@ -504,7 +506,7 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
             'security', 'comment', 'is_split', 'is_draft', 'number_segments',
             'readable_number_segments', 'registration_type',
             'readable_registration_type', 'position_type', 'depot_type',
-            'readable_depot_type', 'stock_book_id',)
+            'readable_depot_type', 'stock_book_id', 'vesting_months')
 
     def get_readable_number_segments(self, obj):
         """
@@ -679,6 +681,10 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
             kwargs.update({
                 'depot_type': validated_data.get("depot_type")})
 
+        if validated_data.get("vesting_months"):
+            kwargs.update({
+                'vesting_months': validated_data.get("vesting_months")})
+
         position = Position.objects.create(**kwargs)
 
         return position
@@ -715,7 +721,7 @@ class OptionPlanSerializer(serializers.HyperlinkedModelSerializer):
         # prepare data
         kwargs = {}
         user = self.context.get("request").user
-        company = user.operator_set.all()[0].company
+        company = user.operator_set.all()[0].company  # FIXME
         security = Security.objects.get(
             company=company,
             title=validated_data.get("security").get('title'),
@@ -837,7 +843,7 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
                   'is_draft', 'number_segments', 'readable_number_segments',
                   'readable_registration_type', 'registration_type',
                   'depot_type', 'readable_depot_type', 'stock_book_id',
-                  'certificate_id')
+                  'certificate_id', 'printed_at')
 
     def is_valid(self, raise_exception=False):
         """

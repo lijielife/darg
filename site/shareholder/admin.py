@@ -78,8 +78,9 @@ class CompanyAdmin(VersionAdmin):
     search_fields = ('name', 'email')
     fieldsets = (
         ('', {'fields': ('name', 'founded_at', 'share_count',
-                         'provisioned_capital', 'logo', 'email')}),
-        (_('Address'), {'fields': Company.STREET_FIELDS}),
+                         'provisioned_capital', 'logo', 'pdf_header_image',
+                         'email', 'vote_ratio', 'signatures')}),
+        (_('Address'), {'fields': Company.ADDRESS_FIELDS}),
         (_('Statements'), {'fields': ('is_statement_sending_enabled',
                                       'statement_sending_date')})
     )
@@ -176,7 +177,7 @@ class OptionTransactionAdmin(VersionAdmin):
 
 
 class OptionPlanAdmin(VersionAdmin):
-    list_display = ('title',)
+    list_display = ('title', 'company')
     list_filter = ('company',)
 
 

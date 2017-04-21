@@ -18,7 +18,11 @@ def invoice_created_webhook_handler(sender, event, **kwargs):
     from utils.subscriptions import (stripe_company_shareholder_invoice_item,
                                      stripe_company_security_invoice_item)
 
-    invoice_object = event.message.get('data', {}).get('object', {})
+    if not event.customer:
+        return
+
+    event_data = event.validated_message.get('data', {})
+    invoice_object = event_data.get('object', {})
     if (not invoice_object.get('closed') and
             event.customer.has_active_subscription()):
         # add per shareholder fee to invoice
@@ -35,7 +39,7 @@ def invoice_created_webhook_handler(sender, event, **kwargs):
         )
 
 
-@receiver(WEBHOOK_SIGNALS['invoice.created'])
+@receiver(WEBHOOK_SIGNALS['invoice.payment_succeeded'])
 def invoice_payment_succeeded_webhook_handler(sender, event, **kwargs):
     """
     handler for invoice.payment_succeeded event
@@ -43,10 +47,12 @@ def invoice_payment_succeeded_webhook_handler(sender, event, **kwargs):
     trigger invoice pdf (re)generation
     """
 
-    customer = event.customer
-    invoice_object = event.message.get('data', {}).get('object', {})
-    invoice = customer.invoices.filter(
-        stripe_id=invoice_object.get('id')).first()
+    if not event.customer:
+        return
+
+    event_data = event.validated_message.get('data', {})
+    invoice_id = event_data.get('object', {}).get('id')
+    invoice = event.customer.invoices.filter(stripe_id=invoice_id).first()
     invoice and invoice._generate_invoice_pdf(override_existing=True)
 
 
@@ -57,7 +63,11 @@ def customer_webhook_handler(event, event_data, event_type, event_subtype):
     instance, also set address (if necessary/possible)
     """
 
-    subscriber = event.customer.subscriber
+    subscriber = event.customer and event.customer.subscriber
+
+    if not subscriber:
+        return
+
     object_data = event.validated_message.get('data', {}).get('object', {})
 
     # email

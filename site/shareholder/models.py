@@ -95,6 +95,11 @@ def get_company_logo_upload_path(instance, filename):
         "public", "company", "%d" % instance.id, "logo", filename)
 
 
+def get_company_header_image_upload_path(instance, filename):
+    return os.path.join(
+        "public", "company", "%d" % instance.id, "header_image", filename)
+
+
 class Company(AddressModelMixin, models.Model):
 
     name = models.CharField(max_length=255)
@@ -108,9 +113,16 @@ class Company(AddressModelMixin, models.Model):
     logo = models.ImageField(
         blank=True, null=True,
         upload_to=get_company_logo_upload_path,)
+    pdf_header_image = models.ImageField(
+        blank=True, null=True,
+        upload_to=get_company_header_image_upload_path,)
     vote_ratio = models.PositiveIntegerField(
         _('Voting rights calculation: one vote per X of security.face_value'),
         blank=True, null=True, default=1)
+    signatures = models.CharField(
+        _('comma separated list of board members permitted to sign in the name '
+          'of the company'),
+        max_length=255, blank=True)
     email = models.EmailField(_('Email'), blank=True)  # required by djstripe
 
     is_statement_sending_enabled = models.BooleanField(
@@ -229,6 +241,9 @@ class Company(AddressModelMixin, models.Model):
         segments = self.optionplan_set.all().values_list(
             'number_segments', flat=True)
         return flatten_list(segments)
+
+    def get_board_members(self):
+        return self.signatures.split(',')
 
     def get_company_shareholder(self):
         """
@@ -633,6 +648,7 @@ class UserProfile(AddressModelMixin, models.Model):
     language = language_fields.LanguageField(blank=True, null=True)
     nationality = models.ForeignKey(Country, blank=True, null=True,
                                     related_name='nationality')
+    url = models.URLField(blank=True, null=True)
 
     legal_type = models.CharField(
         max_length=1, choices=LEGAL_TYPES, default='H',
@@ -640,6 +656,9 @@ class UserProfile(AddressModelMixin, models.Model):
     company_name = models.CharField(max_length=255, blank=True, null=True)
     company_department = models.CharField(max_length=255, blank=True, null=True)
     birthday = models.DateField(blank=True, null=True)
+    initial_registration_at = models.DateField(
+        _('when did the user register with the share register 1st time.'),
+        blank=True, null=True)
 
     ip = models.GenericIPAddressField(blank=True, null=True)
     tnc_accepted = models.BooleanField(default=False)
@@ -671,6 +690,8 @@ class Shareholder(TagMixin, models.Model):
     mailing_type = models.CharField(
         _('how should the shareholder be approached by the corp'), max_length=1,
         choices=MAILING_TYPES, blank=True, null=True)
+    is_management = models.BooleanField(
+        _('user is management/board member of company'), default=False)
 
     def __unicode__(self):
         return u'{} {} (#{})'.format(
@@ -1178,6 +1199,13 @@ class Security(models.Model):
 
         return count
 
+    def get_isin(self):
+
+        if self.cusip:
+            return 'CH0{}1'.format(self.cusip)
+
+        return ''
+
 
 class Position(models.Model):
     """
@@ -1211,6 +1239,7 @@ class Position(models.Model):
     depot_type = models.CharField(
         _('What kind of depot is this position stored within'), max_length=1,
         choices=DEPOT_TYPES, blank=True, null=True)
+    vesting_months = models.PositiveIntegerField(blank=True, null=True)
     comment = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -1335,6 +1364,8 @@ class OptionTransaction(models.Model):
         _('What kind of depot is this position stored within'), max_length=1,
         choices=DEPOT_TYPES, blank=True, null=True)
     is_draft = models.BooleanField(default=True)
+    printed_at = models.DateTimeField(_('was this printed at least once?'),
+                                      blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -1362,6 +1393,9 @@ class OptionTransaction(models.Model):
 
         return False
 
+    def get_total_face_value(self):
+        return self.count * self.option_plan.security.face_value
+
 
 class ShareholderStatementReport(models.Model):
     """
@@ -1377,7 +1411,7 @@ class ShareholderStatementReport(models.Model):
         verbose_name = _('shareholder statement report')
         verbose_name_plural = _('shareholder statement reports')
 
-    def __unicode__(self):
+    def __unicode__(self):  # pragma: nocover
         return u'{} - {}'.format(self.company, date_format(self.report_date))
 
     def get_statement_count(self):
@@ -1429,8 +1463,12 @@ class ShareholderStatementReport(models.Model):
         """
         generate statements for shareholder users of company,
         then set the statement_sending_date on company to next year
-        TODO: check subscription
         """
+
+        # check company subscription
+        if not self.company.has_feature_enabled('shareholder_statements'):
+            return
+
         shareholders = self.company.shareholder_set.all()
         users = get_user_model().objects.filter(
             pk__in=shareholders.values_list('user_id', flat=True))
@@ -1446,14 +1484,14 @@ class ShareholderStatementReport(models.Model):
                 year=self.company.statement_sending_date.year + 1)
             self.company.save()
 
-    def _get_statement_pdf_path_for_user(self, user, report):
+    def _get_statement_pdf_path_for_user(self, user):
         """
         returns a unique directory path to for the user
         """
         path = os.path.join(settings.SHAREHOLDER_STATEMENT_ROOT,
                             str(user.pk),
-                            str(report.company.pk),
-                            str(report.report_date.year))
+                            str(self.company_id),
+                            str(self.report_date.year))
         if not os.path.exists(path):
             os.makedirs(path)
         return path
@@ -1485,7 +1523,7 @@ class ShareholderStatementReport(models.Model):
             # FIXME: what to do? for now we don't change any existing entries
             statement = self.shareholderstatement_set.filter(user=user).get()
 
-        pdf_dir = self._get_statement_pdf_path_for_user(user, self)
+        pdf_dir = self._get_statement_pdf_path_for_user(user)
         pdf_filename = u'{}-{}-{}.pdf'.format(
             slugify(user.get_full_name() or user.email),
             slugify(self.company),
@@ -1528,9 +1566,9 @@ class ShareholderStatementReport(models.Model):
         """
         activate_lang(settings.LANGUAGE_CODE)
         # check for a custom company template
-        pdf = render_pdf(self.company.statement_template.render(context))
-
-        if not pdf:
+        try:
+            pdf = render_pdf(self.company.statement_template.render(context))
+        except:
             return False
 
         with open(filepath, 'w') as f:
@@ -1578,7 +1616,7 @@ class ShareholderStatement(models.Model):
         verbose_name_plural = _('shareholder statements')
         unique_together = ('report', 'user')
 
-    def __unicode__(self):
+    def __unicode__(self):  # pragma: nocover
         return u'{}: {}'.format(self.user, self.report)
 
     def send_email_notification(self):

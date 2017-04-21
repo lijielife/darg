@@ -16,6 +16,8 @@ class FieldValidationMixin(object):
 
     def validate_number_segments(self, value):
 
+        # FIXME: this regex is weak because it only checks chars but not order
+        #        making string like '--00--' valid
         pattern = re.compile(r'[^0-9,\- ]')
 
         try:

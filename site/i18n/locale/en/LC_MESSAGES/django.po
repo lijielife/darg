@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-29 22:29+0000\n"
+"POT-Creation-Date: 2017-02-12 20:31+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,7 @@ msgid "To add a new operator enter the email of a registered user"
 msgstr ""
 
 #: company/templates/_add_operator_form.html:15
-#: reports/templates/reports/index.html:76
+#: reports/templates/reports/_transaction_form.html:44
 msgid "Cancel"
 msgstr ""
 
@@ -116,6 +116,26 @@ msgstr ""
 msgid "Edit Option Plan"
 msgstr ""
 
+#: reports/templates/reports/_captable_form.html:8
+msgid "Sort by:"
+msgstr ""
+
+#: reports/templates/reports/_transaction_form.html:8
+msgid "from"
+msgstr ""
+
+#: reports/templates/reports/_transaction_form.html:24
+msgid "to"
+msgstr ""
+
+#: reports/templates/reports/_transaction_form.html:41
+msgid "Security"
+msgstr ""
+
+#: reports/templates/reports/_transaction_form.html:45
+msgid "Download"
+msgstr ""
+
 #: reports/templates/reports/index.html:6 templates/menu.html:39
 msgid "Reports"
 msgstr ""
@@ -124,66 +144,50 @@ msgstr ""
 msgid "Reports and Downloads for "
 msgstr ""
 
-#: reports/templates/reports/index.html:18
+#: reports/templates/reports/index.html:20
 msgid ""
 "Use CSV for Excel like Downloads. Follow this <a href='https://goo.gl/"
 "aQ2gVx'>guide for instructions</a>."
 msgstr ""
 
-#: reports/templates/reports/index.html:22
+#: reports/templates/reports/index.html:27
 msgid "Download active Shareholders as"
 msgstr ""
 
-#: reports/templates/reports/index.html:23
+#: reports/templates/reports/index.html:28
 msgid "Download active Shareholders as PDF"
 msgstr ""
 
-#: reports/templates/reports/index.html:24
+#: reports/templates/reports/index.html:29
 msgid "PDF"
 msgstr ""
 
-#: reports/templates/reports/index.html:26
+#: reports/templates/reports/index.html:31
 msgid "Download active Shareholders as CSV"
 msgstr ""
 
-#: reports/templates/reports/index.html:27
+#: reports/templates/reports/index.html:32
 msgid "CSV"
 msgstr ""
 
-#: reports/templates/reports/index.html:32
+#: reports/templates/reports/index.html:41
 msgid "Transactions per security in period"
 msgstr ""
 
-#: reports/templates/reports/index.html:40
-msgid "from"
-msgstr ""
-
-#: reports/templates/reports/index.html:56
-msgid "to"
-msgstr ""
-
-#: reports/templates/reports/index.html:73
-msgid "Security"
-msgstr ""
-
-#: reports/templates/reports/index.html:77
-msgid "Download"
-msgstr ""
-
-#: reports/templates/reports/index.html:84
-#: reports/templates/reports/index.html:85
+#: reports/templates/reports/index.html:46
+#: reports/templates/reports/index.html:47
 msgid "Address data of all shareholders"
 msgstr ""
 
-#: reports/templates/reports/index.html:89
+#: reports/templates/reports/index.html:51
 msgid "Printed Certificates"
 msgstr ""
 
-#: reports/templates/reports/index.html:90
+#: reports/templates/reports/index.html:52
 msgid "Vested Shares"
 msgstr ""
 
-#: reports/templates/reports/index.html:91
+#: reports/templates/reports/index.html:53
 msgid "Depot Statement per Shareholder"
 msgstr ""
 
@@ -586,10 +590,10 @@ msgstr ""
 msgid "German"
 msgstr ""
 
-#: utils/import_backends.py:276
+#: utils/import_backends.py:280
 msgid "Disposhareholder"
 msgstr ""
 
-#: utils/import_backends.py:341
+#: utils/import_backends.py:345
 msgid "Default OptionPlan for {}"
 msgstr ""

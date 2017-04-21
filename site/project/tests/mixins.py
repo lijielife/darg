@@ -20,7 +20,7 @@ import stripe
 from djstripe.models import CurrentSubscription
 from model_mommy import random_gen
 
-from .helper import FakeStripeResponse
+from .helper import FakeStripeResponser
 
 
 # stolen here https://goo.gl/IdWkTr
@@ -72,7 +72,7 @@ class MoreAssertsTestCaseMixin(object):
             func(*args, **kwargs)
 
 
-class FakeResponseMixin(object):
+class FakeResponseMixin(object):  # pragma: nocover
     """
     mixin to mock responses for requests calls
     """
@@ -91,7 +91,7 @@ class FakeResponseMixin(object):
         return response
 
 
-class StripeTestCaseMixin(object):
+class StripeTestCaseMixin(object):  # pragma: nocover
 
     RESTORE_ATTRIBUTES = ('api_version', 'api_key')
 
@@ -148,7 +148,7 @@ class StripeTestCaseMixin(object):
         mock_request = mock.Mock(return_value=(res, 'reskey'))
 
         def side_effect(method, url, params=None, headers=None):
-            res = FakeStripeResponse(method, url).get_response()
+            res = FakeStripeResponser(method, url).get_response()
             return (res, 'reskey')
 
         mock_request.side_effect = side_effect
@@ -156,7 +156,7 @@ class StripeTestCaseMixin(object):
         self.requestor_mock.request = mock_request
 
 
-class SubscriptionTestMixin(object):
+class SubscriptionTestMixin(object):  # pragma: nocover
 
     def add_subscription(self, company):
         """

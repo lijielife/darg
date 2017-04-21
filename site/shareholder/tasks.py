@@ -48,7 +48,10 @@ def send_statement_generation_operator_notify():
     activate_lang(settings.LANGUAGE_CODE)
 
     for company in queryset:
-        # TODO: check subscription
+
+        # check subscription
+        if not company.has_feature_enabled('shareholder_statements'):
+            continue
 
         operators = [op.user.email for op in company.get_operators()
                      if op.user.is_active and op.user.email]
@@ -117,13 +120,17 @@ def send_statement_generation_operator_notify():
         )
         preview_html = loader.render_to_string(
             company.statement_template.template.name, preview_context)
-        preview_pdf = render_pdf(preview_html)
+        try:
+            preview_pdf = render_pdf(preview_html)
+        except:
+            preview_pdf = None
+
         if preview_pdf:
             preview_file_name = u'{}-statement-preview.pdf'.format(
                 slugify(company.name))
             msg.attach(
                 preview_file_name,
-                preview_pdf.getvalue(),
+                preview_pdf,
                 'application/pdf'
             )
         else:
@@ -252,12 +259,16 @@ def send_statement_report_operator_notify():
 def generate_statements_report():
     """
     generate shareholder statement report and statements
-    TODO: check subscription
     """
     today = now().date()
     company_qs = Company.objects.filter(is_statement_sending_enabled=True,
                                         statement_sending_date=today)
     for company in company_qs:
+
+        # check subscription
+        if not company.has_feature_enabled('shareholder_statements'):
+            continue
+
         report, created = company.shareholderstatementreport_set.get_or_create(
             report_date=today)
 
