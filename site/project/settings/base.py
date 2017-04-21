@@ -101,7 +101,7 @@ INSTALLED_APPS = (
     'utils',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'reversion.middleware.RevisionMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -405,6 +405,7 @@ SWISS_BANKS_DOWNLOAD_URL = ('https://www.six-interbank-clearing.com/dam'
 
 # app internal settings
 DISPO_SHAREHOLDER_NUMBER = '9999999999'
+
 
 # need to differentiate instances
 def backup_filename(databasename, servername, datetime, extension,

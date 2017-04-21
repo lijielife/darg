@@ -1,12 +1,13 @@
 from django.conf import settings
-from django.conf.urls import include, patterns, url
+from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.flatpages.sitemaps import FlatPageSitemap
 from django.contrib.flatpages.views import flatpage
 from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
-from django.views.i18n import javascript_catalog
+from django.views.i18n import JavaScriptCatalog
+from django.contrib.sitemaps import views as sitemap_views
 from registration.backends.simple.views import RegistrationView
 from rest_framework import routers
 from rest_framework.authtoken import views
@@ -16,6 +17,8 @@ from two_factor.urls import urlpatterns as tf_urls
 from zinnia.sitemaps import (AuthorSitemap, CategorySitemap, EntrySitemap,
                              TagSitemap)
 
+from company import views as company_views
+from project import views as project_views
 from project.forms import RegistrationForm
 from services.rest.views import (AddCompanyView, AddShareSplit,
                                  AvailableOptionSegmentsView, BankView,
@@ -23,11 +26,12 @@ from services.rest.views import (AddCompanyView, AddShareSplit,
                                  InviteeUpdateView, LanguageView,
                                  OperatorViewSet, OptionPlanViewSet,
                                  OptionTransactionViewSet, PositionViewSet,
-                                 SecurityViewSet, ShareholderViewSet,
-                                 UserViewSet, ReportViewSet)
+                                 ReportViewSet, SecurityViewSet,
+                                 ShareholderViewSet, UserViewSet)
 from shareholder.views import (OptionTransactionView, PositionView,
-                               ShareholderView)
-
+                               ShareholderView, options, optionsplan,
+                               optionsplan_download_img,
+                               optionsplan_download_pdf, positions)
 
 # API routes
 router = routers.DefaultRouter(trailing_slash=False)
@@ -44,12 +48,6 @@ router.register(r'security', SecurityViewSet, base_name="security")
 router.register(r'report', ReportViewSet, base_name="report")
 
 
-# JS I18N CONF
-js_info_dict = {
-    'packages': ('project', 'shareholder', 'utils', 'services', 'reports'),
-}
-
-
 # SITEMAP conf
 sitemaps = {'tags': TagSitemap,
             'blog': EntrySitemap,
@@ -61,45 +59,45 @@ sitemaps = {'tags': TagSitemap,
 # main url conf
 urlpatterns = [
     # web views
-    url(r'^$', 'project.views.index', name='index'),  # landing page
-    url(r'^start/$', 'project.views.start', name='start'),  # user home
+    url(r'^$', project_views.index, name='index'),  # landing page
+    url(r'^start/$', project_views.start, name='start'),  # user home
 
-    url(r'^positions/$', 'shareholder.views.positions', name='positions'),
+    url(r'^positions/$', positions, name='positions'),
     url(r'^positions/(?P<pk>[0-9]+)/$',
         PositionView.as_view(), name='position'),
     url(r'^positions/(?P<option_id>[0-9]+)/download/pdf$',
-        'project.views.position_option_pdf', name='position_option_pdf'),
+        project_views.position_option_pdf, name='position_option_pdf'),
 
     url(r'^shareholder/(?P<pk>[0-9]+)/$',
         ShareholderView.as_view(), name='shareholder'),
 
-    url(r'^company/$', 'company.views.company_select',
+    url(r'^company/$', company_views.company_select,
         name='company_list'),
-    url(r'^company/(?P<company_id>[0-9]+)/$', 'company.views.company',
+    url(r'^company/(?P<company_id>[0-9]+)/$', company_views.company,
         name='company'),
     url(r'^company/(?P<company_id>[0-9]+)/download/contacts$',
-        'project.views.contacts_csv', name='contacts_csv'),
+        project_views.contacts_csv, name='contacts_csv'),
     url(r'^company/(?P<company_id>[0-9]+)/download/transactions$',
-        'project.views.transactions_csv', name='transactions_csv'),
+        project_views.transactions_csv, name='transactions_csv'),
     url(r'^company/(?P<company_id>[0-9]+)/download/vested$',
-        'project.views.vested_csv', name='vested_csv'),
+        project_views.vested_csv, name='vested_csv'),
     url(r'^company/(?P<company_id>[0-9]+)/download/printed_certificates_csv$',
-        'project.views.printed_certificates_csv',
+        project_views.printed_certificates_csv,
         name='printed_certificates_csv'),
 
-    url(r'^options/$', 'shareholder.views.options', name='options'),
+    url(r'^options/$', options, name='options'),
     url(r'^options/(?P<pk>[0-9]+)/$',
         OptionTransactionView.as_view(), name='optiontransaction'),
     url(r'^options/(?P<option_id>[0-9]+)/download/pdf$',
-        'project.views.option_pdf', name='option_pdf'),
+        project_views.option_pdf, name='option_pdf'),
 
     url(r'^optionsplan/(?P<optionsplan_id>[0-9]+)/$',
-        'shareholder.views.optionsplan', name='optionplan'),
+        optionsplan, name='optionplan'),
     url(r'^optionsplan/(?P<optionsplan_id>[0-9]+)/download/pdf/$',
-        'shareholder.views.optionsplan_download_pdf',
+        optionsplan_download_pdf,
         name='optionplan_download_pdf'),
     url(r'^optionsplan/(?P<optionsplan_id>[0-9]+)/download/img/$',
-        'shareholder.views.optionsplan_download_img',
+        optionsplan_download_img,
         name='optionplan_download_img'),
 
     # reports
@@ -113,7 +111,7 @@ urlpatterns = [
         form_class=RegistrationForm), name='registration_register'),
     url(r'^accounts/', include('registration.backends.simple.urls')),
     url(r'', include(tf_urls + tf_twilio_urls, 'two_factor')),  # two factorauth
-    url(r'^instapage/', 'project.views.instapage', name='instapage'),
+    url(r'^instapage/', project_views.instapage, name='instapage'),
 
     # rest api
     url(r'^services/rest/company/add', AddCompanyView.as_view(),
@@ -135,9 +133,9 @@ urlpatterns = [
         views.obtain_auth_token),  # allow to see token for the logged in user
 
     # i18n
-    url(r'^jsi18n/$', javascript_catalog, js_info_dict),
+    url(r'^jsi18n/$', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 
-    # content/blog/flatpages
+    # content/blog
     url(r'^blog/', include('zinnia.urls', namespace='zinnia')),
     url(r'^comments/', include('django_comments.urls')),
     url(r'^markdown/', include('django_markdown.urls')),
@@ -152,40 +150,33 @@ if not settings.DEBUG:
     admin.site.__class__ = AdminSiteOTPRequired
 admin.autodiscover()
 admin_url = settings.DEBUG and r'^admin/' or r'^__adm/'
-urlpatterns += patterns(
-    '',
-    url(admin_url, include(admin.site.urls)),
-)
+urlpatterns += [url(admin_url, include(admin.site.urls))]
+
 
 # rosetta
 if 'rosetta' in settings.INSTALLED_APPS:
-    urlpatterns += patterns(
-        '',
-        url(r'^rosetta/', include('rosetta.urls')),
-    )
+    urlpatterns += [url(r'^rosetta/', include('rosetta.urls'))]
 
 # serving files
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-if settings.DEBUG:
-    urlpatterns += patterns(
-        '',
-        (r'^_403/$', TemplateView.as_view(template_name="403.html")),
-        (r'^_404/$', TemplateView.as_view(template_name="404.html")),
-        (r'^_500/$', TemplateView.as_view(template_name="500.html")),
-    )
+urlpatterns += [
+    url(r'^_403/$', TemplateView.as_view(template_name="403.html")),
+    url(r'^_404/$', TemplateView.as_view(template_name="404.html")),
+    url(r'^_500/$', TemplateView.as_view(template_name="500.html")),
+]
 
 # sitemap
-urlpatterns += patterns(
-    'django.contrib.sitemaps.views',
-    url(r'^sitemap.xml$', 'index',
+urlpatterns += [
+    url(r'^sitemap.xml$', sitemap_views.index,
         {'sitemaps': sitemaps}),
-    url(r'^sitemap-(?P<section>.+)\.xml$', 'sitemap',
-        {'sitemaps': sitemaps}),)
+    url(r'^sitemap-(?P<section>.+)\.xml$', sitemap_views.sitemap,
+        {'sitemaps': sitemaps})
+    ]
 
 # flatpages (MUST be end of pattern) + markdown
 urlpatterns += [
     url(r'^markdownx/', include('markdownx.urls')),
-    url(r'^(?P<url>.*/)$', flatpage),
+    url(r'^(?P<url>.*/)$', flatpage, name='flatpage'),
 ]

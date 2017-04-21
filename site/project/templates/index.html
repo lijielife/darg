@@ -41,13 +41,13 @@
                 </li>
 				{% endif %}
                 <li>
-                  <a href="{% url "django.contrib.flatpages.views.flatpage" url="preisliste/" %}" title="Preise" class="btn-inline">{% trans "prices and plans" %}</a>
+                  <a href="{% url "flatpage" url="/preisliste/" %}" title="Preise" class="btn-inline">{% trans "prices and plans" %}</a>
                 </li>
                 <li>
                   <a href="/blog/" title="Blog" class="btn-inline btn-with-separator">{% trans "Blog" %}</a>
                 </li>
                 <li>
-                  <a href="{% url "django.contrib.flatpages.views.flatpage" url="preisliste/" %}" title="{% trans "Try for free" %}" class="btn btn-default btn-white">{% trans "Try for free" %}</a>
+                  <a href="{% url "flatpage" url="/preisliste/" %}" title="{% trans "Try for free" %}" class="btn btn-default btn-white">{% trans "Try for free" %}</a>
                 </li>
               </ul>
             </div><!-- /.navbar-collapse -->
@@ -58,7 +58,7 @@
   <div class="container">
     <h1>{% trans "Das Online-Aktienbuch" %}</h1>
     <h2>{% trans "Mit Sicherheit gesetzeskonform durch automatische Validierung." %}</h2>
-    <a href="{% url "django.contrib.flatpages.views.flatpage" url="preisliste/" %}" title="{% trans "Try for free" %}" class="btn btn-default btn-white">
+    <a href="{% url "flatpage" url="/preisliste/" %}" title="{% trans "Try for free" %}" class="btn btn-default btn-white">
       {% trans "Try for free" %}
     </a>
     <div class="main-screenshot chrome animated fadeInUp">
@@ -98,7 +98,7 @@
 		  <div>{% trans "Insert your data of your shareholders and your past transactions. Click a button and easily download your Captable PDF for any review or assessment. Anytime at your fingertips." %}</div>
 		</li>
       </ul>
-      <a href="{% url "django.contrib.flatpages.views.flatpage" url="preisliste/" %}" title="{% trans "Try for free" %}" class="btn btn-default btn-focus">
+      <a href="{% url "flatpage" url="/preisliste/" %}" title="{% trans "Try for free" %}" class="btn btn-default btn-focus">
         {% trans "Try for free now" %}
       </a>
     </div>

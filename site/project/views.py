@@ -146,7 +146,7 @@ def _get_transactions(from_date, to_date, security, company):
 
 def index(request):
     template = loader.get_template('index.html')
-    context = RequestContext(request, {})
+    context = {'request': request}
     if Entry.published.all().exists():
         context['latest_blog_entry'] = Entry.published.all()[0]
     context['flatpages'] = FlatPage.objects.all()
@@ -158,7 +158,7 @@ def index(request):
 @login_required
 def start(request):
     template = loader.get_template('start.html')
-    context = RequestContext(request, {})
+    context = {'request': request}
     return HttpResponse(template.render(context))
 
 

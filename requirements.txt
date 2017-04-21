@@ -1,9 +1,9 @@
-Django==1.9.8
+Django==1.10.7
 django-registration-redux>=1.4
 djangorestframework>=3.4.1
 django-nose>=1.4.3
 django-languages
-django-reversion==1.10.2
+django-reversion==2.0.8
 django-rosetta
 django-sendfile
 # native lib failed for voice token see http://bit.ly/2hQAzTz
@@ -53,7 +53,7 @@ zinnia-theme-bootstrap
 docutils
 # flatpages:
 markdown
-django_markdown
+django-markdown-app
 django-markdownx
 git+https://github.com/patroqueeet/django-flatpage-meta.git@master#egg=flatpage_meta
 #-- end blog

@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.template import RequestContext, loader
+from django.template import loader
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 
@@ -13,7 +13,7 @@ def company(request, company_id):
     """
     template = loader.get_template('company.html')
     company = get_object_or_404(Company, id=int(company_id))
-    context = RequestContext(request, {'company': company})
+    context = {'request': request, 'company': company}
     return HttpResponse(template.render(context))
 
 
@@ -23,7 +23,7 @@ def company_select(request):
     view to select company to work within for operators
     """
     template = loader.get_template('company_select.html')
-    context = RequestContext(request)
+    context = {'request': request}
 
     # company choice: set to session and redirect to start...
     company_id = int(request.GET.get('company_id', 0))

@@ -5,17 +5,13 @@ from django.db import models
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-from django.contrib.flatpages.admin import FlatPageAdmin
+# from django.contrib.flatpages.admin import FlatPageAdmin
 from django.contrib.flatpages.models import FlatPage
 
 from flatpage_meta.admin import ReplacementFlatPageAdmin
 
 from markdownx.widgets import AdminMarkdownxWidget
-# from reversion.admin import VersionAdmin  # revers > 2.0
-from reversion.helpers import patch_admin  # reversion < 2.0
-
-# ReVersioned UserAdmin
-patch_admin(User)
+from reversion.admin import VersionAdmin  # revers > 2.0
 
 
 UserAdmin.list_display = (
@@ -32,7 +28,6 @@ UserAdmin.list_filter = (
     )
 
 
-""" reversion > 2.0
 class ReversionedUserAdmin(VersionAdmin, UserAdmin):
 
     list_display = (
@@ -48,7 +43,6 @@ class ReversionedUserAdmin(VersionAdmin, UserAdmin):
         'is_staff', 'date_joined', 'operator__company', 'shareholder__company',
         'last_login',
         )
-"""
 
 
 class FlatPageAdminX(ReplacementFlatPageAdmin):
