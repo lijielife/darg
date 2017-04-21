@@ -13,7 +13,9 @@
     "angular-resource": "1.5.8",
     "angular-xeditable": "0.1.12",
     "ng-file-upload": "",
-    "angular-i18n": "1.5.8"
+    "angular-i18n": "1.5.8",
+    "angular-moment": "^1.0.1",
+    "moment-timezone": "^0.5.13"
   },
   "private": true,
   "devDependencies": {

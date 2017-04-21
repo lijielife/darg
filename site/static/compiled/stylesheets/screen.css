@@ -2403,6 +2403,16 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
     transform: rotate(360deg);
   }
 }
+#reports .captable .btn-panel .pdf .icon {
+  background-image: url("/static/compiled/images/pdf-icon.png");
+}
+#reports .captable .btn-panel .csv .icon {
+  background-image: url("/static/compiled/images/csv-icon.png");
+}
+#reports .captable .form .input-group {
+  display: block;
+}
+
 blockquote {
   font-style: normal;
   background-color: #ccd7dd;
@@ -2700,16 +2710,16 @@ html, body {
   background-color: transparent;
 }
 .core .container h1 {
-  font-size: 3em;
+  font-size: 2em;
   margin-bottom: 0.5em;
 }
 .core .container h2 {
-  font-size: 2em;
+  font-size: 1.5em;
   margin-bottom: 1em;
   margin-top: 1.25em;
 }
 .core .container h3 {
-  font-size: 1.5em;
+  font-size: 1.2em;
   margin-bottom: 0.125em;
 }
 .core .container h4 {
@@ -2740,6 +2750,16 @@ html, body {
 }
 .core .container strong {
   font-weight: bold;
+}
+.core .container .context-help {
+  border: 1px solid #337ab7;
+  border-radius: 50%;
+  width: 20px;
+  padding: 0px 6px;
+  font-size: small;
+  color: #337ab7;
+  font-weight: bold;
+  margin-left: 5px;
 }
 .core .container .el-icon-exclamation-sign {
   display: inline-block;
@@ -2846,6 +2866,24 @@ html, body {
   background-color: #fff !important;
   color: #337ab7 !important;
   border: 1px solid #337ab7 !important;
+}
+.core .container .btn-panel {
+  margin: 1em 0em 2em;
+}
+.core .container .btn-image {
+  padding: 1em 2em;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  background-color: transparent;
+}
+.core .container .btn-image .icon {
+  width: 50px;
+  height: 50px;
+  background-size: 50px;
+}
+.core .container .selected {
+  border-color: #337ab7;
+  background-color: #f5f5f5;
 }
 .core .container .panel {
   margin-top: 1em;
@@ -3493,7 +3531,7 @@ div#shareholder_list .logo {
   line-height: 2em;
 }
 
-.get-certificate-id {
+.form-field-generate-btn {
   top: -31px;
   position: relative;
   right: 10px;

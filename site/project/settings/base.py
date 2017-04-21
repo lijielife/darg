@@ -66,6 +66,7 @@ INSTALLED_APPS = (
     'registration',
     'rest_framework',
     'rest_framework.authtoken',
+    'django_filters',
     'raven.contrib.django.raven_compat',
     'sorl.thumbnail',
     'djrill',
@@ -293,6 +294,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
     )
 }
 # angular does want this
@@ -398,6 +402,9 @@ if DROPBOX_ROOT_PATH:
 SWISS_BANKS_DOWNLOAD_URL = ('https://www.six-interbank-clearing.com/dam'
                             '/downloads/bc-bank-master/bcbankenstamm')
 
+
+# app internal settings
+DISPO_SHAREHOLDER_NUMBER = '9999999999'
 
 # need to differentiate instances
 def backup_filename(databasename, servername, datetime, extension,

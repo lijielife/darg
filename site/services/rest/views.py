@@ -3,14 +3,17 @@ from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django.utils.translation import ugettext as _
-from rest_framework import filters, status, viewsets
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, pagination, status, viewsets
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from reports.models import Report
 from services.rest.pagination import SmallPagePagination
 from services.rest.permissions import (SafeMethodsOnlyPermission,
                                        UserCanAddCompanyPermission,
@@ -21,7 +24,8 @@ from services.rest.serializers import (AddCompanySerializer, BankSerializer,
                                        OptionHolderSerializer,
                                        OptionPlanSerializer,
                                        OptionTransactionSerializer,
-                                       PositionSerializer, SecuritySerializer,
+                                       PositionSerializer, ReportSerializer,
+                                       SecuritySerializer,
                                        ShareholderListSerializer,
                                        ShareholderSerializer, UserSerializer,
                                        UserWithEmailOnlySerializer)
@@ -95,7 +99,7 @@ class ShareholderViewSet(viewsets.ModelViewSet):
                 })
         return Response(data, status=status.HTTP_200_OK)
 
-    @list_route(methods=['get'])
+    @list_route(methods=['get'], permission_classes=[UserIsOperatorPermission])
     def company_number_segments(self, request):
         company = get_company_from_request(request)
         shareholder = company.get_company_shareholder()
@@ -113,8 +117,8 @@ class ShareholderViewSet(viewsets.ModelViewSet):
                 })
         return Response(data, status=status.HTTP_200_OK)
 
-    @list_route(methods=['get'])
-    def option_holder(self, request, pk=None):
+    @list_route(methods=['get'], permission_classes=[UserIsOperatorPermission])
+    def option_holder(self, request):
         """
         returns the captable part for all option holders
         """
@@ -122,7 +126,7 @@ class ShareholderViewSet(viewsets.ModelViewSet):
         if not self.request.session.get('company_pk'):
             return Response(Shareholder.objects.none())
 
-        company = Company.objects.get(pk=self.request.session.get('company_pk'))
+        company = get_company_from_request(request)
 
         ohs = company.get_active_option_holders()
         ohs = self.filter_queryset(ohs)
@@ -134,6 +138,16 @@ class ShareholderViewSet(viewsets.ModelViewSet):
         serializer = OptionHolderSerializer(
             ohs, many=True, context={'request': request})
         return Response(serializer.data)
+
+    @list_route(methods=['get'], permission_classes=[UserIsOperatorPermission])
+    def get_new_shareholder_number(self, request):
+        """
+        returns unused new unused shareholder number
+        """
+        company = get_company_from_request(request)
+        number = company.get_new_shareholder_number()
+        payload = {'number': number}
+        return Response(payload, status=status.HTTP_200_OK)
 
 
 class OperatorViewSet(viewsets.ModelViewSet):
@@ -314,7 +328,7 @@ class OptionPlanViewSet(viewsets.ModelViewSet):
     """ API endpoint to get options """
     serializer_class = OptionPlanSerializer
     permission_classes = [
-        # UserCanAddOptionPlanPermission,
+        UserIsOperatorPermission
     ]
 
     def get_queryset(self):
@@ -401,6 +415,37 @@ class OptionTransactionViewSet(viewsets.ModelViewSet):
                     'errors': [_('Confirmed position cannot be deleted.')]
                 },
                 status=status.HTTP_400_BAD_REQUEST)
+
+
+class ReportViewSet(viewsets.ModelViewSet):
+
+    serializer_class = ReportSerializer
+    pagination_class = pagination.LimitOffsetPagination
+    permission_classes = [
+        UserIsOperatorPermission
+    ]
+    filter_backends = (filters.OrderingFilter, DjangoFilterBackend)
+    filter_fields = ('order_by', 'report_type', 'file_type')
+    ordering = ('-pk',)
+
+    def get_queryset(self):
+        company = get_company_from_request(self.request)
+        qs = Report.objects.filter(
+            company=company
+        )
+
+        return qs
+
+    def perform_create(self, serializer):
+        """ complete missing data for model """
+        report = serializer.save(
+            eta=timezone.now(),  # placeholder
+            user=self.request.user,
+            company=get_company_from_request(self.request)
+            )
+        report.update_eta()
+        report.render(notify=True, track_downloads=True)
+        return report
 
 
 # --- VIEWS

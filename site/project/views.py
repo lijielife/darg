@@ -20,8 +20,7 @@ from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from zinnia.models.entry import Entry
 
-from project.tasks import (send_captable_csv, send_captable_pdf,
-                           send_initial_password_mail)
+from project.tasks import send_initial_password_mail
 from services.instapage import InstapageSubmission as Instapage
 from shareholder.models import (Company, Operator, OptionTransaction, Position,
                                 Security, Shareholder)
@@ -291,26 +290,6 @@ def transactions_csv(request, company_id):
 
 
 @login_required
-def captable_csv(request, company_id):
-    """ returns csv with active shareholders """
-
-    # perm check
-    if not Operator.objects.filter(
-        user=request.user, company__id=company_id
-    ).exists():
-        return HttpResponseForbidden()
-
-    company = get_object_or_404(Company, id=company_id)
-    send_captable_csv.apply_async(args=[request.user.pk, company.pk],
-                                  kwargs={
-                                      'ordering': request.GET.get('ordering')})
-    messages.info(request, _('csv file is being generated and will be sent '
-                             'by email to you'))
-
-    return redirect(reverse('reports'))
-
-
-@login_required
 def printed_certificates_csv(request, company_id):
     """
     return csv with list of printed certificates
@@ -413,25 +392,6 @@ def vested_csv(request, company_id):
         writer.writerow([unicode(s).encode("utf-8") for s in row])
 
     return response
-
-
-@login_required
-def captable_pdf(request, company_id):
-
-    # perm check
-    if not Operator.objects.filter(
-        user=request.user, company__id=company_id
-    ).exists():
-        return HttpResponseForbidden()
-
-    company = get_object_or_404(Company, id=company_id)
-    send_captable_pdf.apply_async(args=[request.user.pk, company.pk],
-                                  kwargs={
-                                    'ordering': request.GET.get('ordering')})
-    messages.info(request, _('pdf file is being generated and will be sent '
-                             'by email to you'))
-
-    return redirect(reverse('reports'))
 
 
 @login_required

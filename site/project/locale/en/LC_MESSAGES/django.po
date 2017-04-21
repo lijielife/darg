@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-13 23:56+0000\n"
+"POT-Creation-Date: 2017-04-19 20:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,68 +24,16 @@ msgid ""
 "of Service</a>"
 msgstr ""
 
-#: project/tasks.py:103
+#: project/models.py:16
+msgid "created at"
+msgstr ""
+
+#: project/models.py:17
+msgid "modified at"
+msgstr ""
+
+#: project/tasks.py:21
 msgid "Welcome to Das Aktienregister - Your new password"
-msgstr ""
-
-#: project/tasks.py:131
-msgid "Your pdf captable file"
-msgstr ""
-
-#: project/tasks.py:133 project/tasks.py:197
-msgid "Your file is attached to this email"
-msgstr ""
-
-#: project/tasks.py:138
-msgid "PDF Captable/Active Shareholders"
-msgstr ""
-
-#: project/tasks.py:158 project/tests/test_views.py:535 project/views.py:37
-msgid "shareholder number"
-msgstr ""
-
-#: project/tasks.py:158 project/views.py:37
-msgid "last name"
-msgstr ""
-
-#: project/tasks.py:158 project/views.py:37
-msgid "first name"
-msgstr ""
-
-#: project/tasks.py:159 project/views.py:38
-msgid "email"
-msgstr ""
-
-#: project/tasks.py:159 project/views.py:346
-msgid "share count"
-msgstr ""
-
-#: project/tasks.py:159
-msgid "votes share percent"
-msgstr ""
-
-#: project/tasks.py:160 project/views.py:39
-msgid "language ISO"
-msgstr ""
-
-#: project/tasks.py:160 project/views.py:39
-msgid "language full"
-msgstr ""
-
-#: project/tasks.py:164
-msgid "Share IDs"
-msgstr ""
-
-#: project/tasks.py:189
-msgid "None"
-msgstr ""
-
-#: project/tasks.py:195
-msgid "Your csv captable file"
-msgstr ""
-
-#: project/tasks.py:202
-msgid "CSV Captable/Active Shareholders"
 msgstr ""
 
 #: project/templates/_add_capital_form.html:3
@@ -494,7 +442,7 @@ msgstr ""
 msgid "Gratis Aktienbuch-Muster"
 msgstr ""
 
-#: project/templates/index.html:36 project/tests/test_views.py:80
+#: project/templates/index.html:36 project/tests/test_views.py:81
 msgid "My Dashboard"
 msgstr ""
 
@@ -1022,13 +970,21 @@ msgstr ""
 msgid "Weblog index"
 msgstr ""
 
-#: project/tests/test_views.py:138 project/views.py:203
+#: project/tests/test_views.py:139 project/views.py:202
 msgid ""
 "You have already an existing user account. Please login or reset your "
 "password."
 msgstr ""
 
-#: project/tests/test_views.py:580 project/views.py:94
+#: project/tests/test_views.py:337
+msgid "None"
+msgstr ""
+
+#: project/tests/test_views.py:444 project/views.py:36
+msgid "shareholder number"
+msgstr ""
+
+#: project/tests/test_views.py:489 project/views.py:93
 msgid "date"
 msgstr ""
 
@@ -1052,138 +1008,154 @@ msgstr ""
 msgid "You didn't press any keys. Good bye."
 msgstr ""
 
-#: project/views.py:39
+#: project/views.py:36
+msgid "last name"
+msgstr ""
+
+#: project/views.py:36
+msgid "first name"
+msgstr ""
+
+#: project/views.py:37
+msgid "email"
+msgstr ""
+
+#: project/views.py:38
+msgid "language ISO"
+msgstr ""
+
+#: project/views.py:38
+msgid "language full"
+msgstr ""
+
+#: project/views.py:38
 msgid "street"
 msgstr ""
 
-#: project/views.py:39
+#: project/views.py:38
 msgid "street 2"
 msgstr ""
 
-#: project/views.py:40
+#: project/views.py:39
 msgid "c/o"
 msgstr ""
 
-#: project/views.py:40
+#: project/views.py:39
 msgid "city"
 msgstr ""
 
-#: project/views.py:40
+#: project/views.py:39
 msgid "zip"
 msgstr ""
 
-#: project/views.py:40
+#: project/views.py:39
 msgid "country"
 msgstr ""
 
-#: project/views.py:41
+#: project/views.py:40
 msgid "pobox"
 msgstr ""
 
-#: project/views.py:41
+#: project/views.py:40
 msgid "mailing type"
 msgstr ""
 
-#: project/views.py:41
+#: project/views.py:40
 msgid "nationality"
 msgstr ""
 
-#: project/views.py:94
+#: project/views.py:93
 msgid "buyer"
 msgstr ""
 
-#: project/views.py:94
+#: project/views.py:93
 msgid "seller"
 msgstr ""
 
-#: project/views.py:95 project/views.py:401
+#: project/views.py:94 project/views.py:380
 msgid "count"
 msgstr ""
 
-#: project/views.py:96
+#: project/views.py:95
 msgid "value"
 msgstr ""
 
-#: project/views.py:96 project/views.py:401
+#: project/views.py:95 project/views.py:380
 msgid "security"
 msgstr ""
 
-#: project/views.py:96
+#: project/views.py:95
 msgid "comment"
 msgstr ""
 
-#: project/views.py:96
+#: project/views.py:95
 msgid "depot type"
 msgstr ""
 
-#: project/views.py:97
+#: project/views.py:96
 msgid "stock book id"
 msgstr ""
 
-#: project/views.py:97
+#: project/views.py:96
 msgid "vesting period (options only"
 msgstr ""
 
-#: project/views.py:98
+#: project/views.py:97
 msgid "cert id (options only)"
 msgstr ""
 
-#: project/views.py:119 project/views.py:121
+#: project/views.py:118 project/views.py:120
 msgid "----------------------------------------"
 msgstr ""
 
-#: project/views.py:120
+#: project/views.py:119
 msgid "Transactions for options:"
 msgstr ""
 
-#: project/views.py:307
-msgid "csv file is being generated and will be sent by email to you"
-msgstr ""
-
-#: project/views.py:346 project/views.py:401
+#: project/views.py:325 project/views.py:380
 msgid "full name"
 msgstr ""
 
-#: project/views.py:346
+#: project/views.py:325
+msgid "share count"
+msgstr ""
+
+#: project/views.py:325
 msgid "security name"
 msgstr ""
 
-#: project/views.py:347
+#: project/views.py:326
 msgid "certificate id"
 msgstr ""
 
-#: project/views.py:347
+#: project/views.py:326
 msgid "certificate printed at"
 msgstr ""
 
-#: project/views.py:348
+#: project/views.py:327
 msgid "security type"
 msgstr ""
 
-#: project/views.py:355
+#: project/views.py:334
 msgid "option"
 msgstr ""
 
-#: project/views.py:363 project/views.py:406
+#: project/views.py:342 project/views.py:385
 msgid "stock"
 msgstr ""
 
-#: project/views.py:402
+#: project/views.py:381
 msgid "is management member"
 msgstr ""
 
-#: project/views.py:403
+#: project/views.py:382
 msgid "vesting in months"
 msgstr ""
 
-#: project/views.py:403
+#: project/views.py:382
 msgid "asset type"
 msgstr ""
 
-#: project/views.py:411
+#: project/views.py:390
 msgid "certificate"
-msgstr ""
-
-#: project/views.py:431
-msgid "pdf file is being generated and will be sent by email to you"
 msgstr ""

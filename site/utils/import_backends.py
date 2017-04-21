@@ -6,6 +6,7 @@ import datetime
 import logging
 
 from dateutil.parser import parse
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import DataError
 from django.db.models import Sum
@@ -270,10 +271,11 @@ class SisWareImportBackend(BaseImportBackend):
 
     def _get_or_create_dispo_shareholder(self):
         user = self._get_or_create_user(
-            '9999999999', '', _('Disposhareholder'), 'Juristische Person',
+            settings.DISPO_SHAREHOLDER_NUMBER, '', _('Disposhareholder'),
+            'Juristische Person',
             '', '', '', '', '', '', '', '', '', '', '', '', '', '')
         shareholder = self._get_or_create_shareholder(
-            '9999999999', user, 'Unzustellbar')
+            settings.DISPO_SHAREHOLDER_NUMBER, user, 'Unzustellbar')
         return shareholder
 
     def _get_or_create_security(self, face_value, cusip=None):

@@ -1,5 +1,6 @@
 module.exports = (grunt) ->
 
+
     grunt.initConfig(
         pkg: grunt.file.readJSON('package.json')
         watch:
@@ -22,7 +23,11 @@ module.exports = (grunt) ->
             assets:
                 expand: true
                 cwd: 'darg.js/assets/'
-                src: '*'
+                src: [
+                    './bootstrap/dist/css/bootstrap.css',
+                    './angular-xeditable/dist/css/xeditable.css',
+                    './bootstrap/dist/fonts/glyphicons-halflings-regular.*'
+                ]
                 dest: '../site/static/compiled/contrib'
 
         concat:
@@ -42,6 +47,10 @@ module.exports = (grunt) ->
                   './darg.js/assets/angular-xeditable/dist/js/xeditable.js',
                   './darg.js/assets/ng-file-upload/ng-file-upload.js',
                   './darg.js/assets/angular-i18n/angular-locale_de-ch.js',
+                  './darg.js/assets/moment/moment.js',
+                  './darg.js/assets/moment/locale/de-ch.js',
+                  './darg.js/assets/moment-timezone/moment-timezone.js',
+                  './darg.js/assets/angular-moment/angular-moment.js',
                   'compiled/javascript/application.js'
                 ]
                 dest: 'compiled/javascript/script.js'

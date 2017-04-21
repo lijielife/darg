@@ -7,11 +7,12 @@ import logging
 import random
 
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as __
-from model_mommy import random_gen
-from model_mommy import mommy
+from model_mommy import mommy, random_gen
 
+from reports.models import Report
 from shareholder.models import (Company, Country, Operator, OptionPlan,
                                 OptionTransaction, Position, Security,
                                 Shareholder, UserProfile)
@@ -228,7 +229,7 @@ class CompanyShareholderGenerator(object):
 
 class PositionGenerator(object):
 
-    def generate(self, **kwargs):
+    def _get_company(self, **kwargs):
         company = kwargs.get('company')
         if not company and kwargs.get('buyer'):
             company = kwargs.get('buyer').company
@@ -238,9 +239,16 @@ class PositionGenerator(object):
             company = kwargs.get('security').company
         if not company:
             company = CompanyGenerator().generate()
+        return company
 
-        buyer = kwargs.get('buyer') or ShareholderGenerator().generate(
-            company=company)
+    def _get_or_generate(self, key, generator, kwargs, gen_kwargs={}):
+        return kwargs.get(key) or generator().generate(**gen_kwargs)
+
+    def generate(self, **kwargs):
+
+        company = self._get_company(**kwargs)
+        buyer = self._get_or_generate('buyer', ShareholderGenerator, kwargs,
+                                      dict(company=company))
 
         # seller only if not sent as kwarg
         if 'seller' not in kwargs.keys():
@@ -285,6 +293,10 @@ class PositionGenerator(object):
         if kwargs.get('certificate_id'):
             kwargs2.update(
                 {'certificate_id': kwargs.get('certificate_id')})
+
+        if kwargs.get('vesting_months'):
+            kwargs2.update(
+                {'vesting_months': kwargs.get('vesting_months')})
 
         if kwargs.get('save') == False:
             return Position(**kwargs2)
@@ -367,6 +379,29 @@ class OptionTransactionGenerator(object):
             position = OptionTransaction(**kwargs2)
 
         return position
+
+
+class ReportGenerator(object):
+
+    def generate(self, **kwargs):
+
+        save = kwargs.pop('save', True)
+
+        rkwargs = {
+            'eta': timezone.now(),
+            'company': CompanyGenerator().generate(),
+            'user': UserGenerator().generate(),
+            'report_type': 'captable',
+            'file_type': 'PDF',
+        }
+        rkwargs.update(kwargs)
+
+        if save:
+            report = Report.objects.create(**rkwargs)
+        else:
+            report = Report(**rkwargs)
+
+        return report
 
 
 class TwoInitialSecuritiesGenerator(object):

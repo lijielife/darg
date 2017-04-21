@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-13 23:56+0000\n"
-"PO-Revision-Date: 2017-04-13 23:57+0000\n"
+"POT-Creation-Date: 2017-04-19 20:59+0000\n"
+"PO-Revision-Date: 2017-04-19 21:04+0000\n"
 "Last-Translator:   <jirka@kkd-partners.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -122,102 +122,98 @@ msgstr ""
 "\n"
 "Das Aktienregister-Team"
 
-#: shareholder/models.py:525
+#: shareholder/models.py:532
 msgid "Share split of {} on {} with ratio {}:{}. Return of old shares."
 msgstr ""
 "Aktiensplit von {} für {} mit Verhältnis {}:{}. Rückgabe alter Aktien."
 
-#: shareholder/models.py:547
+#: shareholder/models.py:554
 msgid "Share split of {} on {} with ratio {}:{}. Provisioning of new shares."
 msgstr "Aktiensplit von {} für {} mit Verhältnis {}:{}. Ausgabe neuer Aktien."
 
-#: shareholder/models.py:584
+#: shareholder/models.py:591
 msgid "Human Being"
 msgstr "Natürliche Person"
 
-#: shareholder/models.py:585 shareholder/tests/test_functional.py:161
+#: shareholder/models.py:592 shareholder/tests/test_functional.py:161
 msgid "Corporate"
 msgstr "Juristische Person"
 
-#: shareholder/models.py:608
+#: shareholder/models.py:615
 msgid "legal type of the user"
 msgstr "Rechtsfähigkeit / Aktionärsart"
 
-#: shareholder/models.py:613
+#: shareholder/models.py:620
 msgid "when did the user register with the share register 1st time."
 msgstr "Datum der Ersteintragung ins Register"
 
-#: shareholder/models.py:631
+#: shareholder/models.py:638
 msgid "user with legal type company must have company name set"
 msgstr "Eine Juristische Person muss den Unternehmensnamen angegeben haben."
 
-#: shareholder/models.py:635
+#: shareholder/models.py:642
 msgid "user company must have legal type set to company"
 msgstr "Bitte ändern Sie die Aktionärsart in Juristische Person"
 
-#: shareholder/models.py:645
+#: shareholder/models.py:652
 msgid "how should the shareholder be approached by the corp"
 msgstr "Wie soll der Aktionär durch die Gesellschaft kontaktiert werden?"
 
-#: shareholder/models.py:648
+#: shareholder/models.py:655
 msgid "user is management/board member of company"
 msgstr "Gesellschafter ist Mitglied des VR/Managements"
 
-#: shareholder/models.py:859
+#: shareholder/models.py:866
 msgid "Missing all data required for #GAFI."
 msgstr "Alle Daten für GAFI-FATF fehlen."
 
-#: shareholder/models.py:870
+#: shareholder/models.py:877
 msgid "Shareholder first name or last name missing."
 msgstr "Vorname, Nachname des Gesellschafters fehlen."
 
-#: shareholder/models.py:877
+#: shareholder/models.py:884
 msgid "Company name or last name missing."
 msgstr "Name des Unternehmens nicht vorhanden."
 
-#: shareholder/models.py:881
+#: shareholder/models.py:888
 msgid "Shareholder birthday missing."
 msgstr "Geburstag ist nicht angegeben."
 
-#: shareholder/models.py:885
+#: shareholder/models.py:892
 msgid "Shareholder origin/country missing."
 msgstr "Land des Aktionärs fehlt."
 
-#: shareholder/models.py:894
+#: shareholder/models.py:901
 msgid "Shareholder address or address details missing."
 msgstr "Adresse oder Adressdetails des Aktionärs fehlt."
 
-#: shareholder/models.py:1136
+#: shareholder/models.py:1143
 msgid "Preferred Stock"
 msgstr "Vorzugsaktien"
 
-#: shareholder/models.py:1137
+#: shareholder/models.py:1144
 msgid "Common Stock"
 msgstr "Stammaktien"
 
-#: shareholder/models.py:1138
+#: shareholder/models.py:1145
 msgid "Registered Shares"
 msgstr "Namensaktien"
 
-#: shareholder/models.py:1139
-msgid "Registered share with restricted transferability"
-msgstr "Vinkulierte Namensaktien"
-
-#: shareholder/models.py:1146
+#: shareholder/models.py:1152
 msgid "Nominal value of this asset"
 msgstr "Nominalwert"
 
-#: shareholder/models.py:1152 shareholder/models.py:1241
-#: shareholder/models.py:1358 shareholder/models.py:1406
+#: shareholder/models.py:1158 shareholder/models.py:1247
+#: shareholder/models.py:1364 shareholder/models.py:1412
 msgid "JSON list of segments of ids for securities. can be 1, 2, 3, 4-10"
 msgstr "JSON Liste der IDs der Wertpapiere. Kann [1,2,3, u'5-9'] sein."
 
-#: shareholder/models.py:1155
+#: shareholder/models.py:1161
 msgid "public security id aka Valor, WKN, CUSIP: http://bit.ly/2ieXwuK"
 msgstr ""
 "Öffentliche Wertpapiernummer aka Valor, WKN, CUSIP: http://bit.ly/2ieXwuK"
 
-#: shareholder/models.py:1160
+#: shareholder/models.py:1166
 msgid ""
 "App needs to track IDs of shares. WARNING: update initial transaction with "
 "segments on enabling."
@@ -225,35 +221,35 @@ msgstr ""
 "Aktiennummern sollen verfolgt werden. WARNUNG: bei Aktivierung aktualisieren"
 " sie bitte auch alle vorhandenen Transaktionen für dieses Wertpapier!"
 
-#: shareholder/models.py:1165
+#: shareholder/models.py:1171
 msgid "{} ({} CHF)"
 msgstr "{} ({} CHF)"
 
-#: shareholder/models.py:1230
+#: shareholder/models.py:1236
 msgid "Share Count transfered or created"
 msgstr "transferierte oder erstellte Aktienanzahl"
 
-#: shareholder/models.py:1234
+#: shareholder/models.py:1240
 msgid "Nominal value or payed price for the transaction"
 msgstr "Nominalwert (bei Kapitalerhöhung) oder Kaufpreis"
 
-#: shareholder/models.py:1238
+#: shareholder/models.py:1244
 msgid "Position is part of a split transaction"
 msgstr "Transaktion ist Teil eines Aktiensplits"
 
-#: shareholder/models.py:1244 shareholder/models.py:1409
+#: shareholder/models.py:1250 shareholder/models.py:1415
 msgid "Securities are purchase type (for myself, etc.)"
 msgstr "Wertpapiererwerb für ..."
 
-#: shareholder/models.py:1247 shareholder/models.py:1412
+#: shareholder/models.py:1253 shareholder/models.py:1418
 msgid "aka Skontro (read http://bit.ly/2iJquEl)"
 msgstr "aka Skontro (read http://bit.ly/2iJquEl)"
 
-#: shareholder/models.py:1250 shareholder/models.py:1415
+#: shareholder/models.py:1256 shareholder/models.py:1421
 msgid "What kind of depot is this position stored within"
 msgstr "In welcher Depotart wird das Wertpapier gespeichert."
 
-#: shareholder/models.py:1255
+#: shareholder/models.py:1261
 msgid ""
 "assigned position represents the change back to company depot from cert "
 "depot"
@@ -261,39 +257,39 @@ msgstr ""
 "Zugewiesene Transaktion repräsentiert den Wechsel von Zertifikatsdepot zu "
 "Gesellschaftsdepot."
 
-#: shareholder/models.py:1288
+#: shareholder/models.py:1294
 msgid "Capital Increase"
 msgstr "Kapitalerhöhung oder Gründung"
 
-#: shareholder/models.py:1290
+#: shareholder/models.py:1296
 msgid "Part of Split"
 msgstr "Teil einer Splittransaktion"
 
-#: shareholder/models.py:1293
+#: shareholder/models.py:1299
 msgid "Share issue"
 msgstr "Aktienausgabe"
 
-#: shareholder/models.py:1295
+#: shareholder/models.py:1301
 msgid "share issue into cert depot"
 msgstr "Aktienausgabe  ins Zertifikatsdepot"
 
-#: shareholder/models.py:1298
+#: shareholder/models.py:1304
 msgid "move stock to certificate depot"
 msgstr "Übertragung der Aktien ins Zertifikatsdepot"
 
-#: shareholder/models.py:1300
+#: shareholder/models.py:1306
 msgid "stock returns from certificate depot"
 msgstr "Aktienübertragung aus dem Zertifikatsdepot"
 
-#: shareholder/models.py:1301
+#: shareholder/models.py:1307
 msgid "Regular Ownership change"
 msgstr "Regulärer Eigentümerwechsel"
 
-#: shareholder/models.py:1322
+#: shareholder/models.py:1328
 msgid "Certificate Invalidation for position {}"
 msgstr "Zertifikat für Transaktion {} invalidieren"
 
-#: shareholder/models.py:1352
+#: shareholder/models.py:1358
 msgid "Number of shares approved"
 msgstr "Anzahl der genehmigten Aktien"
 
@@ -632,15 +628,15 @@ msgstr "Zuerst am "
 msgid "printed"
 msgstr "gedruckt"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:6
+#: shareholder/templates/shareholder/shareholder_detail.html:7
 msgid "Shareholder"
 msgstr "Aktionär"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:20
+#: shareholder/templates/shareholder/shareholder_detail.html:21
 msgid "Shareholder Details"
 msgstr "Aktionärsdetails"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:26
+#: shareholder/templates/shareholder/shareholder_detail.html:27
 msgid ""
 "This is the dispo shareholder, which does not exist in the real world. but "
 "is meant to hold all shares which were not registered by their owners. "
@@ -650,212 +646,250 @@ msgstr ""
 "bekommen, da die Besitzer auf eine Eintragung verzichten. <strong>Bitte die "
 "Daten nicht bearbeiten.</strong>"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:30
+#: shareholder/templates/shareholder/shareholder_detail.html:31
 msgid "Shareholder Data"
 msgstr "Aktionärsdaten"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:35
+#: shareholder/templates/shareholder/shareholder_detail.html:36
 msgid "GAFI Validierung:"
 msgstr "GAFI Validierung:"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:39
+#: shareholder/templates/shareholder/shareholder_detail.html:40
 msgid "Please request the shareholder to complete his data."
 msgstr "Bitte vervollständigen Sie die Daten des Aktionärs."
 
-#: shareholder/templates/shareholder/shareholder_detail.html:47
+#: shareholder/templates/shareholder/shareholder_detail.html:48
 msgid "Shareholder Number"
 msgstr "Aktionärsnummer"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:55
+#: shareholder/templates/shareholder/shareholder_detail.html:56
 msgid "Is user member of management or board?"
 msgstr "Gesellschafter ist Mitglied des VR/Managements"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:68
+#: shareholder/templates/shareholder/shareholder_detail.html:69
 msgid "Initial Registration Date"
 msgstr "Datum der Ersteintragung ins Register"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:77
+#: shareholder/templates/shareholder/shareholder_detail.html:78
 msgid "Title"
 msgstr "Titel"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:85
+#: shareholder/templates/shareholder/shareholder_detail.html:86
 msgid "Salutation"
 msgstr "Anrede"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:93
+#: shareholder/templates/shareholder/shareholder_detail.html:94
 msgid "First Name, Last Name"
 msgstr "Vorname, Nachname"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:102
+#: shareholder/templates/shareholder/shareholder_detail.html:103
 msgid "Shareholder Email"
 msgstr "Email"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:110
+#: shareholder/templates/shareholder/shareholder_detail.html:111
 msgid "Shareholder Legal Type"
 msgstr "Rechtsfähigkeit / Aktionärsart"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:123
+#: shareholder/templates/shareholder/shareholder_detail.html:124
 msgid "Shareholder Company Name"
 msgstr "Name des Unternehmens"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:131
+#: shareholder/templates/shareholder/shareholder_detail.html:132
 msgid "Shareholder Company Department"
 msgstr "Abteilung im Unternehmen"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:139
+#: shareholder/templates/shareholder/shareholder_detail.html:140
 msgid "Mailing Type"
 msgstr "Versandart"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:152
+#: shareholder/templates/shareholder/shareholder_detail.html:153
 msgid "Address"
 msgstr "Adresse"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:153
+#: shareholder/templates/shareholder/shareholder_detail.html:154
 msgid "Street"
 msgstr "Strasse"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:154
+#: shareholder/templates/shareholder/shareholder_detail.html:155
 msgid "Street2"
 msgstr "Strasse Zusatz"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:155
+#: shareholder/templates/shareholder/shareholder_detail.html:156
 msgid "Zip"
 msgstr "Postleitzahl"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:155
+#: shareholder/templates/shareholder/shareholder_detail.html:156
 msgid "City"
 msgstr "Stadt"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:156
+#: shareholder/templates/shareholder/shareholder_detail.html:157
 msgid "Province"
 msgstr "Region/ Profinz"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:157
+#: shareholder/templates/shareholder/shareholder_detail.html:158
 msgid "Country"
 msgstr "Land"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:158
+#: shareholder/templates/shareholder/shareholder_detail.html:159
 msgid "P.O. Box"
 msgstr "Postfach"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:159
+#: shareholder/templates/shareholder/shareholder_detail.html:160
 msgid "c/o"
 msgstr "c/o"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:181
+#: shareholder/templates/shareholder/shareholder_detail.html:182
 msgid "Nationality"
 msgstr "Nationalität"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:194
+#: shareholder/templates/shareholder/shareholder_detail.html:195
 msgid "Shareholder Language"
 msgstr "Sprache"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:207
+#: shareholder/templates/shareholder/shareholder_detail.html:208
+msgid "Format: dd.mm.yy"
+msgstr ""
+"Datumsformat: 'dd.mm.yy' ohne führende Null/0 bei Tag, aber mit führender "
+"Null/0 bei Monat. Bsp: 1.01.16 für den 1. Januar 2016"
+
+#: shareholder/templates/shareholder/shareholder_detail.html:209
 msgid "Shareholder Birthday"
 msgstr "Geburstag"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:234
+#: shareholder/templates/shareholder/shareholder_detail.html:236
 msgid "Owned Stock"
 msgstr "Wertpapierbesitz"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:235
+#: shareholder/templates/shareholder/shareholder_detail.html:238
+msgid "total shares owned"
+msgstr "Anzahl der Aktien im Besitz des Aktionärs"
+
+#: shareholder/templates/shareholder/shareholder_detail.html:239
 msgid "Count Shares Owned Total"
 msgstr "Gesellschafter hält Wertpapiere gesamt"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:236
+#: shareholder/templates/shareholder/shareholder_detail.html:241
+msgid "total values of all shares based on face value"
+msgstr ""
+"Gesamtkapital des Gesellschafters basierend auf dem Nennwert. Mathematisch: "
+"Anzahl Aktien pro Nennwert multipliziert mit dem Nennwert."
+
+#: shareholder/templates/shareholder/shareholder_detail.html:242
 msgid "Total face value"
 msgstr "Kumuliertes Kapital (Nennwert Aktie * Stückzahl)"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:238
+#: shareholder/templates/shareholder/shareholder_detail.html:245
 #, python-format
 msgid "%% of shares floating"
 msgstr "Prozentualer Anteil an ausgegebenen Aktien"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:242
+#: shareholder/templates/shareholder/shareholder_detail.html:250
 msgid "Value of all shares according to last transaction"
 msgstr "Wert der Aktien basierend auf der letzten Transaktion"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:246
+#: shareholder/templates/shareholder/shareholder_detail.html:254
 msgid "Voting rights total count"
 msgstr "Stimmrechte gesamt"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:247
+#: shareholder/templates/shareholder/shareholder_detail.html:255
 msgid "Voting rights percent"
 msgstr "Stimmrechte (Prozent)"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:252
+#: shareholder/templates/shareholder/shareholder_detail.html:261
+msgid "total capital of the company. math: all shares existing * face value"
+msgstr ""
+"Gesamtkapital des Unternehmens. Mathematisch: Summe aus Anzahl der Aktien "
+"pro Nennwert multipliziert mit ihrem jeweiligen Nennwert."
+
+#: shareholder/templates/shareholder/shareholder_detail.html:262
 msgid "Provisioned Capital"
 msgstr "Gesamt Nennkapital"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:254
+#: shareholder/templates/shareholder/shareholder_detail.html:265
 msgid "Provisioned Share Count"
 msgstr "Anzahl existierender Aktien"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:257
+#: shareholder/templates/shareholder/shareholder_detail.html:269
 msgid "Share Count Floating"
 msgstr "Ausgegebene Aktien"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:259
+#: shareholder/templates/shareholder/shareholder_detail.html:272
+msgid "total votes count based on existing shares"
+msgstr ""
+"Anzahl der Stimmrechte basierend auf allen existierenden Aktien mit "
+"Stimmrecht. Schließt stimmrechtslose Aktien aus."
+
+#: shareholder/templates/shareholder/shareholder_detail.html:273
 msgid "Total votes count based on shares existing"
-msgstr "Stimmrechte gesamt basierend auf allen existierenden Aktien"
+msgstr "Stimmrechte gesamt"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:261
+#: shareholder/templates/shareholder/shareholder_detail.html:276
+msgid ""
+"total votes count effective. excludes unregistered/dispo shares and shares "
+"in company ownership"
+msgstr ""
+"Gesamtzahl Stimmrechte oder auch Stimmrechte effektiv. Beinhaltet nicht "
+"Stimmrechte von nicht registrierten Aktien/Dispoaktion und ebenfalls nicht "
+"enthalten sind Stimmrechte von Aktien, welche im Eigentum der Gesellschaft "
+"liegen."
+
+#: shareholder/templates/shareholder/shareholder_detail.html:277
 msgid "Total votes count based on shares floating"
-msgstr "Stimmrechte gesamt basierend auf ausgegebenen Aktien"
+msgstr "Stimmrechte effektiv basierend auf ausgegebenen Aktien"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:262
+#: shareholder/templates/shareholder/shareholder_detail.html:278
 msgid "Does include shares used for options. Without options it would be"
 msgstr ""
 "Beinhaltet Aktien welche für Optionen/Urkunden verwendet wurden. Rechnet man"
 " diese heraus ergibt dies"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:264
+#: shareholder/templates/shareholder/shareholder_detail.html:281
 msgid "Total option count based on shares dedicated to options"
 msgstr "Aktien reserviert für Optionen"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:265
+#: shareholder/templates/shareholder/shareholder_detail.html:282
 msgid "Total option count based on shares dedicated to options floating"
 msgstr "Gesamt ausgegebene Optionen"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:271
-#: shareholder/templates/shareholder/shareholder_detail.html:290
+#: shareholder/templates/shareholder/shareholder_detail.html:289
+#: shareholder/templates/shareholder/shareholder_detail.html:308
 msgid "security"
 msgstr "Wertpapier"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:272
-#: shareholder/templates/shareholder/shareholder_detail.html:291
+#: shareholder/templates/shareholder/shareholder_detail.html:290
+#: shareholder/templates/shareholder/shareholder_detail.html:309
 msgid "cusip"
 msgstr "Valor#"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:274
-#: shareholder/templates/shareholder/shareholder_detail.html:293
+#: shareholder/templates/shareholder/shareholder_detail.html:292
+#: shareholder/templates/shareholder/shareholder_detail.html:311
 msgid "issued"
 msgstr "Ausgegeben"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:277
 #: shareholder/templates/shareholder/shareholder_detail.html:295
+#: shareholder/templates/shareholder/shareholder_detail.html:313
 msgid "shares owned"
 msgstr "Aktienbesitz"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:279
+#: shareholder/templates/shareholder/shareholder_detail.html:297
 msgid "cleaned by options count"
 msgstr "Bereinigt um Optionen"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:281
+#: shareholder/templates/shareholder/shareholder_detail.html:299
 msgid "including shares inside certificate depot"
 msgstr "Beinhaltet Aktien im Zertifikatsdepot"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:283
-#: shareholder/templates/shareholder/shareholder_detail.html:296
+#: shareholder/templates/shareholder/shareholder_detail.html:301
+#: shareholder/templates/shareholder/shareholder_detail.html:314
 msgid "options owned"
 msgstr "Optionen"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:285
-#: shareholder/templates/shareholder/shareholder_detail.html:298
+#: shareholder/templates/shareholder/shareholder_detail.html:303
+#: shareholder/templates/shareholder/shareholder_detail.html:316
 msgid "share segments"
 msgstr "Aktiennummern"
 
-#: shareholder/templates/shareholder/shareholder_detail.html:304
+#: shareholder/templates/shareholder/shareholder_detail.html:322
 msgid "Delete shareholder"
 msgstr "Gesellschafter löschen"
 
@@ -896,6 +930,10 @@ msgstr "Initiale Transaktion für Aktie {} ist ungültig."
 #: shareholder/views.py:87 shareholder/views.py:96
 msgid "Permission denied"
 msgstr "Zugriff verweigert."
+
+#, fuzzy
+#~ msgid "total_share_count"
+#~ msgstr "Anzahl Aktien"
 
 #~ msgid "%% Ownership"
 #~ msgstr "Anteile in Prozent"

@@ -106,8 +106,10 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
             $scope.loading = true
             $scope.user = result.data.results[0]
             # get company data
-            $http.get($scope.user.selected_company).then (result1) ->
-                $scope.company = result1.data
+            if $scope.user.selected_company
+                $http.get($scope.user.selected_company).then (result1) ->
+                    $scope.company = result1.data
+                
         .finally ->
             $scope.loading = false
          
@@ -283,9 +285,9 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
             $scope.errors = null
         , (rejection) ->
             $scope.errors = rejection.data
-            Raven.captureMessage('add corp form error: ' + rejection.statusText, {
+            Raven.captureMessage('add corp form error', {
                 level: 'warning',
-                extra: { rejection: rejection },
+                extra: { rejection: rejection, config: rejection.config, status: rejection.status },
             })
 
     $scope.add_shareholder = ->
@@ -308,6 +310,16 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
         , (rejection) ->
             $scope.errors = rejection.data
             Raven.captureMessage('add shareholder form error: ' + rejection.statusText, {
+                level: 'warning',
+                extra: { rejection: rejection },
+            })
+
+    $scope.get_new_shareholder_number = ->
+        $http.get('/services/rest/shareholders/get_new_shareholder_number').then (response) ->
+       	 	    $scope.newShareholder.number = response.data.number
+        , (rejection) ->
+            $scope.errors = rejection.data
+            Raven.captureMessage('retrieve new shareholder number error: ' + rejection.statusText, {
                 level: 'warning',
                 extra: { rejection: rejection },
             })

@@ -62,7 +62,7 @@
         </select>
         <div ng-show="newPosition.depot_type.value==0">
           <input type="text" class="form-control" ng-model="newPosition.certificate_id" translate translate-attr-placeholder="Certificate ID" maxlength="20">
-          <span class="get-certificate-id label label-default" ng-click="get_new_certificate_id()" ng-show="!newPosition.certificate_id">
+          <span class="get-certificate-id form-field-generate-btn label label-default" ng-click="get_new_certificate_id()" ng-show="!newPosition.certificate_id">
             {% endverbatim %}{% trans "generate" %}{% verbatim %}
           </span>
         </div>
