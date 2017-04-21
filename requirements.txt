@@ -52,7 +52,8 @@ django-blog-zinnia==0.18.1
 # git+https://github.com/Fantomas42/django-blog-zinnia.git@develop#egg=django-blog-zinnia
 Pillow
 django-app-namespace-template-loader
-zinnia-theme-bootstrap
+# zinnia-theme-bootstrap==0.5.1 blocked by https://goo.gl/Gt92I2
+git+https://github.com/django-blog-zinnia/zinnia-theme-bootstrap.git@develop#egg=zinnia-theme-bootstrap
 docutils
 # flatpages:
 markdown
