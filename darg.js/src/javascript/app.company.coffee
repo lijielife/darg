@@ -95,7 +95,7 @@ app.controller 'CompanyController', ['$scope', '$http', '$window', 'Company', 'C
         , (rejection) ->
             $scope.company.founded_at = new Date($scope.company.founded_at)
             $scope.errors = rejection.data
-            Raven.captureMessage('add corp form error: ' + rejection.statusText, {
+            Raven.captureMessage('edit corp form error: ' + rejection.statusText, {
                 level: 'warning',
                 extra: { rejection: rejection },
             })

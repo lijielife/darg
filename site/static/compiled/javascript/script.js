@@ -43876,7 +43876,7 @@ return deCh;
         }, function(rejection) {
           $scope.company.founded_at = new Date($scope.company.founded_at);
           $scope.errors = rejection.data;
-          return Raven.captureMessage('add corp form error: ' + rejection.statusText, {
+          return Raven.captureMessage('edit corp form error: ' + rejection.statusText, {
             level: 'warning',
             extra: {
               rejection: rejection
