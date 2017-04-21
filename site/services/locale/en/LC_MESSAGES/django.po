@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-19 20:59+0000\n"
+"POT-Creation-Date: 2017-04-21 07:43+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -73,64 +73,66 @@ msgstr ""
 msgid "Number must be unique for this company"
 msgstr ""
 
-#: services/rest/serializers.py:673 services/rest/serializers.py:1060
+#: services/rest/serializers.py:675 services/rest/serializers.py:1056
 msgid "Invalid security numbers segments."
 msgstr ""
 
-#: services/rest/serializers.py:679 services/rest/serializers.py:1073
+#: services/rest/serializers.py:681 services/rest/serializers.py:1069
 msgid "Segments \"{}\" must be owned by seller \"{}\". Available are {}"
 msgstr ""
 
-#: services/rest/serializers.py:692 services/rest/serializers.py:1000
-#: services/rest/serializers.py:1085
+#: services/rest/serializers.py:694 services/rest/serializers.py:996
+#: services/rest/serializers.py:1081
 msgid "Number of shares in segments ({}) does not match count {}"
 msgstr ""
 
-#: services/rest/serializers.py:709
+#: services/rest/serializers.py:711
 msgid ""
 "Segment {} is blocked for options and cannot be transfered to a shareholder."
 msgstr ""
 
-#: services/rest/serializers.py:825 services/rest/serializers.py:1199
+#: services/rest/serializers.py:825 services/rest/serializers.py:1195
 msgid "Certificate ID {} is already used in transaction or option transaction"
 msgstr ""
 
-#: services/rest/serializers.py:834 services/rest/serializers.py:1208
+#: services/rest/serializers.py:834 services/rest/serializers.py:1204
 msgid "count {} must be greater then 0"
 msgstr ""
 
 #: services/rest/serializers.py:850
-msgid "seller does not have enough shares. max value is {}."
+msgid ""
+"seller does not have enough shares. max value is {}. shares can be blocked "
+"by cert depot or vesting."
 msgstr ""
 
-#: services/rest/serializers.py:862
+#: services/rest/serializers.py:863
 msgid "Depot bank is mandatory if depot type is certificate depot"
 msgstr ""
 
-#: services/rest/serializers.py:897
+#: services/rest/serializers.py:893
 msgid "Not a pdf file."
 msgstr ""
 
-#: services/rest/serializers.py:977
+#: services/rest/serializers.py:973
 msgid "Invalid or empty security numbers segments."
 msgstr ""
 
-#: services/rest/serializers.py:988
+#: services/rest/serializers.py:984
 msgid ""
 "Segments \"{}\" must be owned by company shareholder \"{}\". Available are {}"
 msgstr ""
 
-#: services/rest/serializers.py:1097
+#: services/rest/serializers.py:1093
 msgid ""
 "Segment {} is not reserved for options inside a option plan and cannot be "
 "transfered to a option holder. Available are: {}"
 msgstr ""
 
-#: services/rest/serializers.py:1220
+#: services/rest/serializers.py:1216
 msgid "seller does not have enough options. max value is {}."
 msgstr ""
 
-#: services/rest/tests/test_serializers.py:660
+#: services/rest/tests/test_serializers.py:665
 msgid "Human Being"
 msgstr ""
 
@@ -139,15 +141,15 @@ msgstr ""
 msgid "The fields {field_names} must be empty together or contain values."
 msgstr ""
 
-#: services/rest/views.py:258 services/rest/views.py:405
+#: services/rest/views.py:268 services/rest/views.py:415
 msgid "Confirmed position cannot be deleted."
 msgstr ""
 
-#: services/rest/views.py:289
+#: services/rest/views.py:299
 msgid "Position cannot be invalidated. \"{}\""
 msgstr ""
 
-#: services/rest/views.py:473 services/rest/views.py:475
-#: services/rest/views.py:477 services/rest/views.py:479
+#: services/rest/views.py:483 services/rest/views.py:485
+#: services/rest/views.py:487 services/rest/views.py:489
 msgid "Field may not be empty."
 msgstr ""

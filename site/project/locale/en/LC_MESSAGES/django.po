@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-19 20:59+0000\n"
+"POT-Creation-Date: 2017-04-21 07:43+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,7 +56,7 @@ msgstr ""
 #: project/templates/_add_option_plan_form.html:37
 #: project/templates/_add_option_transaction_form.html:70
 #: project/templates/_add_position_form.html:92
-#: project/templates/_add_shareholder_form.html:15
+#: project/templates/_add_shareholder_form.html:20
 #: project/templates/_split_shares_form.html:39
 msgid "Cancel"
 msgstr ""
@@ -148,6 +148,7 @@ msgid "Optional fields"
 msgstr ""
 
 #: project/templates/_add_position_form.html:66
+#: project/templates/_add_shareholder_form.html:14
 msgid "generate"
 msgstr ""
 
@@ -163,7 +164,7 @@ msgstr ""
 msgid "Please enter your shareholder data:"
 msgstr ""
 
-#: project/templates/_add_shareholder_form.html:16
+#: project/templates/_add_shareholder_form.html:21
 #: project/templates/start.html:43 project/templates/start.html:52
 msgid "Add Shareholder"
 msgstr ""
@@ -224,6 +225,7 @@ msgstr ""
 
 #: project/templates/_menu.html:87
 #: project/templates/two_factor/core/login.html:61
+#: project/tests/test_views.py:206
 msgid "Register"
 msgstr ""
 
@@ -442,7 +444,7 @@ msgstr ""
 msgid "Gratis Aktienbuch-Muster"
 msgstr ""
 
-#: project/templates/index.html:36 project/tests/test_views.py:81
+#: project/templates/index.html:36 project/tests/test_views.py:82
 msgid "My Dashboard"
 msgstr ""
 
@@ -970,21 +972,21 @@ msgstr ""
 msgid "Weblog index"
 msgstr ""
 
-#: project/tests/test_views.py:139 project/views.py:202
+#: project/tests/test_views.py:140 project/views.py:202
 msgid ""
 "You have already an existing user account. Please login or reset your "
 "password."
 msgstr ""
 
-#: project/tests/test_views.py:337
+#: project/tests/test_views.py:338
 msgid "None"
 msgstr ""
 
-#: project/tests/test_views.py:444 project/views.py:36
+#: project/tests/test_views.py:445 project/views.py:36
 msgid "shareholder number"
 msgstr ""
 
-#: project/tests/test_views.py:489 project/views.py:93
+#: project/tests/test_views.py:490 project/views.py:93
 msgid "date"
 msgstr ""
 

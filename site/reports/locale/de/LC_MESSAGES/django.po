@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-19 20:59+0000\n"
-"PO-Revision-Date: 2017-04-18 13:17+0000\n"
+"POT-Creation-Date: 2017-04-21 07:43+0000\n"
+"PO-Revision-Date: 2017-04-21 07:42+0000\n"
 "Last-Translator:   <jirka@kkd-partners.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -67,63 +67,143 @@ msgstr "Dauer zur Erstellung der Datei"
 msgid "time it took to generate the file in seconds"
 msgstr "Dauer der Dateierstellung in Sekunden"
 
-#: reports/tasks.py:161
-msgid "Your pdf captable file"
-msgstr "Ihre Aktionärsübersicht als PDF"
-
-#: reports/tasks.py:162 reports/tasks.py:234
-msgid "Your file is attached to this email"
-msgstr "Ihre Datei ist diese Email angehängt."
-
-#: reports/tasks.py:163
-msgid "PDF Captable/Active Shareholders"
-msgstr "Aktive Gesellschafter"
-
-#: reports/tasks.py:188
-msgid "shareholder number"
-msgstr "Aktionärsnummer"
-
-#: reports/tasks.py:188
-msgid "last name"
-msgstr "Nachname"
-
-#: reports/tasks.py:188
-msgid "first name"
-msgstr "Vorname"
-
-#: reports/tasks.py:189
-msgid "email"
-msgstr "Email"
-
-#: reports/tasks.py:189
-msgid "share count"
-msgstr "Aktienzahl"
-
-#: reports/tasks.py:189
-msgid "votes share percent"
-msgstr "Stimmrechte in Prozent"
-
-#: reports/tasks.py:190
-msgid "language ISO"
-msgstr "Sprache ISO-Code"
-
-#: reports/tasks.py:190
-msgid "language full"
-msgstr "Sprache"
-
-#: reports/tasks.py:194
-msgid "Share IDs"
-msgstr "Aktiennummern"
-
-#: reports/tasks.py:222
+#: reports/tasks.py:94
 msgid "None"
 msgstr "Keine"
 
-#: reports/tasks.py:233
+#: reports/tasks.py:216
+msgid "Your pdf captable file"
+msgstr "Ihre Aktionärsübersicht als PDF"
+
+#: reports/tasks.py:217 reports/tasks.py:283
+msgid "Your file is attached to this email"
+msgstr "Ihre Datei ist diese Email angehängt."
+
+#: reports/tasks.py:218
+msgid "PDF Captable/Active Shareholders"
+msgstr "Aktive Gesellschafter"
+
+#: reports/tasks.py:243
+msgid "shareholder number"
+msgstr "Aktionärsnummer"
+
+#: reports/tasks.py:243
+msgid "legal type"
+msgstr "Aktionärsart"
+
+#: reports/tasks.py:243
+msgid "registration types"
+msgstr "Eintragungsart"
+
+#: reports/tasks.py:244
+msgid "company_department"
+msgstr "Abteilung im Unternehmen"
+
+#: reports/tasks.py:244
+msgid "title"
+msgstr "Titel"
+
+#: reports/tasks.py:244
+msgid "salutation"
+msgstr "Anrede"
+
+#: reports/tasks.py:244
+msgid "last name"
+msgstr "Nachname"
+
+#: reports/tasks.py:245
+msgid "first name"
+msgstr "Vorname"
+
+#: reports/tasks.py:245
+msgid "address"
+msgstr "Adresse"
+
+#: reports/tasks.py:245
+msgid "postal_code"
+msgstr "PLZ"
+
+#: reports/tasks.py:245
+msgid "city"
+msgstr "Stadt"
+
+#: reports/tasks.py:246
+msgid "birthday"
+msgstr "Geburtstag"
+
+#: reports/tasks.py:246
+msgid "mailing_type"
+msgstr "Versandart"
+
+#: reports/tasks.py:246
+msgid "nationality"
+msgstr "Nationalität"
+
+#: reports/tasks.py:246
+msgid "security type"
+msgstr "Wertpapier"
+
+#: reports/tasks.py:247
+msgid "cusip"
+msgstr "WKN/Valor"
+
+#: reports/tasks.py:247
+msgid "face_value"
+msgstr "Nennwert"
+
+#: reports/tasks.py:247
+msgid "certificate_ids (issue date)"
+msgstr "ZertifikatsIDs"
+
+#: reports/tasks.py:248
+msgid "stock book id"
+msgstr "Skontro"
+
+#: reports/tasks.py:248
+msgid "depot_type"
+msgstr "Depotart"
+
+#: reports/tasks.py:249
+msgid "email"
+msgstr "Email"
+
+#: reports/tasks.py:249
+msgid "share count"
+msgstr "Aktienzahl"
+
+#: reports/tasks.py:249
+msgid "share percent"
+msgstr "Aktienanteil in Prozent"
+
+#: reports/tasks.py:250
+msgid "votes percent"
+msgstr "Stimmrechte in Prozent"
+
+#: reports/tasks.py:251
+msgid "cumulated face value"
+msgstr "Gesamtkapital (Basis: Nennwert)"
+
+#: reports/tasks.py:251
+msgid "is management"
+msgstr "Mitglied VR/Management"
+
+#: reports/tasks.py:252
+msgid "language ISO"
+msgstr "Sprache ISO-Code"
+
+#: reports/tasks.py:252
+msgid "language full"
+msgstr "Sprache"
+
+#: reports/tasks.py:256
+msgid "Share IDs"
+msgstr "Aktiennummern"
+
+#: reports/tasks.py:282
 msgid "Your csv captable file"
 msgstr "Ihre Aktionärsübersicht"
 
-#: reports/tasks.py:235
+#: reports/tasks.py:284
 msgid "CSV Captable/Active Shareholders"
 msgstr "Aktive Gesellschafter"
 

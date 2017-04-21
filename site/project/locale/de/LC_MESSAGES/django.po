@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-19 20:59+0000\n"
+"POT-Creation-Date: 2017-04-21 07:43+0000\n"
 "PO-Revision-Date: 2017-04-15 18:09+0000\n"
 "Last-Translator:   <jirka@kkd-partners.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -63,7 +63,7 @@ msgstr "Aktienart"
 #: project/templates/_add_option_plan_form.html:37
 #: project/templates/_add_option_transaction_form.html:70
 #: project/templates/_add_position_form.html:92
-#: project/templates/_add_shareholder_form.html:15
+#: project/templates/_add_shareholder_form.html:20
 #: project/templates/_split_shares_form.html:39
 msgid "Cancel"
 msgstr "Schliessen"
@@ -161,6 +161,7 @@ msgid "Optional fields"
 msgstr "Optionale Daten"
 
 #: project/templates/_add_position_form.html:66
+#: project/templates/_add_shareholder_form.html:14
 msgid "generate"
 msgstr "Generieren"
 
@@ -176,7 +177,7 @@ msgstr "Optionale Daten ausblenden"
 msgid "Please enter your shareholder data:"
 msgstr "Bitte geben Sie die Aktionärsdaten ein:"
 
-#: project/templates/_add_shareholder_form.html:16
+#: project/templates/_add_shareholder_form.html:21
 #: project/templates/start.html:43 project/templates/start.html:52
 msgid "Add Shareholder"
 msgstr "Aktionär hinzufügen"
@@ -237,6 +238,7 @@ msgstr "Ausloggen"
 
 #: project/templates/_menu.html:87
 #: project/templates/two_factor/core/login.html:61
+#: project/tests/test_views.py:206
 msgid "Register"
 msgstr "Anmelden"
 
@@ -465,7 +467,7 @@ msgstr "Namens des Verwaltungsrates"
 msgid "Gratis Aktienbuch-Muster"
 msgstr "Gratis Aktienbuch-Muster"
 
-#: project/templates/index.html:36 project/tests/test_views.py:81
+#: project/templates/index.html:36 project/tests/test_views.py:82
 msgid "My Dashboard"
 msgstr "Mein Dashboard"
 
@@ -1048,7 +1050,7 @@ msgstr "Nützliche Links"
 msgid "Weblog index"
 msgstr "Blog Übersicht"
 
-#: project/tests/test_views.py:139 project/views.py:202
+#: project/tests/test_views.py:140 project/views.py:202
 msgid ""
 "You have already an existing user account. Please login or reset your "
 "password."
@@ -1056,15 +1058,15 @@ msgstr ""
 "Sie haben bereits ein Nutzerkonto. Bitte loggen Sie sich ein oder setzen Sie "
 "Ihr Passwort zurück."
 
-#: project/tests/test_views.py:337
+#: project/tests/test_views.py:338
 msgid "None"
 msgstr "Keine"
 
-#: project/tests/test_views.py:444 project/views.py:36
+#: project/tests/test_views.py:445 project/views.py:36
 msgid "shareholder number"
 msgstr "Aktieninhabernummer"
 
-#: project/tests/test_views.py:489 project/views.py:93
+#: project/tests/test_views.py:490 project/views.py:93
 msgid "date"
 msgstr "Datum"
 
