@@ -15,15 +15,13 @@ from utils.formatters import human_readable_segments
 @login_required
 def positions(request):
     template = loader.get_template('positions.html')
-    context = {'request': request}
-    return HttpResponse(template.render(context))
+    return HttpResponse(template.render(request=request))
 
 
 @login_required
 def options(request):
     template = loader.get_template('options.html')
-    context = {'request': request}
-    return HttpResponse(template.render(context))
+    return HttpResponse(template.render(request=request))
 
 
 class OptionTransactionView(OperatorPermissionRequiredMixin, DetailView):
@@ -75,7 +73,7 @@ def optionsplan(request, optionsplan_id):
     template = loader.get_template('optionsplan.html')
     optionsplan = get_object_or_404(OptionPlan, id=int(optionsplan_id))
     context = {"optionplan": optionsplan, 'request': request}
-    return HttpResponse(template.render(context))
+    return HttpResponse(template.render(request))
 
 
 @login_required

@@ -3,7 +3,6 @@
 import csv
 import datetime
 import StringIO
-import unittest
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -149,7 +148,6 @@ class TrackingTestCase(TestCase):
     def setUp(self):
         self.client = Client()
 
-    @unittest.skip('FIXME')
     def test_tracking(self):
 
         response = self.client.get("/", follow=True)
@@ -157,7 +155,6 @@ class TrackingTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue("UA-58468401-4" in response.content)
 
-    @unittest.skip('FIXME')
     def test_start_authorized(self):
 
         user = UserGenerator().generate()

@@ -13,8 +13,8 @@ def company(request, company_id):
     """
     template = loader.get_template('company.html')
     company = get_object_or_404(Company, id=int(company_id))
-    context = {'request': request, 'company': company}
-    return HttpResponse(template.render(context))
+    context = {'company': company}
+    return HttpResponse(template.render(context=context, request=request))
 
 
 @login_required
@@ -23,7 +23,6 @@ def company_select(request):
     view to select company to work within for operators
     """
     template = loader.get_template('company_select.html')
-    context = {'request': request}
 
     # company choice: set to session and redirect to start...
     company_id = int(request.GET.get('company_id', 0))
@@ -40,4 +39,4 @@ def company_select(request):
         return redirect("start")
 
     # render company choice view
-    return HttpResponse(template.render(context))
+    return HttpResponse(template.render(request=request))

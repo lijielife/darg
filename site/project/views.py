@@ -15,7 +15,7 @@ from django.db.models import Q
 from django.http import (HttpResponse, HttpResponseBadRequest,
                          HttpResponseForbidden)
 from django.shortcuts import get_object_or_404, redirect
-from django.template import RequestContext, loader
+from django.template import loader
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from zinnia.models.entry import Entry
@@ -146,20 +146,19 @@ def _get_transactions(from_date, to_date, security, company):
 
 def index(request):
     template = loader.get_template('index.html')
-    context = {'request': request}
+    context = {}
     if Entry.published.all().exists():
         context['latest_blog_entry'] = Entry.published.all()[0]
     context['flatpages'] = FlatPage.objects.all()
     context['company_count'] = Company.objects.count()
     context['shareholder_count'] = Shareholder.objects.count()
-    return HttpResponse(template.render(context))
+    return HttpResponse(template.render(context=context, request=request))
 
 
 @login_required
 def start(request):
     template = loader.get_template('start.html')
-    context = {'request': request}
-    return HttpResponse(template.render(context))
+    return HttpResponse(template.render(request=request))
 
 
 def instapage(request):
