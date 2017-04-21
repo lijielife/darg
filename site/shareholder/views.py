@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
-from django.template import RequestContext, loader
+from django.template import loader
 from django.utils.translation import ugettext as _
 from django.views.generic import DetailView
 from sendfile import sendfile
@@ -73,7 +73,7 @@ def optionsplan(request, optionsplan_id):
     template = loader.get_template('optionsplan.html')
     optionsplan = get_object_or_404(OptionPlan, id=int(optionsplan_id))
     context = {"optionplan": optionsplan, 'request': request}
-    return HttpResponse(template.render(request))
+    return HttpResponse(template.render(context=context, request=request))
 
 
 @login_required
@@ -92,4 +92,3 @@ def optionsplan_download_img(request, optionsplan_id):
         return sendfile(request, optionplan.pdf_file_preview_path())
     else:
         return HttpResponseForbidden(_("Permission denied"))
-
