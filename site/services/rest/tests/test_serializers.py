@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import datetime
 import unittest
 from decimal import Decimal
 
@@ -44,7 +43,7 @@ class AddCompanySerializerTestCase(TestCase):
         validated_data = {
             'user': UserGenerator().generate(),
             'share_count': 33,
-            'founded_at': datetime.datetime.now().date(),
+            'founded_at': timezone.now().date(),
             'name': u'Mühleggbahn AG',
             'face_value': 22,
         }
@@ -68,7 +67,7 @@ class AddCompanySerializerTestCase(TestCase):
         validated_data = {
             'user': UserGenerator().generate(),
             'share_count': -33,
-            'founded_at': datetime.datetime.now().date(),
+            'founded_at': timezone.now().date(),
             'name': u'Mühleggbahn AG',
             'face_value': 22,
         }
@@ -613,7 +612,7 @@ class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin,
         profile = shs[0].user.userprofile
         profile.language = 'de'
         profile.country = Country.objects.first()
-        profile.birthday = datetime.datetime.now()
+        profile.birthday = timezone.now()
         profile.street = 'some street'
         profile.street2 = 'some street'
         profile.city = 'some city'
@@ -625,7 +624,7 @@ class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin,
         profile.title = 'some title'
         profile.pobox = '12345'
         profile.c_o = 'ddd'
-        profile.initial_registration_at = datetime.datetime.now()
+        profile.initial_registration_at = timezone.now()
         profile.nationality = Country.objects.last()
         profile.save()
         request = self.factory.get('/services/rest/shareholders')
@@ -767,16 +766,6 @@ class CompanySerializerTestCase(TestCase):
     def test_get_profile_url(self):
         url = self.serializer.get_profile_url(self.instance)
         self.assertEqual(url, reverse('company',
-                                      kwargs={'company_id': self.instance.id}))
-
-    def test_get_captable_pdf_url(self):
-        url = self.serializer.get_captable_pdf_url(self.instance)
-        self.assertEqual(url, reverse('captable_pdf',
-                                      kwargs={'company_id': self.instance.id}))
-
-    def test_get_captable_csv_url(self):
-        url = self.serializer.get_captable_csv_url(self.instance)
-        self.assertEqual(url, reverse('captable_csv',
                                       kwargs={'company_id': self.instance.id}))
 
 
