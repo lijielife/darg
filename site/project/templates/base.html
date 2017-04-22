@@ -1,0 +1,62 @@
+{% load staticfiles %}
+{% load i18n %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta charset="UTF-8">
+
+  {% block title %}
+    <TITLE>{% trans "Das Aktienregister title content" %} | {% trans "brand name" %}</TITLE>
+    <META NAME="Description" CONTENT="{% trans "Das Aktienregister - Perfekte Aktionariatsverwaltung: Schnelligkeit und Effizienz fuer kleine AGs, vollumfaengliches Aktienregister fuer Publikumsgesellschaften" %}">
+    <META NAME="Keywords" CONTENT="Aktienregister, Share Register, Aktionariat, Aktien, Aktiengesellschaft">
+  {% endblock %}
+
+  <META NAME="author" CONTENT="KKD Komm GmbH">
+  <META NAME="subject" CONTENT="Aktiengesellschaft">
+  <META NAME="Geography" CONTENT="Schweiz">
+  <META NAME="Language" CONTENT="Deutsch">
+  <META NAME="distribution" CONTENT="Global">
+  <META NAME="country" CONTENT="Schweiz">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  {# bock required to disable css bootstrap in pdf rendering #}
+  {% block head_links %}
+  {% include "_html_head_links.html" %}
+  {% endblock %}
+
+  {% block inline_styles %}{% endblock %}
+
+</head>
+<body ng-app="{% block ng_app %}js.darg.app.base{% endblock %}" {% block ng_cloak %}ng-cloak{% endblock %} class="core {% block body_class %}{% endblock body_class %}">
+
+
+
+  {% block body_block %}
+  {% endblock %}
+
+  {% block scripts %}
+  <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+
+  <script src="{% static "compiled/javascript/script.js" %}?v={{VERSION}}"></script>
+
+  <script>
+    // csrf protection for rest api
+    // Add the CSRF Token
+    var app = angular.module(angular.element($('[ng-app]')).attr('ng-app')); // Not including a list of dependent modules (2nd parameter to `module`) "re-opens" the module for additional configuration
+    app.config(['$httpProvider', function($httpProvider) {
+       $httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token|escapejs }}';
+    }]);
+
+    // RAVEN INIT
+    Raven.config('{{DSN}}').install()
+  </script>
+
+  {% endblock %}
+
+  {% include "_tracking.html" %}
+
+  <!-- must be after tracking -->
+  <script src="{% static "compiled/javascript/global.js" %}?v={{VERSION}}"></script>
+
+</body>
+</html>

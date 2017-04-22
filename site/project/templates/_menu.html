@@ -1,0 +1,127 @@
+{% load i18n %}
+{% load staticfiles %}
+{% load shareholder_tags %}
+
+<nav class="navbar navbar-default navbar-fixed-top collapse-expanded">
+
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">
+        <img alt="Brand" src="{% static "compiled/images/dasaktienregister.png" %}">
+      </a>
+      <a class="navbar-brand" href="/">Das Aktienregister</a>
+    </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        {% url 'start' as start_url %}
+        {% url 'options' as options_url %}
+        {% url 'positions' as positions_url %}
+        {% url 'reports:reports' as reports_url %}
+
+        <div id="navbar" class="navbar-collapse collapse" aria-expanded="false" style="height: 1px;">
+          <ul class="nav navbar-nav {% if not request.user.operator_set.exists %}hidden{% endif %}">
+
+            {% if request.user.is_authenticated %}
+            <li {% ifequal request.path start_url %}class="active"{% endifequal %}>
+              <a href="{{start_url}}">{% trans "Start" %}</a>
+            </li>
+            <li class="{% ifequal request.path positions_url %}active{% endifequal %}">
+              <a href="{{ positions_url }}">{% trans "Positions" %}</a>
+            </li>
+            <li class="{% ifequal request.path options_url %}active{% endifequal %}">
+              <a href="{{options_url}}">{% trans "Options" %}</a>
+            </li>
+            <li class="{% ifequal request.path reports_url %}active{% endifequal %}">
+              <a href="{{reports_url}}">{% trans "Reports" %}</a>
+            </li>
+            {% endif %}
+          </ul>
+
+          <ul class="nav navbar-nav navbar-right top-separator">
+            {% if request.user.is_authenticated %}
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                  <span class="navbar-username">
+                    {% trans "Logged in as" %} 
+                    <span class="limit-letters">
+                      {{request.user.username}}
+                    </span>
+                    <span class="glyphicon glyphicon-option-vertical pull-right-mobile">
+                  </span>
+                  </span>
+                </a>
+                  <ul class="dropdown-menu">
+                    {% if request.user.is_superuser %}
+                      <li>
+                        <a href="{% url 'admin:index' %}" target="_blank">{% trans "Admin" %}</a>
+                      </li>
+                      <li>
+                        <a href="/rosetta/" target="_blank">{% trans "I18N" %}</a>
+                      </li>
+                    {% endif %}
+                      {% if request.user.userprofile.is_multi_company_allowed %}
+                      <li>
+                        <a href="{% url "company_list" %}" title="{% trans "Select Company" %}" class="btn-inline">
+                          {% trans "Select Company" %}
+                        </a>
+                      </li>
+                      {% endif %}
+                      <li>
+                        <a href="{% url "auth_password_change" %}" title="{% trans "Reset password" %}" class="btn-inline">
+                          {% trans "Change password" %}
+                        </a>
+                      </li>
+                      <li><a href="{% url "two_factor:profile" %}">{% trans "Security Settings" %}</a></li>
+                      <li>
+                        <a href="{% url "auth_logout" %}">{% trans "Logout" %}</a>
+                    </li>
+                  </ul>
+              </li>
+              <li><a href="{% url "two_factor:profile" %}">{% trans "Security Settings" %}</a></li>
+              {% if user.operator_set.count %}
+                <li>
+                  <a href="{% url 'subscriptions' %}">{% trans "Subscriptions" %}</a>
+                </li>
+              {% endif %}
+              {# FIXME: maybe(?) check for company subscription(s) #}
+              {% if request.user.shareholderstatement_set.count %}
+                {% url 'statements' as statements_url %}
+                <li>
+                  <a href="{{statements_url}}">
+                    {% trans "Statements" %}
+                  </a>
+                </li>
+              {% endif %}
+              {% if request.user|has_shareholderstatement_reports %}
+                {% url 'statement_reports' as statement_reports_url %}
+                <li>
+                  <a href="{{statement_reports_url}}"
+                     title="{% trans 'Statement reports' %}">
+                    {% trans "Reports" %}
+                  </a>
+                </li>
+              {% endif %}
+              <li>
+                <a href="{% url "auth_logout" %}">{% trans "Logout" %}</a>
+              </li>
+            </ul>
+          </li>
+        {% else %}
+          <li>
+            <a href="{% url "registration_register" %}">{% trans "Register" %}</a>
+          </li>
+          <li>
+            <a href="{% url 'two_factor:login' %}">{% trans "Login" %}</a>
+          </li>
+        {% endif %}
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div>
+
+</nav>

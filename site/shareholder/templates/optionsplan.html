@@ -1,6 +1,7 @@
 {% extends "base_auth.html" %}
 {% load i18n %}
 {% load staticfiles %}
+{% load l10n %}
 
 {% block title %}
   <TITLE>{% trans "Optionplan" %} {{ optionplan.title }} - Das Aktienregister</TITLE>
@@ -11,7 +12,7 @@
 {% block content %}
 
 <!-- required for angular API call -->
-<script>var optionplan_id = {{ optionplan.id}}</script>
+<script>var optionplan_id = {{ optionplan.id|unlocalize }}</script>
 
 <div ng_controller="OptionPlanController" id="optionplan">
 
@@ -20,27 +21,46 @@
   {% include "_form_errors.html" %}
 
   <h2>{% trans "Data" %}</h2>
-  <table class="table table-striped">
-    <tr>
-      <td>{% trans "Board approval date" %}:</td>
-      <td>{% verbatim %}
-        <span>{{ optionplan.board_approved_at }} <!--<span class="el-icon-pencil"></span>--></span>{% endverbatim %}</td>
-    </tr>
-    <tr>
-      <td>{% trans "Exercise Price" %}:</td>
-      <td>{% verbatim %}<span>{{ optionplan.exercise_price }} <!--<span class="el-icon-pencil"></span>--></span>{% endverbatim %}</td>
-    </tr>
-    <tr>
-      <td>{% trans "Share count" %}:</td>
-      <td>{% verbatim %}<span>{{ optionplan.count }} <!--<span class="el-icon-pencil"></span>--></span>{% endverbatim %}</td>
-    </tr>
-    <tr>
-      <td>{% trans "Comment" %}:</td>
-      <td>{% verbatim %}<span>{{ optionplan.comment }} <!--<span class="el-icon-pencil"></span>--></span>{% endverbatim %}</td>
-    </tr>
-    <tr class="security">
-      <td class="">{% trans "Security Type" %}:</td>
-      <td class="text">
+  <div class="table table-striped">
+    <div class="tr th board-approval-date">
+      <div class="td">
+        {% trans "Board approval date" %}:
+      </div>
+      <div class="td">
+      {% verbatim %}
+        <span>{{ (optionplan.board_approved_at|date:"dd.MM.yy") || 'nicht angegeben' }} <!--<span class="el-icon-pencil"></span>--></span>
+      {% endverbatim %}
+      </div>
+    </div>
+    <div class="tr th exercise-price">
+      <div class="td">
+        {% trans "Exercise Price" %}:
+      </div>
+      <div class="td">
+        {% verbatim %}<span>{{ optionplan.exercise_price | currency }} <!--<span class="el-icon-pencil"></span>--></span>{% endverbatim %}
+      </div>
+    </div>
+    <div class="tr th count">
+      <div class="td">
+        {% trans "Share count" %}:
+      </div>
+      <div class="td">
+        {% verbatim %}<span>{{ optionplan.count | number }} <!--<span class="el-icon-pencil"></span>--></span>{% endverbatim %}
+      </div>
+    </div>
+    <div class="tr th comment">
+      <div class="td">
+        {% trans "Comment" %}:
+      </div>
+      <div class="td">
+        {% verbatim %}<span>{{ optionplan.comment }} <!--<span class="el-icon-pencil"></span>--></span>{% endverbatim %}
+      </div>
+    </div>
+    <div class="tr th security">
+      <div class="td">
+        {% trans "Security Type" %}:
+      </div>
+      <div class="td text">
         {% verbatim %}
         <span>
           <div>{{ optionplan.security.readable_title || 'empty' }}</div>
@@ -52,9 +72,10 @@
           {{ optionplan.readable_number_segments }})
         </span>
         {% endverbatim %}
-      </td>
-    </tr>
-  </table>
+      </div>
+    </div>
+  </div>
+
 
   <!-- pdf file -->
   <h2>{% trans "PDF of approved option plan" %}</h2>

@@ -1,9 +1,26 @@
 {
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/patroqueeet/aktienregister/"
+  },
+  "license": "GPL-2.0",
+  "description": "swiss share register",
   "name": "darg.js",
   "devDependencies": {
     "coffee-script": "",
     "grunt": "^1.0.1",
     "grunt-contrib-coffee": "",
-    "grunt-contrib-watch": ""
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-watch": "",
+    "jasmine-core": "^2.5.2",
+    "karma": "^1.5.0",
+    "karma-coffee-preprocessor": "^1.0.1",
+    "karma-jasmine": "^1.1.0",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "karma-requirejs": "^1.1.0",
+    "requirejs": "^2.3.3"
+  },
+  "dependencies": {
+    "grunt-contrib-concat": "^1.0.1"
   }
 }

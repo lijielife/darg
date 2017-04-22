@@ -3,7 +3,7 @@
 {% trans "Please enter your option plan data:" %}
 {% verbatim %}
 <div>
-  <form class="form-inline add-information-inline form">
+  <form class="add-information-inline form add-optionplan">
     <div class="form-group block-level">
         <p>{% endverbatim %}{% trans "Board Approval Date" %}{% verbatim %}</p>
         <span class="input-group date-field">
@@ -16,22 +16,25 @@
             close-text="Schliessen"
             clear-text="Leeren"
             current-text="Heute"
+			readonly="readonly"
+            placeholder="{{'Board Approval Date'|translate}}"
+            ng-click="toggle_datepicker()"
             />
           <span class="input-group-btn">
-            <button type="button" class="btn btn-default" ng-click="open_datepicker()"><i class="glyphicon glyphicon-calendar"></i></button>
+            <button type="button" class="btn btn-default" ng-click="toggle_datepicker()"><i class="glyphicon glyphicon-calendar"></i></button>
           </span>
         </span>
       <input type="text" class="form-control" ng-model="newOptionPlan.title" translate translate-attr-placeholder="Title" ng-maxlength="255">
       <select class="form-control" ng-model="newOptionPlan.security" ng-options="security as security.readable_title for security in securities" translate translate-attr-placeholder="Underlying Asset" ng-change="show_available_number_segments_for_new_option_plan();">
         <option value='' disabled>{% endverbatim %}{% trans "Security" %}{% verbatim %}</option>
       </select>
-      <input type="number" class="form-control" ng-model="newOptionPlan.exercise_price" translate translate-attr-placeholder="Exercise Price" ng-maxlength="10" step=".01" string-to-number>
-      <input type="number" class="form-control" ng-model="newOptionPlan.count" translate translate-attr-placeholder="Share Count" ng-maxlength="10">
-        <input type="text" class="form-control" ng-model="newOptionPlan.number_segments" translate translate-attr-placeholder="Share IDs" ng-maxlength="255" ng-show="newOptionPlan.security.track_numbers" uib-popover="{{numberSegmentsAvailable}}" popover-placement="bottom">
+      <input type="number" class="form-control" ng-model="newOptionPlan.exercise_price" translate translate-attr-placeholder="Exercise Price" min="0" ng-maxlength="10" step=".01" string-to-number>
+      <input type="number" class="form-control" ng-model="newOptionPlan.count" translate translate-attr-placeholder="Share Count" min="0" ng-maxlength="10">
+      <input type="text" class="form-control" ng-model="newOptionPlan.number_segments" translate translate-attr-placeholder="Share IDs" ng-maxlength="255" ng-show="newOptionPlan.security.track_numbers" uib-popover="{{numberSegmentsAvailable}}" popover-placement="bottom">
       <input type="text" class="form-control" ng-model="newOptionPlan.comment" translate translate-attr-placeholder="Comment" ng-maxlength="255">
     </div>
-    <div class="form-group">
-      <button class="btn btn-default" ng-click="hide_form()">{% endverbatim %}{% trans "Cancel" %}{% verbatim %}</button>
+    <div class="form-group custom-form-group">
+      <button class="btn btn-default" data-dismiss="modal" ng-click="hide_form()">{% endverbatim %}{% trans "Cancel" %}{% verbatim %}</button>
       <button class="btn btn-focus" ng-click="add_option_plan()">{% endverbatim %}{% trans "Add Option-Plan" %}{% verbatim %}</button>
     </div>
   </form>

@@ -7,24 +7,24 @@ import math
 import os
 import shutil
 import tempfile
-
 from decimal import Decimal
 
+import mock
+from dateutil.relativedelta import relativedelta
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.core import mail
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.test import TestCase, TransactionTestCase, override_settings
 from django.test.client import Client, RequestFactory
+from django.utils import timezone
 from django.utils.encoding import force_text
-
-import mock
-
-from dateutil.relativedelta import relativedelta
 from model_mommy import mommy
 
-from project.generators import (CompanyGenerator, CompanyShareholderGenerator,
+from project.generators import (DEFAULT_TEST_DATA, BankGenerator,
+                                CompanyGenerator, CompanyShareholderGenerator,
                                 ComplexOptionTransactionsWithSegmentsGenerator,
                                 ComplexPositionsWithSegmentsGenerator,
                                 ComplexShareholderConstellationGenerator,
@@ -32,17 +32,64 @@ from project.generators import (CompanyGenerator, CompanyShareholderGenerator,
                                 OperatorGenerator, OptionPlanGenerator,
                                 OptionTransactionGenerator, PositionGenerator,
                                 SecurityGenerator, ShareholderGenerator,
-                                TwoInitialSecuritiesGenerator, UserGenerator,
-                                DEFAULT_TEST_DATA)
+                                TwoInitialSecuritiesGenerator, UserGenerator)
 from project.tests.mixins import StripeTestCaseMixin, SubscriptionTestMixin
-from shareholder.models import (Country, Position, Security, Shareholder,
-                                Company, ShareholderStatementReport,
-                                ShareholderStatement)
+from shareholder.models import (Company, Country, Position, Security,
+                                Shareholder, ShareholderStatement,
+                                ShareholderStatementReport, UserProfile,
+                                create_auth_token)
 
 logger = logging.getLogger(__name__)
 
 
 # --- MODEL TESTS
+class SignalTestCase(TestCase):
+
+    def _strip_related_user_objects(self, user):
+        profile = user.userprofile
+        profile.delete()
+        token = user.auth_token
+        token.delete()
+
+    def test_create_auth_token_corp_user(self):
+        """ signal must create api token and userprofile for new user obj """
+        # use generator and remove token and user profile objs
+        instance = UserGenerator().generate()
+        self._strip_related_user_objects(instance)
+
+        # make corp shareholder user
+        instance.first_name = settings.COMPANY_INITIAL_FIRST_NAME
+        instance.save()
+
+        class Sender(object):
+            pass
+
+        create_auth_token(Sender(), instance=instance, created=True)
+
+        instance = User.objects.get(pk=instance.pk)
+        self.assertTrue(hasattr(instance, 'userprofile'))
+        self.assertTrue(isinstance(instance.userprofile, UserProfile))
+        profile = instance.userprofile
+        profile.refresh_from_db()
+        self.assertEqual(profile.legal_type, 'C')
+
+    def test_create_auth_token_private_user(self):
+        """ signal must create api token and userprofile for new user obj """
+        # use generator and remove token and user profile objs
+        instance = UserGenerator().generate()
+        self._strip_related_user_objects(instance)
+
+        class Sender(object):
+            pass
+
+        create_auth_token(Sender(), instance=instance, created=True)
+
+        instance = User.objects.get(pk=instance.pk)
+        profile = instance.userprofile
+        profile.refresh_from_db()
+        self.assertEqual(instance.userprofile.legal_type, 'H')
+
+
 class CompanyTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
 
     def setUp(self):
@@ -56,17 +103,46 @@ class CompanyTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
             company=self.company)
         self.shareholder2 = ShareholderGenerator().generate(
             company=self.company)
-        PositionGenerator().generate(seller=None, buyer=self.shareholder1,
-                                     security=self.security, count=10)
-        PositionGenerator().generate(seller=self.shareholder1,
-                                     buyer=self.shareholder2,
-                                     security=self.security, count=2)
+        self.position1 = PositionGenerator().generate(
+            seller=None, buyer=self.shareholder1, security=self.security,
+            count=10)
+        self.position2 = PositionGenerator().generate(
+            seller=self.shareholder1, buyer=self.shareholder2,
+            security=self.security, count=2)
         optionplan = OptionPlanGenerator().generate(
             company=self.company, security=self.security)
         OptionTransactionGenerator().generate(seller=self.shareholder1,
                                               buyer=self.shareholder2,
                                               security=self.security, count=2,
                                               option_plan=optionplan)
+
+    def test_get_new_certificate_id(self):
+        """
+        get fresh unused cert id
+        """
+        self.assertEqual(self.company.get_new_certificate_id(), 1)
+
+        self.position1.certificate_id = '1a'
+        self.position1.save()
+        self.assertEqual(self.company.get_new_certificate_id(), 2)
+
+        self.position2.certificate_id = '99'
+        self.position2.save()
+        self.assertEqual(self.company.get_new_certificate_id(), 100)
+
+    def test_get_new_shareholder_number(self):
+        """ get new unused shareholder number """
+        self.shareholder1.number = u'A23.B'
+        self.shareholder1.save()
+        self.shareholder2.number = u'98..'
+        self.shareholder2.save()
+        self.shareholder3 = ShareholderGenerator().generate(
+            company=self.company)
+        self.shareholder3.number = u'100'
+        self.shareholder3.save()
+        self.shareholder3.set_dispo_shareholder()
+
+        self.assertEqual(self.company.get_new_shareholder_number(), 99)
 
     def test_text_repr(self):
 
@@ -108,6 +184,18 @@ class CompanyTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
         self.assertEqual(company.get_all_option_plan_segments(),
                          [2222, u'3000-4011', u'1000-2000'])
 
+    def test_get_total_share_count_floating(self):
+        """
+        how many votes are owned by shareholders outside company
+        """
+        self.assertEqual(self.company.get_total_share_count_floating(), 2)
+
+        ds = ShareholderGenerator().generate(company=self.company)
+        ds.set_dispo_shareholder()
+        PositionGenerator().generate(
+            seller=self.shareholder1, security=self.security, count=1, buyer=ds)
+        self.assertEqual(self.company.get_total_share_count_floating(), 2)
+
     def test_get_total_votes(self):
         """
         how many votes does a company have?
@@ -120,6 +208,12 @@ class CompanyTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
         """
         how many votes are owned by shareholders outside company
         """
+        self.assertEqual(self.company.get_total_votes_floating(), 2*100/2)
+
+        ds = ShareholderGenerator().generate(company=self.company)
+        ds.set_dispo_shareholder()
+        PositionGenerator().generate(
+            seller=self.shareholder1, security=self.security, count=1, buyer=ds)
         self.assertEqual(self.company.get_total_votes_floating(), 2*100/2)
 
     @mock.patch('shareholder.models.select_template')
@@ -218,6 +312,20 @@ class CompanyTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
             self.assertIn('create_shareholders',
                           self.company.subscription_permissions)
 
+    def test_has_printed_certificates(self):
+        ot = OptionTransactionGenerator().generate()
+        self.assertFalse(ot.option_plan.company.has_printed_certificates())
+        ot.printed_at = datetime.datetime.now()
+        ot.save()
+        self.assertTrue(ot.option_plan.company.has_printed_certificates())
+
+    def test_has_vested_positions(self):
+        ot = OptionTransactionGenerator().generate()
+        self.assertFalse(ot.option_plan.company.has_vested_positions())
+        ot.vesting_months = 22
+        ot.save()
+        self.assertTrue(ot.option_plan.company.has_vested_positions())
+
 
 class CountryTestCase(TestCase):
 
@@ -234,6 +342,25 @@ class CountryTestCase(TestCase):
 
 
 class PositionTestCase(TransactionTestCase):
+
+    def test_invalidate_certificate(self):
+        """
+        create a second position to invalidate a cert and return it
+        to copmany depot
+        """
+        pos = PositionGenerator().generate(
+            certificate_id='1234', depot_type='0',
+            depot_bank=BankGenerator().generate())
+
+        pos.invalidate_certificate()
+
+        pos.refresh_from_db()
+
+        self.assertIsNotNone(pos.certificate_invalidation_position)
+        ipos = pos.certificate_invalidation_position
+        self.assertEqual(ipos.certificate_id, pos.certificate_id)
+        self.assertEqual(ipos.depot_bank, pos.depot_bank)
+        self.assertEqual(ipos.depot_type, '1')
 
     def test_split_shares(self):
         """
@@ -287,6 +414,9 @@ class PositionTestCase(TransactionTestCase):
                     assets[shareholder.pk]['count'] * multiplier)
                 leftover += part
 
+            print shareholder
+            print shareholder.buyer.all()
+            print shareholder.seller.all()
             self.assertEqual(
                 shareholder.share_count(),
                 count2
@@ -343,15 +473,15 @@ class PositionTestCase(TransactionTestCase):
         company.split_shares(data)
 
         # asserts by checking overall shareholder situation
-        # means each shareholder should have now more shares but some
+        # means each shareholder should have now more shares but same
         # overall stock value
 
         leftover = 0
         shareholders.reverse()
         for shareholder in shareholders:
             if shareholder == shareholders[-1]:
-                pt, count2 = math.modf(assets[shareholder.pk]['count'] *
-                                       multiplier)
+                part, count2 = math.modf(assets[shareholder.pk]['count'] *
+                                         multiplier)
                 count2 += round(leftover)
             else:
                 part, count2 = math.modf(
@@ -549,6 +679,62 @@ class UserProfileTestCase(TestCase):
         self.assertEqual(profile.province, 'Some Province')
 
 
+class SecurityTestCase(TestCase):
+
+    def test_fields(self):
+        security = SecurityGenerator().generate()
+
+        self.assertTrue(hasattr(security, 'track_numbers'))
+        self.assertTrue(hasattr(security, 'face_value'))
+        self.assertTrue(hasattr(security, 'number_segments'))
+
+        segments = [1, 2, 3, '4-6']
+        security.number_segments = segments
+        security.save()
+
+        # refresh from db
+        s = Security.objects.get(id=security.id)
+        self.assertEqual(s.number_segments, segments)
+
+    def test_count_in_segments(self):
+        """
+        count shares in segments
+        """
+        security = SecurityGenerator().generate()
+
+        segments = '1, 3,4, 99-1000'
+        count = security.count_in_segments(segments)
+        self.assertEqual(count, 905)
+
+        segments = [1, 3, 4, 5, u'99-1000']
+        count = security.count_in_segments(segments)
+        self.assertEqual(count, 906)
+
+    def test_calculate_count(self):
+        """
+        how many shares are existing based on positions
+        """
+        company = CompanyGenerator().generate()
+        security = SecurityGenerator().generate(company=company)
+        # 1 cap increase and one sale position
+        p1 = PositionGenerator().generate(company=company, seller=None,
+                                          security=security, count=10)
+        PositionGenerator().generate(company=company, count=2,
+                                     security=security, seller=p1.buyer)
+
+        self.assertEqual(security.calculate_count(), 10)
+
+    def test_restricted_registered_shares(self):
+        """
+        we do have registered shares with restricted transferability
+        """
+        company = CompanyGenerator().generate()
+        security = SecurityGenerator().generate(company=company)
+        security.title = 'V'
+        security.save()
+        self.assertIn('Vinkuliert', security.get_title_display())
+
+
 class ShareholderTestCase(TestCase):
 
     fixtures = ['initial.json']
@@ -566,10 +752,38 @@ class ShareholderTestCase(TestCase):
         self.shareholder2 = ShareholderGenerator().generate(
             company=self.company)
         PositionGenerator().generate(seller=None, buyer=self.shareholder1,
-                                     security=self.security, count=10)
+                                     security=self.security, count=10,
+                                     bought_at=datetime.datetime(2013, 1, 1))
         PositionGenerator().generate(seller=self.shareholder1,
                                      buyer=self.shareholder2,
                                      security=self.security, count=2)
+
+    def test_cumulated_face_value(self):
+        """
+        calculate total face value invested
+        """
+        self.assertEqual(self.shareholder2.cumulated_face_value(),
+                         Decimal('200.0000'))
+        self.assertEqual(
+            self.shareholder2.cumulated_face_value(security=self.security),
+            Decimal('200.0000'))
+        self.assertEqual(
+            self.shareholder2.cumulated_face_value(
+                security=self.security, date=datetime.datetime(2011, 1, 1)),
+            Decimal('0.0000'))
+        self.assertEqual(
+            self.shareholder2.cumulated_face_value(
+                security=self.security, date=datetime.datetime(2111, 1, 1)),
+            Decimal('200.0000'))
+
+        # one more sec
+        self.security2 = SecurityGenerator().generate(count=10, face_value=100,
+                                                      company=self.company)
+        self.assertEqual(self.shareholder2.cumulated_face_value(),
+                         Decimal('200.0000'))
+        self.assertEqual(
+            self.shareholder2.cumulated_face_value(security=self.security),
+            Decimal('200.0000'))
 
     def test_index(self):
 
@@ -586,6 +800,18 @@ class ShareholderTestCase(TestCase):
         s2 = ShareholderGenerator().generate(company=s.company)
         self.assertTrue(s.is_company_shareholder())
         self.assertFalse(s2.is_company_shareholder())
+
+    def test_has_vested_shares(self):
+        shareholder3 = ShareholderGenerator().generate(
+            company=self.company)
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=self.shareholder2,
+                                     security=self.security, count=10,
+                                     bought_at=datetime.datetime(2013, 1, 1),
+                                     vesting_months=5)
+        self.assertTrue(self.shareholder2.has_vested_shares())   # regular sh
+        self.assertFalse(self.shareholder1.has_vested_shares())  # corp shareh
+        self.assertFalse(shareholder3.has_vested_shares())       # fresh sh
 
     def test_validate_gafi(self):
         """ test the gafi validation """
@@ -606,11 +832,22 @@ class ShareholderTestCase(TestCase):
         # must be in switzerland
         shareholder.company.country = Country.objects.get(
             iso_code__iexact='ch')
-
+        shareholder.user.userprofile.legal_type = 'C'
         shareholder.user.userprofile.company_name = None
         shareholder.user.userprofile.save()
 
         self.assertFalse(shareholder.validate_gafi()['is_valid'])
+
+        # company name not relevant for humans
+        shareholder = ShareholderGenerator().generate()
+        # must be in switzerland
+        shareholder.company.country = Country.objects.get(
+            iso_code__iexact='ch')
+        shareholder.user.userprofile.legal_type = 'H'
+        shareholder.user.userprofile.company_name = None
+        shareholder.user.userprofile.save()
+
+        self.assertTrue(shareholder.validate_gafi()['is_valid'])
 
         # --- valid data
         shareholder = ShareholderGenerator().generate()
@@ -651,6 +888,142 @@ class ShareholderTestCase(TestCase):
             reverse("shareholder", args=(shareholder.id,)))
 
         self.assertEqual(response.status_code, 200)
+
+    def test_share_count(self):
+        """
+        return number of shares owned by shareholder or available
+        for sale by shareholder
+        """
+        now = datetime.datetime.now()
+        yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+        self.assertEqual(
+            self.shareholder1.share_count(security=self.security), 8)
+        self.assertEqual(
+            self.shareholder2.share_count(security=self.security), 2)
+        self.assertEqual(
+            self.shareholder1.share_count(security=self.security, date=now), 8)
+        self.assertEqual(
+            self.shareholder2.share_count(security=self.security, date=now), 2)
+        self.assertEqual(self.shareholder1.share_count(
+            security=self.security, date=yesterday), 10)
+        self.assertEqual(self.shareholder2.share_count(
+            security=self.security, date=yesterday), 0)
+        self.assertEqual(
+            self.shareholder1.share_count(security=self.security, date=now,
+                                          only_sellable=True), 8)
+        self.assertEqual(
+            self.shareholder2.share_count(security=self.security, date=now,
+                                          only_sellable=True), 2)
+
+    def test_share_count_without_vesting(self):
+        """ count shares of shareholder which are not affected by any vesting
+        """
+        # add position with vesting
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=self.shareholder2,
+                                     security=self.security, count=4,
+                                     vesting_months=36)
+        self.assertEqual(
+            self.shareholder2.share_count(without_vesting=True), 2)
+
+    def test_share_count_expired_vesting(self):
+        """ count shares which have no vesting or where the vesting is expired
+
+        scenario:
+        * two owned without vesting (@setUp)
+        * one owned with vesting expired
+        * three owned with vesting not expired
+        """
+        oneyearago = timezone.now() - relativedelta(years=1)
+        oneyearahead = timezone.now() + relativedelta(years=1)
+        # unexpired
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=self.shareholder2,
+                                     security=self.security, count=3,
+                                     vesting_months=36, bought_at=oneyearago)
+        # expired
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=self.shareholder2,
+                                     security=self.security, count=1,
+                                     vesting_months=6, bought_at=oneyearago)
+
+        # one year ahead not to be calculated
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=self.shareholder2,
+                                     security=self.security, count=1,
+                                     vesting_months=6, bought_at=oneyearahead)
+
+        # one sold in the past with vesting for the buyer
+        PositionGenerator().generate(seller=self.shareholder2,
+                                     buyer=self.shareholder1,
+                                     security=self.security, count=1,
+                                     vesting_months=6, bought_at=oneyearago)
+
+        self.assertEqual(self.shareholder2.share_count(
+            date=timezone.now().date(), expired_vesting=True), 2)
+
+    def test_share_count_sellable(self):
+        """ get count of shares sellable excluding vested shares and shares with
+        certificate depot assigned
+        """
+        # sellable, no cert depot, no vesting @ setUp() with count=2
+
+        # vesting only
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=self.shareholder2,
+                                     security=self.security, count=1,
+                                     vesting_months=6)
+
+        # cert depot only
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=self.shareholder2,
+                                     security=self.security, count=1,
+                                     depot_type='0', certificate_id='9876')
+
+        # vesting and cert depot
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=self.shareholder2,
+                                     security=self.security, count=1,
+                                     vesting_months=24, depot_type='0',
+                                     certificate_id='987')
+
+        self.assertEqual(self.shareholder2.share_count_sellable(), 2)
+
+    def test_share_count_with_certificates(self):
+        """
+        respect sellable aspects of certificates for shares with cert depot at
+        external banks
+        """
+        now = datetime.datetime.now()
+        # valid certificate depot
+        p1 = PositionGenerator().generate(seller=self.shareholder1,
+                                          security=self.security, count=2,
+                                          certificate_id='123453',
+                                          depot_type='0')
+
+        # issued and invalidated certificate
+        p2 = PositionGenerator().generate(
+            seller=self.shareholder1, security=self.security, count=3,
+            certificate_id='98765', depot_type='0', buyer=self.shareholder2)
+        p3 = PositionGenerator().generate(
+            seller=p2.buyer, buyer=p2.buyer, security=self.security, count=3,
+            certificate_id='98765', depot_type='1')
+        p2.certificate_invalidation_position = p3
+        p2.save()
+
+        self.assertEqual(p1.buyer.share_count(security=self.security), 2)
+        self.assertEqual(
+            p1.buyer.share_count(security=self.security, only_sellable=True), 0)
+        self.assertEqual(
+            p1.buyer.share_count(security=self.security, only_sellable=True,
+                                 date=now), 0)
+
+        self.assertEqual(p2.buyer.share_count(security=self.security), 5)
+        self.assertEqual(
+            p2.buyer.share_count(security=self.security, only_sellable=True), 5)
+        self.assertEqual(
+            p2.buyer.share_count(security=self.security, only_sellable=True,
+                                 date=now), 5)
 
     def test_share_percent(self):
         """
@@ -932,52 +1305,6 @@ class ShareholderTestCase(TestCase):
         self.assertEqual(self.shareholder2.vote_percent(), 0.25)
         self.assertEqual(shareholder3.vote_percent(), 0.5)
         self.assertEqual(shareholder4.vote_percent(), 0.25)
-
-
-class SecurityTestCase(TestCase):
-
-    def test_fields(self):
-        security = SecurityGenerator().generate()
-
-        self.assertTrue(hasattr(security, 'track_numbers'))
-        self.assertTrue(hasattr(security, 'face_value'))
-        self.assertTrue(hasattr(security, 'number_segments'))
-
-        segments = [1, 2, 3, '4-6']
-        security.number_segments = segments
-        security.save()
-
-        # refresh from db
-        s = Security.objects.get(id=security.id)
-        self.assertEqual(s.number_segments, segments)
-
-    def test_count_in_segments(self):
-        """
-        count shares in segments
-        """
-        security = SecurityGenerator().generate()
-
-        segments = '1, 3,4, 99-1000'
-        count = security.count_in_segments(segments)
-        self.assertEqual(count, 905)
-
-        segments = [1, 3, 4, 5, u'99-1000']
-        count = security.count_in_segments(segments)
-        self.assertEqual(count, 906)
-
-    def test_calculate_count(self):
-        """
-        how many shares are existing based on positions
-        """
-        company = CompanyGenerator().generate()
-        security = SecurityGenerator().generate(company=company)
-        # 1 cap increase and one sale position
-        p1 = PositionGenerator().generate(company=company, seller=None,
-                                          security=security, count=10)
-        PositionGenerator().generate(company=company, count=2,
-                                     security=security, seller=p1.buyer)
-
-        self.assertEqual(security.calculate_count(), 10)
 
 
 class ShareholderStatementReportTestCase(StripeTestCaseMixin,

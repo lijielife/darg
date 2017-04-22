@@ -1,5 +1,6 @@
 {% extends "base_auth.html" %}
 {% load i18n %}
+{% load l10n %}
 
 {% block title %}
   <TITLE>{% trans "Position" %} {{ position.pk }} - Das Aktienregister</TITLE>
@@ -11,7 +12,7 @@
 
 <!-- required for angular API call -->
 <script>
-  var position_id = {{ position.id}};
+  var position_id = {{ position.id|unlocalize}};
 </script>
 
 <div ng_controller="PositionController" id="position-detail">
@@ -21,80 +22,173 @@
   {% include "_form_errors.html" %}
 
   {# core data #}
-  <table class="table table-striped small-font-size">
-    <tr class="type">
-      <td>{% trans "Position Type" %}:</td>
-      <td>
+  <div class="table table-striped">
+    <div class="tr th type">
+      <div class="td">
+        {% trans "Position Type" %}:
+      </div>
+      <div class="td">
         {% verbatim %}{{ position.position_type}}{% endverbatim %}
-      </td>
-    </tr>
-    <tr class="buyer">
-      <td>{% trans "Buyer" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th buyer">
+      <div class="td">
+        {% trans "Buyer" %}:
+      </div>
+      <div class="td">
         {% verbatim %}<a href="/shareholder/{{position.buyer.pk}}/" >{{ position.buyer.full_name}}</a>{% endverbatim %}
-      </td>
-    </tr>
-    <tr class="seller" ng-show="position.seller">
-      <td>{% trans "Seller" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th seller" ng-show="position.seller">
+      <div class="td">
+        {% trans "Seller" %}:
+      </div>
+      <div class="td">
         {% verbatim %}<a href="/shareholder/{{position.seller.pk}}/" >{{ position.seller.full_name}}</a>{% endverbatim %}
-      </td>
-    </tr>
-    <tr class="security-title">
-      <td>{% trans "Security" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th security-title">
+      <div class="td">
+        {% trans "Security" %}:
+      </div>
+      <div class="td">
         {% verbatim %}{{ position.security.readable_title}}{% endverbatim %}
         ({% trans "Valor" %}: {% verbatim %}{{ position.security.cusip }} {% endverbatim %})
-      </td>
-    </tr>
-    <tr class="count">
-      <td>{% trans "Count" %}:</td>
-      <td>
-        {% verbatim %}{{ position.count}}{% endverbatim %}
-      </td>
-    </tr>
-    <tr class="date">
-      <td>{% trans "Date" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th count">
+      <div class="td">
+        {% trans "Count" %}:
+      </div>
+      <div class="td">
+        {% verbatim %}{{ position.count | number }}{% endverbatim %}
+      </div>
+    </div>
+    <div class="tr th date">
+      <div class="td">
+        {% trans "Date" %}:
+      </div>
+      <div class="td">
         {% verbatim %}{{ position.bought_at| date : 'd.MM.yy'}}{% endverbatim %}
-      </td>
-    </tr>
-    <tr class="value" ng-show="position.value">
-      <td>{% trans "Value" %}:</td>
-      <td>
-        {% verbatim %}{{ position.value}}{% endverbatim %}
-      </td>
-    </tr>
-    <tr class="number-segments" ng-show="position.security.track_numbers && position.number_segments"">
-      <td>{% trans "Number Segments" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th value" ng-show="position.value">
+      <div class="td">
+        {% trans "Value" %}:
+      </div>
+      <div class="td">
+        {% verbatim %}{{ position.value | currency }}{% endverbatim %}
+      </div>
+    </div>
+    <div class="tr th number-segments" ng-show="position.security.track_numbers && position.number_segments">
+      <div class="td">
+        {% trans "Number Segments" %}:
+      </div>
+      <div class="td">
         {% verbatim %}{{ position.number_segments}}{% endverbatim %}
-      </td>
-    </tr>
-    <tr class="registration-type" ng-show="position.readable_registration_type">
-      <td>{% trans "Registration Type" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th registration-type" ng-show="position.readable_registration_type">
+      <div class="td">
+        {% trans "Registration Type" %}:
+      </div>
+      <div class="td">
         {% verbatim %}{{ position.readable_registration_type}}{% endverbatim %}
-      </td>
-    </tr>
-    <tr class="depot-type" ng-show="position.readable_depot_type">
-      <td>{% trans "Depot Type" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th depot-type" ng-show="position.readable_depot_type">
+      <div class="td">
+        {% trans "Depot Type" %}:
+      </div>
+      <div class="td">
         {% verbatim %}{{ position.readable_depot_type}}{% endverbatim %}
-      </td>
-    </tr>
-    <tr class="stock-book-id" ng-show="position.stock_book_id">
-      <td>{% trans "Stock Book ID" %}:</td>
-      <td>
+      </div>
+    </div>
+    <div class="tr th stock-book-id" ng-show="position.stock_book_id">
+      <div class="td">
+        {% trans "Stock Book ID" %}:
+      </div>
+      <div class="td">
         {% verbatim %}{{ position.stock_book_id}}{% endverbatim %}
-      </td>
-    </tr>
-    <tr class="vesting-months" ng-show="position.vesting_months">
-      <td>{% trans "Vesting period in months" %}:</td>
-      <td>
-        {% verbatim %}{{ position.vesting_months}}{% endverbatim %}
-      </td>
-    </tr>
-  </table>
+      </div>
+    </div>
+    <div class="tr th certificate-id" ng-show="position.certificate_id">
+      <div class="td">
+        {% trans "Certificate ID" %}:
+      </div>
+      {% verbatim %}
+      <div class="td" ng-class="{strikethrough: position.is_certificate_valid==false}">
+        {{ position.certificate_id}}
+      </div>
+      {% endverbatim %}
+    </div>
+    <div class="tr th vesting-months" ng-show="position.vesting_months">
+      <div class="td">
+        {% trans "Vesting period in months" %}:
+      </div>
+      <div class="td">
+        {% verbatim %}{{ position.vesting_months | number }}{% endverbatim %}
+      </div>
+    </div>
+    <div class="tr th depot-bank" ng-show="position.depot_bank">
+      <div class="td">
+        {% trans "Certificate deposited with bank" %}:
+      </div>
+      <div class="td" ng-class="{strikethrough: position.is_certificate_valid==false}">
+        {% verbatim %}{{ position.depot_bank.name}}{% endverbatim %}<br />
+        {% verbatim %}{{ position.depot_bank.address}}{% endverbatim %}<br />
+        {% verbatim %}{{ position.depot_bank.postal_code}} {{ position.depot_bank.city }}{% endverbatim %}<br />
+        {% verbatim %}SWIFT: {{ position.depot_bank.swift}}{% endverbatim %}<br />
+      </div>
+    </div>
+    <div class="tr th certificate-invalidation-position" ng-show="position.certificate_invalidation_position_url">
+      <div class="td">
+        {% trans "Invalidation position" %}:
+      </div>
+      <div class="td">
+        {% verbatim %}
+        <a href="{{ position.certificate_invalidation_position_url}}" title="{% endverbatim %}{% trans "Go to position" %}">
+          {% trans "Link" %}
+          {% verbatim %}
+        </a>
+        {% endverbatim %}
+      </div>
+    </div>
+    <div class="tr th certificate-invalidation-position" ng-show="position.certificate_invalidation_initial_position_url">
+      <div class="td">
+        {% trans "Invalidation source position" %}:
+      </div>
+      <div class="td">
+        {% verbatim %}
+        <a href="{{ position.certificate_invalidation_initial_position_url}}" title="{% endverbatim %}{% trans "Go to position" %}">
+          {% trans "Link" %}
+          {% verbatim %}
+        </a>
+        {% endverbatim %}
+      </div>
+    </div>
+  </div>
+            
+
+  <!-- ACTIONS -->
+  {% verbatim %}
+  <div class="print-certificate">
+    <div>
+      <a ng-click="invalidate_certificate()" class="btn btn-focus" ng-show="position.certificate_id && !position.certificate_invalidation_position_url && !position.certificate_invalidation_initial_position_url">
+        {% endverbatim %}{% trans "Destroy Share Certificate" %}{% verbatim %}
+      </a>
+      <!-- PRINT CERT -->
+      <a class="btn btn-focus" ng-show="!position.printed_at && position.certificate_id && !position.certificate_invalidation_initial_position_url" href="{% endverbatim %}{% url "position_option_pdf" option_id=position.pk %}{% verbatim %}" target="_blank">
+  	    {% endverbatim %}{% trans "Print certificate" %}{% verbatim %}
+  	  </a>
+      <a class="btn btn-focus" ng-show="position.printed_at && position.certificate_id && !position.certificate_invalidation_initial_position_url" href="{% endverbatim %}{% url "position_option_pdf" option_id=position.pk %}{% verbatim %}" target="_blank">
+  	    {% endverbatim %}{% trans "Print certificate copy" %}{% verbatim %}
+  	  </a>
+    </div>
+    <div class="note" ng-show="position.printed_at" style="display: inline">
+      {% endverbatim %}{% trans "first at" %}{% verbatim %}: {{ position.printed_at  | date : 'd.MM.yy' }} {% endverbatim %}{% trans "printed" %}{% verbatim %}
+    </div>
+  </div>
+  {% endverbatim %}
 </div>
 {% endblock %}

@@ -6,17 +6,17 @@ from django.conf.urls import url
 from django.contrib import admin, sites
 from django.core.urlresolvers import reverse
 from django.http import Http404
-from django.template import RequestContext
 from django.shortcuts import render_to_response
+from django.template import RequestContext
 from django.utils.html import mark_safe
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
-
 from reversion.admin import VersionAdmin
 
-from shareholder.models import Shareholder, Company, Operator, Position, \
-    UserProfile, Country, OptionPlan, OptionTransaction, Security, \
-    ShareholderStatement, ShareholderStatementReport
+from shareholder.models import (Bank, Company, Country, Operator, OptionPlan,
+                                OptionTransaction, Position, Security,
+                                Shareholder, ShareholderStatement,
+                                ShareholderStatementReport, UserProfile)
 
 
 class ShareholderAdmin(VersionAdmin):
@@ -116,8 +116,12 @@ class CompanyAdmin(VersionAdmin):
                                   context, RequestContext(request))
 
 
+class BankAdmin(VersionAdmin):
+    pass
+
+
 class OperatorAdmin(VersionAdmin):
-    list_display = ('id', 'user', 'company', 'user', 'date_joined')
+    list_display = ('id', 'user', 'company', 'date_joined')
     list_filter = ('company',)
 
     def date_joined(selfi, obj):
@@ -154,10 +158,14 @@ class PositionAdmin(VersionAdmin):
 
 class UserProfileAdmin(VersionAdmin):
 
-    list_display = ('pk', 'street', 'street2', 'city')
+    list_display = ('user', 'full_name', 'street',
+                    'street2', 'city')
     search_fields = [
-        'user__first_name', 'user__email', 'user__last_name'
+        'user__first_name', 'user__email', 'user__last_name', 'user__username',
     ]
+
+    def full_name(self, obj):
+        return u'{} {}'.format(obj.user.first_name, obj.user.last_name)
 
 
 class CountryAdmin(VersionAdmin):
@@ -338,3 +346,4 @@ admin.site.register(OptionTransaction, OptionTransactionAdmin)
 admin.site.register(ShareholderStatementReport,
                     ShareholderStatementReportAdmin)
 admin.site.register(ShareholderStatement, ShareholderStatementAdmin)
+admin.site.register(Bank, BankAdmin)

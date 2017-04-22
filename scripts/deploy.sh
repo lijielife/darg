@@ -17,6 +17,11 @@ cd site
 cd ..
 
 python ./scripts/minify_static.py && ./site/manage.py migrate && ./site/manage.py collectstatic --noinput
+
 echo "touching to reload uwsgi..."
 touch "/tmp/$USER-master.pid"
+
+echo "restarting supervisor..."
+./scripts/restart_supervisor.sh
+
 echo "...done"

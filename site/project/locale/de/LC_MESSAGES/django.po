@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-12 20:31+0000\n"
-"PO-Revision-Date: 2017-02-12 11:52+0000\n"
-"Last-Translator:   <jirka@tschitschereengreen.com>\n"
+"POT-Creation-Date: 2017-04-21 07:43+0000\n"
+"PO-Revision-Date: 2017-04-15 18:09+0000\n"
+"Last-Translator:   <jirka@kkd-partners.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -31,97 +31,45 @@ msgstr ""
 "\"Nutzungsbedingungen Das-Aktienregister.ch\" target=\"_blank\" class=\"link "
 "tos\">Datenschutzerklärung</a> gelesen und stimme zu."
 
-#: project/tasks.py:88
+#: project/models.py:16
+msgid "created at"
+msgstr "erstellt am"
+
+#: project/models.py:17
+msgid "modified at"
+msgstr "geändert am"
+
+#: project/tasks.py:21
 msgid "Welcome to Das Aktienregister - Your new password"
 msgstr "Willkommen zu Das Aktienregister - Ihr neues Passwort"
-
-#: project/tasks.py:116
-msgid "Your pdf captable file"
-msgstr "Ihre Liste der aktiven Gesellschafter als PDF"
-
-#: project/tasks.py:118 project/tasks.py:182
-msgid "Your file is attached to this email"
-msgstr "Die Datei befindet sich im Anhang dieser Email"
-
-#: project/tasks.py:123
-msgid "PDF Captable/Active Shareholders"
-msgstr "Download Liste der aktiven Aktionäre als PDF"
-
-#: project/tasks.py:143 project/tests/test_views.py:489 project/views.py:38
-msgid "shareholder number"
-msgstr "Aktieninhabernummer"
-
-#: project/tasks.py:143 project/views.py:38
-msgid "last name"
-msgstr "Nachname"
-
-#: project/tasks.py:143 project/views.py:38
-msgid "first name"
-msgstr "Vorname"
-
-#: project/tasks.py:144 project/views.py:39
-msgid "email"
-msgstr "Email"
-
-#: project/tasks.py:144
-msgid "share count"
-msgstr "Anzahl Aktien"
-
-#: project/tasks.py:144
-msgid "votes share percent"
-msgstr "% Stimmrechte"
-
-#: project/tasks.py:145 project/views.py:40
-msgid "language ISO"
-msgstr "Sprache ISO"
-
-#: project/tasks.py:145 project/views.py:40
-msgid "language full"
-msgstr "Sprache"
-
-#: project/tasks.py:149
-msgid "Share IDs"
-msgstr "Aktiennummern"
-
-#: project/tasks.py:174
-msgid "None"
-msgstr "Keine"
-
-#: project/tasks.py:180
-msgid "Your csv captable file"
-msgstr "Ihre Liste der aktiven Gesellschafter als CSV"
-
-#: project/tasks.py:187
-msgid "CSV Captable/Active Shareholders"
-msgstr "Download Liste der aktiven Aktionäre als CSV"
 
 #: project/templates/_add_capital_form.html:3
 msgid "Please enter your capital increase data"
 msgstr "Bitte geben Sie die Daten die Kapitalerhöhung an:"
 
 #: project/templates/_add_capital_form.html:8
-#: project/templates/_add_position_form.html:9
+#: project/templates/_add_position_form.html:8
 msgid "On (date)"
 msgstr "Am (Datum)"
 
-#: project/templates/_add_capital_form.html:27
-#: project/templates/_add_option_plan_form.html:26
-#: project/templates/_add_position_form.html:48
-#: project/templates/_split_shares_form.html:30
+#: project/templates/_add_capital_form.html:30
+#: project/templates/_add_option_plan_form.html:29
+#: project/templates/_add_position_form.html:46
+#: project/templates/_split_shares_form.html:33
 msgid "Security"
 msgstr "Aktienart"
 
-#: project/templates/_add_capital_form.html:33
-#: project/templates/_add_option_plan_form.html:34
-#: project/templates/_add_option_transaction_form.html:62
-#: project/templates/_add_position_form.html:68
-#: project/templates/_add_shareholder_form.html:15
-#: project/templates/_split_shares_form.html:36
+#: project/templates/_add_capital_form.html:36
+#: project/templates/_add_option_plan_form.html:37
+#: project/templates/_add_option_transaction_form.html:70
+#: project/templates/_add_position_form.html:92
+#: project/templates/_add_shareholder_form.html:20
+#: project/templates/_split_shares_form.html:39
 msgid "Cancel"
-msgstr "Abbrechen"
+msgstr "Schliessen"
 
-#: project/templates/_add_capital_form.html:34
-#: project/templates/_add_position_form.html:71
+#: project/templates/_add_capital_form.html:37
+#: project/templates/_add_position_form.html:95
 msgid "Add Position"
 msgstr "Position hinzufügen"
 
@@ -135,15 +83,15 @@ msgstr ""
 "<strong>Unternehmen anlegen:</strong><br/> Geben Sie ihren Firmennamen, das "
 "Gründungsdatum, die Anzahl und den Nennwert der Aktien bei Gründung ein:"
 
-#: project/templates/_add_company_form.html:31
+#: project/templates/_add_company_form.html:33
 msgid "Add Company"
 msgstr "Unternehmen hinzufügen"
 
-#: project/templates/_add_company_form.html:37
+#: project/templates/_add_company_form.html:39
 msgid "Please contact us at our"
 msgstr "Bitte kontaktieren Sie unseren"
 
-#: project/templates/_add_company_form.html:39
+#: project/templates/_add_company_form.html:41
 msgid ""
 "for getting more security types (common stock, preferred stock, numbered "
 "shares) added"
@@ -159,11 +107,11 @@ msgstr "Bitte geben Sie die Daten für den Optionsplan an:"
 msgid "Board Approval Date"
 msgstr "Genehmigt durch Board am (z.B. 1. Jan 2016):"
 
-#: project/templates/_add_option_plan_form.html:35
+#: project/templates/_add_option_plan_form.html:38
 msgid "Add Option-Plan"
 msgstr "Optionsplan hinzufügen"
 
-#: project/templates/_add_option_plan_form.html:38
+#: project/templates/_add_option_plan_form.html:41
 msgid "Approved Option Plan PDF can be uploaded later in Plan's Edit Form"
 msgstr ""
 "Das PDF für den Optionsplan kann später in der Detailansicht für den "
@@ -173,41 +121,30 @@ msgstr ""
 msgid "Please enter your Option data:"
 msgstr "Bitte geben Sie die Daten für die Option an:"
 
-#: project/templates/_add_option_transaction_form.html:24
-#: project/templates/_add_position_form.html:28
-msgid "from"
-msgstr "von"
-
-#: project/templates/_add_option_transaction_form.html:27
-#: project/templates/_add_position_form.html:31
+#: project/templates/_add_option_transaction_form.html:29
+#: project/templates/_add_position_form.html:32
 msgid "Seller"
 msgstr "Verkäufer"
 
-#: project/templates/_add_option_transaction_form.html:33
-#: project/templates/_add_position_form.html:37
-msgid "to"
-msgstr "an"
-
-#: project/templates/_add_option_transaction_form.html:36
+#: project/templates/_add_option_transaction_form.html:37
 #: project/templates/_add_position_form.html:40
 msgid "Buyer"
 msgstr "Käufer"
 
-#: project/templates/_add_option_transaction_form.html:42
+#: project/templates/_add_option_transaction_form.html:43
 msgid "Option Plan"
 msgstr "Optionsplan"
 
-#: project/templates/_add_option_transaction_form.html:51
-#: project/templates/_add_position_form.html:58
+#: project/templates/_add_option_transaction_form.html:55
 msgid "optional fields"
 msgstr "Optionale Daten"
 
-#: project/templates/_add_option_transaction_form.html:53
-#: project/templates/_add_position_form.html:60
+#: project/templates/_add_option_transaction_form.html:57
+#: project/templates/_add_position_form.html:61
 msgid "Depot Type"
 msgstr "Depotart"
 
-#: project/templates/_add_option_transaction_form.html:63
+#: project/templates/_add_option_transaction_form.html:71
 msgid "Add Option"
 msgstr "Option hinzufügen"
 
@@ -215,18 +152,105 @@ msgstr "Option hinzufügen"
 msgid "Please enter your position data:"
 msgstr "Bitte geben Sie die Daten für die Übertragung der Aktien an:"
 
+#: project/templates/_add_position_form.html:54
+msgid "Show optional forms"
+msgstr "Optionale Daten anzeigen"
+
+#: project/templates/_add_position_form.html:59
+msgid "Optional fields"
+msgstr "Optionale Daten"
+
+#: project/templates/_add_position_form.html:66
+#: project/templates/_add_shareholder_form.html:14
+msgid "generate"
+msgstr "Generieren"
+
+#: project/templates/_add_position_form.html:72
+msgid "Financial Institute/Bank for certificate storage"
+msgstr "Finanzinstitut/Bank der Zertifikatsverwahrung"
+
+#: project/templates/_add_position_form.html:84
+msgid "Hide optional forms"
+msgstr "Optionale Daten ausblenden"
+
 #: project/templates/_add_shareholder_form.html:3
 msgid "Please enter your shareholder data:"
 msgstr "Bitte geben Sie die Aktionärsdaten ein:"
 
-#: project/templates/_add_shareholder_form.html:16
-#: project/templates/start.html:40
+#: project/templates/_add_shareholder_form.html:21
+#: project/templates/start.html:43 project/templates/start.html:52
 msgid "Add Shareholder"
 msgstr "Aktionär hinzufügen"
 
-#: project/templates/_shareholder_typeahead.html:16
-msgid "No Results Found"
-msgstr "Kein Ergebnis gefunden"
+#: project/templates/_menu.html:31
+msgid "Start"
+msgstr "Start"
+
+#: project/templates/_menu.html:34
+msgid "Positions"
+msgstr "Transaktionen"
+
+#: project/templates/_menu.html:37
+#: project/templates/active_shareholder_captable.pdf.html:136
+msgid "Options"
+msgstr "Optionen"
+
+#: project/templates/_menu.html:40
+msgid "Reports"
+msgstr "Berichte"
+
+#: project/templates/_menu.html:50
+msgid "Logged in as"
+msgstr "Eingeloggt als"
+
+#: project/templates/_menu.html:61
+msgid "Admin"
+msgstr "Admin"
+
+#: project/templates/_menu.html:64
+msgid "I18N"
+msgstr "I18N"
+
+#: project/templates/_menu.html:69 project/templates/_menu.html:70
+msgid "Select Company"
+msgstr "Unternehmen auswählen"
+
+#: project/templates/_menu.html:75
+#: project/templates/registration/password_reset_form.html:4
+#: project/templates/registration/password_reset_form.html:14
+#: project/templates/registration/password_reset_form.html:33
+msgid "Reset password"
+msgstr "Passwort zurücksetzen"
+
+#: project/templates/_menu.html:76
+#: project/templates/registration/password_change_form.html:4
+#: project/templates/registration/password_change_form.html:12
+msgid "Change password"
+msgstr "Passwort ändern"
+
+#: project/templates/_menu.html:79
+msgid "Security Settings"
+msgstr "Einstellungen Wertpapierarten"
+
+#: project/templates/_menu.html:81
+msgid "Logout"
+msgstr "Ausloggen"
+
+#: project/templates/_menu.html:87
+#: project/templates/two_factor/core/login.html:61
+#: project/tests/test_views.py:206
+msgid "Register"
+msgstr "Anmelden"
+
+#: project/templates/_menu.html:90 project/templates/index.html:40
+#: project/templates/registration/registration_form.html:26
+#: project/templates/two_factor/core/login.html:12
+msgid "Login"
+msgstr "Login"
+
+#: project/templates/_messages.html:7
+msgid "Important:"
+msgstr "Wichtig:"
 
 #: project/templates/_split_shares_form.html:3
 msgid "Please enter your share split data"
@@ -241,7 +265,7 @@ msgstr ""
 "mit Nachverfolgung der Aktiennummern. Bitte wenden Sie sich an unseren "
 "Support."
 
-#: project/templates/_split_shares_form.html:33
+#: project/templates/_split_shares_form.html:36
 msgid ""
 "Please note that the split will leave partial share rights unhandled. You "
 "must assign those options to the shareholders and either pay, trade or "
@@ -255,7 +279,7 @@ msgstr ""
 "Kompensation, Verkauf, Verfall der Anrechte nachträglich über Transaktionen "
 "ein."
 
-#: project/templates/_split_shares_form.html:37
+#: project/templates/_split_shares_form.html:40
 msgid "Add Share Split"
 msgstr "Aktiensplit hinzufügen"
 
@@ -263,8 +287,12 @@ msgstr "Aktiensplit hinzufügen"
 msgid "Sort"
 msgstr "Sortierung"
 
+#: project/templates/_typeahead.html:17
+msgid "No Results Found"
+msgstr "Kein Ergebnis gefunden"
+
 #: project/templates/active_shareholder_captable.pdf.html:66
-#: project/templates/start.html:29
+#: project/templates/start.html:32
 msgid "Your Shareholders for"
 msgstr "Ihre Aktionärsliste für"
 
@@ -274,16 +302,19 @@ msgid "Das Aktienregister"
 msgstr "Das Aktienregister"
 
 #: project/templates/active_shareholder_captable.pdf.html:80
+#: project/templates/certificate.pdf.html:80
 #: project/templates/option.pdf.html:80
 msgid "Page"
 msgstr "Seite"
 
 #: project/templates/active_shareholder_captable.pdf.html:81
+#: project/templates/certificate.pdf.html:81
 #: project/templates/option.pdf.html:81
 msgid "of"
 msgstr "von"
 
 #: project/templates/active_shareholder_captable.pdf.html:82
+#: project/templates/certificate.pdf.html:82
 #: project/templates/option.pdf.html:82
 msgid "Date generated"
 msgstr "Datum der Erstellung des Dokuments"
@@ -302,7 +333,7 @@ msgstr "Gründungsdatum"
 
 #: project/templates/active_shareholder_captable.pdf.html:98
 #: project/templates/active_shareholder_captable.pdf.html:141
-#: project/templates/start.html:64
+#: project/templates/start.html:93
 msgid "Name"
 msgstr "Name"
 
@@ -313,7 +344,7 @@ msgstr "Email"
 
 #: project/templates/active_shareholder_captable.pdf.html:100
 #: project/templates/active_shareholder_captable.pdf.html:143
-#: project/templates/start.html:65
+#: project/templates/start.html:94
 msgid "Shareholder Number"
 msgstr "Aktieninhabernummer"
 
@@ -326,38 +357,132 @@ msgstr "Aktien (%%)"
 msgid "Aktiennummern"
 msgstr "Aktiennummern"
 
-#: project/templates/active_shareholder_captable.pdf.html:136
-msgid "Options"
-msgstr "Optionen"
-
 #: project/templates/active_shareholder_captable.pdf.html:144
 #, python-format
 msgid "Optionen (%%)"
 msgstr "Optionen (%%)"
 
+#: project/templates/base.html:9
+msgid "Das Aktienregister title content"
+msgstr "Das Aktienregister"
+
+#: project/templates/base.html:9 project/templates/flatpages/default.html:9
+msgid "brand name"
+msgstr "www.das-aktienregister.ch"
+
+#: project/templates/base.html:10
+msgid ""
+"Das Aktienregister - Perfekte Aktionariatsverwaltung: Schnelligkeit und "
+"Effizienz fuer kleine AGs, vollumfaengliches Aktienregister fuer "
+"Publikumsgesellschaften"
+msgstr "Online-Aktienbuch - Aktionäre beeindrucken"
+
+#: project/templates/base_auth.html:15
+msgid "The Share Register, 2016"
+msgstr "Das Aktienregister, 2017"
+
+#: project/templates/base_auth.html:17
+msgid "do you know our"
+msgstr "Kennen Sie unser"
+
+#: project/templates/base_auth.html:18
+msgid "our blog"
+msgstr "unser Blog"
+
+#: project/templates/certificate.pdf.html:80
+#: project/templates/option.pdf.html:80
+msgid "www.das-aktienregister.ch"
+msgstr "www.das-aktienregister.ch"
+
+#: project/templates/certificate.pdf.html:89
+#: project/templates/option.pdf.html:89
+msgid "Total capital"
+msgstr "Aktienkapital"
+
+#: project/templates/certificate.pdf.html:91
+#: project/templates/option.pdf.html:91
+msgid "based on"
+msgstr "eingeteilt in "
+
+#: project/templates/certificate.pdf.html:95
+#: project/templates/option.pdf.html:95
+msgid "with face value of"
+msgstr "im Nominalwert von je"
+
+#: project/templates/certificate.pdf.html:99
+#: project/templates/option.pdf.html:99
+msgid "share certificate "
+msgstr "AKTIENZERTIFIKAT"
+
+#: project/templates/certificate.pdf.html:101
+#: project/templates/option.pdf.html:101
+msgid "Nr."
+msgstr "Nr."
+
+#: project/templates/certificate.pdf.html:104
+#: project/templates/option.pdf.html:104
+msgid "representing"
+msgstr "über"
+
+#: project/templates/certificate.pdf.html:110
+#: project/templates/option.pdf.html:110
+msgid "with face value"
+msgstr "zum Nennwert"
+
+#: project/templates/certificate.pdf.html:113
+#: project/templates/option.pdf.html:113
+msgid "of each"
+msgstr "von je"
+
+#: project/templates/certificate.pdf.html:113
+#: project/templates/option.pdf.html:113
+msgid "with total value of"
+msgstr "im Gesamtwert von"
+
+#: project/templates/certificate.pdf.html:115
+#: project/templates/option.pdf.html:115
+msgid "cusip"
+msgstr "Valoren-Nr."
+
+#: project/templates/certificate.pdf.html:116
+#: project/templates/option.pdf.html:116
+msgid "ISIN"
+msgstr "ISIN"
+
+#: project/templates/certificate.pdf.html:126
+#: project/templates/option.pdf.html:126
+msgid ""
+"is as owner of the certificate with all legal and statuary rights "
+"shareholder of our company."
+msgstr ""
+"ist als Eigentümer dieses Zertifikates mit allen gesetzlichen und "
+"statutarischen Rechten und Pflichten an unserer Gesellschaft beteiligt."
+
+#: project/templates/certificate.pdf.html:137
+#: project/templates/option.pdf.html:137
+msgid " in the name of the supervisory board"
+msgstr "Namens des Verwaltungsrates"
+
 #: project/templates/index.html:32
 msgid "Gratis Aktienbuch-Muster"
 msgstr "Gratis Aktienbuch-Muster"
 
-#: project/templates/index.html:36 project/tests/test_views.py:80
+#: project/templates/index.html:36 project/tests/test_views.py:82
 msgid "My Dashboard"
 msgstr "Mein Dashboard"
-
-#: project/templates/index.html:40
-msgid "Login"
-msgstr "Login"
 
 #: project/templates/index.html:44
 msgid "prices and plans"
 msgstr "Preise und Pakete"
 
 #: project/templates/index.html:47
+#: project/templates/registration/registration_form.html:29
+#: project/templates/two_factor/core/login.html:69
 msgid "Blog"
 msgstr "Blog"
 
 #: project/templates/index.html:50 project/templates/index.html:61
-#: project/templates/index.html:62 project/templates/index.html:89
-#: project/templates/index.html:90
+#: project/templates/index.html:62 project/templates/index.html:101
 msgid "Try for free"
 msgstr "Kostenlos testen"
 
@@ -367,7 +492,7 @@ msgstr "Das Online-Aktienbuch"
 
 #: project/templates/index.html:60
 msgid "Mit Sicherheit gesetzeskonform durch automatische Validierung."
-msgstr "Mit Sicherheit gesetzeskonform durch automatische Validierung."
+msgstr "Das perfekte Werkzeug für Ihre Aktionärsverwaltung."
 
 #: project/templates/index.html:75
 msgid "Jetzt ab"
@@ -381,29 +506,71 @@ msgstr "4,99"
 msgid "CHF/mtl."
 msgstr "CHF/mtl."
 
-#: project/templates/index.html:83
-msgid "Eingabe alle Daten mit maximaler Effizienz."
-msgstr "☑ Maximale Effizienz bei der Dateneingabe"
+#: project/templates/index.html:82
+msgid "Companies and"
+msgstr "Unternehmen und"
 
-#: project/templates/index.html:84
-msgid "Revisionssichere Ablage."
-msgstr "☑ Revisionssichere Ablage"
+#: project/templates/index.html:82
+msgid "shareholders do trust www.das-aktienregister.ch because of:"
+msgstr "Aktionäre vertrauen auf unsere Produkte"
 
 #: project/templates/index.html:85
-msgid "Automatische Validierung der Daten."
-msgstr ""
-"☑ Automatische Validierung der Daten auf Vollständigkeit und "
-"Gesetzeskonformität (inkl. GAFI-FATF)"
+msgid "Eingabe alle Daten mit maximaler Effizienz."
+msgstr "Das perfekte Werkzeug"
 
 #: project/templates/index.html:86
-msgid "10 Jahre Datengarantie."
-msgstr "☑ 10 Jahre Datengarantie"
+msgid ""
+"Latest Cloud-Technology, fast servers, modern user interface - the share "
+"register is made for it's users efficiency and time saving."
+msgstr ""
+"Moderne Benutzeroberfläche (mobil und Desktop) zur schnellen Datenpflege "
+"gepaart mit höchsten Sicherheitsstandards und moderner Cloud-Technologie"
 
-#: project/templates/index.html:87
+#: project/templates/index.html:89
+msgid "Revisionssichere Ablage."
+msgstr "Revisionssichere Ablage"
+
+#: project/templates/index.html:90
+msgid ""
+"Every change to any data is recorded and saved. Hence any data change is "
+"transparent and can be reproduced."
+msgstr ""
+"Jegliche Datenänderung wird aufgezeichnet und ist auf Nachfrage "
+"nachvollziehbar. Grundlage für Audit Trails und Behördennachfragen."
+
+#: project/templates/index.html:93
+msgid "10 Jahre Datengarantie."
+msgstr "10 Jahre Datengarantie"
+
+#: project/templates/index.html:94
+msgid ""
+"Data security is our most important concern. Duplicate daily backups, "
+"encrypted storage and constant reviews provide a highly secure environment "
+"for your critical data."
+msgstr ""
+"Unser Thema #1: Sicherheit. SMI gelistete Unternehmen vertrauen Ihre "
+"Aktionärsdaten seit Jahren der Fürsorge unserer Mitarbeiter an. Profitieren "
+"Sie jetzt von unseren Erfahrungen und Kompetenzen."
+
+#: project/templates/index.html:97
 msgid "Aktienbuch als PDF herunterladen."
-msgstr "☑ Aktienbuch als PDF herunterladen"
+msgstr "Aktienbuch als PDF herunterladen"
 
 #: project/templates/index.html:98
+msgid ""
+"Insert your data of your shareholders and your past transactions. Click a "
+"button and easily download your Captable PDF for any review or assessment. "
+"Anytime at your fingertips."
+msgstr ""
+"Daten einpflegen und jederzeit vollständiges Aktienbuch als PDF oder Excel "
+"herunterladen. Für Prüfungszwecke, Gesellschafterversammlungen, etc. "
+"jederzeit überall verfügbar."
+
+#: project/templates/index.html:102
+msgid "Try for free now"
+msgstr "Jetzt kostenlos testen"
+
+#: project/templates/index.html:110
 msgid ""
 "Die Automatische Validierung verhindert Fehler und sichert maximale "
 "Gesetzeskonformitaet. Das Online-Aktienbuch macht die Pflege schnell und "
@@ -416,19 +583,19 @@ msgstr ""
 "<strong>PLUS: der rechtlichen Verantwortung des Verwaltungsrates ist Sorge "
 "getragen.</strong>"
 
-#: project/templates/index.html:107
+#: project/templates/index.html:119
 msgid "Do you know our Blog?"
 msgstr "Kennen Sie unser Blog?"
 
-#: project/templates/index.html:112 project/templates/index.html:113
+#: project/templates/index.html:124 project/templates/index.html:125
 msgid "Read our Blog"
 msgstr "Blog jetzt lesen"
 
-#: project/templates/index.html:120
+#: project/templates/index.html:132
 msgid "Subscribe to our newsletter!"
 msgstr "Email-Verteiler für Verwaltungsräte und Geschäftsleitung!"
 
-#: project/templates/index.html:121
+#: project/templates/index.html:133
 msgid "Stay up to date about our work and latest share register industry news"
 msgstr ""
 "Bleiben Sie auf dem neuesten Stand über unsere Arbeit, Bereitstellung neuer "
@@ -436,23 +603,23 @@ msgstr ""
 "Aktienbuch-Vorlagen. Diese Email wird nicht öfter als alle 2-3 Monate "
 "versendet."
 
-#: project/templates/index.html:128
+#: project/templates/index.html:140
 msgid "Geben Sie Ihre Email-Adresse ein"
 msgstr "Geben Sie Ihre Email-Adresse ein"
 
-#: project/templates/index.html:157 project/templates/index.html:158
+#: project/templates/index.html:169 project/templates/index.html:170
 msgid "Read our blog"
 msgstr "Lesen Sie unser Blog"
 
-#: project/templates/index.html:162 project/templates/index.html:163
+#: project/templates/index.html:174 project/templates/index.html:175
 msgid "Service Status"
 msgstr "Service Status"
 
-#: project/templates/index.html:167 project/templates/index.html:168
+#: project/templates/index.html:179 project/templates/index.html:180
 msgid "AGB"
 msgstr "AGB"
 
-#: project/templates/index.html:172 project/templates/index.html:173
+#: project/templates/index.html:184 project/templates/index.html:185
 msgid "A service provided by KKD Komm. GmbH"
 msgstr "A service provided by KKD Komm. GmbH"
 
@@ -472,103 +639,418 @@ msgstr "Aktion"
 msgid "No Log Entries yet."
 msgstr "Noch keine Einträge"
 
-#: project/templates/option.pdf.html:80
-msgid "www.das-aktienregister.ch"
-msgstr "www.das-aktienregister.ch"
+#: project/templates/registration/logout.html:10
+msgid "Logged Out"
+msgstr "Ausgeloggt"
 
-#: project/templates/option.pdf.html:89
-msgid "Total capital"
-msgstr "Aktienkapital"
+#: project/templates/registration/logout.html:11
+msgid "You are now logged out. Go to "
+msgstr "Sie sind jetzte ausgeloggt. Gehen Sie zu"
 
-#: project/templates/option.pdf.html:91
-msgid "based on"
-msgstr "eingeteilt in "
+#: project/templates/registration/logout.html:11
+msgid "Start page"
+msgstr "Startseite"
 
-#: project/templates/option.pdf.html:95
-msgid "with face value of"
-msgstr "im Nominalwert von je"
+#: project/templates/registration/password_change_done.html:12
+msgid "Password successfully changed!"
+msgstr "Passwort erfolgreich geändert."
 
-#: project/templates/option.pdf.html:99
-msgid "share certificate "
-msgstr "AKTIENZERTIFIKAT"
+#: project/templates/registration/password_change_done.html:15
+msgid "You changed your password. Resume here:"
+msgstr "Sie haben Ihr Passwort erfolgreich geändert. Hier weiter:"
 
-#: project/templates/option.pdf.html:101
-msgid "Nr."
-msgstr "Nr."
+#: project/templates/registration/password_reset_complete.html:4
+msgid "Password reset complete"
+msgstr "Passwort erfolgreich zurückgesetzt."
 
-#: project/templates/option.pdf.html:104
-msgid "representing"
-msgstr "über"
+#: project/templates/registration/password_reset_complete.html:13
+msgid "Your password reset is complete"
+msgstr "Das Zurücksetzen Ihres Passwortes ist vollständig abgeschlossen."
 
-#: project/templates/option.pdf.html:110
-msgid "with face value"
-msgstr "zum Nennwert"
+#: project/templates/registration/password_reset_complete.html:16
+msgid "Your password has been reset!"
+msgstr "Ihr Passwort wurde zurückgesetzt."
 
-#: project/templates/option.pdf.html:113
-msgid "of each"
-msgstr "von je"
+#: project/templates/registration/password_reset_complete.html:17
+msgid "You may now"
+msgstr "Sie können jetzt"
 
-#: project/templates/option.pdf.html:113
-msgid "with total value of"
-msgstr "im Gesamtwert von"
+#: project/templates/registration/password_reset_complete.html:17
+msgid "log in"
+msgstr "einloggen"
 
-#: project/templates/option.pdf.html:115
-msgid "cusip"
-msgstr "Valoren-Nr."
+#: project/templates/registration/password_reset_confirm.html:4
+#: project/templates/registration/password_reset_confirm.html:12
+msgid "Confirm password reset"
+msgstr "Passwort zurücksetzen bestätigen"
 
-#: project/templates/option.pdf.html:116
-msgid "ISIN"
-msgstr "ISIN"
-
-#: project/templates/option.pdf.html:126
-msgid ""
-"is as owner of the certificate with all legal and statuary rights "
-"shareholder of our company."
+#: project/templates/registration/password_reset_confirm.html:18
+msgid "Enter your new password below to reset your password:"
 msgstr ""
-"ist als Eigentümer dieses Zertifikates mit allen gesetzlichen und "
-"statutarischen Rechten und Pflichten an unserer Gesellschaft beteiligt."
+"Geben Sie Ihr neues Passwort unten ein, um das Passwort zurückzusetzen:"
 
-#: project/templates/option.pdf.html:137
-msgid " in the name of the supervisory board"
-msgstr "Namens des Verwaltungsrates"
+#: project/templates/registration/password_reset_confirm.html:31
+msgid "Set password"
+msgstr "Passwort speichern"
+
+#: project/templates/registration/password_reset_confirm.html:39
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a new password reset."
+msgstr ""
+"Der Link für das Zurücksetzen des Passwortes ist ungültig, weil er bereits "
+"verwendet wurde. Bitte fragen Sie ein neues Passwort erneut an."
+
+#: project/templates/registration/password_reset_done.html:4
+#: project/templates/registration/password_reset_done.html:14
+msgid "Password reset"
+msgstr "Passwort zurücksetzen"
+
+#: project/templates/registration/password_reset_done.html:17
+msgid ""
+"\n"
+"    We have sent you an email with a link to reset your password.  Please "
+"check\n"
+"    your email and click the link to continue.\n"
+"    "
+msgstr ""
+"\n"
+"Wir haben Ihnen eine Email mit einem Link zum Zurücksetzen des Passwortes "
+"geschickt. Bitte prüfen Sie Ihren Posteingang und klicken Sie den Link als "
+"nächsten Schritt."
+
+#: project/templates/registration/password_reset_email.html:3
+msgid "Greetings"
+msgstr "Bester Gruss"
+
+#: project/templates/registration/password_reset_email.html:5
+#, python-format
+msgid ""
+"\n"
+"You are receiving this email because you (or someone pretending to be you)\n"
+"requested that your password be reset on the %(domain)s site.  If you do "
+"not\n"
+"wish to reset your password, please ignore this message.\n"
+msgstr ""
+"\n"
+"Sie erhalten diese email weil Sie (oder jemand anderes, welcher vorgibt Sie "
+"zu sein) das Passwortes Ihres Nutzerkontos auf %(domain)s zurücksetzen will. "
+"Wenn Sie dieses nicht wünschen, ignorieren Sie diese Nachricht bitte.\n"
+
+#: project/templates/registration/password_reset_email.html:11
+msgid ""
+"\n"
+"To reset your password, please click the following link, or copy and paste "
+"it\n"
+"into your web browser:\n"
+msgstr ""
+"\n"
+"Um Ihr Passwort zurückzusetzen, klicken Sie bitte den folgenden Link oder "
+"kopieren diesen in Ihren Browser.\n"
+
+#: project/templates/registration/password_reset_email.html:18
+msgid "Your username, in case you've forgotten:"
+msgstr "Ihr Nutzername (falls Sie ihn vergessen haben):"
+
+#: project/templates/registration/password_reset_email.html:21
+msgid "Best regards"
+msgstr "Bester Gruss!"
+
+#: project/templates/registration/password_reset_email.html:22
+msgid "Management"
+msgstr "Mitglied des VR/GL"
+
+#: project/templates/registration/password_reset_form.html:17
+msgid ""
+"\n"
+"    Forgot your password?  Enter your email in the form below and we'll send "
+"you instructions for creating a new one.\n"
+"    "
+msgstr ""
+"\n"
+"Sie haben Ihr Passwort vergessen? Geben Sie bitte Ihre Email in das Formular "
+"unten ein. Wir senden Ihnen die Anleitung zum Erstellen eines neuen "
+"Passwortes per Email zu."
+
+#: project/templates/registration/registration_complete.html:11
+msgid "Registration Complete"
+msgstr "Anmeldung komplett"
+
+#: project/templates/registration/registration_complete.html:12
+msgid "You are now registered."
+msgstr "Sie sind jetzt registriert."
+
+#: project/templates/registration/registration_complete.html:12
+msgid "Start here to create your company"
+msgstr "Erstellen Sie jetzt Ihr Unternehmen"
+
+#: project/templates/registration/registration_form.html:11
+msgid "Register Here"
+msgstr "Hier anmelden"
+
+#: project/templates/registration/registration_form.html:21
+msgid "Sign up now"
+msgstr "Jetzt anmelden"
+
+#: project/templates/registration/registration_form.html:25
+msgid "Already registered?"
+msgstr "Bereits registriert?"
+
+#: project/templates/registration/registration_form.html:29
+#: project/templates/two_factor/core/login.html:68
+msgid "Do you know our "
+msgstr "Kennen Sie unser"
 
 #: project/templates/start.html:6
 msgid "Captable"
 msgstr "Übersicht Aktienbuch"
 
-#: project/templates/start.html:50
+#: project/templates/start.html:60
 msgid "Shareholderr added. record share transfers here"
 msgstr ""
 "Aktionär hinzugefügt. Verwenden Sie <a href=\"/positions/\" title=\"Aktien "
 "übertragen\" class=\"btn-inline\">Transaktionen</a> um seinen Aktienstand "
 "einzutragen."
 
-#: project/templates/start.html:54
+#: project/templates/start.html:73
+msgid "Need more advices? Read"
+msgstr "Sie benötigen Hilfe oder mehr Infos?"
+
+#: project/templates/start.html:74
+msgid "share register quickstart guide"
+msgstr "Aktienbuch Quickstart"
+
+#: project/templates/start.html:75
+msgid "our quickstart tutorial!"
+msgstr "Lesen Sie unseren Quickstart-Guide zum Aktienbuch!"
+
+#: project/templates/start.html:81
 msgid "Share Ownership"
 msgstr "Aktienbesitz"
 
-#: project/templates/start.html:66
+#: project/templates/start.html:95
 #, python-format
 msgid "Shares (%%%%)"
 msgstr "Aktien (%)"
 
-#: project/templates/start.html:70
+#: project/templates/start.html:99
 msgid "Gafi Validation failed"
 msgstr "GAFI-FATF Validierung fehlgeschlagen"
 
-#: project/templates/start.html:84
+#: project/templates/start.html:113
 msgid "Total Shares distributed"
 msgstr "Gesamtzahl ausgegebener Aktien"
 
-#: project/templates/start.html:94
+#: project/templates/start.html:123
 msgid "Option Holders"
 msgstr "Optionsinhaber/Zertifikate"
 
-#: project/templates/start.html:95
+#: project/templates/start.html:124
 msgid "Option Holders note"
 msgstr "Zugrundeliegende Aktien sind bei der AG hinterlegt."
 
-#: project/tests/test_views.py:138 project/views.py:202
+#: project/templates/two_factor/core/backup_tokens.html:6
+msgid "Backup Tokens"
+msgstr "Backup-token"
+
+#: project/templates/two_factor/core/backup_tokens.html:7
+msgid ""
+"Backup tokens can be used when your primary and backup\n"
+"      phone numbers aren't available. The backup tokens below can be used\n"
+"      for login verification. If you've used up all your backup tokens, you\n"
+"      can generate a new set of backup tokens. Only the backup tokens shown\n"
+"      below will be valid."
+msgstr ""
+"Backup Token können verwendet werden, wenn reguläre Token und/oder "
+"Telefonnummer nicht verfügbar sind. Wenn Sie alle Ihre Token verwendet "
+"haben, können Sie eine neue Token-Liste generieren. Nur die unten "
+"angezeigten Token können verwendet werden."
+
+#: project/templates/two_factor/core/backup_tokens.html:19
+msgid "Print these tokens and keep them somewhere safe."
+msgstr "Drucken Sie diese Token und verwahren Sie diese an einem sicheren Ort."
+
+#: project/templates/two_factor/core/backup_tokens.html:21
+msgid "You don't have any backup codes yet."
+msgstr "Sie haben noch keine Backup-Token."
+
+#: project/templates/two_factor/core/backup_tokens.html:26
+msgid "Back to Account Security"
+msgstr "Zurück zu Sicherheitseinstellungen"
+
+#: project/templates/two_factor/core/backup_tokens.html:27
+msgid "Generate Tokens"
+msgstr "Token erstellen"
+
+#: project/templates/two_factor/core/login.html:15
+msgid "Enter your credentials."
+msgstr "Geben Sie Ihre Zugangsdaten ein."
+
+#: project/templates/two_factor/core/login.html:18
+msgid "We are calling your phone right now, please enter the digits you hear."
+msgstr ""
+"Wir rufen gerade Ihr Telefon an. Bitte geben Sie die Zahlen ein, welche "
+"Ihnen angesagt werden."
+
+#: project/templates/two_factor/core/login.html:20
+msgid ""
+"We sent you a text message, please enter the tokens we\n"
+"      sent."
+msgstr ""
+"Wir haben Ihnen eine SMS gesendet. Bitte geben Sie den Token ein, welchen "
+"wir Ihnen gesendet haben."
+
+#: project/templates/two_factor/core/login.html:23
+msgid ""
+"Please enter the tokens generated by your token\n"
+"        generator."
+msgstr "Bitte geben Sie den Token von Ihrem Token-Generator ein."
+
+#: project/templates/two_factor/core/login.html:27
+msgid ""
+"Use this form for entering backup tokens for logging in.\n"
+"      These tokens have been generated for you to print and keep safe. "
+"Please\n"
+"      enter one of these backup tokens to login to your account."
+msgstr ""
+"Verwenden Sie dieses Formular, um Backup-Token zum Einloggen einzugeben. "
+"Diese Token wurden für Sie zum Ausdrucken und zur sicheren Ablage generiert. "
+"Bitte geben Sie einen dieser Token ein, um sich mit Ihrem Nutzerkonto "
+"einzuloggen."
+
+#: project/templates/two_factor/core/login.html:39
+msgid "Or, alternatively, use one of your backup phones:"
+msgstr "Oder verwenden Sie alternativ eine Ihrer Ersatz-Telefonnummern:"
+
+#: project/templates/two_factor/core/login.html:49
+msgid "As a last resort, you can use a backup token:"
+msgstr "Als letzte Sicherheit können Sie ein Backup-Token verwenden:"
+
+#: project/templates/two_factor/core/login.html:52
+msgid "Use Backup Token"
+msgstr "Backup-Token verwenden"
+
+#: project/templates/two_factor/core/login.html:60
+msgid "Not  a member?"
+msgstr "Noch kein Mitglied?"
+
+#: project/templates/two_factor/core/login.html:64
+msgid "Password lost?"
+msgstr "Passwort vergessen?"
+
+#: project/templates/two_factor/core/login.html:65
+msgid "Reset Password"
+msgstr "Passwort zurücksetzen"
+
+#: project/templates/two_factor/profile/disable.html:6
+msgid "Disable Two-factor Authentication"
+msgstr "Zwei-Faktoren-Authentifizierung deaktivieren"
+
+#: project/templates/two_factor/profile/disable.html:7
+msgid ""
+"You are about to disable two-factor authentication. This\n"
+"    compromises your account security, are you sure?"
+msgstr ""
+"Sie deaktivieren die Zwei-Faktoren-Authentifizierung. Dies reduziert die "
+"Sicherheit Ihrer Daten. Sind sie sicher?"
+
+#: project/templates/two_factor/profile/disable.html:15
+msgid "Disable"
+msgstr "Deaktivieren"
+
+#: project/templates/zinnia/base.html:10
+msgid "RSS feed of latest entries"
+msgstr "RSS Feed der letzten Einträge"
+
+#: project/templates/zinnia/base.html:11
+msgid "RSS feed of latest discussions"
+msgstr "RSS Feed der letzten Diskussionen"
+
+#: project/templates/zinnia/base.html:25
+msgid "Recent comments"
+msgstr "Neueste Kommentare"
+
+#: project/templates/zinnia/base.html:31
+msgid "Recent linkbacks"
+msgstr "Aktuelle Linkbacks"
+
+#: project/templates/zinnia/base.html:38
+msgid "Shortcuts"
+msgstr "Shortcuts"
+
+#: project/templates/zinnia/base.html:42
+msgid "Category list"
+msgstr "Liste der Kategorien"
+
+#: project/templates/zinnia/base.html:43
+msgid "Categories"
+msgstr "Kategorien"
+
+#: project/templates/zinnia/base.html:47
+msgid "Author list"
+msgstr "Autoren"
+
+#: project/templates/zinnia/base.html:48
+msgid "Authors"
+msgstr "Autoren"
+
+#: project/templates/zinnia/base.html:51
+msgid "Tag list"
+msgstr "Tags"
+
+#: project/templates/zinnia/base.html:52
+msgid "Tags"
+msgstr "Tags"
+
+#: project/templates/zinnia/base.html:55 project/templates/zinnia/base.html:56
+#: project/templates/zinnia/skeleton.html:79
+#: project/templates/zinnia/skeleton.html:80
+msgid "Sitemap"
+msgstr "Sitemap"
+
+#: project/templates/zinnia/base.html:58
+msgid "RSS Feed of latest entries"
+msgstr "RSS Feed der letzten Einträge"
+
+#: project/templates/zinnia/base.html:59
+msgid "RSS Feed"
+msgstr "RSS Feed"
+
+#: project/templates/zinnia/base.html:66
+msgid "Tools"
+msgstr "Werkzeuge"
+
+#: project/templates/zinnia/base.html:71 project/templates/zinnia/base.html:73
+msgid "Dashboard"
+msgstr "Mein Dashboard"
+
+#: project/templates/zinnia/base.html:79 project/templates/zinnia/base.html:81
+msgid "Post an entry"
+msgstr "Eintrag verfassen"
+
+#: project/templates/zinnia/base.html:88 project/templates/zinnia/base.html:90
+msgid "Log out"
+msgstr "Ausloggen"
+
+#: project/templates/zinnia/skeleton.html:9
+msgid "Alles ueber Aktienregister."
+msgstr "Alle über Das Aktienregister"
+
+#: project/templates/zinnia/skeleton.html:54
+#: project/templates/zinnia/skeleton.html:86
+msgid "Search"
+msgstr "Suche"
+
+#: project/templates/zinnia/skeleton.html:71
+msgid "Useful links"
+msgstr "Nützliche Links"
+
+#: project/templates/zinnia/skeleton.html:74
+#: project/templates/zinnia/skeleton.html:75
+msgid "Weblog index"
+msgstr "Blog Übersicht"
+
+#: project/tests/test_views.py:140 project/views.py:202
 msgid ""
 "You have already an existing user account. Please login or reset your "
 "password."
@@ -576,7 +1058,15 @@ msgstr ""
 "Sie haben bereits ein Nutzerkonto. Bitte loggen Sie sich ein oder setzen Sie "
 "Ihr Passwort zurück."
 
-#: project/tests/test_views.py:534 project/views.py:95
+#: project/tests/test_views.py:338
+msgid "None"
+msgstr "Keine"
+
+#: project/tests/test_views.py:445 project/views.py:36
+msgid "shareholder number"
+msgstr "Aktieninhabernummer"
+
+#: project/tests/test_views.py:490 project/views.py:93
 msgid "date"
 msgstr "Datum"
 
@@ -604,99 +1094,200 @@ msgstr ""
 msgid "You didn't press any keys. Good bye."
 msgstr "Sie haben keine Taste gedrückt. Auf Wiedersehen."
 
-#: project/views.py:40
+#: project/views.py:36
+msgid "last name"
+msgstr "Nachname"
+
+#: project/views.py:36
+msgid "first name"
+msgstr "Vorname"
+
+#: project/views.py:37
+msgid "email"
+msgstr "Email"
+
+#: project/views.py:38
+msgid "language ISO"
+msgstr "Sprache ISO"
+
+#: project/views.py:38
+msgid "language full"
+msgstr "Sprache"
+
+#: project/views.py:38
 msgid "street"
 msgstr "Strasse"
 
-#: project/views.py:40
+#: project/views.py:38
 msgid "street 2"
 msgstr "Strasse 2"
 
-#: project/views.py:41
+#: project/views.py:39
 msgid "c/o"
 msgstr "c/o"
 
-#: project/views.py:41
+#: project/views.py:39
 msgid "city"
 msgstr "Ort"
 
-#: project/views.py:41
+#: project/views.py:39
 msgid "zip"
 msgstr "PLZ"
 
-#: project/views.py:41
+#: project/views.py:39
 msgid "country"
 msgstr "Land"
 
-#: project/views.py:42
+#: project/views.py:40
 msgid "pobox"
 msgstr "Postfach"
 
-#: project/views.py:42
+#: project/views.py:40
 msgid "mailing type"
 msgstr "Versandart"
 
-#: project/views.py:42
+#: project/views.py:40
 msgid "nationality"
 msgstr "Nationalität"
 
-#: project/views.py:95
+#: project/views.py:93
 msgid "buyer"
 msgstr "Käufer"
 
-#: project/views.py:95
+#: project/views.py:93
 msgid "seller"
 msgstr "Verkäufer"
 
-#: project/views.py:96
+#: project/views.py:94 project/views.py:380
 msgid "count"
 msgstr "Anzahl"
 
-#: project/views.py:97
+#: project/views.py:95
 msgid "value"
 msgstr "Wert"
 
-#: project/views.py:97
+#: project/views.py:95 project/views.py:380
 msgid "security"
 msgstr "Aktienart"
 
-#: project/views.py:97
+#: project/views.py:95
 msgid "comment"
 msgstr "Kommentar"
 
-#: project/views.py:97
+#: project/views.py:95
 msgid "depot type"
 msgstr "Depotart"
 
-#: project/views.py:98
+#: project/views.py:96
 msgid "stock book id"
 msgstr "Valor"
 
-#: project/views.py:98
+#: project/views.py:96
 msgid "vesting period (options only"
 msgstr "Vesting in Monaten"
 
-#: project/views.py:99
+#: project/views.py:97
 msgid "cert id (options only)"
 msgstr "Zertifikatsnummer"
 
-#: project/views.py:120 project/views.py:122
+#: project/views.py:118 project/views.py:120
 msgid "----------------------------------------"
 msgstr "--------------------- 8<----------------------------"
 
-#: project/views.py:121
+#: project/views.py:119
 msgid "Transactions for options:"
 msgstr "Transaktionen von Optionen/Urkunden"
 
-#: project/views.py:306
-msgid "csv file is being generated and will be sent by email to you"
-msgstr ""
-"Die CSV Datei wird generiert und anschliessend per Email an Sie gesendet."
+#: project/views.py:325 project/views.py:380
+msgid "full name"
+msgstr "Name"
 
 #: project/views.py:325
-msgid "pdf file is being generated and will be sent by email to you"
-msgstr ""
-"Die PDF Datei wird generiert und anschliessend per Email an Sie gesendet."
+msgid "share count"
+msgstr "Anzahl Aktien"
+
+#: project/views.py:325
+msgid "security name"
+msgstr "Aktienart"
+
+#: project/views.py:326
+msgid "certificate id"
+msgstr "Zertifikats-ID"
+
+#: project/views.py:326
+msgid "certificate printed at"
+msgstr "Zertifikat gedruckt am"
+
+#: project/views.py:327
+msgid "security type"
+msgstr "Aktienart"
+
+#: project/views.py:334
+msgid "option"
+msgstr "Optionen/Urkunde"
+
+#: project/views.py:342 project/views.py:385
+msgid "stock"
+msgstr "Aktie"
+
+#: project/views.py:381
+msgid "is management member"
+msgstr "Mitglied des VR/GL"
+
+#: project/views.py:382
+msgid "vesting in months"
+msgstr "Sperrfrist in Monaten"
+
+#: project/views.py:382
+msgid "asset type"
+msgstr "Wertpapierart"
+
+#: project/views.py:390
+msgid "certificate"
+msgstr "Zertifikat/Urkunde"
+
+#~ msgid "Your pdf captable file"
+#~ msgstr "Ihre Liste der aktiven Gesellschafter als PDF"
+
+#~ msgid "Your file is attached to this email"
+#~ msgstr "Die Datei befindet sich im Anhang dieser Email"
+
+#~ msgid "PDF Captable/Active Shareholders"
+#~ msgstr "Download Liste der aktiven Aktionäre als PDF"
+
+#~ msgid "votes share percent"
+#~ msgstr "% Stimmrechte"
+
+#~ msgid "Share IDs"
+#~ msgstr "Aktiennummern"
+
+#~ msgid "Your csv captable file"
+#~ msgstr "Ihre Liste der aktiven Gesellschafter als CSV"
+
+#~ msgid "CSV Captable/Active Shareholders"
+#~ msgstr "Download Liste der aktiven Aktionäre als CSV"
+
+#~ msgid "csv file is being generated and will be sent by email to you"
+#~ msgstr ""
+#~ "Die CSV Datei wird generiert und anschliessend per Email an Sie gesendet."
+
+#~ msgid "pdf file is being generated and will be sent by email to you"
+#~ msgstr ""
+#~ "Die PDF Datei wird generiert und anschliessend per Email an Sie gesendet."
+
+#~ msgid "from"
+#~ msgstr "von"
+
+#~ msgid "transferred to"
+#~ msgstr "an"
+
+#~ msgid "to"
+#~ msgstr "an"
+
+#~ msgid "Automatische Validierung der Daten."
+#~ msgstr ""
+#~ "Automatische Validierung der Daten auf Vollständigkeit und "
+#~ "Gesetzeskonformität (inkl. GAFI-FATF)"
 
 #~ msgid "Shares"
 #~ msgstr "Aktien"
@@ -772,15 +1363,6 @@ msgstr ""
 
 #~ msgid "Thanks you. We will be back to you ASAP!"
 #~ msgstr "Besten Dank! Wir melden uns umgehend."
-
-#~ msgid "Positions"
-#~ msgstr "Transaktionen"
-
-#~ msgid "Transfer Shares"
-#~ msgstr "Aktien übertragen"
-
-#~ msgid "Increase Kapital"
-#~ msgstr "Kapitalerhöhung"
 
 #~ msgid "Your Positions"
 #~ msgstr "Ihre Transaktionen"

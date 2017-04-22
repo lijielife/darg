@@ -3,7 +3,7 @@
 {% trans "Please enter your capital increase data" %}
 {% verbatim %}
 <div class="add-capital-form">
-  <form class="form-inline add-information-inline form">
+  <form class="add-information-inline form">
     <div class="form-group block-level">
         {% endverbatim %} {% trans "On (date)" %} {% verbatim %}
         <span class="input-group date-field">
@@ -16,21 +16,24 @@
             close-text="Schliessen"
             clear-text="Leeren"
             current-text="Heute"
+			readonly="readonly"
+            placeholder="{{'Date'|translate}}"
+            ng-click="toggle_datepicker()"
             />
           <span class="input-group-btn">
-            <button type="button" class="btn btn-default" ng-click="open_datepicker()"><i class="glyphicon glyphicon-calendar"></i></button>
+            <button type="button" class="btn btn-default" ng-click="toggle_datepicker()"><i class="glyphicon glyphicon-calendar"></i></button>
           </span>
         </span>
-      <input type="number" class="form-control" ng-model="newPosition.count" translate translate-attr-placeholder="Count" ng-maxlength="10">
-      <input type="number" class="form-control" ng-model="newPosition.value" translate translate-attr-placeholder="Payed Price" ng-maxlength="10" step=".01">
+      <input type="number"  class="form-control" ng-model="newPosition.count" translate translate-attr-placeholder="Count" min="0" ng-maxlength="10">
+      <input type="number" class="form-control" ng-model="newPosition.value" translate translate-attr-placeholder="Payed Price" min="0" ng-maxlength="10" step=".01">
       <select class="form-control security" ng-model="newPosition.security" ng-options="security as security.readable_title for security in securities" translate translate-attr-placeholder="Security" ng-change="show_available_number_segments();">
         <option value='' disabled>{% endverbatim %}{% trans "Security" %}{% verbatim %}</option>
       </select>
       <input type="text" class="form-control" ng-model="newPosition.number_segments" translate translate-attr-placeholder="Share IDs" ng-maxlength="255" ng-show="newPosition.security.track_numbers">
       <input type="text" class="form-control" ng-model="newPosition.comment" translate translate-attr-placeholder="Comment">
     </div>
-    <div class="form-group">
-      <button class="btn btn-default cancel" ng-click="hide_form()">{% endverbatim %}{% trans "Cancel" %}{% verbatim %}</button>
+    <div class="form-group custom-form-group">
+      <button class="btn btn-default cancel" data-dismiss="modal" ng-click="hide_form()">{% endverbatim %}{% trans "Cancel" %}{% verbatim %}</button>
       <button class="btn btn-focus save-capital" ng-click="add_position()">{% endverbatim %}{% trans "Add Position" %}{% verbatim %}</button>
     </div>
   </form>

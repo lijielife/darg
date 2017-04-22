@@ -1,10 +1,18 @@
-
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import permissions
+
+
+class SafeMethodsOnlyPermission(permissions.BasePermission):
+    """Only can access non-destructive methods (like GET and HEAD)"""
+    def has_permission(self, request, view):
+        return self.has_object_permission(request, view)
+
+    def has_object_permission(self, request, view, obj=None):
+        return request.method in permissions.SAFE_METHODS
 
 
 class IsOperatorPermission(permissions.IsAuthenticated):
@@ -73,3 +81,18 @@ class HasSubscriptionPermission(permissions.BasePermission):
         if hasattr(request, 'user') and request.user.is_authenticated():
             operator = request.user.operator_set.first()
             return operator and operator.company
+
+
+class UserCanAddCompanyPermission(SafeMethodsOnlyPermission):
+    """Allow everyone which is not a shareholder nor an operator yet to
+    add a company
+    """
+    def has_object_permission(self, request, view, obj=None):
+
+        can_add = False
+        if obj is None:
+            # Either a list or a create, so no author
+            can_add = True
+        return can_add or super(
+            UserCanAddCompanyPermission, self).has_object_permission(
+                request, view, obj)

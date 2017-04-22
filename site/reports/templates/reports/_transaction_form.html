@@ -16,9 +16,12 @@
           close-text="Schliessen"
           clear-text="Leeren"
           current-text="Heute"
+          placeholder="{{'Start Date'|translate}}"
+          readonly="readonly"
+          ng-click="toggle_datepicker1()"
           />
         <span class="input-group-btn">
-          <button type="button" class="btn btn-default" ng-click="open_datepicker1()"><i class="glyphicon glyphicon-calendar"></i></button>
+          <button type="button" class="btn btn-default" ng-click="toggle_datepicker1()"><i class="glyphicon glyphicon-calendar"></i></button>
         </span>
       </span>
       {% endverbatim %} {% trans "to" %} {% verbatim %}
@@ -32,9 +35,12 @@
           close-text="Schliessen"
           clear-text="Leeren"
           current-text="Heute"
+          placeholder="{{'End Date'|translate}}"
+		  readonly="readonly"
+          ng-click="toggle_datepicker2()"
           />
         <span class="input-group-btn">
-          <button type="button" class="btn btn-default" ng-click="open_datepicker2()"><i class="glyphicon glyphicon-calendar"></i></button>
+          <button type="button" class="btn btn-default" ng-click="toggle_datepicker2()"><i class="glyphicon glyphicon-calendar"></i></button>
         </span>
       </span>
       <select class="form-control security" ng-model="transactions_download_params.security" ng-options="security as security.readable_title for security in securities" translate translate-attr-placeholder="Security">

@@ -11,6 +11,7 @@ gettext('Name');
 gettext('Buyer');
 gettext('Seller');
 gettext('Date');
+gettext('Start Date');
 gettext('Security');
 gettext('Share Count');
 gettext('Option Plan');
@@ -18,7 +19,7 @@ gettext('Share Count');
 gettext('Board Approval Date');
 gettext('Underlying Asset');
 gettext('Exercise Price');
-gettext('Face Value');
+gettext('Face Value of shares');
 gettext('First Name');
 gettext('Last Name');
 gettext('Shareholder Number');
@@ -46,6 +47,11 @@ gettext('number_segments');
 gettext('Stock Book ID');
 gettext('Certificate ID');
 gettext('Vesting period in months');
+gettext('Input');
+gettext('Please enter DELETE');
+gettext('face_value');
+gettext('first_name');
+gettext('last_name');
 
 // TEMPLATE
 // gettext('');

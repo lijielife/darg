@@ -6,10 +6,13 @@ app.config ['$translateProvider', ($translateProvider) ->
     $translateProvider.useSanitizeValueStrategy('escaped')
 ]
 
-app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position', 'Split', ($scope, $http, $window, Position, Split) ->
+app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position', 'Split', '$timeout', ($scope, $http, $window, Position, Split, $timeout) ->
     $scope.positions = []
     $scope.securities = []
+    $scope.errors = {}
 
+    $scope.position_added_success = false
+    $scope.split_added_success = false
     $scope.show_add_position = false
     $scope.show_add_capital = false
     $scope.show_split_data = false
@@ -128,6 +131,12 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
             response.data.results.map (item) ->
                 item
 
+    $scope.search_banks = (term) ->
+        paramss = {search: term}
+        $http.get('/services/rest/bank', {params: paramss}).then (response) ->
+            response.data.results.map (item) ->
+                item
+
     $scope.search = ->
         # FIXME - its not company specific
         # respect ordering and search
@@ -153,8 +162,30 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
             $scope.search_params.query = params.search
 
     # --- LOGIC
+    $scope.validate_shareholder = (obj, attr)->
+        value = obj[attr]
+        if (typeof value == 'string')
+            $scope.errors[attr] = {
+                non_field_error: 
+                    gettext('This shareholder was not found inside the database. Please add as a shareholder, then enter name here and click the right one inside the provided list')}
+            return false
+        return true
+
     $scope.add_position = ->
+        # reset errors
+        $scope.errors = {}
+
+        # validation:
+        if (
+            !$scope.validate_shareholder($scope.newPosition, 'buyer') ||
+            !$scope.validate_shareholder($scope.newPosition, 'seller')
+        )
+            return
+
+        # show loading state
         $scope.addPositionLoading = true
+        
+        # convert date obj
         if $scope.newPosition.bought_at
             # http://stackoverflow.com/questions/1486476/json-stringify-changes-time-of-date-because-of-utc
             bought_at = $scope.newPosition.bought_at
@@ -171,14 +202,18 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
             $scope.show_add_position = false
             $scope.show_add_capital = false
             $scope.newPosition = new Position()
+            $scope.position_added_success = true
+            $timeout ->
+                $scope.position_added_success = false
+            , 5000
         .then ->
             # Clear any errors
-            $scope.errors = null
+            $scope.errors = {}
             $window.ga('send', 'event', 'form-send', 'add-transaction')
             $scope.addPositionLoading = false
         , (rejection) ->
             $scope.errors = rejection.data
-            Raven.captureMessage('form error: ' + rejection.statusText, {
+            Raven.captureMessage('add position form error: ' + rejection.statusText, {
                 level: 'warning',
                 extra: { rejection: rejection },
             })
@@ -202,25 +237,41 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
                 $scope.positionsLoading = false
 
     $scope.add_split = ->
-        # http://stackoverflow.com/questions/1486476/json-stringify-changes-time-of-date-because-of-utc
-        execute_at = $scope.newSplit.execute_at
-        execute_at.setHours(execute_at.getHours() - execute_at.getTimezoneOffset() / 60)
+        if $scope.newSplit.execute_at
+            # normalize datetime
+            # http://stackoverflow.com/questions/1486476/json-stringify-changes-time-of-date-because-of-utc
+            execute_at = $scope.newSplit.execute_at
+            execute_at.setHours(execute_at.getHours() - execute_at.getTimezoneOffset() / 60)
+
         $scope.newSplit.execute_at = execute_at
         $scope.newSplit.$save().then (result) ->
             $scope.positions = result.data
         .then ->
             $scope.newSplit = new Split()
+            $scope.split_added_success = true
+            $timeout ->
+                $scope.split_added_success = false
+            , 5000
         .then ->
-            $scope.errors = null
+            $scope.errors = {}
             $scope.show_split = false
             $window.ga('send', 'event', 'form-send', 'add-split')
         , (rejection) ->
             $scope.errors = rejection.data
-            Raven.captureMessage('form error: ' + rejection.statusText, {
+            Raven.captureMessage('add split form error: ' + rejection.statusText, {
                 level: 'warning',
                 extra: { rejection: rejection },
             })
 
+    $scope.get_new_certificate_id = ->
+        $http(
+            method: 'GET'
+            url: '/services/rest/position/get_new_certificate_id').then ((response) ->
+       	 	    $scope.newPosition.certificate_id = response.data.certificate_id
+            ), (response) ->
+                $scope.errors = response.errors
+
+    # --- DISPLAY LOGIC
     $scope.show_add_position_form = ->
         $scope.show_add_position = true
         $scope.show_add_capital = false
@@ -250,6 +301,7 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
         $scope.show_add_capital = false
         $scope.newPosition = new Position()
         $scope.show_split = false
+        $scope.errors = {}
 
     $scope.show_split_form = ->
         $scope.show_add_position = false
@@ -265,7 +317,7 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
                     url = url + '?date=' + $scope.newPosition.bought_at.toISOString()
                 $http.get(url).then (result) ->
                     if $scope.newPosition.security.pk of result.data and result.data[$scope.newPosition.security.pk].length > 0
-           	            $scope.numberSegmentsAvailable = gettext('Available security segments from this shareholder on selected date or now: ') + result.data[$scope.newPosition.security.pk]
+                           $scope.numberSegmentsAvailable = gettext('Available security segments from this shareholder on selected date or now: ') + result.data[$scope.newPosition.security.pk]
                     else
                         $scope.numberSegmentsAvailable = gettext('Available security segments from this shareholder on selected date or now: None')
 
@@ -277,8 +329,8 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
         startingDay: 1,
         showWeeks: false,
     }
-    $scope.open_datepicker = ->
-        $scope.datepicker.opened = true
+    $scope.toggle_datepicker = ->
+        $scope.datepicker.opened = !$scope.datepicker.opened
 
     # --- LINK
     $scope.goto_position = (position_id) ->

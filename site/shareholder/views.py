@@ -1,22 +1,19 @@
-
 import os
 
-from django.http import HttpResponse, Http404
-from django.template import RequestContext, loader
-from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core import signing
-from django.http import HttpResponseForbidden
+from django.http import Http404, HttpResponse, HttpResponseForbidden
+from django.shortcuts import get_object_or_404
+from django.template import loader
 from django.utils.timezone import now
 from django.utils.translation import ugettext as _
-from django.views.generic import ListView, DetailView
-
+from django.views.generic import DetailView, ListView
 from sendfile import sendfile
 
 from company.mixins import SubscriptionViewMixin
-from shareholder.models import (Shareholder, OptionPlan, ShareholderStatement,
-                                Position, OptionTransaction)
 from project.permissions import OperatorPermissionRequiredMixin
+from shareholder.models import (OptionPlan, OptionTransaction, Position,
+                                Shareholder, ShareholderStatement)
 from utils.formatters import human_readable_segments
 
 from .mixins import (AuthTokenSingleViewMixin,
@@ -26,15 +23,13 @@ from .mixins import (AuthTokenSingleViewMixin,
 @login_required
 def positions(request):
     template = loader.get_template('positions.html')
-    context = RequestContext(request, {})
-    return HttpResponse(template.render(context))
+    return HttpResponse(template.render(request=request))
 
 
 @login_required
 def options(request):
     template = loader.get_template('options.html')
-    context = RequestContext(request, {})
-    return HttpResponse(template.render(context))
+    return HttpResponse(template.render(request=request))
 
 
 class OptionTransactionView(OperatorPermissionRequiredMixin, DetailView):
@@ -86,8 +81,8 @@ class ShareholderView(OperatorPermissionRequiredMixin, DetailView):
 def optionsplan(request, optionsplan_id):
     template = loader.get_template('optionsplan.html')
     optionsplan = get_object_or_404(OptionPlan, id=int(optionsplan_id))
-    context = RequestContext(request, {"optionplan": optionsplan})
-    return HttpResponse(template.render(context))
+    context = {"optionplan": optionsplan, 'request': request}
+    return HttpResponse(template.render(context=context, request=request))
 
 
 @login_required

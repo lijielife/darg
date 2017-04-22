@@ -1,54 +1,51 @@
-
 import collections
 import decimal
 
+import stripe
+from braces.views import CsrfExemptMixin
 from django.contrib import messages
-# from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.template import RequestContext, loader
+from django.template import loader
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import View, ListView, DetailView
-
-import stripe
-
-from braces.views import CsrfExemptMixin
+from django.views.generic import DetailView, ListView, View
 from djstripe.forms import PlanForm
-from djstripe.models import Customer, CurrentSubscription, Invoice
-from djstripe.settings import (PAYMENT_PLANS, subscriber_request_callback,
-                               # CANCELLATION_AT_PERIOD_END,
-                               PLAN_LIST, PRORATION_POLICY_FOR_UPGRADES)
+from djstripe.models import CurrentSubscription, Customer, Invoice
+from djstripe.settings import (PAYMENT_PLANS,  # CANCELLATION_AT_PERIOD_END,
+                               PLAN_LIST, PRORATION_POLICY_FOR_UPGRADES,
+                               subscriber_request_callback)
 from djstripe.sync import sync_subscriber
-from djstripe.views import (
-    AccountView as DjStripeAccountView,
-    ChangeCardView as DjStripeChangeCardView,
-    HistoryView as DjStripeHistoryView,
-    # SyncHistoryView as DjStripeSyncHistoryView,
-    ConfirmFormView as DjStripeConfirmFormView,
-    SubscribeView as DjStripeSubscribeView,
-    ChangePlanView as DjStripeChangePlanView,
-    # CancelSubscriptionView as DjStripeCancelSubscriptionView
-)
+from djstripe.views import AccountView as DjStripeAccountView  # SyncHistoryView as DjStripeSyncHistoryView,; CancelSubscriptionView as DjStripeCancelSubscriptionView
+from djstripe.views import ChangeCardView as DjStripeChangeCardView
+from djstripe.views import ChangePlanView as DjStripeChangePlanView
+from djstripe.views import ConfirmFormView as DjStripeConfirmFormView
+from djstripe.views import HistoryView as DjStripeHistoryView
+from djstripe.views import SubscribeView as DjStripeSubscribeView
 from sendfile import sendfile
 
 import utils
-from shareholder.models import Company
-# from utils.mail import is_valid_email
-# from utils.subscriptions import (stripe_company_shareholder_invoice_item,
-#                                  stripe_company_security_invoice_item)
+from shareholder.models import Company, Operator
 
 from .mixins import (CompanyOperatorPermissionRequiredViewMixin,
                      SubscriptionViewCompanyObjectMixin)
 
 
+# from utils.mail import is_valid_email
+# from utils.subscriptions import (stripe_company_shareholder_invoice_item,
+#                                  stripe_company_security_invoice_item)
+
+
 @login_required
 def company(request, company_id):
+    """
+    show company detail page
+    """
     template = loader.get_template('company.html')
     company = get_object_or_404(Company, id=int(company_id))
-    context = RequestContext(request, {'company': company})
-    return HttpResponse(template.render(context))
+    context = {'company': company}
+    return HttpResponse(template.render(context=context, request=request))
 
 
 # djstripe views
@@ -76,8 +73,8 @@ class SubscriptionsListView(ListView):
             # When pagination is enabled and object_list is a queryset,
             # it's better to do a cheap query than to load the unpaginated
             # queryset in memory.
-            if (self.get_paginate_by(self.object_list) is not None
-                    and hasattr(self.object_list, 'exists')):
+            if (self.get_paginate_by(self.object_list) is not None and
+                    hasattr(self.object_list, 'exists')):
                 is_empty = not self.object_list.exists()
             else:
                 is_empty = len(self.object_list) == 0
@@ -379,3 +376,28 @@ subscribe = SubscribeView.as_view()
 change_plan = ChangePlanView.as_view()
 # cancel_subscription = CancelSubscriptionView.as_view()
 invoice = InvoiceDetailView.as_view()
+
+
+@login_required
+def company_select(request):
+    """
+    view to select company to work within for operators
+    """
+    template = loader.get_template('company_select.html')
+
+    # company choice: set to session and redirect to start...
+    company_id = int(request.GET.get('company_id', 0))
+    if company_id:
+        operator = get_object_or_404(Operator, company__pk=company_id,
+                                     user=request.user)
+        request.session['company_pk'] = operator.company.pk
+        return redirect("start")
+
+    # add new corp, clean session and redirect to start...
+    if request.GET.get('add_company'):
+        if request.session.get('company_pk'):
+            del request.session['company_pk']
+        return redirect("start")
+
+    # render company choice view
+    return HttpResponse(template.render(request=request))

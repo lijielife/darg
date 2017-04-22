@@ -1,33 +1,35 @@
 
 from django.conf.urls import url
 
+from company import views as company_views
+
 
 urlpatterns = [
 
     # HTML views
     url(
         r"^$",
-        'company.views.account',
+        company_views.account,
         name="account"
     ),
     url(
         r"^subscribe/$",
-        'company.views.subscribe',
+        company_views.subscribe,
         name="subscribe"
     ),
     url(
         r"^confirm/(?P<plan>.+)$",
-        'company.views.confirm',
+        company_views.confirm,
         name="confirm"
     ),
     url(
         r"^change/plan/$",
-        'company.views.change_plan',
+        company_views.change_plan,
         name="change_plan"
     ),
     url(
         r"^change/cards/$",
-        'company.views.change_card',
+        company_views.change_card,
         name="change_card"
     ),
     # NOTE: cancellation not allowed (free plan available)
@@ -38,12 +40,12 @@ urlpatterns = [
     # ),
     url(
         r"^history/$",
-        'company.views.history',
+        company_views.history,
         name="history"
     ),
     url(
         r"^invoice/(?P<pk>\d+)/$",
-        'company.views.invoice',
+        company_views.invoice,
         name="invoice"
     ),
 
@@ -51,7 +53,7 @@ urlpatterns = [
     # Web services
     url(
         r"^a/sync/history/$",
-        'company.views.sync_history',
+        company_views.sync_history,
         name="sync_history"
     ),
 ]

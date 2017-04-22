@@ -24,7 +24,7 @@ app.factory 'User', ['$resource', ($resource) ->
 ]
 
 app.factory 'Position', ['$resource', ($resource) ->
-    $resource '/services/rest/position/:id', id: '@id'
+    $resource('/services/rest/position/:id', {id: '@id'}, invalidate: {method: 'GET', url: '/services/rest/position/:id/invalidate'})
 ]
 
 app.factory 'Split', ['$resource', ($resource) ->
@@ -45,4 +45,8 @@ app.factory 'OptionTransaction', ['$resource', ($resource) ->
 
 app.factory 'Invitee', ['$resource', ($resource) ->
     $resource '/services/rest/invitee/:id', id: '@id'
+]
+
+app.factory 'Report', ['$resource', ($resource) ->
+    $resource '/services/rest/report/:id', id: '@id'
 ]

@@ -6,12 +6,16 @@
 npm-debug.log
 db.sqlite3
 darg.js/node_modules/
+darg.js/compiled/
+darg.js/darg.js/
 site/static/.sass-cache/
 site/media/static/
 site/media/cache
 site/media/media
 site/media/private
 site/media/public
+site/media/f
+site/celerybeat-schedule
 build/*
 src/*
 site/project/settings/dev_local.py

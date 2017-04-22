@@ -5,7 +5,7 @@ from django.db import models
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-from django.contrib.flatpages.admin import FlatPageAdmin
+# from django.contrib.flatpages.admin import FlatPageAdmin
 from django.contrib.flatpages.models import FlatPage
 from django.utils.translation import ugettext_lazy as _
 
@@ -14,10 +14,9 @@ from djstripe.admin import (Customer, CurrentSubscription, subscription_status,
                             CustomerSubscriptionStatusListFilter)
 from markdownx.widgets import AdminMarkdownxWidget
 # from reversion.admin import VersionAdmin  # revers > 2.0
-from reversion.helpers import patch_admin  # reversion < 2.0
+from flatpage_meta.admin import ReplacementFlatPageAdmin
 
-# ReVersioned UserAdmin
-patch_admin(User)
+from reversion.admin import VersionAdmin  # revers > 2.0
 
 
 UserAdmin.list_display = (
@@ -34,7 +33,6 @@ UserAdmin.list_filter = (
     )
 
 
-""" reversion > 2.0
 class ReversionedUserAdmin(VersionAdmin, UserAdmin):
 
     list_display = (
@@ -50,10 +48,9 @@ class ReversionedUserAdmin(VersionAdmin, UserAdmin):
         'is_staff', 'date_joined', 'operator__company', 'shareholder__company',
         'last_login',
         )
-"""
 
 
-class FlatPageAdminX(FlatPageAdmin):
+class FlatPageAdminX(ReplacementFlatPageAdmin):
     formfield_overrides = {
         models.TextField: {'widget': AdminMarkdownxWidget},
     }

@@ -1,8 +1,12 @@
 .date-field
   .input-group-btn .btn
-    padding: 8px 12px 10px
+    padding: 7px 12px 9px
     border: 1px solid #ccc
-
+  // make readonly appear as regular one and have 
+  // click open the datepicker to enter date.
+  // avoid having the user enter the wrong date format
+  .form-control[readonly]
+    background: transparent
 .uib-datepicker-popup
   button
     color: initial

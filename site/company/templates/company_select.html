@@ -1,0 +1,38 @@
+{% extends "base_auth.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load thumbnail %}
+
+{% block title %}
+  <TITLE>{% trans "Select Company" %} - Das Aktienregister</TITLE>
+{% endblock %}
+
+{% block ng_app %}js.darg.app.select_company{% endblock %}
+
+{% block content %}
+<div ng_controller="SelectCompanyController">
+
+  <h1>{% trans "Select your company" %}</h1>
+  <ul>
+    {% for operator in request.user.operator_set.all %}
+    <li>
+      {% thumbnail operator.company.logo "60x60" as thumb %}
+        <img src="{{ thumb.url }}" width="30px">
+      {% empty %}
+        <img src="{% static "compiled/images/default-company-logo.jpg" %}" alt="logo company default" width="30px"/>
+      {% endthumbnail %}
+
+      <a href="{% url "company_list" %}?company_id={{operator.company.pk}}">
+        {{ operator.company.name }}
+      </a>
+    </li>
+    {% endfor %}
+    {% if request.user.userprofile.is_multi_company_allowed %}
+    <li>
+      <span class="el-icon-plus-sign"></span>
+      <a href="{% url "company_list" %}?add_company=1" title="{% trans "add company" %}">{% trans "add company" %}</a>
+    </li>
+    {% endif %}
+  </ul>
+</div>
+{% endblock %}

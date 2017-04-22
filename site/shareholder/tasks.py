@@ -1,22 +1,25 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 import json
 import os
 
+import requests
 from django.conf import settings
 from django.contrib.sites.models import Site
-from django.core.mail import (send_mail, EmailMessage, EmailMultiAlternatives,
-                              mail_admins)
+from django.core.mail import (EmailMessage, EmailMultiAlternatives,
+                              mail_admins, send_mail)
 from django.core.urlresolvers import reverse
 from django.template import Context, loader
 from django.utils.formats import date_format
 from django.utils.text import slugify
-from django.utils.timezone import now, timedelta, datetime
-from django.utils.translation import ugettext as _, activate as activate_lang
-
-import requests
+from django.utils.timezone import datetime, now, timedelta
+from django.utils.translation import activate as activate_lang
+from django.utils.translation import ugettext as _
 
 from pingen.api import Pingen
 from project.celery import app
+from shareholder.import_backends import SwissBankImportBackend
 from utils.pdf import render_pdf
 
 from .models import Company, ShareholderStatement, ShareholderStatementReport
@@ -473,3 +476,11 @@ def send_statement_letters():
 
             # send letter via service to user
             send_statement_letter.delay(statement.pk)
+
+
+@app.task
+def update_banks_from_six():
+    """
+    regularly update swiss banks database with data from six
+    """
+    SwissBankImportBackend().update()

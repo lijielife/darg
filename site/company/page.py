@@ -7,6 +7,7 @@ http://selenium-python.readthedocs.org/en/latest/page-objects.html
 # from locators import MainPageLocators (save all setter/getter here)
 
 from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext as _
 
 from selenium.webdriver.common.by import By
 
@@ -29,7 +30,7 @@ class CompanyPage(BasePage):
         self.operator = user.operator_set.all()[0]
         self.login(username=user.username,
                    password=DEFAULT_TEST_DATA['password'])
-        self.driver.get('%s%s' % (live_server_url, reverse(
+        self.get('%s%s' % (live_server_url, reverse(
             "company", kwargs={'company_id': self.company.pk}
         )))
 
@@ -41,10 +42,24 @@ class CompanyPage(BasePage):
 
         field.send_keys(email)
 
-    def enter_string(self, css_class, string):
-        el = self.driver.find_element_by_class_name(css_class)
-        el = el.find_element_by_tag_name('input')
+    def enter_string(self, css_class, string, clear=False):
+        el = self.wait_until_visible((
+            By.XPATH, '//*[contains(@class, "{}")]//input'.format(css_class)
+            ))
+        if clear:
+            el.clear()
         el.send_keys(string)
+
+    def confirm_reset_company(self):
+        """
+        enter string and click confirm
+        """
+        modal = self.wait_until_visible((
+            By.ID, 'companyResetModal'))
+        field = modal.find_element_by_tag_name('input')
+        field.send_keys(_('DELETE'))
+        modal.find_element_by_class_name('btn-primary').click()
+        self.wait_until_invisible((By.ID, 'companyResetModal'))
 
     # -- CLICKs
     def click_save_new_operator(self):
@@ -67,10 +82,10 @@ class CompanyPage(BasePage):
         # table = self.driver.find_element_by_css_selector('table.operators')
         self.driver.execute_script(
             "return arguments[0].scrollIntoView();", table)
-        rows = table.find_elements_by_tag_name('tr')
+        rows = table.find_elements_by_class_name('tr')
         match = False
         for row in rows:
-            tds = row.find_elements_by_tag_name('td')
+            tds = row.find_elements_by_class_name('td')
             for td in tds:
                 if operator.user.email in td.text:
                     match = True
@@ -80,7 +95,7 @@ class CompanyPage(BasePage):
                 break
 
     def click_to_edit(self, class_name):
-        el = self.driver.find_element_by_class_name(class_name)
+        el = self.wait_until_visible((By.CLASS_NAME, class_name))
         el = el.find_element_by_class_name('editable-click')
         self.scroll_to(element=el)
         el.click()
@@ -91,7 +106,8 @@ class CompanyPage(BasePage):
         """
         el = self.driver.find_element_by_class_name(class_name)
         btn = el.find_element_by_xpath(
-            '//td[@class="date-field"]//span[@class="input-group-btn"]//button'
+            '//div[contains(@class, "date-field")]'
+            '//span[@class="input-group-btn"]//button'
         )
         self.scroll_to(element=btn)
         btn.click()
@@ -112,6 +128,13 @@ class CompanyPage(BasePage):
                 btn.click()
                 break
 
+    def click_reset_company(self):
+        """
+        open reset modal
+        """
+        self.wait_until_visible((
+            By.XPATH, '//div[@class="company-administration"]//button')).click()
+
     def save_edit(self, class_name):
         el = self.driver.find_element_by_class_name(class_name)
         el = el.find_element_by_class_name('editable-buttons')
@@ -128,5 +151,6 @@ class CompanyPage(BasePage):
         return date from inside this element
         """
         bday = self.driver.find_element_by_xpath(
-            '//tr[@class="founding-date active"]/td/span')
+            '//div[contains(@class, "founding-date")]'
+            '/div[contains(@class, "td")]/span')
         return bday.text

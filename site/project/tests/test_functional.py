@@ -1,17 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import datetime
 import time
 
 from selenium.webdriver.common.by import By
 
 from project import page
 from project.base import BaseSeleniumTestCase
-from project.generators import (CompanyShareholderGenerator,
+from project.generators import (DEFAULT_TEST_DATA, CompanyShareholderGenerator,
                                 ComplexOptionTransactionsWithSegmentsGenerator,
                                 OperatorGenerator, ShareholderGenerator,
-                                TwoInitialSecuritiesGenerator, UserGenerator,
-                                DEFAULT_TEST_DATA)
+                                TwoInitialSecuritiesGenerator, UserGenerator)
 from shareholder.models import Security, Shareholder
 
 from .mixins import StripeTestCaseMixin, SubscriptionTestMixin
@@ -80,6 +80,7 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
 
         try:
             for op in ops:
+                CompanyShareholderGenerator().generate(company=op.company)
                 start = page.StartPage(
                     self.selenium, self.live_server_url, op.user)
                 # wait for list
@@ -90,9 +91,11 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                                  Shareholder.objects.filter(
                                     company=op.company).count())
                 start.click_open_add_shareholder()
+                start.wait_until_modal_opened('addShareholder')
                 start.add_shareholder(user)
                 start.click_save_add_shareholder()
-                time.sleep(3)
+                start.close_modal('addShareholder')
+
                 # wait for list entry
                 xpath = (
                     u'//div[@id="shareholder_list"]//span[text()="{}"]'
@@ -151,9 +154,10 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         except Exception, e:
             self._handle_exception(e)
 
-    def test_ticket_96(self):
+    def test_add_company(self):
         """
         add company with face value with decimals and large share count
+        see #96
         """
         user = UserGenerator().generate()
         value = '4.5'
@@ -165,6 +169,10 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             # wait for form
             p.wait_until_visible((By.CSS_SELECTOR, '#add_company'))
             self.assertTrue(p.is_add_company_form_displayed())
+            # menue is hidden
+            self.assertFalse(
+                self.selenium.find_element_by_css_selector('#navbar ul')
+                .is_displayed())
 
             p.enter_add_company_data(value=value, count=count)
             p.click_save_add_company()
@@ -179,6 +187,98 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             self.assertEqual(DEFAULT_TEST_DATA['company_name'], company.name)
             cs = company.get_company_shareholder()
             self.assertTrue(cs.buyer.first().value, value)
+            # menue is displayed
+            self.assertTrue(
+                self.selenium.find_element_by_css_selector('#navbar ul')
+                .is_displayed())
+            # captable is hidden after company add, so the user is not confused
+            # and can enter a single shareholder first
+            self.assertFalse(
+                self.selenium.find_element_by_css_selector('#captable')
+                .is_displayed())
+            # but it's shown on refresh
+            p.refresh()
+            self.assertTrue(
+                p.wait_until_visible((By.CSS_SELECTOR, '#captable'))
+                .is_displayed())
+            self.assertEqual(company.founded_at, datetime.date.today())
+
+        except Exception, e:
+            self._handle_exception(e)
+
+    def test_add_shareholder_without_email(self):
+        """
+        add shareholder without email
+        """
+        op = OperatorGenerator().generate()
+        CompanyShareholderGenerator().generate(company=op.company)
+        user = UserGenerator().generate()
+        user.email = None
+
+        try:
+            start = page.StartPage(
+                self.selenium, self.live_server_url, op.user)
+            # wait for list
+            start.wait_until_visible(
+                (By.CSS_SELECTOR, '#shareholder_list'))
+            start.is_properly_displayed()
+            self.assertEqual(start.has_shareholder_count(),
+                             Shareholder.objects.filter(
+                                company=op.company).count())
+            start.click_open_add_shareholder()
+            start.wait_until_modal_opened('addShareholder')
+            start.add_shareholder(user)
+            start.click_save_add_shareholder()
+            start.close_modal('addShareholder')
+            time.sleep(3)
+            # wait for list entry
+            xpath = (
+                '//div[@id="shareholder_list"]//span[text()="{}"]'
+                u''.format(
+                    Shareholder.objects.last().get_full_name()
+                )
+            )
+            start.wait_until_visible((By.XPATH, xpath))
+            self.assertEqual(start.has_shareholder_count(),
+                             Shareholder.objects.filter(
+                                company=op.company).count())
+            self.assertEqual(
+                user.first_name,
+                Shareholder.objects.filter(
+                    company=op.company).last().user.first_name)
+
+        except Exception, e:
+            self._handle_exception(e)
+
+    def test_add_shareholder_with_existing_number(self):
+        """
+        add shareholder with existing number
+        """
+        op = OperatorGenerator().generate()
+        user = UserGenerator().generate()
+        shareholder = ShareholderGenerator().generate(company=op.company)
+        user.email = None
+
+        try:
+            start = page.StartPage(
+                self.selenium, self.live_server_url, op.user)
+            # wait for list
+            start.wait_until_visible(
+                (By.CSS_SELECTOR, '#shareholder_list'))
+            start.is_properly_displayed()
+            self.assertEqual(start.has_shareholder_count(),
+                             Shareholder.objects.filter(
+                                company=op.company).count())
+            start.click_open_add_shareholder()
+            start.wait_until_modal_opened('addShareholder')
+            start.add_shareholder(user, number=shareholder.number)
+            start.click_save_add_shareholder()
+            start.close_modal('addShareholder')
+            time.sleep(2)
+
+            self.assertEqual(Shareholder.objects.filter(
+                company=op.company, number=shareholder.number).count(),
+                1)
 
         except Exception, e:
             self._handle_exception(e)
@@ -211,7 +311,7 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                 self.assertEqual(row.find_element_by_class_name('number').text,
                                  shareholder.number)
                 self.assertEqual(row.find_element_by_class_name('share').text,
-                                 u'6 (6,0%)')
+                                 u'6 (6.00%)')
                 self.assertEqual(
                     row.find_element_by_class_name('full-name').text,
                     shareholder.get_full_name())
@@ -271,9 +371,12 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             start.enter_search_term(shs[0].user.last_name)
             time.sleep(1)
             start.click_search()
+            start.refresh()
+            time.sleep(2)
             start.enter_search_term(shs[0].user.last_name)
             time.sleep(1)
             start.click_search()
+            time.sleep(1)
             self.assertEqual(start.has_shareholder_count(), 1)
 
             # paginate
@@ -317,8 +420,10 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             start.wait_until_visible((By.CSS_SELECTOR, '#shareholder_list'))
             start.is_properly_displayed()
             start.click_open_add_shareholder()
+            start.wait_until_modal_opened('addShareholder')
             start.add_shareholder(self.operator.user)
             start.click_save_add_shareholder()
+            start.close_modal('addShareholder')
             time.sleep(3)
             # wait for list entry
             xpath = (

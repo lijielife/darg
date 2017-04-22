@@ -28,7 +28,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
     $scope.ordering_options = [
         {'name': gettext('Email'), 'value': 'user__email'},
         {'name': gettext('Shareholder Number'), 'value': 'number'},
-        {'name': gettext('Last Name'), 'value': 'user__last_name'},
+        {'name': gettext('Last Name'), 'value': 'user__last_name,user__userprofile__company_name'},
         # {'name': gettext('Clear'), 'value': null},
     ]
 
@@ -48,6 +48,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
     ]
 
     $scope.show_add_shareholder = false
+    $scope.hide_captable = false
 
     # empty form data
     $scope.newShareholder = new Shareholder()
@@ -69,8 +70,9 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
         $scope.option_holders = []
         #$scope.search_params.query = null
 
-    $scope.load_option_holders = (company_pk) ->
-        $http.get('/services/rest/shareholders/option_holder?company='+company_pk).then (result) ->
+    # company determined by session
+    $scope.load_option_holders = () ->
+        $http.get('/services/rest/shareholders/option_holder').then (result) ->
             angular.forEach result.data.results, (item) ->
                 $scope.option_holders.push item
             if result.data.next
@@ -82,8 +84,8 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
             if result.data.current
                 $scope.optionholder_current=result.data.current
 
+    # company determined by session
     $scope.load_all_shareholders = ->
-        # FIXME - its not company specific, also subscription dependent
         $scope.reset_search_params()
         $scope.search_params.query = null
         $http.get('/services/rest/shareholders').then (result) ->
@@ -99,25 +101,25 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
                 $scope.current=result.data.current
         # FIXME: handle errors (403 Permission denied when no subscription)
 
-    $scope.load_all_shareholders()
-
-
-    $http.get('/services/rest/user').then (result) ->
-        $scope.user = result.data.results[0]
-        # loop over ops and fetch corp data
-        angular.forEach $scope.user.operator_set, (item, key) ->
+    $scope.load_user = ->
+        # get user / company data
+        $http.get('/services/rest/user').then (result) ->
+            $scope.loading = true
+            $scope.user = result.data.results[0]
             # get company data
-            $http.get(item.company).then (result1) ->
-                $scope.user.operator_set[key].company = result1.data
-                # fetch option holders for this company
-                $scope.load_option_holders(result1.data.pk)
+            if $scope.user.selected_company
+                $http.get($scope.user.selected_company).then (result1) ->
+                    $scope.company = result1.data
+                
+        .finally ->
+            $scope.loading = false
+         
 
-        # update option holders if we have the company id
-        # if $scope.user.operator_set && $scope.user.operator_set[0].company.pk
-        #    $scope.load_option_holders($scope.user.operator_set[0].company.pk)
-
-    .finally ->
-        $scope.loading = false
+    # --- INIT
+    # load shareholder/option holders based on session
+    $scope.load_all_shareholders()
+    $scope.load_option_holders()
+    $scope.load_user()
 
     # --- Dynamic props
     $scope.$watchCollection 'shareholders', (shareholders)->
@@ -241,7 +243,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
         # FIXME - its not company specific
         # respect ordering and search
         params = {}
-        params.company = $scope.user.operator_set[0].company.pk
+        params.company = $scope.company
         if $scope.optionholder_search_params.query
             params.search = $scope.optionholder_search_params.query
         if $scope.optionholder_search_params.ordering
@@ -264,54 +266,66 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
 
     # --- FORMS
     $scope.add_company = ->
+        $scope.errors = null
+        founded_at = $scope.newCompany.founded_at
+        $scope.newCompany.founded_at.setHours(founded_at.getHours() - founded_at.getTimezoneOffset() / 60)
         $scope.newCompany.$save().then (result) ->
-            $http.get('/services/rest/user').then (result) ->
-                $scope.user = result.data.results[0]
-                # loop over ops and fetch corp data
-                angular.forEach $scope.user.operator_set, (item, key) ->
-                    $http.get(item.company).then (result1) ->
-                        $scope.user.operator_set[key].company = result1.data
-            .then ->
-                # load shs and option holders
-                # NOTE: since subscription, shareholders depend on active plan
-                # $scope.load_all_shareholders()
-
+            # update user and company
+            $scope.load_user()
+            $scope.load_all_shareholders()  # new shareholder is added, reload
+            $scope.show_full_menu()  # remove hidden class from menu items
         .then ->
             # Reset our editor to a new blank post
-            $scope.company = new Company()
+            $scope.newCompany = new Company()
             $window.ga('send', 'event', 'form-send', 'add-company')
+            # on company create hide captable in next step so the user is not
+            # confused. reenable on first shareholder add
+            $scope.hide_captable = true
         .then ->
             # Clear any errors
             $scope.errors = null
         , (rejection) ->
             $scope.errors = rejection.data
-            Raven.captureMessage('form error: ' + rejection.statusText, {
+            Raven.captureMessage('add corp form error', {
                 level: 'warning',
-                extra: { rejection: rejection },
+                extra: { rejection: rejection, config: rejection.config, status: rejection.status },
             })
 
     $scope.add_shareholder = ->
+        $scope.errors = null
         $scope.newShareholder.$save().then (result) ->
             $scope.shareholders.push result
         .then ->
             # Reset our editor to a new blank post
             $scope.newShareholder = new Shareholder()
             $scope.shareholder_added_success = true
+            $scope.show_add_shareholder = false
             $timeout ->
                 $scope.shareholder_added_success = false
             , 30000
+            $scope.hide_captable = false
         .then ->
             # Clear any errors
             $scope.errors = null
             $window.ga('send', 'event', 'form-send', 'add-shareholder')
         , (rejection) ->
             $scope.errors = rejection.data
-            Raven.captureMessage('form error: ' + rejection.statusText, {
+            Raven.captureMessage('add shareholder form error: ' + rejection.statusText, {
                 level: 'warning',
                 extra: { rejection: rejection },
             })
 
+    $scope.get_new_shareholder_number = ->
+        $http.get('/services/rest/shareholders/get_new_shareholder_number').then (response) ->
+       	 	    $scope.newShareholder.number = response.data.number
+        , (rejection) ->
+            $scope.errors = rejection.data
+            Raven.captureMessage('retrieve new shareholder number error: ' + rejection.statusText, {
+                level: 'warning',
+                extra: { rejection: rejection },
+            })
 
+    # --- DISPLAY
     $scope.show_add_shareholder_form = ->
         $scope.show_add_shareholder = true
 
@@ -321,6 +335,8 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
     $scope.goto_shareholder = (shareholder_id) ->
         window.location = "/shareholder/"+shareholder_id+"/"
 
+    $scope.show_full_menu = ->
+        $('#navbar ul').removeClass('hidden')
 
     # --- DATEPICKER
     $scope.datepicker = { opened: false }
@@ -330,6 +346,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
         startingDay: 1,
         showWeeks: false,
     }
-    $scope.open_datepicker = ->
-        $scope.datepicker.opened = true
+    $scope.toggle_datepicker = ->
+        $scope.datepicker.opened = !$scope.datepicker.opened
+        return false
 ]

@@ -16,6 +16,7 @@
 @import animate
 @import datepicker
 @import spinner
+@import reports
 
 // custom
 @import blockquote
@@ -87,11 +88,28 @@ html, body
     width: 1.1em
     height: 1.1em
 
+  //style select [ remove dropdown arrow ]
+  select::-ms-expand
+    display: none
+  select
+    -webkit-appearance: none
+    -moz-appearance: none
+    appearance: none
+    box-shadow: unset
+    background-image: url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE2cHgiIGhlaWdodD0iMTZweCIgdmlld0JveD0iMCAwIDMwNiAzMDYiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDMwNiAzMDY7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPGc+Cgk8ZyBpZD0iZXhwYW5kLW1vcmUiPgoJCTxwb2x5Z29uIHBvaW50cz0iMjcwLjMsNTguNjUgMTUzLDE3NS45NSAzNS43LDU4LjY1IDAsOTQuMzUgMTUzLDI0Ny4zNSAzMDYsOTQuMzUgICAiIGZpbGw9IiM5NTk1OTUiLz4KCTwvZz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K)
+    background-position: 95% center
+    background-repeat: no-repeat
+  input
+    line-height: normal
+    border: 1px solid #e0e0e0
+    border-radius: 4px
+    &:focus
+      box-shadow: unset
+      border-color: #337ab7
   form
     margin-bottom: 3em
-    select
-      box-shadow: unset
-    input
+
+    input, select
       line-height: normal
       border: 1px solid #e0e0e0
       border-radius: 4px
@@ -99,6 +117,10 @@ html, body
       &:focus
         box-shadow: unset
         border-color: #337ab7
+    select
+      box-shadow: unset
+      padding-top: 0
+      padding-bottom: 0
 
   p
     margin: 0 0 10px
@@ -111,15 +133,15 @@ html, body
     background-color: transparent
 
   h1
-    font-size: 3em
+    font-size: 2em
     margin-bottom: .5em
   h2
-    font-size: 2em
+    font-size: 1.5em
     margin-bottom: 1em
     margin-top: 1.25em
 
   h3
-    font-size: 1.5em
+    font-size: 1.2em
     margin-bottom: .125em
 
   h4
@@ -150,11 +172,31 @@ html, body
 
   strong
     font-weight: bold
+
+  // --- GLOBAL CLASSES
+  // (?) context help icon to trigger popover()
+  .context-help
+    border: 1px solid $color-blue
+    border-radius: 50%
+    width: 20px
+    padding: 0px 6px
+    font-size: small
+    color: #337ab7
+    font-weight: bold
+    // required for proper spacing
+    //display: block !important
+    //display: -webkit-block !important
+    // proper spacing to left text
+    margin-left: 5px
+
   .el-icon-exclamation-sign
     display: inline-block
   .explaination
     margin: 1em 0 2em
     line-height: 1.5em
+
+  .strikethrough
+    text-decoration: line-through
 
   .note
     font-style: italic
@@ -172,6 +214,9 @@ html, body
   .form-align-center
     margin: 0 auto
     max-width: 250px
+
+  .hidden:
+    display: none
 
   .align-center
     margin: 0 auto
@@ -198,13 +243,21 @@ html, body
   .el-icon-cogs
     font-size: 50%
 
-  .el-icon-chevron-down
+  .el-icon-chevron-down, .el-icon-chevron-up
     font-size: 75%
 
   .el-icon-cogs-wrapper
     padding: 0em
     margin: 0em
 
+  // calendar icon always marked as clickable to get attention
+  // as related input should be disabled
+  .glyphicon-calendar
+    color: $color-blue
+
+  .btn
+    font-size: initial
+    font-weight: 300
   // button, but more a link and has many of them in a a row
   .btn-inline
     border: none
@@ -214,27 +267,45 @@ html, body
     font-size: 1em
     background-color: transparent
     color: $color-blue
-  .panel
-    margin-top: 1em
-    .btn-inline
-      margin-right: 1em
 
   // highlight the recommended button amongst buttons
   .btn-focus, .btn-info
     border: 1px solid $color-focus
     background-color: $color-blue
     color: $color-white
-    font-weight: bold
   .btn-danger
     border: 1px solid $color-red
-    color: $color-red
-    font-weight: bold
     color: $color-red
     background: none
   .btn-white
     background-color: $color-white !important
     color: $color-blue !important
     border: 1px solid $color-blue !important
+
+  // container for .btn-image to align inside the viewport
+  .btn-panel
+    margin: 1em 0em 2em
+  // btn for large icon/image and small text. usually used to have user choose
+  // an option from x variants. example pdf download @ reports page
+  .btn-image
+    padding: 1em 2em
+    border: 1px solid $color-gray
+    border-radius: 4px
+    background-color: transparent
+    .icon
+      width: 50px
+      height: 50px
+      background-size: 50px
+  // highlight a selected button from btn-panel
+  .selected
+    border-color: $color-blue
+    background-color: $color-gray-lighten
+    
+  .panel
+    margin-top: 1em
+    box-shadow: none
+    .btn-inline
+      margin-right: 1em
 
   // to remove all left spacing
   .align-left
@@ -284,7 +355,6 @@ html, body
   .navbar-username
     color: $color-dark-gray
     display: block
-    line-height: 13px
     position: relative
 .navbar-custom
   background: transparent
@@ -308,8 +378,10 @@ html, body
 .limit-letters
   max-width: 100px
   overflow: hidden
-  text-overflow: ellipsis
   display: inline-block
+  text-overflow: ellipsis
+  position: relative
+  top: 3px
 .navbar-default
   .navbar-nav
     .open
@@ -326,6 +398,8 @@ nav.navbar
       top: -0.3em
   .navbar-text
     margin-top: 18px
+  .dropdown-toggle
+    padding-top: 12px
 
 // --- AUTH Views
 .core
@@ -369,6 +443,8 @@ nav.navbar
 .form
   .form-control
     box-shadow: unset
+    // override bootstraps 14px
+    font-size: initial
   input
     display: block
     width: 100%
@@ -499,7 +575,13 @@ nav.navbar
     padding: 2em 0 2em
     ul > li
       list-style: none
-      font-size: 2em
+      // font-size: 1.5em
+      display: inline-block
+      width: 48%
+      text-align: center
+      padding-bottom: 2em
+      .title
+        font-weight: bold
     a.btn-focus
       background-color: $color-blue
       color: $color-white
@@ -549,23 +631,49 @@ nav.navbar
       font-size: 0.8em
       padding-top: 6px
 
+//override bootstrap styles
+.form-group
+  input, select
+    margin: 5px 0
+.modal-content
+  box-shadow: none
+.modal-backdrop
+  background-color: $color-gray-lighten
+  &.in
+    opacity: .85
+.custom-form-group
+  @include display-flex(flex)
+  @include align-items(center)
+  @include justify-content(space-between)
+  @include flex-flow(row-reverse)
+  .btn-focus
+    width: 75%
+  .btn-default
+    width: 20%
+
 // -- responsive table
 .show-mobile
   display: none
 .meta-mobile-only
   display: none
 .limit-max-height
-  max-height: 40px
   overflow: hidden
 .text-right-flex
   @include justify-content(flex-end) //make text right aligned
 .totals
   border-top: 2px solid $color-gray-lighten
 .table
+  &.shareholder_detail_table
+    .td
+      &:before
+        content: attr(data-header)
+        width: 65%
+        margin-top: 10px
+
   @include display-flex(flex)
   @include flex-flow(column)
   @include justify-content(space-between)
-  font-size: 1rem
+  // font-size: 1rem
   line-height: 1.5
 .tr
   &.totals
@@ -603,9 +711,12 @@ nav.navbar
   @include align-items(baseline)
   word-wrap: break-word
   padding: 0.8em
-  font-size: 0.9em
+  flex-wrap: wrap
+  // font-size: 0.9em
   [class*='el-icon-']
     padding: 0 5px
+  div.note
+    padding-left: 0px !important
 .td-width-1
   @include flex-grow(1)
   word-break: normal
@@ -621,8 +732,12 @@ nav.navbar
   @include flex-grow(10)
   &:before
     width: 0
+.table-striped > .tr:nth-of-type(odd)
+  background-color: #f9f9f9
 
 // --  start
+.split-header
+  word-wrap: break-word //break word on mobile
 div #add_shareholder
   margin-bottom: 1em
 div #add_company
@@ -639,8 +754,19 @@ div.table-actions
   ul.pagination
     margin: 0px
     padding: 0px
-
+div#shareholder_list
+  .logo
+    width: 40px
 // -- positions
+.optional-forms-box
+  margin-top: 10px
+.optional-fields
+  line-height: 2em
+.form-field-generate-btn
+  top: -31px
+  position: relative
+  right: 10px
+  float: right
 
 // -- optionplan
 div#optionplan
@@ -656,17 +782,22 @@ div#optionplan
   h2
     a
       cursor: pointer
+  .company-administration
+    .note
+      padding-top: 1em
+  .logo
+    width: 40px
 
 // -- shareholder detail
 .alert-gafi
   line-height: initial
-.shareholder-table__font-size-small
-  font-size: 14px
 .is-management
   .el-icon-minus-sign, .el-icon-ok-sign
     font-size: 14px !important
 table.stock
   display: table !important
+div.address-data
+  display: block !important
 
 // -- blog
 .blog

@@ -11,7 +11,8 @@ from django.utils.translation import ugettext as _
 from selenium.webdriver.common.by import By
 
 from project.base import BaseSeleniumTestCase
-from project.generators import (ComplexOptionTransactionsWithSegmentsGenerator,
+from project.generators import (CompanyShareholderGenerator,
+                                ComplexOptionTransactionsWithSegmentsGenerator,
                                 ComplexPositionsWithSegmentsGenerator,
                                 OperatorGenerator, OptionPlanGenerator,
                                 OptionTransactionGenerator, PositionGenerator,
@@ -47,6 +48,11 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
         """
         test if all data is shown properly
         """
+        self.cs = CompanyShareholderGenerator().generate(
+            company=self.operator.company)
+        PositionGenerator().generate(
+            buyer=self.buyer, seller=self.cs, count=3,
+            security=self.operator.company.security_set.first())
         try:
 
             p = page.ShareholderDetailPage(
@@ -58,7 +64,7 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
                 )
             # wait for 'link'
             p.wait_until_visible(
-                (By.CSS_SELECTOR, 'tr.shareholder-number span.el-icon-pencil'))
+                (By.CSS_SELECTOR, 'div.shareholder-number span.el-icon-pencil'))
             time.sleep(1)
             self.assertIn(
                 self.buyer.user.userprofile.get_legal_type_display(),
@@ -70,11 +76,14 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
             profile.save()
             p.refresh()
             p.wait_until_visible(
-                (By.CSS_SELECTOR, 'tr.shareholder-number span.el-icon-pencil'))
+                (By.CSS_SELECTOR, 'div.shareholder-number span.el-icon-pencil'))
+            time.sleep(3)
             self.assertIn(profile.get_legal_type_display(),
                           p.get_field('legal-type'))
             self.assertIn(profile.initial_registration_at.strftime('%-d.%m.%y'),
                           p.get_field('initial_registration_at'))
+            self.assertIn(str(float(self.buyer.cumulated_face_value())),
+                          p.get_field('cumulated-face-value'))
 
         except Exception, e:
             self._handle_exception(e)
@@ -92,13 +101,13 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
                 )
             # wait for 'link'
             p.wait_until_visible(
-                (By.CSS_SELECTOR, 'tr.shareholder-number span.el-icon-pencil'))
+                (By.CSS_SELECTOR, 'div.shareholder-number span.el-icon-pencil'))
             p.click_to_edit("shareholder-number")
-            p.edit_shareholder_number(99, "shareholder-number")
+            p.edit_field(99, "shareholder-number")
             p.save_edit("shareholder-number")
             # wait for form to disappear
             p.wait_until_invisible(
-                (By.CSS_SELECTOR, 'tr.shareholder-number form'))
+                (By.CSS_SELECTOR, 'div.shareholder-number form'))
 
         except Exception, e:
             self._handle_exception(e)
@@ -110,6 +119,10 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
         """
         edit company department
         """
+        profile = self.buyer.user.userprofile
+        profile.legal_type = 'C'
+        profile.save()
+
         try:
 
             p = page.ShareholderDetailPage(
@@ -121,13 +134,13 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
                 )
             # wait for 'link'
             p.wait_until_visible(
-                (By.CSS_SELECTOR, 'tr.company-department span.el-icon-pencil'))
+                (By.CSS_SELECTOR, 'div.company-department span.el-icon-pencil'))
             p.click_to_edit("company-department")
-            p.edit_shareholder_number('IT Security Dep.', "company-department")
+            p.edit_field('IT Security Dep.', "company-department")
             p.save_edit("company-department")
             # wait for form to disappear
             p.wait_until_invisible(
-                (By.CSS_SELECTOR, 'tr.company-department form'))
+                (By.CSS_SELECTOR, 'div.company-department form'))
 
         except Exception, e:
             self._handle_exception(e)
@@ -155,12 +168,12 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
             p.click_to_edit("legal-type")
             p.select_type("legal-type", _('Corporate'))
             p.save_edit("legal-type")
-            # wait for form to disappear
-            p.wait_until_invisible(
-                (By.CSS_SELECTOR, '.legal-type form'))
+            p.wait_until_js_rendered()
+            time.sleep(2)
 
-            self.buyer.user.userprofile.refresh_from_db()
-            self.assertEqual(self.buyer.user.userprofile.legal_type, 'C')
+            profile = self.buyer.user.userprofile
+            profile.refresh_from_db()
+            self.assertEqual(profile.legal_type, 'C')
 
         except Exception, e:
             self._handle_exception(e)
@@ -211,13 +224,13 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
                 )
             # wait for 'link'
             p.wait_until_visible(
-                (By.CSS_SELECTOR, 'tr.birthday span.el-icon-pencil'))
+                (By.CSS_SELECTOR, 'div.birthday span.el-icon-pencil'))
             p.click_to_edit("birthday")
             p.click_open_datepicker("birthday")
             p.click_date_in_datepicker("birthday", birthday)
             p.save_edit("birthday")
             # wait for form to disappear
-            p.wait_until_invisible((By.CSS_SELECTOR, 'tr.birthday form'))
+            p.wait_until_invisible((By.CSS_SELECTOR, 'div.birthday form'))
 
             self.assertEqual(
                 p.get_birthday(),
@@ -247,7 +260,8 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
                     )
                 )
             # wait for table
-            p.wait_until_visible((By.CSS_SELECTOR, 'table.stock tr.security'))
+            p.wait_until_visible((By.CSS_SELECTOR,
+                                  'div.table.stock div.tr.security'))
             self.assertEqual(p.get_securities(),
                              [u'0', u'', u'6', u'1000-1200, 1666'])
 
@@ -270,12 +284,13 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
                 )
             # wait for 'link'
             p.wait_until_visible(
-                (By.CSS_SELECTOR, 'tr.user-email span.el-icon-pencil'))
+                (By.CSS_SELECTOR, 'div.user-email span.el-icon-pencil'))
+            p.wait_until_js_rendered()  # prevent Element is not clickable ...
             p.click_to_edit("user-email")
-            p.edit_shareholder_number(self.operator.user.email, "user-email")
+            p.edit_field(self.operator.user.email, "user-email")
             p.save_edit("user-email")
             # wait for form to disappear
-            p.wait_until_invisible((By.CSS_SELECTOR, 'tr.user-email form'))
+            p.wait_until_invisible((By.CSS_SELECTOR, 'div.user-email form'))
 
             self.assertEqual(
                 User.objects.filter(email=self.operator.user.email).count(),
@@ -305,6 +320,8 @@ class PositionDetailFunctionalTestCase(StripeTestCaseMixin,
         self.poss, self.shs = ComplexPositionsWithSegmentsGenerator().generate(
             company=self.operator.company)
         self.position = self.poss[-1]
+        self.position.certificate_id = '8888'
+        self.position.save()
         self.page = page.PositionDetailPage(
             self.selenium, self.live_server_url, self.operator.user,
             path=reverse('position', kwargs={'pk': self.position.pk}))
@@ -323,6 +340,9 @@ class PositionDetailFunctionalTestCase(StripeTestCaseMixin,
             self.assertIn(
                 self.position.stock_book_id,
                 self.page.get_field('stock-book-id'))
+            self.assertIn(
+                self.position.certificate_id,
+                self.page.get_field('certificate-id'))
 
         except Exception, e:
             self._handle_exception(e)
@@ -454,6 +474,7 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app = page.OptionsPage(
                 self.selenium, self.live_server_url, self.operator.user)
             app.click_open_create_option_plan()
+            app.wait_until_modal_opened('addOptionPlan')
 
             self.assertTrue(app.is_option_plan_form_open())
 
@@ -461,6 +482,7 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app.click_save_option_plan_form()
 
             # wait for form to disappear
+            app.close_modal('addOptionPlan')
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
             self.assertTrue(app.is_no_errors_displayed())
@@ -479,6 +501,7 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app = page.OptionsPage(
                 self.selenium, self.live_server_url, self.operator.user)
             app.click_open_create_option_plan()
+            app.wait_until_modal_opened('addOptionPlan')
 
             self.assertTrue(app.is_option_plan_form_open())
 
@@ -486,13 +509,15 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app.click_save_option_plan_form()
 
             # wait for form to disappear
+            app.close_modal('addOptionPlan')
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
             self.assertTrue(app.is_no_errors_displayed())
 
             app.click_open_transfer_option()
             app.enter_transfer_option_data(
-                buyer=self.buyer, seller=self.seller)
+                seller=self.buyer, buyer=self.seller,
+                count=self.buyer.options_count())
             app.click_save_transfer_option()
 
             # wait for form to disappear
@@ -506,6 +531,8 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             self.assertTrue(app.is_option_date_equal('13.05.16'))
             self.assertTrue(app.is_option_plan_displayed(
                 ot.option_plan.security))
+            self.assertTrue(app.is_shareholder_name_displayed(self.seller))
+            self.assertTrue(app.is_shareholder_name_displayed(self.buyer))
 
         except Exception, e:
             self._handle_exception(e)
@@ -517,24 +544,30 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app = page.OptionsPage(
                 self.selenium, self.live_server_url, self.operator.user)
             app.click_open_create_option_plan()
+            app.wait_until_modal_opened('addOptionPlan')
             app.enter_option_plan_form_data()
             app.click_save_option_plan_form()
 
             # wait for form to disappear
+            app.close_modal('addOptionPlan')
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
+
             app.click_open_transfer_option()
             app.show_optional_fields()
             app.enter_transfer_option_data(
-                buyer=self.buyer, seller=self.seller, certificate_id='33',
-                stock_book_id='44', depot_type='1')
+                seller=self.buyer, buyer=self.seller, certificate_id='33',
+                stock_book_id='44', depot_type='1',
+                count=self.buyer.options_count())
             app.click_save_transfer_option()
 
             # wait for form to disappear
+            app.close_modal('addOptionTransaction')
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
             self.assertTrue(app.is_no_errors_displayed())
             self.assertTrue(app.is_transfer_option_shown(
-                buyer=self.buyer, seller=self.seller
+                seller=self.buyer, buyer=self.seller,
+                count=self.buyer.options_count()
             ))
             self.assertTrue(app.is_option_date_equal('13.05.16'))
             security = self.buyer.option_buyer.first().option_plan.security
@@ -551,41 +584,47 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         """ test that options transfer form is working properly
         if there is no buyer selected """
 
-        app = page.OptionsPage(
-            self.selenium, self.live_server_url, self.operator.user)
-        app.prepare_optionplan_fixtures()
+        try:
+            app = page.OptionsPage(
+                self.selenium, self.live_server_url, self.operator.user)
+            app.prepare_optionplan_fixtures()
 
-        self.assertTrue(app.is_option_plan_displayed(
-            OptionPlan.objects.last().security))
+            self.assertTrue(app.is_option_plan_displayed(
+                OptionPlan.objects.last().security))
 
-        app.click_open_transfer_option()
-        app.enter_transfer_option_data(seller=self.seller)
-        app.click_save_transfer_option()
+            app.click_open_transfer_option()
+            app.enter_transfer_option_data(seller=self.seller)
+            app.click_save_transfer_option()
 
-        # wait for error
-        app.wait_until_visible((By.CSS_SELECTOR, '.form-error'))
+            # wait for error
+            app.wait_until_visible((By.CSS_SELECTOR, '.form-error'))
 
-        self.assertFalse(app.is_no_errors_displayed())
+            self.assertFalse(app.is_no_errors_displayed())
+        except Exception, e:
+            self._handle_exception(e)
 
     def test_base_use_case_no_seller(self):
         """ test that options transfer form is working properly
         if there is no seller selected """
 
-        app = page.OptionsPage(
-            self.selenium, self.live_server_url, self.operator.user)
-        app.prepare_optionplan_fixtures()
+        try:
+            app = page.OptionsPage(
+                self.selenium, self.live_server_url, self.operator.user)
+            app.prepare_optionplan_fixtures()
 
-        self.assertTrue(app.is_option_plan_displayed(
-            OptionPlan.objects.last().security))
+            self.assertTrue(app.is_option_plan_displayed(
+                OptionPlan.objects.last().security))
 
-        app.click_open_transfer_option()
-        app.enter_transfer_option_data(buyer=self.buyer)
-        app.click_save_transfer_option()
+            app.click_open_transfer_option()
+            app.enter_transfer_option_data(buyer=self.buyer)
+            app.click_save_transfer_option()
 
-        # wait for error
-        app.wait_until_visible((By.CSS_SELECTOR, '.form-error'))
+            # wait for error
+            app.wait_until_visible((By.CSS_SELECTOR, '.form-error'))
 
-        self.assertFalse(app.is_no_errors_displayed())
+            self.assertFalse(app.is_no_errors_displayed())
+        except Exception, e:
+            self._handle_exception(e)
 
     @unittest.skip('not implemented')
     def test_base_use_case_no_count(self):
@@ -618,10 +657,18 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         bad: 15.5.2016)
         """
 
+        # initial optionplan and option creation transaction
         self.optionplan = OptionPlanGenerator().generate(
             company=self.operator.company,
             security=self.securities[0]
         )
+        PositionGenerator().generate(
+            seller=None, buyer=self.operator.company.get_company_shareholder(),
+            count=100, security=self.securities[0])
+        OptionTransactionGenerator().generate(
+            seller=None, buyer=self.operator.company.get_company_shareholder(),
+            option_plan=self.optionplan,
+            count=self.operator.company.get_company_shareholder().share_count())
 
         try:
 
@@ -629,13 +676,16 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                 self.selenium, self.live_server_url, self.operator.user)
             app.click_open_transfer_option()
             app.enter_transfer_option_data(
-                date='13. Mai 2016', buyer=self.buyer,
+                buyer=self.buyer,
                 title=self.optionplan.title,
-                seller=self.operator.company.get_company_shareholder()
+                seller=self.operator.company.get_company_shareholder(),
+                count=self.operator.company.get_company_shareholder()
+                .options_count()
             )
             app.click_save_transfer_option()
 
             # wait for form to disappear
+            app.close_modal('addOptionTransaction')
             app.wait_until_invisible(
                 (By.CSS_SELECTOR, '#add_option_transaction'))
 
@@ -645,13 +695,16 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
 
             app.click_open_transfer_option()
             app.enter_transfer_option_data(
-                date='1. Nov. 2016', buyer=self.buyer,
+                date=datetime.date(2016, 11, 1), buyer=self.buyer,
                 title=self.optionplan.title,
-                seller=self.operator.company.get_company_shareholder()
+                seller=self.operator.company.get_company_shareholder(),
+                count=self.operator.company.get_company_shareholder()
+                .options_count()
             )
             app.click_save_transfer_option()
 
             # wait for form to disappear
+            app.close_modal('addOptionTransaction')
             app.wait_until_invisible(
                 (By.CSS_SELECTOR, '#add_option_transaction'))
 
@@ -681,6 +734,7 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app = page.OptionsPage(
                 self.selenium, self.live_server_url, operator.user)
             app.click_open_create_option_plan()
+            app.wait_until_modal_opened('addOptionPlan')
 
             self.assertTrue(app.is_option_plan_form_open())
 
@@ -688,6 +742,7 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app.click_save_option_plan_form()
 
             # wait for form to disappear
+            app.close_modal('addOptionPlan')
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
             self.assertTrue(app.is_no_errors_displayed())
@@ -697,10 +752,12 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             ct = shs[1].option_buyer.count()
             app.click_open_transfer_option()
             app.enter_transfer_option_with_segments_data(
-                buyer=shs[1], seller=shs[0])
+                buyer=shs[1], seller=shs[0], share_count=shs[0].options_count(),
+                number_segments="2100,2101,2102-2252")
             app.click_save_transfer_option()
 
             # wait for form to disappear
+            app.close_modal('addOptionTransaction')
             app.wait_until_invisible(
                 (By.CSS_SELECTOR, '#add_option_transaction'))
 
@@ -714,6 +771,18 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
 
         except Exception, e:
             self._handle_exception(e)
+
+
+class OptionsPlanFunctionalTestCase(BaseSeleniumTestCase):
+
+    def setUp(self):
+        self.operator = OperatorGenerator().generate()
+        self.securities = TwoInitialSecuritiesGenerator().generate(
+            company=self.operator.company)
+        self.buyer = ShareholderGenerator().generate(
+            company=self.operator.company)
+        self.seller = ShareholderGenerator().generate(
+            company=self.operator.company)
 
     def test_optionplan_detail_with_segments(self):
         """
@@ -733,14 +802,14 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         try:
             path = reverse('optionplan',
                            kwargs={'optionsplan_id': optionsplan.pk})
-            app = page.OptionsDetailPage(
+            app = page.OptionsPlanDetailPage(
                 self.selenium, self.live_server_url, operator.user, path)
 
             security_text = (
                     u'Vorzugsaktien (100 CHF)\n'
                     u'(Reservierte Aktiennummern 1000-2000)')
             app.wait_until_text_present(
-                (By.CSS_SELECTOR, 'tr.security td.text'), security_text)
+                (By.CSS_SELECTOR, 'div.security div.text'), security_text)
 
             self.assertEqual(app.get_security_text(), security_text)
 
@@ -766,6 +835,7 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app = page.OptionsPage(
                 self.selenium, self.live_server_url, operator.user)
             app.click_open_create_option_plan()
+            app.wait_until_modal_opened('addOptionPlan')
 
             self.assertTrue(app.is_option_plan_form_open())
 
@@ -773,7 +843,8 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app.enter_option_plan_form_data_with_segments(number_segments='')
             app.click_save_option_plan_form()
             # wait for error
-            app.wait_until_visible((By.CSS_SELECTOR, '.form-error'))
+            app.wait_until_visible((
+                By.CSS_SELECTOR, '#addOptionPlan .form-error'))
             self.assertEqual(
                 app.get_form_errors(),
                 [u'Aktiennummern: Ung\xfcltige Aktiennummern. '
@@ -783,11 +854,22 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             # not owned by company shareholder
             app.refresh()
             app.click_open_create_option_plan()
+            app.wait_until_modal_opened('addOptionPlan')
             app.enter_option_plan_form_data_with_segments(
                 number_segments='1050', count=1)
             app.click_save_option_plan_form()
             # wait for error
-            app.wait_until_visible((By.CSS_SELECTOR, '.form-error'))
+            app.wait_until_visible((
+                By.CSS_SELECTOR, '#addOptionPlan .form-error'))
+
+            # attempt to fix unstable @CI
+            # FIXME remove once stable
+            for s in Shareholder.objects.all():
+                print s.current_segments(
+                    security=operator.company.security_set.first())
+                print s.current_options_segments(
+                    security=operator.company.security_set.first())
+
             self.assertEqual(
                 app.get_form_errors(),
                 [u'Aktiennummern: Aktiennummer "[1050]" geh\xf6rt nicht zu '
@@ -797,11 +879,13 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             # wrong count vs. segment count
             app.refresh()
             app.click_open_create_option_plan()
+            app.wait_until_modal_opened('addOptionPlan')
             app.enter_option_plan_form_data_with_segments(
                 number_segments='1667', count=2)
             app.click_save_option_plan_form()
             # wait for error
-            app.wait_until_visible((By.CSS_SELECTOR, '.form-error'))
+            app.wait_until_visible((
+                By.CSS_SELECTOR, '#addOptionPlan .form-error'))
             self.assertEqual(
                 app.get_form_errors(),
                 [u'Anzahl: Anzahl der Aktien in den Aktiennummern ist nicht '
@@ -810,12 +894,23 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             # successful
             app.refresh()
             app.click_open_create_option_plan()
+            app.wait_until_modal_opened('addOptionPlan')
             app.enter_option_plan_form_data_with_segments(
                 number_segments='1667',
                 count=1)
             app.click_save_option_plan_form()
             # wait for error to disappear
-            app.wait_until_invisible((By.CSS_SELECTOR, '.form-error'))
+            app.close_modal('addOptionPlan')
+            app.wait_until_invisible((
+                By.CSS_SELECTOR, '#addOptionPlan .form-error'))
+
+            # attempt to fix unstable @CI
+            # FIXME remove once stable
+            for s in Shareholder.objects.all():
+                print s.current_segments(
+                    security=operator.company.security_set.first())
+                print s.current_options_segments(
+                    security=operator.company.security_set.first())
 
             self.assertTrue(app.is_no_errors_displayed())
             self.assertTrue(app.is_option_plan_displayed(
@@ -843,11 +938,13 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app = page.OptionsPage(
                 self.selenium, self.live_server_url, operator.user)
             app.click_open_create_option_plan()
+            app.wait_until_modal_opened('addOptionPlan')
             self.assertTrue(app.is_option_plan_form_open())
             app.enter_option_plan_form_data_with_segments()
             app.click_save_option_plan_form()
 
             # wait for form to disappear
+            app.close_modal('addOptionPlan')
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
             self.assertTrue(app.is_no_errors_displayed())
@@ -873,7 +970,7 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             # wait for angular (tranfer option link)
             app.wait_until_visible(
                 (By.CSS_SELECTOR,
-                 '[ng_controller="OptionsController"] .panel .btn-inline'))
+                 '[ng_controller="OptionsController"] .panel .btn'))
             app.click_open_transfer_option()
             app.enter_transfer_option_with_segments_data(
                 buyer=shs[1], seller=shs[0], number_segments='1667',
@@ -905,12 +1002,14 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             # wait for angular (tranfer option link)
             app.wait_until_visible(
                 (By.CSS_SELECTOR,
-                 '[ng_controller="OptionsController"] .panel .btn-inline'))
+                 '[ng_controller="OptionsController"] .panel .btn'))
             app.click_open_transfer_option()
             app.enter_transfer_option_with_segments_data(
-                buyer=shs[1], seller=shs[0])
+                buyer=shs[1], seller=shs[0], share_count=shs[0].options_count(),
+                number_segments="2100,2101,2102-2252")
             app.click_save_transfer_option()
             # wait for form to disappear
+            app.close_modal('addOptionTransaction')
             app.wait_until_invisible(
                 (By.CSS_SELECTOR, '#add_option_transaction'))
             self.assertTrue(app.is_no_errors_displayed())
@@ -936,7 +1035,7 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app.wait_until_visible((By.ID, "optiontransaction-detail"))
             self.assertEqual(
                 app.wait_until_visible((By.CLASS_NAME, 'registration-type'))
-                .find_elements_by_tag_name('td')[1].text,
+                .find_elements_by_class_name('td')[1].text,
                 _('Personal representation'))
 
         except Exception, e:
@@ -986,10 +1085,12 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app = page.PositionPage(
                 self.selenium, self.live_server_url, self.operator.user)
             app.click_open_add_position_form()
+            app.wait_until_modal_opened('addPosition')
             app.enter_new_position_data(position)
             app.click_save_position()
 
             # wait for form to disappear
+            app.close_modal('addPosition')
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_position'))
 
             self.assertEqual(len(app.get_position_row_data()), 8)
@@ -1014,18 +1115,21 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         """
         position = PositionGenerator().generate(
             save=False, seller=self.seller, buyer=self.buyer,
-            security=self.securities[1], stock_book_id='444', depot_type='1')
+            security=self.securities[1], stock_book_id='444', depot_type='1',
+            certificate_id='88888')
 
         try:
 
             app = page.PositionPage(
                 self.selenium, self.live_server_url, self.operator.user)
             app.click_open_add_position_form()
+            app.wait_until_modal_opened('addPosition')
             app.show_optional_fields()
             app.enter_new_position_data(position)
             app.click_save_position()
 
             # wait for form to disappear
+            app.close_modal('addPosition')
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_position'))
 
             self.assertEqual(len(app.get_position_row_data()), 8)
@@ -1035,7 +1139,8 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                           app.get_position_row_data()[0].split('\n')[0])
             position = Position.objects.last()
             self.assertEqual(position.stock_book_id, '444')
-            self.assertEqual(position.depot_type, '1')
+            self.assertEqual(position.depot_type, '0')
+            self.assertEqual(position.certificate_id, '88888')
 
         except Exception, e:
             self._handle_exception(e)
@@ -1044,6 +1149,12 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         """
         add position with floating point value and large count
         """
+        # seed sufficient amout of shares
+        PositionGenerator().generate(
+            buyer=self.seller, seller=None, security=self.securities[1],
+            count=15000000)
+
+        # template object
         position = PositionGenerator().generate(
             save=False, seller=self.seller, buyer=self.buyer,
             security=self.securities[1])
@@ -1055,10 +1166,12 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app = page.PositionPage(
                 self.selenium, self.live_server_url, self.operator.user)
             app.click_open_add_position_form()
+            app.wait_until_modal_opened('addPosition')
             app.enter_new_position_data(position)
             app.click_save_position()
 
             # wait for form to disappear
+            app.close_modal('addPosition')
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_position'))
 
             self.assertEqual(len(app.get_position_row_data()), 8)
@@ -1089,10 +1202,12 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app = page.PositionPage(
                 self.selenium, self.live_server_url, self.operator.user)
             app.click_open_add_position_form()
+            app.wait_until_modal_opened('addPosition')
             app.enter_new_position_data(position)
             app.click_save_position()
 
             # wait for form to disappear
+            app.close_modal('addPosition')
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_position'))
 
             self.assertEqual(len(app.get_position_row_data()), 8)
@@ -1128,6 +1243,7 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             # wait for table
             app.wait_until_visible((By.CSS_SELECTOR, '#positions .table .tr'))
             app.click_open_add_position_form()
+            app.wait_until_modal_opened('addPosition')
 
             # test cycle: w/ date, seller, sec
             app.enter_bought_at(position.bought_at)
@@ -1142,6 +1258,7 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             # wait for table
             app.wait_until_visible((By.CSS_SELECTOR, '#positions .table .tr'))
             app.click_open_add_position_form()
+            app.wait_until_modal_opened('addPosition')
             # test w/ sec + seller
             self.assertFalse(app.has_available_segments_tooltip())
             app.enter_typeahead('add_position', position.seller, 'seller')
@@ -1153,6 +1270,7 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             # wait for table
             app.wait_until_visible((By.CSS_SELECTOR, '#positions .table .tr'))
             app.click_open_add_position_form()
+            app.wait_until_modal_opened('addPosition')
             # test no segs avail
             position.seller = self.seller2
             app.enter_bought_at(position.bought_at)
@@ -1185,6 +1303,7 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             # wait for table
             app.wait_until_visible((By.CSS_SELECTOR, '#positions .table .tr'))
             app.click_open_add_position_form()
+            app.wait_until_modal_opened('addPosition')
             app.enter_new_position_data(position)
 
             # clear numbers segment field
@@ -1220,6 +1339,7 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app.click_save_position()
 
             # wait for form to disappear
+            app.close_modal('addPosition')
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_position'))
 
             self.assertEqual(len(app.get_position_row_data()), 8)
@@ -1241,6 +1361,7 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app = page.PositionPage(
                 self.selenium, self.live_server_url, self.operator.user)
             app.click_open_add_position_form()
+            app.wait_until_modal_opened('addPosition')
 
             # enter empty data
             position.count = None
@@ -1269,6 +1390,7 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app = page.PositionPage(
                 self.selenium, self.live_server_url, self.operator.user)
             app.click_open_add_position_form()
+            app.wait_until_modal_opened('addPosition')
             # enter data too large
             position.count = 99999999991
             position.value = 99999599999
@@ -1288,6 +1410,11 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         """
         confirm form error handling
         """
+        # seed more positions
+        PositionGenerator().generate(
+            buyer=self.seller, seller=None, count=88888888,
+            security=self.securities[1])
+        # position template
         position = PositionGenerator().generate(
             save=False, seller=self.seller, buyer=self.buyer,
             security=self.securities[1])
@@ -1297,6 +1424,7 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app = page.PositionPage(
                 self.selenium, self.live_server_url, self.operator.user)
             app.click_open_add_position_form()
+            app.wait_until_modal_opened('addPosition')
             # working data
             position.count = 88888888
             position.value = 22222222
@@ -1304,6 +1432,7 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app.click_save_position()
 
             # wait for form to disappear
+            app.close_modal('addPosition')
             app.wait_until_invisible((By.CLASS_NAME, 'add_position'))
 
             self.assertEqual(len(app.get_position_row_data()), 8)
@@ -1322,10 +1451,12 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app = page.PositionPage(
                 self.selenium, self.live_server_url, self.operator.user)
             app.click_open_cap_increase_form()
+            app.wait_until_modal_opened('capitalForm')
             app.enter_new_cap_data(position)
             app.click_save_cap_increase()
 
             # wait for form to disappear
+            app.close_modal('capitalForm')
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_capital'))
 
             self.assertEqual(len(app.get_position_row_data()), 8)
@@ -1346,10 +1477,12 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app = page.PositionPage(
                 self.selenium, self.live_server_url, self.operator.user)
             app.click_open_cap_increase_form()
+            app.wait_until_modal_opened('capitalForm')
             app.enter_new_cap_data(position)
             app.click_save_cap_increase()
 
             # wait for form to disappear
+            app.close_modal('capitalForm')
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_capital'))
 
             self.assertEqual(len(app.get_position_row_data()), 8)
@@ -1378,10 +1511,12 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app = page.PositionPage(
                 self.selenium, self.live_server_url, self.operator.user)
             app.click_open_cap_increase_form()
+            app.wait_until_modal_opened('capitalForm')
             app.enter_new_cap_data(position)
             app.click_save_cap_increase()
 
             # wait for form to disappear
+            app.close_modal('capitalForm')
             app.wait_until_invisible((By.CSS_SELECTOR, '#add_capital'))
 
             self.assertEqual(len(app.get_position_row_data()), 8)
@@ -1409,6 +1544,7 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app.click_save_split()
 
             # wait for form to disappear
+            app.close_modal(id='splitShares')
             app.wait_until_invisible((By.CSS_SELECTOR, '#split-shares'))
 
             self.assertEqual(len(app.get_position_row_data()), 8)
@@ -1500,7 +1636,7 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app.wait_until_visible((By.ID, "position-detail"))
             self.assertEqual(
                 app.wait_until_visible((By.CLASS_NAME, 'registration-type'))
-                .find_elements_by_tag_name('td')[1].text,
+                .find_elements_by_class_name('td')[1].text,
                 _('Personal representation'))
 
         except Exception, e:

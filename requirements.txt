@@ -1,16 +1,26 @@
-Django==1.9.8
+Django==1.10.7
 django-registration-redux>=1.4
 djangorestframework>=3.4.1
 django-nose>=1.4.3
 django-languages
-django-reversion==1.10.2
+django-reversion==2.0.8
 django-rosetta
 django-sendfile
 # native lib failed for voice token see http://bit.ly/2hQAzTz
-# django-two-factor-auth
-git+https://github.com/patroqueeet/django-two-factor-auth.git@master#egg=django-two-factor-auth
-django-otp
+django-two-factor-auth==1.6.0
+# git+https://github.com/patroqueeet/django-two-factor-auth.git@master#egg=django-two-factor-auth
+# required by two factor:
+django-formtools==2.0
+# required by djnaog-phonenumbes-field
+phonenumbers
 
+django-otp
+django-model-utils
+# django rest api filter capabilities:
+django-filter
+
+# PYTHON
+natsort
 raven
 cssmin==0.2.0
 jsmin==2.0.11
@@ -28,7 +38,8 @@ sorl-thumbnail
 djrill
 diff-match-patch
 model_mommy>=1.3.1
-twilio
+# required by two factor auth
+twilio==5.7.0
 
 #-- zinnia reqs
 django-mptt>=0.8.5
@@ -38,17 +49,22 @@ mots-vides>=2015.2.6
 django-contrib-comments>=1.7.1
 pyparsing
 django-xmlrpc
-django-blog-zinnia>=0.18.1
+# 0.17 for dj 1.9...
+django-blog-zinnia==0.18.1
 # git+https://github.com/Fantomas42/django-blog-zinnia.git@develop#egg=django-blog-zinnia
 Pillow
 django-app-namespace-template-loader
-zinnia-theme-bootstrap
+# zinnia-theme-bootstrap==0.5.1 blocked by https://goo.gl/Gt92I2
+git+https://github.com/django-blog-zinnia/zinnia-theme-bootstrap.git@develop#egg=zinnia-theme-bootstrap
 docutils
+# flatpages:
 markdown
-django_markdown
+django-markdown-app
 django-markdownx
+git+https://github.com/patroqueeet/django-flatpage-meta.git@master#egg=flatpage_meta
 #-- end blog
 
+# DEV EHLPER
 ipdbplugin
 wand
 nose-progressive

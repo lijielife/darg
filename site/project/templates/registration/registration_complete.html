@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block body_block %}
+{% block header %}
+{% include "_menu.html" %}
+{% endblock %}
+
+<div class="container">
+<div class="text-center" id="auth">
+  <h1>{% trans "Registration Complete" %}</h1>
+  <p>{% trans "You are now registered." %} <a href="{% url "start" %}" class="btn btn-focus">{% trans "Start here to create your company" %}</a></p>
+</div>
+</div>
+<!-- instapage tracking -->
+<script type="text/javascript" src="//instapage-scripts.s3.amazonaws.com/conversion-external.js"></script><iframe class="instapage-noscrap" src="//d3mwhxgzltpnyp.cloudfront.net/local-storage/index.html" name="instapage-local-storage" height="0px" width="0px" onload="(function() { InstapageExternalConversion(554305, 'A'); })();" style="display: block;"></iframe>
+<!-- end -->
+<!-- google tracking -->
+<!-- Google Code for Darg Registration Conversion Page -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var google_conversion_id = 972661677;
+var google_conversion_language = "en";
+var google_conversion_format = "3";
+var google_conversion_color = "ffffff";
+var google_conversion_label = "wP5CCNargGQQrcfmzwM";
+var google_remarketing_only = false;
+/* ]]> */
+</script>
+<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">
+</script>
+<noscript>
+<div style="display:inline;">
+<img height="1" width="1" style="border-style:none;" alt="" src="//www.googleadservices.com/pagead/conversion/972661677/?label=wP5CCNargGQQrcfmzwM&amp;guid=ON&amp;script=0"/>
+</div>
+</noscript>
+
+<!-- google end -->
+{% endblock %}

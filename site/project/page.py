@@ -9,20 +9,19 @@ import time
 from datetime import datetime
 
 from django.conf import settings
-
-from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.ui import Select, WebDriverWait
+
+# from selenium.webdriver.support.ui import Select
+from project.generators import DEFAULT_TEST_DATA
 
 
 # from element import BasePageElement (save all locators here)
 # from locators import MainPageLocators (save all setter/getter here)
-
-# from selenium.webdriver.support.ui import Select
-from project.generators import DEFAULT_TEST_DATA
 
 
 class BasePage(object):
@@ -56,32 +55,66 @@ class BasePage(object):
 
         return False
 
+    def get(self, url):
+        """
+        run x attempts to fetch url. url must be absolute
+        """
+        # if TimeoutException happens keep trying
+        attempts = 0
+        while attempts < 10:
+            try:
+                # random attempt to make chromedriver work
+                if attempts % 2 == 0:
+                    self.driver.get(url)
+                else:
+                    self.driver.refresh()
+                break
+            except TimeoutException:
+                if attempts == 9:
+                    raise
+                attempts += 1
+                time.sleep(2*attempts)
+
+        self.wait_until_js_rendered()
+
     def login(self, username, password):
         """ log the user in """
-        try:
-            self.driver.get('%s%s' % (self.live_server_url, '/account/login/'))
-        # randomly failes with TimeoutException
-        except:
-            time.sleep(5)
-            self.driver.get('%s%s' % (self.live_server_url, '/account/login/'))
+        self.get('%s%s' % (self.live_server_url, '/account/login/'))
 
-        self.driver.find_element_by_xpath(
-            '//*[@id="id_auth-username"]').send_keys(username)
-        self.driver.find_element_by_xpath(
-            '//*[@id="id_auth-password"]').send_keys(password)
-        self.driver.find_element_by_xpath(
-            '//button[contains(@class, "btn-primary")]').click()
+        # enter credentials
+        self.wait_until_visible((
+            By.XPATH,
+            '//*[@id="id_auth-username"]'
+        )).send_keys(username)
+        self.wait_until_visible((
+            By.XPATH,
+            '//*[@id="id_auth-password"]'
+        )).send_keys(password)
+
+        # send form
+        btn = self.wait_until_clickable((
+            By.XPATH, '//button[contains(@class, "btn-primary")]'))
+
+        # seeing random exceptions, but page is loaded and we can go on...
+        try:
+            btn.click()
+        except TimeoutException:
+            pass
+
         time.sleep(1)  # wait for page reload  # FIXME
-        page_heading = self.driver.find_element_by_tag_name(
-            'h1').get_attribute('innerHTML')
-        assert page_heading == 'Willkommen {}!'.format(
-            username), 'failed to login. got {} page instead'.format(
-            page_heading)
 
     def refresh(self):
         """ reload page """
-        self.driver.get(self.driver.current_url)
-        time.sleep(1)
+        # if TimeoutException happens keep trying
+        attempts = 0
+        while attempts < 10:
+            try:
+                self.driver.refresh()
+                break
+            except TimeoutException:
+                attempts += 1
+
+        self.wait_until_js_rendered()
 
     def use_datepicker(self, class_name, date=None):
         """
@@ -98,15 +131,16 @@ class BasePage(object):
         btns = el.find_elements_by_xpath(
             '//*[contains(@class, "date-field")]//'
             'span[@class="input-group-btn"]//button'
-        )
-        for btn in btns:
-            if btn.is_displayed():
-                btn.click()
-                # wait until rendered
-                self.wait_until_present((By.CLASS_NAME, 'uib-datepicker-popup'))
-                return
+            )
+        btns = [btn for btn in btns if btn.is_displayed()]
 
-        raise Exception('Clickable button not found')
+        if not len(btns) > 0:
+           raise Exception('no datepicker button present or visible')
+
+        btns[0].click()
+        # wait until rendered
+        self.wait_until_present((By.CLASS_NAME, 'uib-datepicker-popup'))
+        return
 
     def click_datepicker_next_month(self):
         # handle multiple datepickers
@@ -119,7 +153,7 @@ class BasePage(object):
 
     def click_datepicker_previous_month(self):
         # handle multiple datepickers
-        next_btns = self.driver.find_selement_by_xpath(
+        next_btns = self.driver.find_elements_by_xpath(
             '//div[contains(@class, "uib-datepicker")]//thead//th[1]//button')
         for next_btn in next_btns:
             if next_btn.is_displayed():
@@ -170,22 +204,28 @@ class BasePage(object):
 
         raise Exception('Clickable button not found')
 
+    def close_modal(self, id):
+        modal = self.wait_until_visible((By.ID, id))
+        modal.find_element_by_class_name('close').click()
+        self.wait_until_invisible((By.ID, id))
+
     def enter_typeahead(self, id, shareholder, cls):
         """
         enter selling shareholder
         """
         # trigger typeahead search
-        el = self.driver.find_element_by_id(id)
+        el = self.wait_until_visible((By.ID, id))
         form = el.find_element_by_tag_name('form')
         field = form.find_element_by_class_name(cls)
-        field.send_keys(shareholder.get_full_name()[:10])
+        field.click()
+        field.send_keys(shareholder.get_full_name()[:7])
 
         # select typeahead result
         self.wait_until_present(
             (By.CSS_SELECTOR, "#{} form .dropdown-menu".format(id)))
         self.wait_until_text_present(
             (By.CSS_SELECTOR, '#{} form .dropdown-menu li a'.format(id)),
-            shareholder.get_full_name())
+            shareholder.get_full_name(), timeout=15)
         self.wait_until_clickable(
             (By.CSS_SELECTOR, '#{} form .dropdown-menu li a'.format(id))
         ).click()
@@ -215,6 +255,67 @@ class BasePage(object):
         else:
             self.driver.execute_script("window.scrollTo(0, {})".format(Y))
 
+    def wait_until_js_rendered(self):
+        """
+        wait until angular and jQuery are finished
+        """
+        class JSRenderingFinished(object):
+            script = """
+                try {
+                  if (document.readyState !== 'complete') {
+                    return false; // Page not loaded yet
+                  }
+                  if (window.jQuery) {
+                    if (window.jQuery.active) {
+                      return false;
+                    } else if (window.jQuery.ajax && window.jQuery.ajax.active) {
+                      return false;
+                    }
+                  }
+                  if (window.angular) {
+                    if (!window.qa) {
+                      // Used to track the render cycle finish after loading is complete
+                      window.qa = {
+                        doneRendering: false
+                      };
+                    }
+                    // Get the angular injector for this app (change element if necessary)
+                    var injector = window.angular.element('body').injector();
+                    // Store providers to use for these checks
+                    var $rootScope = injector.get('$rootScope');
+                    var $http = injector.get('$http');
+                    var $timeout = injector.get('$timeout');
+                    // Check if digest
+                    if ($rootScope.$$phase === '$apply' || $rootScope.$$phase === '$digest' || $http.pendingRequests.length !== 0) {
+                      window.qa.doneRendering = false;
+                      return false; // Angular digesting or loading data
+                    }
+                    if (!window.qa.doneRendering) {
+                      // Set timeout to mark angular rendering as finished
+                      $timeout(function() {
+                        window.qa.doneRendering = true;
+                      }, 0);
+                      return false;
+                    }
+                  }
+                  return true;
+                } catch (ex) {
+                  return false;
+                }
+            """
+
+            def __init__(self, driver):
+                pass
+
+            def __call__(self, driver):
+                try:
+                    return driver.execute_async_script(self.script)
+                except:
+                    return False
+
+        wait = WebDriverWait(self.driver, settings.TEST_WEBDRIVER_WAIT_TIMEOUT)
+        wait.until(JSRenderingFinished)
+
     def wait_until_clickable(self, element):
         """
         wait until element is clickable
@@ -223,11 +324,12 @@ class BasePage(object):
         element = wait.until(EC.element_to_be_clickable(element))
         return element
 
-    def wait_until_visible(self, element):
+    def wait_until_visible(self, element, timeout=None):
         """
         wait until element is clickable
         """
-        wait = WebDriverWait(self.driver, settings.TEST_WEBDRIVER_WAIT_TIMEOUT)
+        wait = WebDriverWait(self.driver,
+                             timeout or settings.TEST_WEBDRIVER_WAIT_TIMEOUT)
         if isinstance(element, WebElement):
             element = wait.until(EC.visibility_of(element))
         else:
@@ -247,13 +349,17 @@ class BasePage(object):
         element = wait.until(EC.presence_of_element_located(element))
         return element
 
-    def wait_until_text_present(self, element, text):
+    def wait_until_text_present(self, element, text, timeout=None):
         """
         wait until element is clickable
         """
-        wait = WebDriverWait(self.driver, settings.TEST_WEBDRIVER_WAIT_TIMEOUT)
+        wait = WebDriverWait(self.driver,
+                             timeout or settings.TEST_WEBDRIVER_WAIT_TIMEOUT)
         element = wait.until(EC.text_to_be_present_in_element(element, text))
         return element
+
+    def wait_until_modal_opened(self, id):
+        self.wait_until_visible((By.ID, id))
 
     def drag_n_drop(self, object, target):
         """
@@ -307,18 +413,19 @@ class StartPage(BasePage):
             self.operator = user.operator_set.all()[0]
         self.login(username=user.username,
                    password=DEFAULT_TEST_DATA['password'])
-        self.driver.get('%s%s' % (live_server_url, '/start/'))
+        self.get('%s%s' % (live_server_url, '/start/'))
 
     # --- ACTIONS
-    def add_shareholder(self, user):
+    def add_shareholder(self, user, **kwargs):
         el = self.driver.find_element_by_id('add_shareholder')
         form = el.find_element_by_tag_name('form')
         inputs = form.find_elements_by_tag_name('input')
 
         inputs[0].send_keys(user.first_name)
         inputs[1].send_keys(user.last_name)
-        inputs[2].send_keys(user.email)
-        inputs[3].send_keys(random.randint(1, 6000))
+        if user.email:
+            inputs[2].send_keys(user.email)
+        inputs[3].send_keys(kwargs.get('number') or random.randint(1, 6000))
 
     def enter_add_company_data(self, *args, **kwargs):
         el = self.driver.find_element_by_id('add_company')

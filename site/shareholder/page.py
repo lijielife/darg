@@ -9,7 +9,6 @@ http://selenium-python.readthedocs.org/en/latest/page-objects.html
 import time
 import logging
 
-from django.utils.translation import gettext as _
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 
@@ -37,9 +36,9 @@ class BaseDetailPage(BasePage):
         assert 'start' in self.driver.current_url, 'login not successful'
 
         if path:
-            self.driver.get('%s%s' % (live_server_url, path))
+            self.get('%s%s' % (live_server_url, path))
         else:
-            self.driver.get('%s%s' % (live_server_url))
+            self.get('%s%s' % (live_server_url))
 
     def get_field(self, cls):
         """
@@ -53,14 +52,15 @@ class ShareholderDetailPage(BaseDetailPage):
     def click_to_edit(self, class_name):
         el = self.wait_until_visible((
             By.XPATH,
-            u'//tr[contains(@class, "{}")]//'
+            u'//div[contains(@class, "{}")]//'
             u'span[contains(@class, "editable-click")]'.format(class_name)
         ))
         el.click()
 
-    def edit_shareholder_number(self, value, class_name):
-        el = self.driver.find_element_by_class_name(class_name)
-        el = el.find_element_by_class_name('editable-input')
+    def edit_field(self, value, class_name):
+        xpath = ('//*[contains(@class, "{}")]'
+                 '//*[contains(@class, "editable-input")]'.format(class_name))
+        el = self.wait_until_visible((By.XPATH, xpath))
         el.clear()
         el.send_keys(str(value))
 
@@ -76,7 +76,7 @@ class ShareholderDetailPage(BaseDetailPage):
         return date from inside this element
         """
         bday = self.driver.find_element_by_xpath(
-            '//tr[@class="birthday active"]/td/span')
+            '//div[contains(@class, "birthday")]//div//span[contains(@class, "editable")]')
         return bday.text
 
     def get_securities(self):
@@ -85,7 +85,7 @@ class ShareholderDetailPage(BaseDetailPage):
         """
         secs = []
         t = self.driver.find_element_by_xpath(
-            '//table[contains(@class, "stock")]')
+            '//div[contains(@class, "stock") and contains(@class, "table")]')
         for tr in t.find_elements_by_class_name('security'):
             if tr.find_elements_by_class_name('number-segments'):
                 segments = tr.find_element_by_class_name(
@@ -128,7 +128,7 @@ class OptionsPage(BasePage):
         self.operator = user.operator_set.all()[0]
         self.login(username=user.username,
                    password=DEFAULT_TEST_DATA['password'])
-        self.driver.get('%s%s' % (live_server_url, '/options/'))
+        self.get('%s%s' % (live_server_url, '/options/'))
 
     # -- INPUT COMMANDs
     def enter_option_plan_form_data(self, *args, **kwargs):
@@ -140,7 +140,9 @@ class OptionsPage(BasePage):
         select = Select(selects[0])
         select.select_by_index(2)
 
-        inputs[0].send_keys(DEFAULT_TEST_DATA.get('date'))
+        self.use_datepicker(class_name='add-optionplan',
+                            date=DEFAULT_TEST_DATA.get('date_obj'))
+        # inputs[0].send_keys(DEFAULT_TEST_DATA.get('date'))
         inputs[1].send_keys(DEFAULT_TEST_DATA.get('title'))
         inputs[2].send_keys(
             str(kwargs.get('exercise_price',
@@ -158,7 +160,9 @@ class OptionsPage(BasePage):
         select = Select(selects[0])
         select.select_by_index(2)
 
-        inputs[0].send_keys(DEFAULT_TEST_DATA.get('date'))
+        self.use_datepicker(class_name='add-optionplan',
+                            date=DEFAULT_TEST_DATA.get('date_obj'))
+        # inputs[0].send_keys(DEFAULT_TEST_DATA.get('date'))
         inputs[1].send_keys(DEFAULT_TEST_DATA.get('title'))
         inputs[2].send_keys(DEFAULT_TEST_DATA.get('exercise_price'))
         inputs[3].send_keys(kwargs.get('count',
@@ -187,11 +191,16 @@ class OptionsPage(BasePage):
         select.select_by_visible_text(
             kwargs.get('title') or DEFAULT_TEST_DATA.get('title'))
 
-        inputs[0].send_keys(
-            kwargs.get('date') or DEFAULT_TEST_DATA.get('date'))
+        self.use_datepicker(
+            class_name='add-option',
+            date=kwargs.get('date') or DEFAULT_TEST_DATA.get('date_obj'))
+        # inputs[0].send_keys(
+        #    kwargs.get('date') or DEFAULT_TEST_DATA.get('date'))
         inputs[3].send_keys(str(
             kwargs.get('count', DEFAULT_TEST_DATA.get('count'))))
         inputs[5].send_keys(DEFAULT_TEST_DATA.get('vesting_period'))
+
+        self.show_optional_fields()
 
         if kwargs.get('depot_type'):
             select = Select(selects[1])
@@ -224,9 +233,12 @@ class OptionsPage(BasePage):
         select.select_by_visible_text(
             kwargs.get('title') or DEFAULT_TEST_DATA.get('title'))
 
-        inputs[0].send_keys(
-            kwargs.get('date') or DEFAULT_TEST_DATA.get('date'))
-        inputs[3].send_keys(kwargs.get('number_segments',
+        self.use_datepicker(
+            class_name='add-option',
+            date=kwargs.get('date') or DEFAULT_TEST_DATA.get('date_obj'))
+        # inputs[0].send_keys(
+        #    kwargs.get('date') or DEFAULT_TEST_DATA.get('date'))
+        inputs[3].send_keys(kwargs.get('share_count',
                             DEFAULT_TEST_DATA.get('share_count')))
         inputs[4].send_keys(kwargs.get('number_segments',
                             DEFAULT_TEST_DATA.get('number_segments')))
@@ -259,7 +271,11 @@ class OptionsPage(BasePage):
         el.click()
 
     def show_optional_fields(self):
-        self.driver.find_element_by_class_name('el-icon-plus-sign').click()
+        els = self.driver.find_elements_by_class_name('el-icon-chevron-down')
+        for el in els:
+            if el.is_displayed():
+                el.click()
+                return
 
     # -- VALIDATIONs
     def is_option_plan_form_open(self):
@@ -325,39 +341,48 @@ class OptionsPage(BasePage):
                     return True
         return False
 
+    def is_shareholder_name_displayed(self, shareholder):
+        """
+        does the shareholders full name exist inside the markup
+        """
+        return shareholder.get_full_name() in self.driver.page_source
+
     # --  aggregations of logic
     def prepare_optionplan_fixtures(self):
         """ setup options plan """
         self.click_open_create_option_plan()
+        self.wait_until_modal_opened('addOptionPlan')
 
         self.enter_option_plan_form_data()
         self.click_save_option_plan_form()
+        self.close_modal('addOptionPlan')
 
         # wait for form to disappear
         self.wait_until_invisible((By.CSS_SELECTOR, '#add_option_plan'))
 
 
-class OptionsDetailPage(BasePage):
+class OptionsPlanDetailPage(BasePage):
     """Options Detail View"""
 
     def __init__(self, driver, live_server_url, user, path):
         """ load MainPage '/' """
         self.live_server_url = live_server_url
         # prepare driver
-        super(OptionsDetailPage, self).__init__(driver)
+        super(OptionsPlanDetailPage, self).__init__(driver)
 
         # load page
         self.operator = user.operator_set.all()[0]
         self.login(username=user.username,
                    password=DEFAULT_TEST_DATA['password'])
-        self.driver.get('%s%s' % (live_server_url, path))
+        self.get('%s%s' % (live_server_url, path))
 
     def get_security_text(self):
         """
         return text of security table element
         """
         el = self.driver.find_element_by_xpath(
-            '//tr[contains(@class, "security")]/td[contains(@class, "text")]')
+            '//div[contains(@class, "security")]'
+            '//div[contains(@class, "text")]')
         return el.text
 
 
@@ -374,7 +399,7 @@ class PositionPage(BasePage):
         self.operator = user.operator_set.all()[0]
         self.login(username=user.username,
                    password=DEFAULT_TEST_DATA['password'])
-        self.driver.get('%s%s' % (live_server_url, '/positions/'))
+        self.get('%s%s' % (live_server_url, '/positions/'))
 
     def click_confirm_position(self):
         table = self.driver.find_element_by_class_name('table')
@@ -403,6 +428,7 @@ class PositionPage(BasePage):
     def click_open_split_form(self):
         btn = self.driver.find_element_by_class_name('split-shares')
         btn.click()
+        self.wait_until_modal_opened('splitShares')
 
     def click_open_cap_increase_form(self):
         btn = self.driver.find_element_by_class_name('add-capital')
@@ -459,14 +485,18 @@ class PositionPage(BasePage):
 
         if position.depot_type:
             select = Select(selects[1])
-            select.select_by_visible_text('Gesellschaftsdepot')
+            select.select_by_visible_text('Zertifikatsdepot')
 
         if position.stock_book_id:
+            inputs[-2].clear()
+            inputs[-2].send_keys(position.stock_book_id)
+
+        if position.certificate_id:
             inputs[7].clear()
-            inputs[7].send_keys(position.stock_book_id)
+            inputs[7].send_keys(position.certificate_id)
 
     def show_optional_fields(self):
-        self.driver.find_element_by_class_name('el-icon-plus-sign').click()
+        self.driver.find_element_by_class_name('el-icon-chevron-down').click()
 
     def enter_bought_at(self, date):
         """

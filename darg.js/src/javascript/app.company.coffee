@@ -6,7 +6,7 @@ app.config ['$translateProvider', ($translateProvider) ->
     $translateProvider.useSanitizeValueStrategy('escaped')
 ]
 
-app.controller 'CompanyController', ['$scope', '$http', 'Company', 'Country', 'Operator', 'Upload', 'Security', '$timeout', ($scope, $http, Company, Country, Operator, Upload, Security, $timeout) ->
+app.controller 'CompanyController', ['$scope', '$http', '$window', 'Company', 'Country', 'Operator', 'Upload', 'Security', '$timeout', ($scope, $http, $window, Company, Country, Operator, Upload, Security, $timeout) ->
 
     $scope.operators = []
     $scope.company = null
@@ -60,7 +60,7 @@ app.controller 'CompanyController', ['$scope', '$http', 'Company', 'Country', 'O
             $scope.errors = null
         , (rejection) ->
             $scope.errors = rejection.data
-            Raven.captureMessage('form error: ' + rejection.statusText, {
+            Raven.captureMessage('add operator form error: ' + rejection.statusText, {
                 level: 'warning',
                 extra: { rejection: rejection },
             })
@@ -103,7 +103,7 @@ app.controller 'CompanyController', ['$scope', '$http', 'Company', 'Country', 'O
         , (rejection) ->
             $scope.company.founded_at = new Date($scope.company.founded_at)
             $scope.errors = rejection.data
-            Raven.captureMessage('form error: ' + rejection.statusText, {
+            Raven.captureMessage('edit corp form error: ' + rejection.statusText, {
                 level: 'warning',
                 extra: { rejection: rejection },
             })
@@ -166,6 +166,20 @@ app.controller 'CompanyController', ['$scope', '$http', 'Company', 'Country', 'O
     $scope.open_datepicker = ->
         $scope.datepicker.opened = true
 
+    # --- company reset form
+    $scope.confirm_company_reset = () ->
+        $scope.errors = []
+        if $scope.confirmCompanyText == gettext('DELETE')
+            $scope.company.$delete().then () ->
+                $('#companyResetModal').modal('hide')
+                # track delete
+                if !_.isUndefined(window.ga)
+                    ga 'send', 'event', 'click', 'delete', 'company'
+                $window.location.href = '/start/' 
+        else
+            label = gettext('Input')
+            $scope.errors = {}
+            $scope.errors[label] = [gettext('Please enter DELETE')]
 ]
 
 app.run (editableOptions) ->

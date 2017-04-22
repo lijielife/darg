@@ -1,0 +1,38 @@
+{% extends "base_auth.html" %}
+
+{% load django_markdown markdownify staticfiles i18n %}
+{% load flatpage_meta_tags %}
+
+{% block ng_cloak %}{% endblock %}
+
+{% block title %}
+  <TITLE>{{ flatpage.title }} | {% trans "brand name" %}</TITLE>
+  {% flatpage_meta_tags flatpage %}
+{% endblock %}
+
+
+{% block body_block %}
+
+  {% block header %}
+    {% include "_menu.html" %}
+  {% endblock %}
+
+  <div class="container">
+    <div class="" id="flatpage">
+      <h1>{{ flatpage.title }}</h1>
+      <p>{{ flatpage.content|markdown }}</p>
+    </div>
+  </div>
+
+{% endblock %}
+
+  {% block scripts %}
+  
+  <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+  <!--
+  all above CONFLICT WITH MAILCHIMPs DOJO 
+  -->
+  <script src="{% static "compiled/contrib/bootstrap/dist/js/bootstrap.min.js" %}"></script>
+  
+
+  {% endblock %}

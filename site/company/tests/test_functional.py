@@ -3,15 +3,13 @@ import datetime
 import time
 
 from django.contrib.auth import get_user_model
-
 from selenium.webdriver.common.by import By
 
 from company import page
 from project.base import BaseSeleniumTestCase
 from project.generators import (OperatorGenerator, PositionGenerator,
                                 ShareholderGenerator,
-                                TwoInitialSecuritiesGenerator,
-                                UserGenerator)
+                                TwoInitialSecuritiesGenerator, UserGenerator)
 from project.tests.mixins import StripeTestCaseMixin, SubscriptionTestMixin
 from shareholder.models import Company
 
@@ -50,8 +48,9 @@ class CompanyFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             p.click_save_new_operator()
             p.wait_until_visible(
                 (By.XPATH,
-                 u'//div[@id="company"]//table[contains(@class, "operators")]'
-                 u'//tbody//tr//td[contains(text(), "{}")]'.format(user.email))
+                 u'//div[@id="company"]//div[contains(@class, "operators")]'
+                 u'//div[contains(@class, "tr")]//div[contains(text(), "{}")]'
+                 u''.format(user.email))
             )
             self.assertTrue(p.is_operator_displayed(user.email))
             self.assertTrue(user.operator_set.filter(
@@ -92,14 +91,10 @@ class CompanyFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                 self.operator.company
             )
             p.click_remove_operator(operator)
-            time.sleep(3)
-
-            xpath = (
-                 u'//div[@id="company"]//table[contains(@class, "operators")]'
-                 u'//tbody//tr//td[contains(text(), "{}")]'.format(
-                     operator.user.email))
-            if self.selenium.find_elements_by_xpath(xpath):
-                p.wait_until_invisible((By.XPATH, xpath))
+            p.wait_until_invisible(
+                (By.XPATH,
+                 u'//div[contains(text(), "{}")]'.format(
+                     operator.user.email)))
 
             self.assertFalse(
                 p.is_operator_displayed(operator.user.email)
@@ -127,11 +122,12 @@ class CompanyFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             p.save_edit("founding-date")
 
             # wait for form to disappear
-            p.wait_until_invisible((By.CSS_SELECTOR, 'tr.founding-date form'))
+            p.wait_until_invisible((By.CSS_SELECTOR, '.tr.founding-date form'))
 
             today = datetime.datetime.now().date()
             founding_date = datetime.date(today.year, today.month, 1)
 
+            time.sleep(1)
             self.assertEqual(
                 p.get_founding_date(),
                 founding_date.strftime('%d.%m.%y'))
@@ -144,7 +140,9 @@ class CompanyFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             founding_date)
 
     def test_add_number_segment(self):
-
+        """
+        add number segement to existing one
+        """
         for s in self.operator.company.security_set.all():
             s.track_numbers = True
             s.save()
@@ -165,18 +163,19 @@ class CompanyFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             p.save_edit("security")
 
             # wait for form to disappear
-            p.wait_until_invisible((By.CSS_SELECTOR, 'tr.security form'))
+            p.wait_until_invisible((By.CSS_SELECTOR, '.tr.security form'))
+            p.refresh()
+            p.wait_until_visible((By.CSS_SELECTOR, '.tr.security'))
+            p.wait_until_js_rendered()
+            self.assertIn("88, 99-100", self.selenium.page_source)
 
         except Exception, e:
             self._handle_exception(e)
 
-        self.assertTrue(
-            [88, u'99-100'] in
-            self.operator.company.security_set.values_list(
-                'number_segments', flat=True))
-
     def test_alter_number_segment(self):
-
+        """
+        alter existing number segment
+        """
         for security in self.operator.company.security_set.all():
             security.number_segments = [1, 2]
             security.track_numbers = True
@@ -194,17 +193,18 @@ class CompanyFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             )
             p.wait_until_visible((By.CLASS_NAME, 'security'))
             p.click_to_edit("security")
-            p.enter_string("security", ", 88, 99-100")
+            p.enter_string("security", ", 88, 99-100", clear=True)
             p.save_edit("security")
 
             # wait for form to disappear
-            p.wait_until_invisible((By.CSS_SELECTOR, 'tr.security form'))
+            p.wait_until_invisible((By.CSS_SELECTOR, '.tr.security form'))
+            time.sleep(1)  # FIXME replace by wait
 
         except Exception, e:
             self._handle_exception(e)
 
         self.assertTrue(
-            [u'1-2', 88, u'99-100'] in
+            [88, u'99-100'] in
             self.operator.company.security_set.values_list(
                 'number_segments', flat=True))
 
@@ -262,3 +262,25 @@ class CompanyFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         p.wait_until_invisible((By.CLASS_NAME, 'numbered-segments'))
         self.assertFalse(self.selenium.find_element_by_class_name(
             'numbered-segments').is_displayed())
+
+    def test_reset_company(self):
+        """
+        reset company and related data and it's redirect to the new data form
+        """
+        try:
+            user = self.operator.user
+
+            p = page.CompanyPage(
+                self.selenium,
+                self.live_server_url,
+                self.operator.user,
+                self.operator.company
+            )
+            p.click_reset_company()
+            p.confirm_reset_company()
+
+            self.assertFalse(user.operator_set.exists())
+            self.assertIn('/start/', p.driver.current_url)
+
+        except Exception, e:
+            self._handle_exception(e)

@@ -2,35 +2,36 @@
 # -*- coding: utf-8 -*-
 import datetime
 import unittest
-
-from django.core.urlresolvers import reverse
-from django.test import RequestFactory, TestCase
-from django.utils.translation import ugettext as _
-from dateutil.parser import parse
-from rest_framework.exceptions import ValidationError
+from decimal import Decimal
 
 import mock
+from dateutil.parser import parse
+from django.core.urlresolvers import reverse
+from django.test import RequestFactory, TestCase
+from django.utils import timezone
+from django.utils.translation import ugettext as _
+from rest_framework.exceptions import ValidationError
 
-from project.generators import (ComplexShareholderConstellationGenerator,
+from project.generators import (BankGenerator, CompanyGenerator,
+                                ComplexPositionsWithSegmentsGenerator,
+                                ComplexShareholderConstellationGenerator,
                                 OperatorGenerator, OptionPlanGenerator,
                                 OptionTransactionGenerator, PositionGenerator,
-                                ShareholderGenerator, SecurityGenerator,
-                                TwoInitialSecuritiesGenerator, UserGenerator,
-                                ComplexPositionsWithSegmentsGenerator,
-                                CompanyGenerator)
+                                ReportGenerator, SecurityGenerator,
+                                ShareholderGenerator,
+                                TwoInitialSecuritiesGenerator, UserGenerator)
 from project.tests.mixins import MoreAssertsTestCaseMixin, StripeTestCaseMixin
-from services.rest.serializers import (AddCompanySerializer,
+from services.rest.serializers import (AddCompanySerializer, BankSerializer,
+                                       CompanySerializer, OperatorSerializer,
                                        OptionPlanSerializer,
                                        OptionTransactionSerializer,
-                                       PositionSerializer,
-                                       ShareholderSerializer,
-                                       ShareholderListSerializer,
-                                       UserProfileSerializer,
+                                       PositionSerializer, ReportSerializer,
                                        SecuritySerializer,
-                                       CompanySerializer,
-                                       OperatorSerializer,
-                                       UserSerializer)
-from shareholder.models import OptionPlan, OptionTransaction, Country, Position
+                                       ShareholderListSerializer,
+                                       ShareholderSerializer,
+                                       UserProfileSerializer, UserSerializer)
+from shareholder.models import (Bank, Country, OptionPlan, OptionTransaction,
+                                Position)
 from utils.formatters import human_readable_segments
 
 
@@ -42,13 +43,57 @@ class AddCompanySerializerTestCase(TestCase):
     def test_create(self):
         validated_data = {
             'user': UserGenerator().generate(),
-            'count': 33,
+            'share_count': 33,
             'founded_at': datetime.datetime.now().date(),
             'name': u'Mühleggbahn AG',
             'face_value': 22,
         }
-        res = self.serializer.create(validated_data)
-        self.assertEqual(res, validated_data)
+        company = self.serializer.create(validated_data)
+
+        self.assertEqual(company.share_count, validated_data['share_count'])
+        self.assertTrue(company.operator_set.filter(
+                        user=validated_data['user']).exists())
+        self.assertEqual(company.founded_at, validated_data['founded_at'])
+        self.assertEqual(company.name, validated_data['name'])
+        self.assertEqual(company.security_set.first().face_value,
+                         validated_data['face_value'])
+        self.assertEqual(company.shareholder_set.count(), 1)
+        # check corp shareholder
+        cs = company.get_company_shareholder()
+        self.assertEqual(cs.user.email, u'')
+        self.assertEqual(cs.user.userprofile.legal_type, u'C')
+
+    def test_create_negative_share_count(self):
+        """ see https://goo.gl/HDQB1t for users doing that """
+        validated_data = {
+            'user': UserGenerator().generate(),
+            'share_count': -33,
+            'founded_at': datetime.datetime.now().date(),
+            'name': u'Mühleggbahn AG',
+            'face_value': 22,
+        }
+        with self.assertRaises(ValidationError):
+            self.serializer.validate_share_count(
+                validated_data['share_count'])
+
+
+class BankSerializerTestCase(TestCase):
+
+    def setUp(self):
+        self.bank = BankGenerator().generate()
+        self.serializer = BankSerializer(instance=self.bank)
+
+    def test_fields(self):
+        serialized = self.serializer.data
+        keys = ['pk', 'name', 'short_name', 'swift', 'address', 'city',
+                'postal_code', 'full_name']
+        self.assertEqual(serialized.keys(), keys)
+
+    def test_get_full_name(self):
+        name = self.serializer.get_full_name(self.bank)
+        self.assertIn(self.bank.name, name)
+        self.assertIn(self.bank.city, name)
+        self.assertIn(self.bank.address, name)
 
 
 class OptionPlanSerializerTestCase(TestCase):
@@ -65,6 +110,7 @@ class OptionPlanSerializerTestCase(TestCase):
         request = self.factory.get(url)
         request.user = OperatorGenerator().generate(
             company=option_plan.company).user
+        request.session = {'company_pk': option_plan.company.pk}
         # prepare data
         data = OptionPlanSerializer(
             option_plan, context={'request': request}).data
@@ -149,6 +195,7 @@ class OptionTransactionSerializerTestCase(TestCase):
         request = self.factory.get(url)
         request.user = OperatorGenerator().generate(
             company=option_plan.company).user
+        request.session = {'company_pk': option_plan.company.pk}
         # prepare data
         data = OptionTransactionSerializer(
             position, context={'request': request}).data
@@ -210,29 +257,133 @@ class OptionTransactionSerializerTestCase(TestCase):
         self.assertNotIn('{', result)
         self.assertNotIn('}', result)
 
+    def test_validate_certificate_id(self):
+        """ certificate id must be unique """
+        serializer, position = self.__serialize('1, 3, 4, 6-9, 33')
+        certificate_id = '222'
+        self.assertEqual(serializer.validate_certificate_id(certificate_id),
+                         certificate_id)
+        # OptionTransaction existing -> fail
+        ot = OptionTransactionGenerator().generate(
+            certificate_id=certificate_id, company=position.buyer.company)
+        with self.assertRaises(ValidationError):
+            serializer.validate_certificate_id(certificate_id)
+        ot.delete()
+
+        # Position existing -> fail
+        position.certificate_id = certificate_id
+        position.save()
+        with self.assertRaises(ValidationError):
+            serializer.validate_certificate_id(certificate_id)
+
+    def test_validate_count(self):
+        """ count must be positive and more then what shareholder owns """
+        serializer, position = self.__serialize('1, 3, 4, 6-9, 33')
+        certificate_id = '222'
+
+        # negative count -> fail
+        with self.assertRaises(ValidationError):
+            self.assertEqual(serializer.validate_count(-1),
+                             certificate_id)
+
+        # less then shareholder owns -> fail
+        with self.assertRaises(ValidationError):
+            serializer.validate_count(
+                position.seller.options_count(
+                    security=position.option_plan.security) + 1)
+
+        # success
+        count = position.seller.options_count(
+            security=position.option_plan.security)
+        self.assertEqual(count, serializer.validate_count(count))
+
 
 class PositionSerializerTestCase(TestCase):
 
     def __serialize(self, segments):
+        # create capital
+        bank = BankGenerator().generate()
+        p = PositionGenerator().generate(number_segments=segments,
+                                         count=8, seller=None)
+        # position under test:
         position = PositionGenerator().generate(number_segments=segments,
-                                                count=8)
+                                                count=8,
+                                                company=p.buyer.company,
+                                                seller=p.buyer, save=False,
+                                                security=p.security,
+                                                depot_bank=bank)
         url = reverse('position-detail', kwargs={'pk': position.id})
         request = self.factory.get(url)
         # authenticated request
         request.user = OperatorGenerator().generate(
             company=position.buyer.company).user
+        request.session = {'company_pk': position.buyer.company.pk}
         # prepare data
         data = PositionSerializer(
             position, context={'request': request}).data
-        # clear bad datetimedata
-        # data['buyer']['user']['userprofile']['birthday'] = None
-        # data['seller']['user']['userprofile']['birthday'] = None
-        data['bought_at'] = '2014-01-01T10:00'
+        data['bought_at'] = '2024-01-01T10:00'
         return (PositionSerializer(data=data, context={'request': request}),
                 position)
 
     def setUp(self):
         self.factory = RequestFactory()
+
+    def test_get_certificate_invalidation_position_url(self):
+        """
+        return url for cert invalidation position
+        """
+        pos = PositionGenerator().generate()
+        pos.invalidate_certificate()
+
+        serializer = PositionSerializer(instance=pos)
+        self.assertIsNotNone(
+            serializer.get_certificate_invalidation_position_url(pos))
+
+        pos = PositionGenerator().generate()
+        serializer = PositionSerializer(instance=pos)
+        self.assertIsNone(
+            serializer.get_certificate_invalidation_position_url(pos))
+
+    def test_get_certificate_invalidation_initial_position_url(self):
+        """
+        return url for initial position for an cert invalidation
+        """
+        pos = PositionGenerator().generate()
+        pos.invalidate_certificate()
+        pos2 = pos.certificate_invalidation_position
+
+        serializer = PositionSerializer(instance=pos)
+        self.assertIsNotNone(
+            serializer.get_certificate_invalidation_initial_position_url(pos2))
+
+        pos = PositionGenerator().generate()
+        serializer = PositionSerializer(instance=pos)
+        self.assertIsNone(
+            serializer.get_certificate_invalidation_initial_position_url(pos))
+
+    def test_get_is_certificate_valid(self):
+        """
+        is certificate valid or was it returned
+        """
+        pos = PositionGenerator().generate()
+        pos.invalidate_certificate()
+        pos2 = pos.certificate_invalidation_position
+
+        serializer = PositionSerializer(instance=pos)
+        self.assertFalse(
+            serializer.get_is_certificate_valid(pos))
+        self.assertFalse(
+            serializer.get_is_certificate_valid(pos2))
+
+        pos = PositionGenerator().generate()
+        serializer = PositionSerializer(instance=pos)
+        self.assertIsNone(
+            serializer.get_is_certificate_valid(pos))
+
+        pos = PositionGenerator().generate(certificate_id='123')
+        serializer = PositionSerializer(instance=pos)
+        self.assertTrue(
+            serializer.get_is_certificate_valid(pos))
 
     def test_is_valid(self):
         """
@@ -284,10 +435,12 @@ class PositionSerializerTestCase(TestCase):
             url = reverse('position-detail', kwargs={'pk': position.id})
             request = self.factory.get(url)
             request.user = operator.user
+            request.session = {'company_pk': company.pk}
 
             # prepare data
             position.seller = None
             position.buyer = None
+            position.depot_bank = BankGenerator().generate()
             # get test data dict
             data = PositionSerializer(
                 position, context={'request': request}).data
@@ -305,6 +458,7 @@ class PositionSerializerTestCase(TestCase):
             [1, u'3-4', u'6-9', 33],
             position.security.number_segments)
         self.assertEqual(position.registration_type, '1')
+        self.assertEqual(position.depot_bank, Bank.objects.first())
 
     def test_fields(self):
         operator = OperatorGenerator().generate()
@@ -319,8 +473,96 @@ class PositionSerializerTestCase(TestCase):
 
         self.assertTrue(len(serializer.data) > 0)
         position_data = serializer.data[0]
+        keys = position_data.keys()
         self.assertIsNotNone(position_data['stock_book_id'])
         self.assertIsNotNone(position_data['depot_type'])
+        self.assertIn('depot_bank', keys)
+        self.assertIn('certificate_invalidation_position_url', keys)
+        self.assertIn('certificate_invalidation_initial_position_url', keys)
+        self.assertIn('is_certificate_valid', keys)
+
+    def test_validate_certificate_id(self):
+        """ certificate id must be unique """
+        serializer, position = self.__serialize('1, 3, 4, 6-9, 33')
+        certificate_id = '222'
+        self.assertEqual(serializer.validate_certificate_id(certificate_id),
+                         certificate_id)
+        # OptionTransaction existing -> fail
+        ot = OptionTransactionGenerator().generate(
+            certificate_id=certificate_id, company=position.buyer.company)
+        with self.assertRaises(ValidationError):
+            serializer.validate_certificate_id(certificate_id)
+        ot.delete()
+
+        # Position existing -> fail
+        position.certificate_id = certificate_id
+        position.save()
+        with self.assertRaises(ValidationError):
+            serializer.validate_certificate_id(certificate_id)
+
+    def test_validate_count(self):
+        """ count must be positive and more then what shareholder owns """
+        serializer, position = self.__serialize('1, 3, 4, 6-9, 33')
+        certificate_id = '222'
+
+        # negative count -> fail
+        with self.assertRaises(ValidationError):
+            self.assertEqual(serializer.validate_count(-1),
+                             certificate_id)
+
+        # less then shareholder owns -> fail
+        with self.assertRaises(ValidationError):
+            serializer.validate_count(
+                position.seller.share_count(security=position.security) + 1)
+
+        # success
+        count = position.seller.share_count(security=position.security)
+        self.assertEqual(count, serializer.validate_count(count))
+
+    def test_validate_depot_bank(self):
+        """
+        force depot banks set if that is depot type 0 (cert depot)
+        """
+        serializer, position = self.__serialize('1, 3, 4, 6-9, 33')
+
+        serializer.initial_data['depot_type'] = '1'
+        self.assertEqual(serializer.validate_depot_bank(dict()), {})
+
+        serializer.initial_data['depot_type'] = '0'
+        self.assertEqual(serializer.validate_depot_bank('somevalue'),
+                         'somevalue')
+
+        with self.assertRaises(ValidationError):
+            serializer.validate_depot_bank(None)
+
+
+class ReportSerializerTestCase(TestCase):
+
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.report = ReportGenerator().generate()
+        url = reverse('reports:download', kwargs={'report_id': self.report.pk})
+        self.request = self.factory.get(url)
+        self.serializer = ReportSerializer(
+            instance=self.report, context={'request': self.request})
+        self.serialized_data = self.serializer.data
+
+    def test_get_url(self):
+        """ render url for download report """
+        self.report.render()
+        self.report.refresh_from_db()
+        self.assertEqual(self.serializer.get_url(self.report),
+                         '/reports/{}/download'.format(self.report.pk))
+
+    def test_fields(self):
+        """ do all fields respond properly """
+        self.report.downloaded_at = timezone.now()
+        self.report.generated_at = timezone.now()
+        self.serializer = ReportSerializer(
+            instance=self.report, context={'request': self.request})
+        self.serialized_data = self.serializer.data
+        for field in self.serializer.fields.keys():
+            self.assertIsNotNone(self.serialized_data.get(field))
 
 
 class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin,
@@ -388,6 +630,7 @@ class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin,
         profile.save()
         request = self.factory.get('/services/rest/shareholders')
         request.user = operator.user
+        request.session = {'company_pk': operator.company.pk}
 
         qs = operator.company.shareholder_set.filter(pk=shs[0].pk)
         serializer = ShareholderSerializer(
@@ -413,6 +656,8 @@ class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin,
         self.assertEqual(profile_data['postal_code'], profile.postal_code)
         self.assertEqual(profile_data['city'], profile.city)
         self.assertEqual(serializer.data[0]['mailing_type'], qs[0].mailing_type)
+        self.assertEqual(serializer.data[0]['cumulated_face_value'],
+                         Decimal(shs[0].cumulated_face_value()))
 
         # assure none is empty
         for k in profile_data.keys():
@@ -429,6 +674,29 @@ class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin,
     @unittest.skip('TODO: ShareholderSerializer.update')
     def test_update(self):
         pass
+
+    def test_validate_number(self):
+        """
+        shareholder.number must be unique
+        """
+        operator = OperatorGenerator().generate()
+        shs, security = ComplexShareholderConstellationGenerator().generate(
+            company=operator.company, shareholder_count=5)  # does +2shs
+        request = self.factory.get('/services/rest/shareholders')
+        request.user = operator.user
+        request.session = {'company_pk': operator.company.pk}
+
+        # existing number
+        serializer = ShareholderSerializer(
+            shs[1], context={'request': request})
+        with self.assertRaises(ValidationError):
+            serializer.validate_number(shs[0].number)
+
+        # new number
+        serializer = ShareholderSerializer(
+            shs[1], context={'request': request})
+        # no validationerror raised
+        serializer.validate_number('345tfdw34rtf')
 
 
 class UserProfileSerializerTestCase(TestCase):

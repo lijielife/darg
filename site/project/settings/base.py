@@ -34,7 +34,7 @@ def get_env_variable(var_name, fail_on_error=True):
     return env_var
 
 
-VERSION = '0.4.15'
+VERSION = '0.4.50'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
@@ -70,11 +70,13 @@ INSTALLED_APPS = (
     'registration',
     'rest_framework',
     'rest_framework.authtoken',
+    'django_filters',
     'raven.contrib.django.raven_compat',
     'sorl.thumbnail',
     'djrill',
     'django_markdown',
-    'markdownx',
+    'markdownx',  # flatpage advanced admin
+    'flatpage_meta',  # flatpage meta tags
     'reversion',
     'storages',
     'dbbackup',
@@ -105,7 +107,7 @@ INSTALLED_APPS = (
     'pingen'
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'reversion.middleware.RevisionMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -126,7 +128,7 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': ['project/templates'],  # required to load two factor tpls
         # 'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -166,7 +168,7 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
-LANGUAGE_CODE = 'de'
+LANGUAGE_CODE = 'de-ch'
 
 TIME_ZONE = 'UTC'
 
@@ -176,6 +178,13 @@ USE_L10N = True
 
 USE_TZ = True
 
+THOUSAND_SEPARATOR = "'"
+
+USE_THOUSAND_SEPARATOR = True
+
+FORMAT_MODULE_PATH = [
+    'formats',
+]
 # -- LOGGING
 
 LOGGING = {
@@ -272,6 +281,9 @@ MEDIA_ROOT = 'media'  # used also by zinnia for path inside static. is relative
 
 MEDIA_URL = '/media/'
 
+# --- SHAREHOLDERS APP
+COMPANY_INITIAL_FIRST_NAME = u'Unternehmen'
+
 # --- REGISTRATION
 REGISTRATION_OPEN = True        # If True, users can register
 ACCOUNT_ACTIVATION_DAYS = 7     # One-week activation window; you may, of cour
@@ -295,6 +307,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
     )
 }
 # angular does want this
@@ -308,7 +323,8 @@ LOCALE_PATHS = (
     # './services/locale/',
     os.path.join(BASE_DIR, 'i18n', 'locale'),
     os.path.join(BASE_DIR, 'shareholder', 'locale'),
-    os.path.join(BASE_DIR, 'services', 'locale')
+    os.path.join(BASE_DIR, 'services', 'locale'),
+    os.path.join(BASE_DIR, 'reports', 'locale'),
 )
 
 # --- Sentry
@@ -360,6 +376,8 @@ MARKDOWNX_MARKDOWN_EXTENSIONS = [
     'markdown.extensions.nl2br',
     'markdown.extensions.smarty',
 ]
+# crispy images pls
+MARKDOWNX_IMAGE_MAX_SIZE = {'size': (900, 900), 'quality': 100}
 
 # Media path
 # Path, where images will be stored in MEDIA_ROOT folder
@@ -383,6 +401,9 @@ TEST_WEBDRIVER_PAGE_LOAD_TIMEOUT = 5
 TEST_CHROMEDRIVER_EXECUTABLE = os.environ.get(
     'DJANGO_TEST_CHROMEDRIVER_EXECUTABLE', './chromedriver')
 
+# THUMBS
+THUMBNAIL_PRESERVE_FORMAT = True
+
 # django-dbbackup
 DROPBOX_ROOT_PATH = get_env_variable('DROPBOX_ROOT_PATH', fail_on_error=False)
 
@@ -392,17 +413,30 @@ if DROPBOX_ROOT_PATH:
         'oauth2_access_token': get_env_variable('DROPBOX_ACCESS_TOKEN'),
     }
 
+# swiss bank list download url
+SWISS_BANKS_DOWNLOAD_URL = ('https://www.six-interbank-clearing.com/dam'
+                            '/downloads/bc-bank-master/bcbankenstamm')
+
+
+# app internal settings
+DISPO_SHAREHOLDER_NUMBER = '9999999999'
+
 
 # need to differentiate instances
-def backup_filename(databasename, servername, datetime, extension, content_type):
+def backup_filename(databasename, servername, datetime, extension,
+                    content_type):
     import getpass
     username = getpass.getuser()
-    return '{username}-{databasename}-{servername}-{datetime}.{extension}'.format(
-        **{'username': username, 'databasename': databasename,
-        'servername': servername, 'datetime': datetime, 'extension': extension})
+    return ('{username}-{databasename}-{servername}-{datetime}.{extension}'
+            ''.format(
+                **{'username': username, 'databasename': databasename,
+                   'servername': servername, 'datetime': datetime,
+                   'extension': extension})
+            )
 
 
-def media_backup_filename(databasename, servername, datetime, extension, content_type):
+def media_backup_filename(databasename, servername, datetime, extension,
+                          content_type):
     import getpass
     username = getpass.getuser()
     return '{username}-mediafiles-{servername}-{datetime}.{extension}'.format(

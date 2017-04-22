@@ -7,10 +7,12 @@ import logging
 import random
 
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as __
-from model_mommy import random_gen
+from model_mommy import mommy, random_gen
 
+from reports.models import Report
 from shareholder.models import (Company, Country, Operator, OptionPlan,
                                 OptionTransaction, Position, Security,
                                 Shareholder, UserProfile)
@@ -25,6 +27,7 @@ DEFAULT_TEST_DATA = {
     'password': u'testàäå',
     'username': u'testusernameàäå',
     'date': u'13. Mai 2016',  # datepicker format
+    'date_obj': datetime.date(2016, 5, 13),
     'title': u'2016 OptionsPlan àäå',
     'exercise_price': u'2.05',
     'share_count': u'156',
@@ -86,6 +89,12 @@ def _make_user():
     user.save()
 
     return user
+
+
+class BankGenerator(object):
+
+    def generate(self, **kwargs):
+        return mommy.make('shareholder.Bank')
 
 
 class CompanyGenerator(object):
@@ -220,7 +229,7 @@ class CompanyShareholderGenerator(object):
 
 class PositionGenerator(object):
 
-    def generate(self, **kwargs):
+    def _get_company(self, **kwargs):
         company = kwargs.get('company')
         if not company and kwargs.get('buyer'):
             company = kwargs.get('buyer').company
@@ -230,9 +239,16 @@ class PositionGenerator(object):
             company = kwargs.get('security').company
         if not company:
             company = CompanyGenerator().generate()
+        return company
 
-        buyer = kwargs.get('buyer') or ShareholderGenerator().generate(
-            company=company)
+    def _get_or_generate(self, key, generator, kwargs, gen_kwargs={}):
+        return kwargs.get(key) or generator().generate(**gen_kwargs)
+
+    def generate(self, **kwargs):
+
+        company = self._get_company(**kwargs)
+        buyer = self._get_or_generate('buyer', ShareholderGenerator, kwargs,
+                                      dict(company=company))
 
         # seller only if not sent as kwarg
         if 'seller' not in kwargs.keys():
@@ -266,9 +282,21 @@ class PositionGenerator(object):
             kwargs2.update(
                 {'depot_type': kwargs.get('depot_type')})
 
+        if kwargs.get('depot_bank'):
+            kwargs2.update(
+                {'depot_bank': kwargs.get('depot_bank')})
+
         if kwargs.get('stock_book_id'):
             kwargs2.update(
                 {'stock_book_id': kwargs.get('stock_book_id')})
+
+        if kwargs.get('certificate_id'):
+            kwargs2.update(
+                {'certificate_id': kwargs.get('certificate_id')})
+
+        if kwargs.get('vesting_months'):
+            kwargs2.update(
+                {'vesting_months': kwargs.get('vesting_months')})
 
         if kwargs.get('save') == False:
             return Position(**kwargs2)
@@ -353,6 +381,29 @@ class OptionTransactionGenerator(object):
         return position
 
 
+class ReportGenerator(object):
+
+    def generate(self, **kwargs):
+
+        save = kwargs.pop('save', True)
+
+        rkwargs = {
+            'eta': timezone.now(),
+            'company': CompanyGenerator().generate(),
+            'user': UserGenerator().generate(),
+            'report_type': 'captable',
+            'file_type': 'PDF',
+        }
+        rkwargs.update(kwargs)
+
+        if save:
+            report = Report.objects.create(**rkwargs)
+        else:
+            report = Report(**rkwargs)
+
+        return report
+
+
 class TwoInitialSecuritiesGenerator(object):
 
     def generate(self, **kwargs):
@@ -384,15 +435,21 @@ class ComplexShareholderConstellationGenerator(object):
         shareholder_count = kwargs.get('shareholder_count', 10)
 
         # intial securities
-        s1, s2 = TwoInitialSecuritiesGenerator().generate(company=company)
+        if not company.security_set.exists():
+            s1, s2 = TwoInitialSecuritiesGenerator().generate(company=company)
+        else:
+            s1 = company.security_set.first()
 
         # initial company shareholder
-        company_shareholder_created_at = kwargs.get(
-            'company_shareholder_created_at'
-        ) or datetime.datetime.now()
-        cs = CompanyShareholderGenerator().generate(
-            company=company, security=s1,
-            company_shareholder_created_at=company_shareholder_created_at)
+        try:
+            cs = company.get_company_shareholder()
+        except ValueError:
+            company_shareholder_created_at = kwargs.get(
+                'company_shareholder_created_at'
+            ) or datetime.datetime.now()
+            cs = CompanyShareholderGenerator().generate(
+                company=company, security=s1,
+                company_shareholder_created_at=company_shareholder_created_at)
 
         # random shareholder generation
         shareholders = [cs]
@@ -410,11 +467,13 @@ class ComplexShareholderConstellationGenerator(object):
             PositionGenerator().generate(
                 company=company,
                 seller=shareholders[-2],
-                security=s1).buyer)
+                security=s1, count=shareholders[-2].share_count()
+                ).buyer)
         shareholders.append(
             PositionGenerator().generate(
                 company=company,
                 seller=shareholders[-1],
+                count=shareholders[-1].share_count(),
                 security=s1).buyer)
 
         return shareholders, s1
@@ -534,6 +593,57 @@ class MassPositionsWithSegmentsGenerator(object):
                     seller))
 
         logging.info('mass position generator finished')
+        return positions, shareholders
+
+
+class ComplexOptionTransactionsGenerator(object):
+
+    def generate(self, *args, **kwargs):
+        """
+        complex options transaction scenario without numbered shares
+        """
+        company = kwargs.get('company') or CompanyGenerator().generate()
+
+        if not company.operator_set.exists():
+            OperatorGenerator().generate(company=company)
+
+        # intial securities
+        s1, s2 = TwoInitialSecuritiesGenerator().generate(company=company)
+
+        # initial company shareholder
+        company_shareholder_created_at = kwargs.get(
+            'company_shareholder_created_at'
+        ) or datetime.datetime.now()
+        cs = CompanyShareholderGenerator().generate(
+            company=company, security=s1,
+            company_shareholder_created_at=company_shareholder_created_at)
+        s = ShareholderGenerator().generate(company=company)
+        optionplan = OptionPlanGenerator().generate(
+            company=company, security=s1)
+        # initial option grant to CompanyShareholder
+        ot = OptionTransactionGenerator().generate(
+            company=company, security=s1, buyer=cs,
+            option_plan=optionplan)
+
+        shareholders = [cs, s]
+        positions = [ot]
+
+        # random shareholder generation
+        def buy(buyer, seller):
+            p = OptionTransactionGenerator().generate(
+                company=company, security=s1, buyer=buyer,
+                seller=seller,
+                option_plan=optionplan, stock_book_id='12345', depot_type='1',
+                certificate_id='333')
+            return p
+
+        positions.append(buy(s, cs))
+        positions.append(buy(cs, s))
+        positions.append(buy(s, cs))
+        positions.append(buy(s, cs))
+        positions.append(buy(cs, s))
+        positions.append(buy(s, cs))
+
         return positions, shareholders
 
 

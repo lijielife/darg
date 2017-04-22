@@ -11,19 +11,52 @@
 {% block content %}
 <div ng_controller="OptionsController">
   <h1>{% trans "Options" %}</h1>
-  {% include "_form_errors.html" %}
 
   <div class="panel panel-column">
-    <a class="btn-inline align-left" href="" ng-click="show_add_option_transaction_form()" ng-hide="!option_plans.length">{% trans "Transfer Option" %}</a>
-    <a class="btn-inline " href="" ng-click="show_add_option_plan_form()">{% trans "Grant New Option Plan" %}</a>
+    <a class="btn btn-focus" href="" data-toggle="modal" data-target="#addOptionTransaction" ng-click="show_add_option_transaction_form()" ng-hide="!option_plans.length">{% trans "Transfer Option" %}</a>
+    <a class="btn btn-focus " href="" data-toggle="modal" data-target="#addOptionPlan" ng-click="show_add_option_plan_form()">{% trans "Grant New Option Plan" %}</a>
   </div>
 
-  <!-- FORMS -->
-  <div id="add_option_transaction" ng-hide="!show_add_option_transaction">
-    {% include "_add_option_transaction_form.html" %}
+  <!-- MODAL OPTIONS TRANSACTION -->
+  <div class="modal fade" id="addOptionTransaction" tabindex="-1" role="dialog" aria-labelledby="addOptionTransactionLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="addOptionTransactionLabel">{% trans "add option transaction" %}</h4>
+        </div>
+        <div class="modal-body">
+          {% include "_form_errors.html" %}
+          <p class="alert alert-success" ng-show="transaction_added_success">
+            {% trans "Transaction added" %}
+          </p>
+          <div id="add_option_transaction">
+            {% include "_add_option_transaction_form.html" %}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="add_option_plan" ng-hide="!show_add_option_plan">
-    {% include "_add_option_plan_form.html" %}
+
+  <!-- MODAL OPTION PLAN -->
+  <div class="modal fade" id="addOptionPlan" tabindex="-1" role="dialog" aria-labelledby="addOptionPlanLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="addOptionPlanLabel">{% trans "add option plan" %}</h4>
+        </div>
+        <div class="modal-body">
+          {% include "_form_errors.html" %}
+          <p class="alert alert-success" ng-show="plan_added_success">
+            {% trans "Plan added" %}
+          </p>
+          <div id="add_option_plan">
+            {% include "_add_option_plan_form.html" %}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   {% verbatim %}
@@ -45,7 +78,7 @@
     </h2>
 
     <div class="table">
-      <div class="tr th" ng-show="optiontransaction.option_plan.pk != optiontransactions[$index - 1].option_plan.pk">
+      <div class="tr th hide-mobile" ng-show="optiontransaction.option_plan.pk != optiontransactions[$index - 1].option_plan.pk">
         <div class="td">{% trans "Grant Date" %}</div>
         <div class="td td-width-2">{% trans "Receipient" %}</div>
         <div class="td text-right-flex" >
@@ -77,15 +110,15 @@
         </div>
         <div class="td text-right-flex count gray-circle" ng-click="goto_option(optiontransaction.pk)" ng-mouseover="">
           <span class="transform-center large">
-            {{ optiontransaction.count }}
+            {{ optiontransaction.count | number }}
           </span>
           <span class="note hide-mobile" ng-show="optiontransaction.option_plan.security.track_numbers && optiontransaction.readable_number_segments">
             (#{{ optiontransaction.readable_number_segments }})
           </span>
         </div>
-        <div class="td text-right-flex margin-top-additional" ng-click="goto_option(optiontransaction.pk)" ng-mouseover="">{{ optiontransaction.option_plan.exercise_price }}</div>
+        <div class="td text-right-flex margin-top-additional" ng-click="goto_option(optiontransaction.pk)" ng-mouseover="">{{ optiontransaction.option_plan.exercise_price | currency }}</div>
         <div class="td td-width-2" ng-click="goto_option(optiontransaction.pk)" ng-mouseover="">
-          {{ optiontransaction.seller.user.full_name }}
+          {{ optiontransaction.seller.full_name }}
         </div>
         <div class="td flex-inline options-view">
           <div ng-show="optiontransaction.is_draft">
