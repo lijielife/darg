@@ -4,6 +4,7 @@ from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import permissions
+from utils.session import get_company_from_request
 
 
 class SafeMethodsOnlyPermission(permissions.BasePermission):
@@ -29,9 +30,8 @@ class HasSubscriptionPermission(permissions.BasePermission):
         """
         check company subscription
         """
-        company = self._get_company(request)
+        company = get_company_from_request(request, fail_silently=True)
         if not company:
-            # FIXME: what now? True or False?
             return False
 
         plan_name = company.get_current_subscription_plan()
@@ -71,16 +71,6 @@ class HasSubscriptionPermission(permissions.BasePermission):
     def has_object_permission(self, request, view, obj=None):
         # TODO?!
         return True
-
-    def _get_company(self, request):
-        """
-        get company from request
-        """
-        # TODO: the company must be delivered with the request data!
-        #       for now: use company of first operator of user
-        if hasattr(request, 'user') and request.user.is_authenticated():
-            operator = request.user.operator_set.first()
-            return operator and operator.company
 
 
 class UserCanAddCompanyPermission(SafeMethodsOnlyPermission):

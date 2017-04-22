@@ -4,6 +4,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase, RequestFactory
 
 from rest_framework.views import APIView
+from rest_framework.test import APITestCase
 
 from project.generators import OperatorGenerator, UserGenerator
 from project.tests.mixins import StripeTestCaseMixin, SubscriptionTestMixin
@@ -39,13 +40,18 @@ class IsOperatorPermissionTestCase(TestCase):
 
 
 class HasSubscriptionPermissionTestCase(StripeTestCaseMixin,
-                                        SubscriptionTestMixin, TestCase):
+                                        SubscriptionTestMixin, APITestCase):
 
     def setUp(self):
         super(HasSubscriptionPermissionTestCase, self).setUp()
 
         self.factory = RequestFactory()
         self.permission = HasSubscriptionPermission()
+        self.operator = OperatorGenerator().generate()
+        # steal session from client: http://stackoverflow.com/a/37307406/1270058
+        self.session = self.client.session
+        self.session['company_pk'] = self.operator.company.pk
+        self.session.save()
 
     def test_has_permission(self):
         view = APIView()
@@ -57,14 +63,14 @@ class HasSubscriptionPermissionTestCase(StripeTestCaseMixin,
         self.assertFalse(self.permission.has_permission(req, view))
 
         # add company operator
-        operator = OperatorGenerator().generate()
-        req.user = operator.user
+        req.user = self.operator.user
+        req.session = self.session
 
         # no plan/subscription
         self.assertFalse(self.permission.has_permission(req, view))
 
         # add company subscription
-        self.add_subscription(operator.company)
+        self.add_subscription(self.operator.company)
 
         # no subscription features on view defined
         self.assertTrue(self.permission.has_permission(req, view))
@@ -104,26 +110,6 @@ class HasSubscriptionPermissionTestCase(StripeTestCaseMixin,
     def test_get_object_permission(self):
         # TODO: add real tests after logic is determined in permission
         req = self.factory.get('/')
+        req.session = self.session
         view = APIView()
         self.assertTrue(self.permission.has_object_permission(req, view))
-
-    def test_get_company(self):
-        req = self.factory.get('/')
-        self.assertIsNone(self.permission._get_company(req))
-
-        req.user = AnonymousUser()
-        self.assertIsNone(self.permission._get_company(req))
-
-        req.user = UserGenerator().generate()
-        self.assertIsNone(self.permission._get_company(req))
-
-        operator = OperatorGenerator().generate(user=req.user)
-        self.assertIsNotNone(self.permission._get_company(req))
-        self.assertEqual(self.permission._get_company(req), operator.company)
-
-        # add another operator
-        operator2 = OperatorGenerator().generate(user=operator.user)
-        company = self.permission._get_company(req)
-        self.assertIsNotNone(company)
-        self.assertEqual(company, operator.company)
-        self.assertNotEqual(company, operator2.company)
