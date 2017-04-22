@@ -6,6 +6,7 @@ from xhtml2pdf import pisa
 from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.template.loader import get_template
+from django.template import Context
 from django.http import HttpResponse
 from cgi import escape
 
@@ -49,7 +50,8 @@ def render_to_pdf(template_src, context_dict):
     renders html template with context to pdf
     """
     template = get_template(template_src)
-    html = template.render(context_dict)
+    context_dict = Context(context_dict)
+    html = template.render(context=context_dict)
     return render_pdf(html)
 
 
