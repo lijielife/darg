@@ -10,6 +10,7 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.test import RequestFactory, TestCase
 from django.utils.translation import ugettext as _
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
@@ -31,6 +32,7 @@ from services.rest.views import (CompanyViewSet, OptionPlanViewSet,
                                  ReportViewSet, UserViewSet)
 from shareholder.models import (Operator, OptionPlan, OptionTransaction,
                                 Position, Security, Shareholder, UserProfile)
+from utils.session import add_company_to_session
 
 logger = logging.getLogger()
 
@@ -103,7 +105,7 @@ class AddCompanyTestCase(APITestCase):
         self.assertEqual(username1[:25], username2[:-5])
 
 
-class AvailableOptionSegmentsViewTestCase(APITestCase):
+class AvailableOptionSegmentsViewTestCase(SubscriptionTestMixin, APITestCase):
 
     def test_get(self):
 
@@ -136,8 +138,10 @@ class AvailableOptionSegmentsViewTestCase(APITestCase):
         self.assertEqual(res2.status_code, 403)
 
         # use company operator
-        company_operator = shs[0].company.operator_set.first()
-        self.client.force_authenticate(company_operator.user)
+        operator = shs[0].company.operator_set.first()
+        self.client.force_authenticate(operator.user)
+        add_company_to_session(self.client.session, operator.company)
+        self.add_subscription(operator.company)
 
         # FIXME: check for subscription (in view)?
 
@@ -152,13 +156,15 @@ class AvailableOptionSegmentsViewTestCase(APITestCase):
         # check for operator of different company
         foreign_operator = OperatorGenerator().generate()
         self.client.force_authenticate(foreign_operator.user)
+        add_company_to_session(self.client.session, foreign_operator.company)
+        self.add_subscription(foreign_operator.company)
         res1 = self.client.get(url1)
         self.assertEqual(res1.status_code, 404)
         res2 = self.client.get(url2)
         self.assertEqual(res2.status_code, 404)
 
 
-class BankViewTestCase(APITestCase):
+class BankViewTestCase(SubscriptionTestMixin, APITestCase):
     """
     expose list of all swiss banks
     """
@@ -173,6 +179,8 @@ class BankViewTestCase(APITestCase):
 
     def test_get_authenticated(self):
         self.client.force_login(self.operator.user)
+        add_company_to_session(self.client.session, self.operator.company)
+        self.add_subscription(self.operator.company)
         response = self.client.get(reverse('banks'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.get('count'), 1)
@@ -181,6 +189,8 @@ class BankViewTestCase(APITestCase):
 
     def test_search(self):
         self.client.force_login(self.operator.user)
+        add_company_to_session(self.client.session, self.operator.company)
+        self.add_subscription(self.operator.company)
         response = self.client.get(reverse('banks'), {'search': self.bank.name})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.get('count'), 1)
@@ -189,11 +199,13 @@ class BankViewTestCase(APITestCase):
 
     def test_post(self):
         self.client.force_login(self.operator.user)
+        add_company_to_session(self.client.session, self.operator.company)
+        self.add_subscription(self.operator.company)
         response = self.client.post(reverse('banks'), {})
         self.assertEqual(response.status_code, 405)
 
 
-class CompanyViewSetTestCase(TestCase):
+class CompanyViewSetTestCase(SubscriptionTestMixin, TestCase):
 
     def setUp(self):
         self.client = APIClient()
@@ -214,6 +226,8 @@ class CompanyViewSetTestCase(TestCase):
 
         # operator
         self.client.force_login(self.operator.user)
+        add_company_to_session(self.client.session, self.operator.company)
+        self.add_subscription(self.operator.company)
         response = self.client.delete(
             '/services/rest/company/{}'.format(self.operator.company.pk),
             **{'HTTP_AUTHORIZATION': 'Token {}'.format(
@@ -227,7 +241,7 @@ class CompanyViewSetTestCase(TestCase):
             '/services/rest/company/{}'.format(self.operator.company.pk),
             **{'HTTP_AUTHORIZATION': 'Token {}'.format(
                 op.user.auth_token.key), 'format': 'json'})
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_delete_company_and_related_data(self):
         """
@@ -239,6 +253,9 @@ class CompanyViewSetTestCase(TestCase):
         puid = sh.user.userprofile.pk
 
         self.client.force_login(self.operator.user)
+        add_company_to_session(self.client.session, self.operator.company)
+        self.add_subscription(self.operator.company)
+
         response = self.client.delete(
             '/services/rest/company/{}'.format(self.operator.company.pk),
             **{'HTTP_AUTHORIZATION': 'Token {}'.format(
@@ -259,9 +276,11 @@ class CompanyViewSetTestCase(TestCase):
         view = CompanyViewSet()
         view.request = self.factory.get('/')
         view.request.user = UserGenerator().generate()
+        view.request.session = self.client.session
         self.assertEqual(view.get_queryset().count(), 0)
 
-        OperatorGenerator().generate(user=view.request.user)
+        operator = OperatorGenerator().generate(user=view.request.user)
+        add_company_to_session(self.client.session, operator.company)
         self.assertEqual(view.get_queryset().count(), 1)
 
     @unittest.skip('TODO: CompanyViewSet.upload')
@@ -269,7 +288,7 @@ class CompanyViewSetTestCase(TestCase):
         pass
 
 
-class OperatorTestCase(TestCase):
+class OperatorTestCase(SubscriptionTestMixin, TestCase):
 
     def setUp(self):
         self.client = APIClient()
@@ -281,9 +300,9 @@ class OperatorTestCase(TestCase):
         company = operator.company
         user2 = UserGenerator().generate()
 
-        logged_in = self.client.login(username=user.username,
-                                      password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(logged_in)
+        self.client.force_login(user)
+        add_company_to_session(self.client.session, operator.company)
+        self.add_subscription(operator.company)
 
         data = {
             "company": "http://{}/services/rest/company/"
@@ -308,9 +327,9 @@ class OperatorTestCase(TestCase):
         company = operator.company
         user2 = UserGenerator().generate()
 
-        logged_in = self.client.login(username=user.username,
-                                      password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(logged_in)
+        self.client.force_login(user)
+        add_company_to_session(self.client.session, operator.company)
+        self.add_subscription(operator.company)
 
         data = {
             "company": "http://{}/services/rest/company/"
@@ -335,9 +354,9 @@ class OperatorTestCase(TestCase):
         company = CompanyGenerator().generate()
         user2 = UserGenerator().generate()
 
-        logged_in = self.client.login(username=user.username,
-                                      password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(logged_in)
+        self.client.force_login(user)
+        add_company_to_session(self.client.session, operator.company)
+        self.add_subscription(operator.company)
 
         data = {
             "company": "http://{}/services/rest/company/"
@@ -361,9 +380,9 @@ class OperatorTestCase(TestCase):
         operator2 = OperatorGenerator().generate(company=operator.company)
         user = operator.user
 
-        logged_in = self.client.login(username=user.username,
-                                      password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(logged_in)
+        self.client.force_login(user)
+        add_company_to_session(self.client.session, operator.company)
+        self.add_subscription(operator.company)
 
         data = {
             u"operator.id": operator2.id}
@@ -603,9 +622,9 @@ class OptionTransactionTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                          reverse=True))
 
         # default ordering by bought_at
-        o1.bought_at = datetime.datetime(2014, 1, 1)
+        o1.bought_at = timezone.make_aware(datetime.datetime(2014, 1, 1))
         o1.save()
-        o2.bought_at = datetime.datetime(2013, 12, 31)
+        o2.bought_at = timezone.make_aware(datetime.datetime(2013, 12, 31))
         o2.save()
 
         res = self.client.get(
@@ -615,7 +634,9 @@ class OptionTransactionTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         self.assertEqual(res.data['results'][1].get('pk'), o2.pk)
 
     def test_pagination(self):
+        """ custom current (page) rest api response data element """
         operator = OperatorGenerator().generate()
+        self.add_subscription(operator.company)
         user = operator.user
         seller = ShareholderGenerator().generate(company=operator.company)
         OptionTransactionGenerator().generate(
@@ -624,6 +645,7 @@ class OptionTransactionTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             seller=seller)
 
         self.client.force_login(user)
+        add_company_to_session(self.client.session, operator.company)
 
         res = self.client.get(
             '/services/rest/optiontransaction')
@@ -634,13 +656,16 @@ class OptionTransactionTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         self.assertEqual(len(res.data['results']), 2)
 
     def test_get_new_shareholder_number(self):
+        """ return fresh new unused shareholder number for new shareholder """
         operator = OperatorGenerator().generate()
+        self.add_subscription(operator.company)
         user = operator.user
         shareholder = ShareholderGenerator().generate(company=operator.company)
         shareholder.number = u'789'
         shareholder.save()
 
         self.client.force_login(user)
+        add_company_to_session(self.client.session, operator.company)
 
         res = self.client.get(
             reverse('shareholders-get-new-shareholder-number'))
@@ -669,9 +694,9 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
         position = PositionGenerator().generate(
             seller=None, security=securities[1], buyer=seller)
 
-        logged_in = self.client.login(username=user.username,
-                                      password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(logged_in)
+        self.client.force_login(user)
+        add_company_to_session(self.client.session, operator.company)
+        self.add_subscription(operator.company)
 
         data = {
             "bought_at": "2026-05-13T23:00:00.000Z",
@@ -1115,7 +1140,7 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
         # was 55, increased to 95
         # with self.assertLessNumQueries(60):
         # NOTE: increased queries due to subscription check
-        with self.assertLessNumQueries(62):
+        with self.assertLessNumQueries(65):
             response = self.client.post(
                 u'/services/rest/position',
                 data,
@@ -1142,9 +1167,9 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
         seller = ShareholderGenerator().generate(company=operator.company)
         position = PositionGenerator().generate(seller=seller)
 
-        logged_in = self.client.login(username=user.username,
-                                      password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(logged_in)
+        self.client.force_login(user)
+        add_company_to_session(self.client.session, operator.company)
+        self.add_subscription(operator.company)
 
         # get and prep data
         res = self.client.login(username=user.username,
@@ -1188,6 +1213,7 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
         self.assertEqual(res.status_code, 403)
 
         # add company subscription
+        add_company_to_session(self.client.session, operator.company)
         self.add_subscription(operator.company)
 
         res = self.client.delete(
@@ -1206,9 +1232,6 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
         position = PositionGenerator().generate(company=shareholder.company)
 
         self.client.force_login(user)
-        session = self.client.session
-        session['company_pk'] = shareholder.company.pk
-        session.save()
 
         res = self.client.delete(
             '/services/rest/position/{}'.format(position.pk))
@@ -1225,9 +1248,8 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
         position.is_draft = False
         position.save()
 
-        logged_in = self.client.login(username=user.username,
-                                      password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(logged_in)
+        self.client.force_login(user)
+        add_company_to_session(self.client.session, operator.company)
 
         res = self.client.delete(
             '/services/rest/position/{}'.format(position.pk))
@@ -1254,6 +1276,8 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
                                      certificate_id='123')
 
         self.client.force_login(user)
+        add_company_to_session(self.client.session, operator.company)
+        self.add_subscription(operator.company)
 
         res = self.client.get(reverse('position-get-new-certificate-id'))
         self.assertEqual(res.status_code, 200)
@@ -1270,6 +1294,8 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
                                                 certificate_id='123')
 
         self.client.force_login(user)
+        add_company_to_session(self.client.session, operator.company)
+        self.add_subscription(operator.company)
 
         res = self.client.get(reverse('position-invalidate',
                                       kwargs={'pk': position.pk}))
@@ -1289,9 +1315,9 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
         ShareholderGenerator().generate(company=operator.company)
         TwoInitialSecuritiesGenerator().generate(company=operator.company)
 
-        logged_in = self.client.login(username=user.username,
-                                      password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(logged_in)
+        self.client.force_login(user)
+        add_company_to_session(self.client.session, operator.company)
+
         response = self.client.get(
             '/services/rest/split/', {},
             **{'HTTP_AUTHORIZATION': 'Token {}'.format(
@@ -1320,9 +1346,8 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
         PositionGenerator().generate(company=operator.company, security=s1)
         PositionGenerator().generate(company=operator.company, security=s1)
 
-        logged_in = self.client.login(username=user.username,
-                                      password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(logged_in)
+        self.client.force_login(user)
+        add_company_to_session(self.client.session, operator.company)
 
         security = Security.objects.filter(company=company, title="P")[0]
         data = {
@@ -1333,7 +1358,7 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
                 "readable_title": security.get_title_display(),
                 "title": security.title
             },
-            'execute_at': datetime.datetime.now(),
+            'execute_at': timezone.now(),
         }
 
         response = self.client.post(
@@ -1361,9 +1386,8 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
         ShareholderGenerator().generate(company=operator.company)
         TwoInitialSecuritiesGenerator().generate(company=operator.company)
 
-        logged_in = self.client.login(username=user.username,
-                                      password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(logged_in)
+        self.client.force_login(user)
+        add_company_to_session(self.client.session, operator.company)
 
         data = {}
 
@@ -1391,6 +1415,7 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
         position = PositionGenerator().generate(company=operator.company)
 
         self.client.force_login(user)
+        add_company_to_session(self.client.session, operator.company)
 
         query = position.buyer.user.first_name
         res = self.client.get(
@@ -1419,6 +1444,7 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
                                      buyer=s2)
 
         self.client.force_login(user)
+        add_company_to_session(self.client.session, operator.company)
 
         res = self.client.get(
             '/services/rest/position?ordering=buyer__user__last_name')
@@ -1461,6 +1487,7 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
                                      buyer=s2)
 
         self.client.force_login(user)
+        add_company_to_session(self.client.session, operator.company)
 
         res = self.client.get('/services/rest/position')
 
@@ -1478,28 +1505,32 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
         self.assertEqual(len(res.data['results']), 3)
 
 
-class ReportViewSetTestCase(APITestCase):
+class ReportViewSetTestCase(SubscriptionTestMixin, APITestCase):
 
     def setUp(self):
         super(ReportViewSetTestCase, self).setUp()
         self.report = ReportGenerator().generate()
         self.report2 = ReportGenerator().generate(company=self.report.company)
         self.report3 = ReportGenerator().generate()
+        self.operator = OperatorGenerator().generate(
+            user=self.report.user, company=self.report.company)
 
-        session = self.client.session
-        session['company_pk'] = self.report.company.pk
-        session.save()
+        add_company_to_session(self.client.session, self.report.company)
+        self.add_subscription(self.report.company)
 
         self.factory = RequestFactory()
         self.view = ReportViewSet()
         url = reverse('report-list')
         self.view.request = self.factory.get(url)
-        self.view.request.session = session
+        self.view.request.session = self.client.session
         self.view.request.user = self.report.user
 
     def test_get(self):
         """ simple get with limit 1 and ordering and filter """
         self.client.force_login(self.report.user)
+        add_company_to_session(self.client.session, self.report.company)
+        self.add_subscription(self.report.company)
+
         response = self.client.get(
             reverse('report-list'), {'limit': 1})
         self.assertEqual(response.status_code, 200)
@@ -1671,9 +1702,9 @@ class ShareholderViewSetTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         operator = OperatorGenerator().generate()
         user = operator.user
 
-        logged_in = self.client.login(username=user.username,
-                                      password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(logged_in)
+        self.client.force_login(user)
+        add_company_to_session(self.client.session, operator.company)
+        self.add_subscription(operator.company)
 
         data = {
             u"user": {
@@ -1921,6 +1952,7 @@ class ShareholderViewSetTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
 
         operator = shs[0].company.operator_set.first()
         self.client.force_authenticate(operator.user)
+        add_company_to_session(self.client.session, operator.company)
 
         res = self.client.get(reverse('shareholders-number-segments',
                                       kwargs={'pk': shs[1].pk}))
@@ -2077,6 +2109,7 @@ class ShareholderViewSetTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
     def test_ordering_combined(self):
         """ combined ordering for last name and company name of user """
         operator = OperatorGenerator().generate()
+        self.add_subscription(operator.company)
         user = operator.user
         ComplexShareholderConstellationGenerator().generate(
             company=operator.company, shareholder_count=10)
@@ -2183,6 +2216,7 @@ class ShareholderViewSetTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         session = self.client.session
         session['company_pk'] = op.company.pk
         session.save()
+
         query = opts[0].buyer.user.first_name
         res = self.client.get(
             reverse('shareholders-option-holder'), {
@@ -2255,7 +2289,7 @@ class SecurityTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         self.assertEqual(security.number_segments, [u'1-4', u'8-10'])
 
 
-class UserViewSetTestCase(TestCase):
+class UserViewSetTestCase(SubscriptionTestMixin, TestCase):
 
     def setUp(self):
         super(UserViewSetTestCase, self).setUp()
@@ -2272,7 +2306,7 @@ class UserViewSetTestCase(TestCase):
         self.assertIn(user, self.view.get_queryset())
 
 
-class OptionPlanViewSetTestCase(TestCase):
+class OptionPlanViewSetTestCase(SubscriptionTestMixin, APITestCase):
 
     def setUp(self):
         super(OptionPlanViewSetTestCase, self).setUp()
@@ -2280,34 +2314,20 @@ class OptionPlanViewSetTestCase(TestCase):
         self.factory = RequestFactory()
         self.view = OptionPlanViewSet()
 
-    def test_get_user_companies(self):
-        self.view.request = self.factory.get('/')
-        self.view.request.user = UserGenerator().generate()
-
-        self.assertEqual(self.view.get_user_companies().count(), 0)
-
-        # add operator
-        OperatorGenerator().generate(user=self.view.request.user)
-        self.assertEqual(self.view.get_user_companies().count(), 1)
-
-        # add another operator
-        OperatorGenerator().generate(user=self.view.request.user)
-        self.assertEqual(self.view.get_user_companies().count(), 2)
-
-        # add another operator but not for user
-        OperatorGenerator().generate()
-        self.assertEqual(self.view.get_user_companies().count(), 2)
-
     def test_get_queryset(self):
-        company = CompanyGenerator().generate()
+        self.view.request = self.factory.get('/')
+        operator = OperatorGenerator().generate()
+        self.client.force_authenticate(operator.user)
+        add_company_to_session(self.client.session, operator.company)
+        self.view.request.session = self.client.session
 
         self.view.get_company_pks = mock.Mock(return_value=[])
         self.assertEqual(self.view.get_queryset().count(), 0)
 
-        self.view.get_company_pks.return_value = [company.pk]
+        self.view.get_company_pks.return_value = [operator.company.pk]
         self.assertEqual(self.view.get_queryset().count(), 0)
 
-        OptionPlanGenerator().generate(company=company)
+        OptionPlanGenerator().generate(company=operator.company)
         self.assertEqual(self.view.get_queryset().count(), 1)
 
     @unittest.skip('TODO: OptionPlanViewSet.upload')

@@ -21,7 +21,10 @@ class IsOperatorPermission(permissions.IsAuthenticated):
     def has_permission(self, request, view):
         is_authenticated = super(IsOperatorPermission, self).has_permission(
             request, view)
-        return is_authenticated and request.user.operator_set.count()
+        company = get_company_from_request(request, fail_silently=True)
+        return (is_authenticated and
+                company and
+                request.user.operator_set.filter(company=company).exists())
 
 
 class HasSubscriptionPermission(permissions.BasePermission):

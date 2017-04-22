@@ -1,4 +1,3 @@
-import datetime
 import logging
 from dateutil.parser import parse as timeparse
 
@@ -9,6 +8,7 @@ from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.db.models import Q
 from django.utils.translation import ugettext as _
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -119,8 +119,8 @@ class CompanySerializer(SubscriptionSerializerMixin,
                   # not needed as of now, adding one more db query
                   # 'shareholder_count',
                   'security_set', 'founded_at',
-                  'provisioned_capital', 'profile_url', 'captable_pdf_url',
-                  'captable_csv_url', 'logo_url', 'email', 'has_address',
+                  'provisioned_capital', 'profile_url',
+                  'logo_url', 'email', 'has_address',
                   'is_statement_sending_enabled', 'statement_sending_date',
                   'vote_count', 'vote_ratio', 'vote_count_floating',
                   'current_subscription', 'subscription_features',
@@ -184,13 +184,13 @@ class AddCompanySerializer(serializers.Serializer):
                 user=companyuser, company=company, number='0')
             Position.objects.create(
                 bought_at=validated_data.get(
-                    'founded_at') or datetime.datetime.now(),
+                    'founded_at') or timezone.now(),
                 buyer=shareholder, count=validated_data.get("share_count"),
                 value=validated_data.get("face_value"),
                 security=security,
             )
             Operator.objects.create(user=user, company=company,
-                                    last_active_at=datetime.datetime.now())
+                                    last_active_at=timezone.now())
 
             mail_managers(
                 u'new user signed up',

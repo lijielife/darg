@@ -39,154 +39,6 @@ User = get_user_model()
 
 # --- VIEWSETS
 
-class ShareholderViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    # FIXME filter by user perms
-    serializer_class = ShareholderSerializer
-    pagination_class = SmallPagePagination
-    permission_classes = [
-        IsOperatorPermission,
-        HasSubscriptionPermission
-    ]
-    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
-    search_fields = ('user__first_name', 'user__last_name', 'user__email',
-                     'number', 'user__userprofile__company_name', 'number')
-    ordering_fields = ('user__last_name', 'user__email', 'number',
-                       'user__userprofile__company_name')
-
-    subscription_features = ('shareholders',)
-
-    def get_user_companies(self):
-        return Company.objects.filter(operator__user=self.request.user)
-
-    def get_queryset(self):
-        """
-        user has no company selected
-        """
-        self.subscription_features = ['shareholders']
-
-        if not self.request.session.get('company_pk'):
-            return Shareholder.objects.none()
-
-        company = get_company_from_request(self.request)
-
-        qs = Shareholder.objects.filter(company=company)
-        return qs.select_related('company', 'user', 'user__userprofile') \
-            .prefetch_related('user__operator_set') \
-            .distinct()
-
-    def get_serializer_class(self):
-        if self.action == 'list':
-            return ShareholderListSerializer
-        # if self.action == 'retrieve':
-        #     return ShareholderSerializer
-        return ShareholderSerializer
-
-    @detail_route(methods=['get'])
-    def number_segments(self, request, pk=None):
-        shareholder = self.get_object()
-        kwargs = {}
-
-        if request.GET.get('date'):
-            # FIXME: parse date(time) properly
-            kwargs.update({'date': request.GET.get('date')[:10]})
-
-        data = {}
-        for security in shareholder.company.security_set.all():
-            if security.track_numbers:
-                kwargs.update({'security': security})
-                data.update({
-                    security.pk: shareholder.current_segments(**kwargs)
-                })
-        return Response(data, status=status.HTTP_200_OK)
-
-    @list_route(methods=['get'], permission_classes=[IsOperatorPermission])
-    def company_number_segments(self, request):
-        company = get_company_from_request(request)
-        shareholder = company.get_company_shareholder()
-        kwargs = {}
-
-        if request.GET.get('date'):
-            # FIXME: parse date(time) properly
-            kwargs.update({'date': request.GET.get('date')[:10]})
-
-        data = {}
-        for security in shareholder.company.security_set.all():
-            if security.track_numbers:
-                kwargs.update({'security': security})
-                data.update({
-                    security.pk: shareholder.current_segments(**kwargs)
-                })
-        return Response(data, status=status.HTTP_200_OK)
-
-    @list_route(methods=['get'], permission_classes=[IsOperatorPermission])
-    def option_holder(self, request):
-        """
-        returns the captable part for all option holders
-        """
-        self.subscription_features = ['shareholders', 'options']
-
-        # if user has no company yet
-        if not self.request.session.get('company_pk'):
-            return Response(Shareholder.objects.none())
-
-        company = get_company_from_request(request)
-        ohs = company.get_active_option_holders()
-
-        ohs = self.filter_queryset(ohs)
-        page = self.paginate_queryset(ohs)
-        if page is not None:
-            serializer = OptionHolderSerializer(
-                page, many=True, context={'request': request})
-            return self.get_paginated_response(serializer.data)
-        serializer = OptionHolderSerializer(
-            ohs, many=True, context={'request': request})
-        return Response(serializer.data)
-
-    @list_route(methods=['get'], permission_classes=[IsOperatorPermission])
-    def get_new_shareholder_number(self, request):
-        """
-        returns unused new unused shareholder number
-        """
-        company = get_company_from_request(request)
-        number = company.get_new_shareholder_number()
-        payload = {'number': number}
-        return Response(payload, status=status.HTTP_200_OK)
-
-
-class OperatorViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    # FIXME filter by user perms
-    serializer_class = OperatorSerializer
-    permission_classes = [
-        IsOperatorPermission
-    ]
-    queryset = Operator.objects.none()
-
-    def get_queryset(self):
-        company = get_company_from_request(self.request)
-        return Operator.objects.filter(company=company)\
-            .distinct()
-
-    def destroy(self, request, pk=None):
-        operator = self.get_object()
-        user_operators = request.user.operator_set.all()
-        # cannot remove himself
-        if operator not in user_operators:
-            # user can only edit corps he manages
-            company_ids = user_operators.values_list(
-                'company_id', flat=True).distinct()
-            if operator.company_id in company_ids:
-                operator.delete()
-                return Response(status=status.HTTP_204_NO_CONTENT)
-        # else:
-        return Response(status=status.HTTP_403_FORBIDDEN)
-
-
 class CompanyViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
@@ -196,7 +48,8 @@ class CompanyViewSet(viewsets.ModelViewSet):
     pagination_class = SmallPagePagination
     serializer_class = CompanySerializer
     permission_classes = [
-        IsOperatorPermission
+        IsOperatorPermission,
+        HasSubscriptionPermission,
     ]
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('user__first_name', 'user__last_name', 'user__email',
@@ -227,6 +80,38 @@ class CompanyViewSet(viewsets.ModelViewSet):
         return super(CompanyViewSet, self).destroy(request, pk)
 
 
+class OperatorViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    # FIXME filter by user perms
+    serializer_class = OperatorSerializer
+    permission_classes = [
+        IsOperatorPermission,
+        HasSubscriptionPermission,
+    ]
+    queryset = Operator.objects.none()
+
+    def get_queryset(self):
+        company = get_company_from_request(self.request)
+        return Operator.objects.filter(company=company)\
+            .distinct()
+
+    def destroy(self, request, pk=None):
+        operator = self.get_object()
+        user_operators = request.user.operator_set.all()
+        # cannot remove himself
+        if operator not in user_operators:
+            # user can only edit corps he manages
+            company_ids = user_operators.values_list(
+                'company_id', flat=True).distinct()
+            if operator.company_id in company_ids:
+                operator.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+        # else:
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+
 class PositionViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
     """ API endpoint to get positions """
     serializer_class = PositionSerializer
@@ -248,9 +133,6 @@ class PositionViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
                        'buyer__number', 'seller__user__last_name',
                        'seller__user__email', 'seller__number')
     subscription_features = ('positions',)
-
-    def get_user_companies(self):
-        return Company.objects.filter(operator__user=self.request.user)
 
     def get_queryset(self):
         company = get_company_from_request(self.request)
@@ -276,7 +158,7 @@ class PositionViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST)
 
     @detail_route(
-        methods=['post'], permission_classes=[IsOperatorPermission])
+        methods=['post'])
     def confirm(self, request, pk=None):
         """ confirm position and make it unchangable """
         position = self.get_object()
@@ -284,8 +166,7 @@ class PositionViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
         position.save()
         return Response({"success": True}, status=status.HTTP_200_OK)
 
-    @detail_route(methods=['get'],
-                  permission_classes=[IsOperatorPermission])
+    @detail_route(methods=['get'])
     def invalidate(self, request, pk):
         """
         invalidate issued certificate
@@ -307,7 +188,7 @@ class PositionViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
                 },
                 status=status.HTTP_400_BAD_REQUEST)
 
-    @list_route(methods=['get'], permission_classes=[IsOperatorPermission])
+    @list_route(methods=['get'])
     def get_new_certificate_id(self, request):
         """
         returns unused new certificate id
@@ -316,20 +197,6 @@ class PositionViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
         cert_id = company.get_new_certificate_id()
         payload = {'certificate_id': cert_id}
         return Response(payload, status=status.HTTP_200_OK)
-
-
-class SecurityViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
-    """ API endpoint to get options """
-    serializer_class = SecuritySerializer
-    permission_classes = [
-        IsOperatorPermission,
-        HasSubscriptionPermission
-    ]
-    subscription_features = ('securities',)
-
-    def get_queryset(self):
-        company = get_company_from_request(self.request)
-        return Security.objects.filter(company=company)
 
 
 class OptionPlanViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
@@ -435,7 +302,8 @@ class ReportViewSet(viewsets.ModelViewSet):
     serializer_class = ReportSerializer
     pagination_class = pagination.LimitOffsetPagination
     permission_classes = [
-        IsOperatorPermission
+        IsOperatorPermission,
+        HasSubscriptionPermission,
     ]
     filter_backends = (filters.OrderingFilter, DjangoFilterBackend)
     filter_fields = ('order_by', 'report_type', 'file_type')
@@ -459,6 +327,134 @@ class ReportViewSet(viewsets.ModelViewSet):
         report.update_eta()
         report.render(notify=True, track_downloads=True)
         return report
+
+
+class SecurityViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
+    """ API endpoint to get options """
+    serializer_class = SecuritySerializer
+    permission_classes = [
+        IsOperatorPermission,
+        HasSubscriptionPermission,
+    ]
+    subscription_features = ('securities',)
+
+    def get_queryset(self):
+        company = get_company_from_request(self.request)
+        return Security.objects.filter(company=company)
+
+
+class ShareholderViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    # FIXME filter by user perms
+    serializer_class = ShareholderSerializer
+    pagination_class = SmallPagePagination
+    permission_classes = [
+        IsOperatorPermission,
+        HasSubscriptionPermission
+    ]
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
+    search_fields = ('user__first_name', 'user__last_name', 'user__email',
+                     'number', 'user__userprofile__company_name', 'number')
+    ordering_fields = ('user__last_name', 'user__email', 'number',
+                       'user__userprofile__company_name')
+
+    subscription_features = ('shareholders',)
+
+    def get_queryset(self):
+        """
+        user has no company selected
+        """
+        self.subscription_features = ['shareholders']
+
+        if not self.request.session.get('company_pk'):
+            return Shareholder.objects.none()
+
+        company = get_company_from_request(self.request)
+
+        qs = Shareholder.objects.filter(company=company)
+        return qs.select_related('company', 'user', 'user__userprofile') \
+            .prefetch_related('user__operator_set') \
+            .distinct()
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return ShareholderListSerializer
+        # if self.action == 'retrieve':
+        #     return ShareholderSerializer
+        return ShareholderSerializer
+
+    @detail_route(methods=['get'])
+    def number_segments(self, request, pk=None):
+        shareholder = self.get_object()
+        kwargs = {}
+
+        if request.GET.get('date'):
+            # FIXME: parse date(time) properly
+            kwargs.update({'date': request.GET.get('date')[:10]})
+
+        data = {}
+        for security in shareholder.company.security_set.all():
+            if security.track_numbers:
+                kwargs.update({'security': security})
+                data.update({
+                    security.pk: shareholder.current_segments(**kwargs)
+                })
+        return Response(data, status=status.HTTP_200_OK)
+
+    @list_route(methods=['get'])
+    def company_number_segments(self, request):
+        company = get_company_from_request(request)
+        shareholder = company.get_company_shareholder()
+        kwargs = {}
+
+        if request.GET.get('date'):
+            # FIXME: parse date(time) properly
+            kwargs.update({'date': request.GET.get('date')[:10]})
+
+        data = {}
+        for security in shareholder.company.security_set.all():
+            if security.track_numbers:
+                kwargs.update({'security': security})
+                data.update({
+                    security.pk: shareholder.current_segments(**kwargs)
+                })
+        return Response(data, status=status.HTTP_200_OK)
+
+    @list_route(methods=['get'])
+    def option_holder(self, request):
+        """
+        returns the captable part for all option holders
+        """
+        self.subscription_features = ['shareholders', 'options']
+
+        # if user has no company yet
+        if not self.request.session.get('company_pk'):
+            return Response(Shareholder.objects.none())
+
+        company = get_company_from_request(request)
+        ohs = company.get_active_option_holders()
+
+        ohs = self.filter_queryset(ohs)
+        page = self.paginate_queryset(ohs)
+        if page is not None:
+            serializer = OptionHolderSerializer(
+                page, many=True, context={'request': request})
+            return self.get_paginated_response(serializer.data)
+        serializer = OptionHolderSerializer(
+            ohs, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    @list_route(methods=['get'])
+    def get_new_shareholder_number(self, request):
+        """
+        returns unused new unused shareholder number
+        """
+        company = get_company_from_request(request)
+        number = company.get_new_shareholder_number()
+        payload = {'number': number}
+        return Response(payload, status=status.HTTP_200_OK)
 
 
 # --- VIEWS
@@ -488,7 +484,7 @@ class AddShareSplit(APIView):
     """
     permission_classes = [
         IsOperatorPermission,
-        HasSubscriptionPermission
+        HasSubscriptionPermission,
     ]
     subscription_features = ('positions',)
 
@@ -536,7 +532,8 @@ class AddShareSplit(APIView):
 class AvailableOptionSegmentsView(APIView):
 
     permission_classes = [
-        IsOperatorPermission
+        IsOperatorPermission,
+        HasSubscriptionPermission,
     ]
 
     def get(self, request, optionsplan_id, shareholder_id):
@@ -544,8 +541,11 @@ class AvailableOptionSegmentsView(APIView):
         returns available option segments from shareholder X and
         optionplan Y
         """
-        optionplan = get_object_or_404(OptionPlan, pk=optionsplan_id)
-        shareholder = get_object_or_404(Shareholder, pk=shareholder_id)
+        company = get_company_from_request(request)
+        optionplan = get_object_or_404(OptionPlan.objects.filter(
+            company=company), pk=optionsplan_id)
+        shareholder = get_object_or_404(Shareholder.objects.filter(
+            company=company), pk=shareholder_id)
 
         kwargs = {
             'security': optionplan.security,
@@ -562,7 +562,7 @@ class BankView(ListAPIView):
     """
     endpoint for bank search
     """
-    permission_classes = (IsOperatorPermission,)
+    permission_classes = (IsOperatorPermission, HasSubscriptionPermission)
     serializer_class = BankSerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name', 'short_name', 'swift', 'city')
