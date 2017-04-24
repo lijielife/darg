@@ -1,4 +1,5 @@
-Django==1.10.7
+# v1.10+ blocked by stripe 1.0.0
+Django==1.9.13
 django-registration-redux>=1.4
 djangorestframework>=3.4.1
 django-nose>=1.4.3
@@ -87,4 +88,6 @@ django-celery-results
 django-celery-beat
 
 # payment
+# for django 1.9.*:
 dj-stripe
+# git+https://github.com/kavdev/dj-stripe.git@1.0.0#egg=djstripe <<< django 1.10+

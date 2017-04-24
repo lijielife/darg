@@ -11,11 +11,12 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.template import loader
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DetailView, ListView, View
-from djstripe.forms import PlanForm
+# from company.forms import PlanForm  # stripe 1.0+
 from djstripe.models import CurrentSubscription, Customer, Invoice
 from djstripe.settings import (PAYMENT_PLANS,  # CANCELLATION_AT_PERIOD_END,
                                PLAN_LIST, PRORATION_POLICY_FOR_UPGRADES,
                                subscriber_request_callback)
+from djstripe import settings
 from djstripe.sync import sync_subscriber
 from djstripe.views import AccountView as DjStripeAccountView  # SyncHistoryView as DjStripeSyncHistoryView,; CancelSubscriptionView as DjStripeCancelSubscriptionView
 from djstripe.views import ChangeCardView as DjStripeChangeCardView
@@ -88,7 +89,6 @@ class SubscriptionsListView(ListView):
 
 subscriptions = login_required(SubscriptionsListView.as_view())
 
-
 class AccountView(CompanyOperatorPermissionRequiredViewMixin,
                   SubscriptionViewCompanyObjectMixin, DjStripeAccountView):
 
@@ -101,7 +101,6 @@ class AccountView(CompanyOperatorPermissionRequiredViewMixin,
             if not is_subscribable:
                 plan.update(dict(unsubscribable=True))
         return context
-
 
 class ChangeCardView(CompanyOperatorPermissionRequiredViewMixin,
                      SubscriptionViewCompanyObjectMixin,
@@ -272,7 +271,6 @@ class ChangePlanView(CompanyOperatorPermissionRequiredViewMixin,
         return reverse('djstripe:history',
                        kwargs=dict(company_id=self.kwargs.get('company_id')))
 
-
 # class CancelSubscriptionView(CompanyOperatorPermissionRequiredViewMixin,
 #                              SubscriptionViewCompanyObjectMixin,
 #                              DjStripeCancelSubscriptionView):
@@ -323,7 +321,7 @@ class SyncHistoryView(CsrfExemptMixin,
 
     def post(self, request, *args, **kwargs):
         context = dict(
-            customer=sync_subscriber(subscriber_request_callback(request))
+            customer=sync_subscriber(settings.subscriber_request_callback(request))
         )
         return render(request, self.template_name, context)
 
