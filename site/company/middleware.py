@@ -2,8 +2,11 @@
 import re
 
 from django.shortcuts import redirect, resolve_url
+# django 1.10
+# from django.utils.deprecation import MiddlewareMixin
 
 
+# class CompanySubscriptionRequired(MiddlewareMixin):
 class CompanySubscriptionRequired(object):
     """
     middleware to make sure a company has an active subscription
@@ -13,7 +16,8 @@ class CompanySubscriptionRequired(object):
         r'^positions/',
         r'^options/',
         r'^shareholder/',
-        r'^optionsplan/'
+        r'^optionsplan/',
+        r'^reports/',
     ]
 
     def process_request(self, request):
