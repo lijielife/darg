@@ -74,7 +74,7 @@ class SwissBankImportBackend(object):
         download and import swiss bank list
         """
         response = self._call_url()
-        content = self._fetch_data(response)
+        content = self._prepare_data(response)
         lines = content.split('\n')
 
         # iterate and save/update to Banks model
