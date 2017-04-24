@@ -107,7 +107,8 @@ INSTALLED_APPS = (
     'pingen'
 )
 
-MIDDLEWARE = (
+# just MIDDLEWARE in django 1.10
+MIDDLEWARE_CLASSES = (
     'reversion.middleware.RevisionMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -546,7 +547,7 @@ DJSTRIPE_PLANS = collections.OrderedDict((
         'currency': 'chf',
         'interval': 'month',
         'features': {
-            'shareholdes': {
+            'shareholders': {
                 'price': 9,  # 0.09
                 'validators': {
                     'create': []
