@@ -100,7 +100,9 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
                     kwargs={'pk': self.buyer.id}
                     )
                 )
+            time.sleep(3)
             # wait for 'link'
+            p.wait_until_js_rendered()
             p.wait_until_visible(
                 (By.CSS_SELECTOR, 'div.shareholder-number span.el-icon-pencil'))
             p.click_to_edit("shareholder-number")
