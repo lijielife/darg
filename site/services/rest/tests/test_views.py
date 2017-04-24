@@ -1427,7 +1427,7 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
         self.add_subscription(operator.company)
 
         res = self.client.get(
-            '/services/rest/position?search={}'.format(query))
+            u'/services/rest/position?search={}'.format(query))
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['count'], 1)
