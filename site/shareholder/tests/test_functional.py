@@ -773,7 +773,8 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             self._handle_exception(e)
 
 
-class OptionsPlanFunctionalTestCase(BaseSeleniumTestCase):
+class OptionsPlanFunctionalTestCase(SubscriptionTestMixin,
+                                    BaseSeleniumTestCase):
 
     def setUp(self):
         self.operator = OperatorGenerator().generate()
@@ -783,6 +784,8 @@ class OptionsPlanFunctionalTestCase(BaseSeleniumTestCase):
             company=self.operator.company)
         self.seller = ShareholderGenerator().generate(
             company=self.operator.company)
+
+        self.add_subscription(self.operator.company)
 
     def test_optionplan_detail_with_segments(self):
         """

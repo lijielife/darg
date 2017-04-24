@@ -16,11 +16,12 @@ from rest_framework.test import APIClient
 from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
                                 ComplexOptionTransactionsGenerator,
                                 ComplexShareholderConstellationGenerator,
-                                OperatorGenerator, PositionGenerator,
+                                OperatorGenerator, OptionTransactionGenerator,
+                                PositionGenerator, ReportGenerator,
                                 SecurityGenerator, ShareholderGenerator,
-                                TwoInitialSecuritiesGenerator, UserGenerator,
-                                OptionTransactionGenerator, ReportGenerator)
-from project.tests.mixins import MoreAssertsTestCaseMixin
+                                TwoInitialSecuritiesGenerator, UserGenerator)
+from project.tests.mixins import (MoreAssertsTestCaseMixin,
+                                  SubscriptionTestMixin)
 from project.views import _get_contacts, _get_transactions
 from shareholder.models import (Company, OptionTransaction, Security,
                                 Shareholder, UserProfile)
@@ -205,7 +206,8 @@ class TrackingTestCase(TestCase):
         self.assertIn(_('Register'), response.content.decode('utf-8'))
 
 
-class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
+class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
+                       TestCase):
 
     def _get_attachment_content(self, idx=None):
         """ from email with idx inside mail.outbox, get the first attachments
@@ -252,6 +254,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
         report.render()
         user = report.user
         OperatorGenerator().generate(user=user, company=company)
+        self.add_subscription(company)
         self.client.force_login(user)
         response = self.client.get(reverse('reports:download',
                                    kwargs={"report_id": report.id}))
@@ -285,6 +288,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
 
         # data
         company = CompanyGenerator().generate()
+        self.add_subscription(company)
         secs = TwoInitialSecuritiesGenerator().generate(company=company)
         security = secs[1]
         security.track_numbers = True
@@ -339,6 +343,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
     def test_pdf_download_with_number_segments(self):
         """ test download of captable pdf """
         company = CompanyGenerator().generate()
+        self.add_subscription(company)
         secs = TwoInitialSecuritiesGenerator().generate(company=company)
         report = ReportGenerator().generate(company=company)
         report.render()
@@ -369,6 +374,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
         other_operator = OperatorGenerator().generate()
         operator = shs[0].company.operator_set.first()
         company = operator.company
+        self.add_subscription(company)
         pos = PositionGenerator().generate(company=company)
         pos.printed_at = datetime.datetime.now()
         pos.certificate_id = '88888'
@@ -554,6 +560,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
         # login and retest
         user = UserGenerator().generate()
         OperatorGenerator().generate(user=user, company=company)
+        self.add_subscription(company)
         is_loggedin = self.client.login(username=user.username,
                                         password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(is_loggedin)
@@ -582,6 +589,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, TestCase):
         # login and retest
         user = UserGenerator().generate()
         OperatorGenerator().generate(user=user, company=company)
+        self.add_subscription(company)
         is_loggedin = self.client.login(username=user.username,
                                         password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(is_loggedin)

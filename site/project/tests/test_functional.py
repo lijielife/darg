@@ -80,7 +80,7 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
 
         try:
             for op in ops:
-                CompanyShareholderGenerator().generate(company=op.company)
+                # CompanyShareholderGenerator().generate(company=op.company)
                 start = page.StartPage(
                     self.selenium, self.live_server_url, op.user)
                 # wait for list
@@ -211,6 +211,7 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         add shareholder without email
         """
         op = OperatorGenerator().generate()
+        self.add_subscription(op.company)
         CompanyShareholderGenerator().generate(company=op.company)
         user = UserGenerator().generate()
         user.email = None
@@ -255,6 +256,7 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         add shareholder with existing number
         """
         op = OperatorGenerator().generate()
+        self.add_subscription(op.company)
         user = UserGenerator().generate()
         shareholder = ShareholderGenerator().generate(company=op.company)
         user.email = None
@@ -427,9 +429,7 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             time.sleep(3)
             # wait for list entry
             xpath = (
-                u'//div[@id="shareholder_list"]/div/div[@class="table"]'
-                u'/div[contains(@class, "tr")]'
-                u'/div/span[text()="{}"]'.format(
+                u'//div[@id="shareholder_list"]//div/span[text()="{}"]'.format(
                     self.operator.user.shareholder_set.first().get_full_name())
             )
             start.wait_until_visible((By.XPATH, xpath))

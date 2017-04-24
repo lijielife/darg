@@ -33,6 +33,8 @@ class CompanyFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
 
     def test_add_new_operator(self):
         """ means: create a option plan and move options for users """
+        # securities require a subscription
+        self.add_subscription(self.operator.company)
 
         user = UserGenerator().generate()
 
@@ -61,6 +63,8 @@ class CompanyFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
 
     def test_add_new_operator_invalid_user(self):
         """ means: create a option plan and move options for users """
+        # securities require a subscription
+        self.add_subscription(self.operator.company)
 
         try:
             p = page.CompanyPage(
@@ -81,6 +85,9 @@ class CompanyFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             self._handle_exception(e)
 
     def test_delete_operator(self):
+        # securities require a subscription
+        self.add_subscription(self.operator.company)
+
         operator = OperatorGenerator().generate(
             company=self.operator.company)
         try:
@@ -108,6 +115,9 @@ class CompanyFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         """
         edit companies founding_date using the datepicker
         """
+        # securities require a subscription
+        self.add_subscription(self.operator.company)
+
         try:
 
             p = page.CompanyPage(
@@ -244,6 +254,9 @@ class CompanyFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         """
         test that company without numbered shares does not see anything
         """
+        # securities require a subscription
+        self.add_subscription(self.operator.company)
+
         try:
             p = page.CompanyPage(
                 self.selenium,
@@ -267,6 +280,9 @@ class CompanyFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         """
         reset company and related data and it's redirect to the new data form
         """
+        # securities require a subscription
+        self.add_subscription(self.operator.company)
+
         try:
             user = self.operator.user
 
