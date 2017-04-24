@@ -7,6 +7,7 @@ mixins to enhance several tests with common code
 
 import os
 import sys
+# from model_mommy import mommy < stripe 1.0+
 
 # from django.conf import settings
 from django.db import DEFAULT_DB_ALIAS, connections
@@ -17,10 +18,25 @@ import mock
 import requests
 import stripe
 
-from djstripe.models import CurrentSubscription
+from djstripe.models import CurrentSubscription  # Plan < stripe 1.0+
 from model_mommy import random_gen
 
 from .helper import FakeStripeResponser
+
+
+# def gen_func():
+#     return 'val'
+#
+#
+# def currency_gen_func():
+#     return '1.12'
+#
+#
+# stripe 1.0.0+
+# mommy.generators.add('djstripe.fields.StripeIdField', gen_func)
+# mommy.generators.add('djstripe.fields.StripeCurrencyField', currency_gen_func)
+# mommy.generators.add('djstripe.fields.StripeCharField', gen_func)
+# mommy.generators.add('djstripe.fields.StripeTextField', gen_func)
 
 
 # stolen here https://goo.gl/IdWkTr
@@ -170,6 +186,9 @@ class SubscriptionTestMixin(object):  # pragma: nocover
         except CurrentSubscription.DoesNotExist:
             pass
 
+        # stripe 1.0+
+        # plan = mommy.make(Plan)
+
         CurrentSubscription.objects.get_or_create(
             customer=customer,
             status=CurrentSubscription.STATUS_ACTIVE,
@@ -178,5 +197,5 @@ class SubscriptionTestMixin(object):  # pragma: nocover
             quantity=1,
             current_period_start=n,
             current_period_end=n + timedelta(days=1),
-            amount=0
+            amount=0  # gone in djstripe 1.0.0
         )
