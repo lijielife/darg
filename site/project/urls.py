@@ -7,7 +7,7 @@ from django.contrib.flatpages.views import flatpage
 from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
 from djstripe.views import WebHook
-from django.views.i18n import JavaScriptCatalog
+from django.views.i18n import javascript_catalog  # JavaScriptCatalog
 from django.contrib.sitemaps import views as sitemap_views
 from registration.backends.simple.views import RegistrationView
 from rest_framework import routers
@@ -135,7 +135,8 @@ urlpatterns = [
         views.obtain_auth_token),  # allow to see token for the logged in user
 
     # i18n
-    url(r'^jsi18n/$', JavaScriptCatalog.as_view(), name='javascript-catalog'),
+    # url(r'^jsi18n/$', javascript_catalog JavaScriptCatalog.as_view(), name='javascript-catalog'),
+    url(r'^jsi18n/$', javascript_catalog, name='javascript-catalog'),
 
     # content/blog
     url(r'^blog/', include('zinnia.urls', namespace='zinnia')),
