@@ -110,7 +110,7 @@ class AddressModelMixin(models.Model):
         country_name = stripe_data.get('address_country')
         if country_name:
             # try to fetch country object
-            country_field = self._meta.get_field_by_name('country')[0]
+            country_field = self._meta.get_field('country')
             Country = country_field.related_model
             self.country = Country.objects.filter(
                 name__iexact=country_name).first()
