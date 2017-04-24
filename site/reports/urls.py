@@ -10,5 +10,6 @@ from reports.views import IndexView, report_download
 urlpatterns = [
     # web views
     url(r'^$', login_required(IndexView.as_view()), name='reports'),
-    url(r'^(?P<report_id>[0-9]+)/download$', report_download, name='download'),
+    url(r'^(?P<report_id>[0-9]+)/download$', login_required(report_download),
+        name='download'),
  ]
