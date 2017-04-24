@@ -74,10 +74,6 @@ class SubscriptionViewMixin(SubscriptionMixin):
     COMPANY_QUERY_VAR = 'company'
     subscription_features = []
 
-    def get_user_companies(self):
-        raise NotImplementedError(
-            u'{} needs to implement get_user_companies'.format(self.__class__))
-
     def get_company_pks(self):
         """
         return a list of company ids that have subscription (to use feature)

@@ -1,19 +1,18 @@
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
-from django.http import Http404, QueryDict
+from django.http import Http404
 from django.test import TestCase, RequestFactory
 
 from mock import Mock
-from model_mommy import mommy
 
 from project.generators import (CompanyGenerator, OperatorGenerator,
-                                UserGenerator, Company)
+                                UserGenerator)
 from project.tests.mixins import StripeTestCaseMixin, SubscriptionTestMixin
 
 from ..mixins import (SubscriptionViewCompanyObjectMixin,
                       CompanyOperatorPermissionRequiredViewMixin,
-                      SubscriptionMixin, SubscriptionViewMixin)
+                      SubscriptionMixin)
 
 
 class SubscriptionViewCompanyObjectMixinTestCase(TestCase):
@@ -109,61 +108,3 @@ class SubscriptionMixinTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         # check iterable
         features = features[0]
         self.assertTrue(self.mixin.check_subscription(company, features))
-
-
-class SubscriptionViewMixinTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
-                                    TestCase):
-
-    def setUp(self):
-        super(SubscriptionViewMixinTestCase, self).setUp()
-
-        self.mixin = SubscriptionViewMixin()
-        self.mixin.request = RequestFactory().get('/')
-        self.mixin.request.user = AnonymousUser()
-
-    def test_get_user_companies(self):
-
-        with self.assertRaises(NotImplementedError):
-            self.mixin.get_user_companies()
-
-    def test_get_company_pks(self):
-
-        # mock get_user_companies
-        self.mixin.get_user_companies = Mock(return_value=[])
-
-        self.assertEqual(self.mixin.get_company_pks(), [])
-
-        companies = mommy.make(Company, _quantity=3)
-        company_pks = [company.pk for company in companies]
-        self.mixin.get_user_companies = Mock(
-            return_value=Company.objects.filter(pk__in=company_pks))
-
-        self.assertEqual(self.mixin.get_company_pks(), [])
-
-        # add subscription
-        self.add_subscription(companies[0])
-
-        self.assertEqual(self.mixin.get_company_pks(), [company_pks[0]])
-
-        # check features
-        self.mixin.subscription_features = ['foo']
-        self.assertEqual(self.mixin.get_company_pks(), [])
-
-        # check query params
-        self.mixin.subscription_features = []
-        self.mixin.request.query_params = QueryDict(
-            '{}={}'.format(self.mixin.COMPANY_QUERY_VAR, company_pks[0]))
-        self.assertEqual(self.mixin.get_company_pks(), [company_pks[0]])
-
-        self.mixin.request.query_params = QueryDict(
-            '{}={}'.format(self.mixin.COMPANY_QUERY_VAR, company_pks[1]))
-        self.assertEqual(self.mixin.get_company_pks(), [])
-
-        self.mixin.request.query_params = QueryDict(
-            '{}={}'.format(self.mixin.COMPANY_QUERY_VAR, 'foo'))
-        self.assertEqual(self.mixin.get_company_pks(), [])
-
-        # if empty, consider as not set
-        self.mixin.request.query_params = QueryDict(
-            '{}={}'.format(self.mixin.COMPANY_QUERY_VAR, ''))
-        self.assertEqual(self.mixin.get_company_pks(), [company_pks[0]])
