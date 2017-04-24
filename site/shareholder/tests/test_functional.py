@@ -7,6 +7,7 @@ from decimal import Decimal
 
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.utils import timezone
 from django.utils.translation import ugettext as _
 from selenium.webdriver.common.by import By
 
@@ -212,7 +213,7 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
         edit shareholders birthday using the datepicker
         """
         try:
-            today = datetime.datetime.now().date()
+            today = timezone.now().date()
             birthday = datetime.date(today.year, today.month, today.day)
 
             p = page.ShareholderDetailPage(
@@ -695,7 +696,8 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
 
             app.click_open_transfer_option()
             app.enter_transfer_option_data(
-                date=datetime.date(2016, 11, 1), buyer=self.buyer,
+                date=datetime.date(2016, 11, 1),
+                buyer=self.buyer,
                 title=self.optionplan.title,
                 seller=self.operator.company.get_company_shareholder(),
                 count=self.operator.company.get_company_shareholder()
@@ -1099,7 +1101,7 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             self.assertEqual(len(app.get_position_row_data()), 8)
             self.assertTrue(app.is_no_errors_displayed())
             # ('%-d.%-m.%y') in case leading zero is not needed
-            self.assertIn(datetime.datetime.today().strftime('%-d.%m.%y'),
+            self.assertIn(timezone.now().date().strftime('%-d.%m.%y'),
                           app.get_position_row_data()[0].split('\n')[0])
 
             app.refresh()
@@ -1107,7 +1109,7 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app.wait_until_visible(
                 (By.CSS_SELECTOR, '#positions .table .position'))
             self.assertEqual(app.get_position_row_data()[0].split('\n')[0],
-                             datetime.datetime.today().strftime('%-d.%m.%y'))
+                             timezone.now().date().strftime('%-d.%m.%y'))
 
         except Exception, e:
             self._handle_exception(e)
@@ -1138,7 +1140,7 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             self.assertEqual(len(app.get_position_row_data()), 8)
             self.assertTrue(app.is_no_errors_displayed())
             # ('%-d.%-m.%y') in case leading zero is not needed
-            self.assertIn(datetime.datetime.today().strftime('%-d.%m.%y'),
+            self.assertIn(timezone.now().date().strftime('%-d.%m.%y'),
                           app.get_position_row_data()[0].split('\n')[0])
             position = Position.objects.last()
             self.assertEqual(position.stock_book_id, '444')

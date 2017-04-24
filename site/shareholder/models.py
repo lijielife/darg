@@ -1,4 +1,3 @@
-import datetime
 import logging
 import math
 import os
@@ -22,19 +21,19 @@ from django.db.models import Q, Sum
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.loader import select_template
+from django.utils import timezone
 from django.utils.formats import date_format
 from django.utils.module_loading import import_string
 from django.utils.text import slugify
-from django.utils.translation import ugettext as _, activate as activate_lang
-from django.utils import timezone
+from django.utils.translation import activate as activate_lang
+from django.utils.translation import ugettext as _
 from django_languages import fields as language_fields
+from djstripe.models import Customer as DjStripeCustomer
 from natsort import natsorted
 from rest_framework.authtoken.models import Token
 from sorl.thumbnail import get_thumbnail
-from dateutil.relativedelta import relativedelta
-from djstripe.models import Customer as DjStripeCustomer
-from tagging.registry import register
 from tagging.models import Tag
+from tagging.registry import register
 
 from shareholder.validators import ShareRegisterValidator
 from utils.formatters import (deflate_segments, flatten_list,
@@ -863,7 +862,7 @@ class Shareholder(TagMixin, models.Model):
         includes segments blocked for options.
         """
         logger.info('current items: starting')
-        date = date or datetime.datetime.now()
+        date = date or timezone.now()
 
         # all pos before date
         qs_bought = self.buyer.filter(bought_at__lte=date)
@@ -903,7 +902,7 @@ class Shareholder(TagMixin, models.Model):
         returns deflated segments which are owned by this shareholder.
         includes segments blocked for options.
         """
-        date = date or datetime.datetime.now().date()
+        date = date or timezone.now().date()
 
         if optionplan:
             qs_bought = self.option_buyer.filter(option_plan=optionplan)
@@ -1038,7 +1037,7 @@ class Shareholder(TagMixin, models.Model):
 
     def options_count(self, date=None, security=None):
         """ total count of shares for shareholder  """
-        date = date or datetime.datetime.now()
+        date = date or timezone.now()
         qs_bought = self.option_buyer.all()
         qs_sold = self.option_seller.all()
 
@@ -1562,7 +1561,7 @@ class Position(CertificateMixin):
             invalidation_position.seller = self.buyer
             invalidation_position.comment = _('Certificate Invalidation for '
                                               'position {}').format(self.pk)
-            invalidation_position.bought_at = datetime.datetime.now()
+            invalidation_position.bought_at = timezone.now()
             invalidation_position.depot_type = DEPOT_TYPES[1][0]
             invalidation_position.printed_at = None
             invalidation_position.save()

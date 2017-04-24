@@ -315,7 +315,7 @@ class CompanyTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
     def test_has_printed_certificates(self):
         ot = OptionTransactionGenerator().generate()
         self.assertFalse(ot.option_plan.company.has_printed_certificates())
-        ot.printed_at = datetime.datetime.now()
+        ot.printed_at = timezone.now()
         ot.save()
         self.assertTrue(ot.option_plan.company.has_printed_certificates())
 
@@ -374,7 +374,7 @@ class PositionTestCase(TransactionTestCase):
             .generate(company=company)
 
         data = {
-            'execute_at': datetime.datetime.now(),
+            'execute_at': timezone.now(),
             'dividend': 3,
             'divisor': 7,
             'comment': "Some random comment",
@@ -449,7 +449,7 @@ class PositionTestCase(TransactionTestCase):
             position.save()
 
         data = {
-            'execute_at': datetime.datetime.now(),
+            'execute_at': timezone.now(),
             'dividend': 3,
             'divisor': 7,
             'comment': "Some random comment",
@@ -524,7 +524,7 @@ class PositionTestCase(TransactionTestCase):
             )
 
         data = {
-            'execute_at': datetime.datetime(2014, 1, 1),
+            'execute_at': timezone.make_aware(datetime.datetime(2014, 1, 1)),
             'dividend': 3,
             'divisor': 7,
             'comment': "Some random comment",
@@ -534,7 +534,7 @@ class PositionTestCase(TransactionTestCase):
 
         # record initial shareholder asset status
         assets = {}
-        d = datetime.datetime(2014, 1, 1)
+        d = timezone.make_aware(datetime.datetime(2014, 1, 1))
         for shareholder in shareholders:
             assets.update({
                 shareholder.pk: {
@@ -595,7 +595,7 @@ class PositionTestCase(TransactionTestCase):
         s2 = ShareholderGenerator().generate(company=company)  # aka S
         OperatorGenerator().generate(company=company)
         security = SecurityGenerator().generate(company=company)
-        now = datetime.datetime.now()
+        now = timezone.now()
         PositionGenerator().generate(
             buyer=s2, seller=sc, count=10000, value=100, security=security,
             bought_at=now-datetime.timedelta(days=11)
@@ -753,7 +753,8 @@ class ShareholderTestCase(TestCase):
             company=self.company)
         PositionGenerator().generate(seller=None, buyer=self.shareholder1,
                                      security=self.security, count=10,
-                                     bought_at=datetime.datetime(2013, 1, 1))
+                                     bought_at=timezone.make_aware(
+                                        datetime.datetime(2013, 1, 1)))
         PositionGenerator().generate(seller=self.shareholder1,
                                      buyer=self.shareholder2,
                                      security=self.security, count=2)
@@ -769,11 +770,13 @@ class ShareholderTestCase(TestCase):
             Decimal('200.0000'))
         self.assertEqual(
             self.shareholder2.cumulated_face_value(
-                security=self.security, date=datetime.datetime(2011, 1, 1)),
+                security=self.security, date=timezone.make_aware(
+                    datetime.datetime(2011, 1, 1))),
             Decimal('0.0000'))
         self.assertEqual(
             self.shareholder2.cumulated_face_value(
-                security=self.security, date=datetime.datetime(2111, 1, 1)),
+                security=self.security, date=timezone.make_aware(
+                    datetime.datetime(2111, 1, 1))),
             Decimal('200.0000'))
 
         # one more sec
@@ -807,7 +810,8 @@ class ShareholderTestCase(TestCase):
         PositionGenerator().generate(seller=self.shareholder1,
                                      buyer=self.shareholder2,
                                      security=self.security, count=10,
-                                     bought_at=datetime.datetime(2013, 1, 1),
+                                     bought_at=timezone.make_aware(
+                                        datetime.datetime(2013, 1, 1)),
                                      vesting_months=5)
         self.assertTrue(self.shareholder2.has_vested_shares())   # regular sh
         self.assertFalse(self.shareholder1.has_vested_shares())  # corp shareh
@@ -894,8 +898,8 @@ class ShareholderTestCase(TestCase):
         return number of shares owned by shareholder or available
         for sale by shareholder
         """
-        now = datetime.datetime.now()
-        yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+        now = timezone.now()
+        yesterday = timezone.now() - datetime.timedelta(days=1)
         self.assertEqual(
             self.shareholder1.share_count(security=self.security), 8)
         self.assertEqual(
@@ -994,7 +998,7 @@ class ShareholderTestCase(TestCase):
         respect sellable aspects of certificates for shares with cert depot at
         external banks
         """
-        now = datetime.datetime.now()
+        now = timezone.now()
         # valid certificate depot
         p1 = PositionGenerator().generate(seller=self.shareholder1,
                                           security=self.security, count=2,
@@ -1035,7 +1039,7 @@ class ShareholderTestCase(TestCase):
         s1 = ShareholderGenerator().generate(company=company)
         s2 = ShareholderGenerator().generate(company=company)
         s3 = ShareholderGenerator().generate(company=company)
-        now = datetime.datetime.now()
+        now = timezone.now()
 
         PositionGenerator().generate(
             buyer=sc, count=1000000, value=100, security=security,
@@ -1073,7 +1077,7 @@ class ShareholderTestCase(TestCase):
         security = SecurityGenerator().generate(company=company)
         sc = ShareholderGenerator().generate(company=company)
         s1 = ShareholderGenerator().generate(company=company)
-        now = datetime.datetime.now()
+        now = timezone.now()
 
         PositionGenerator().generate(
             buyer=sc, count=1000000, value=1, security=security,
@@ -1112,9 +1116,9 @@ class ShareholderTestCase(TestCase):
         """
         poss, shs = MassPositionsWithSegmentsGenerator().generate()
 
-        start = datetime.datetime.now()
+        start = timezone.now()
         shs[0].owns_segments([10000-200000, 350000-800000], poss[0].security)
-        end = datetime.datetime.now()
+        end = timezone.now()
         delta = end - start
         if delta > datetime.timedelta(seconds=4):
             logger.error(
@@ -1139,9 +1143,9 @@ class ShareholderTestCase(TestCase):
 
         logger.info('data preparation done.')
 
-        start = datetime.datetime.now()
+        start = timezone.now()
         res = cs.owns_segments([u'1-582912'], sec1)
-        end = datetime.datetime.now()
+        end = timezone.now()
         delta = end - start
         self.assertTrue(res[0])
         if delta > datetime.timedelta(seconds=4):
@@ -1185,9 +1189,9 @@ class ShareholderTestCase(TestCase):
         """
         poss, shs = MassPositionsWithSegmentsGenerator().generate()
 
-        start = datetime.datetime.now()
+        start = timezone.now()
         shs[0].current_segments(poss[0].security)
-        end = datetime.datetime.now()
+        end = timezone.now()
         delta = end-start
         self.assertLess(delta, datetime.timedelta(seconds=4))
 
@@ -1338,7 +1342,7 @@ class ShareholderStatementReportTestCase(StripeTestCaseMixin,
     def test_get_statement_sent_count(self):
         self.assertEqual(self.report.statement_sent_count, 0)
 
-        now = datetime.datetime.now()
+        now = timezone.now()
         mommy.make(ShareholderStatement, report=self.report,
                    pdf_file='example.pdf', email_sent_at=now, _quantity=2)
 
@@ -1347,7 +1351,7 @@ class ShareholderStatementReportTestCase(StripeTestCaseMixin,
     def test_get_statement_letter_count(self):
         self.assertEqual(self.report.statement_letter_count, 0)
 
-        now = datetime.datetime.now()
+        now = timezone.now()
         mommy.make(ShareholderStatement, report=self.report,
                    pdf_file='example.pdf', letter_sent_at=now, _quantity=2)
 
@@ -1356,7 +1360,7 @@ class ShareholderStatementReportTestCase(StripeTestCaseMixin,
     def test_get_statement_opened_count(self):
         self.assertEqual(self.report.statement_opened_count, 0)
 
-        now = datetime.datetime.now()
+        now = timezone.now()
         mommy.make(ShareholderStatement, report=self.report,
                    pdf_file='example.pdf', email_opened_at=now, _quantity=2)
 
@@ -1365,7 +1369,7 @@ class ShareholderStatementReportTestCase(StripeTestCaseMixin,
     def test_get_statement_downloaded_count(self):
         self.assertEqual(self.report.statement_downloaded_count, 0)
 
-        now = datetime.datetime.now()
+        now = timezone.now()
         mommy.make(ShareholderStatement, report=self.report,
                    pdf_file='example.pdf', pdf_downloaded_at=now, _quantity=2)
 
@@ -1386,7 +1390,7 @@ class ShareholderStatementReportTestCase(StripeTestCaseMixin,
             # add subscription
             self.add_subscription(self.company)
 
-            today = datetime.datetime.today()
+            today = timezone.now().date()
             self.company.statement_sending_date = today
             self.company.save()
 
@@ -1403,7 +1407,7 @@ class ShareholderStatementReportTestCase(StripeTestCaseMixin,
             company = Company.objects.get(pk=self.company.pk)
             self.assertEqual(
                 company.statement_sending_date,
-                (today + relativedelta(year=today.year + 1)).date()
+                (today + relativedelta(year=today.year + 1))
             )
 
             mommy.make(Shareholder, company=self.company, _quantity=3)
@@ -1415,7 +1419,7 @@ class ShareholderStatementReportTestCase(StripeTestCaseMixin,
             company = Company.objects.get(pk=self.company.pk)
             self.assertEqual(
                 company.statement_sending_date,
-                (today + relativedelta(year=today.year + 2)).date()
+                (today + relativedelta(year=today.year + 2))
             )
 
     @override_settings(SHAREHOLDER_STATEMENT_ROOT=SHAREHOLDER_STATEMENT_ROOT)

@@ -16,6 +16,7 @@ from django.utils.text import slugify
 from django.utils.timezone import datetime, now, timedelta
 from django.utils.translation import activate as activate_lang
 from django.utils.translation import ugettext as _
+from django.utils import timezone
 
 from pingen.api import Pingen
 from project.celery import app
@@ -424,7 +425,8 @@ def fetch_statement_email_opened_mandrill():
                 ts = opens_detail[0].get('ts')
                 if isinstance(ts, int):
                     # found a timestamp ... set value on instance
-                    statement.email_opened_at = datetime.fromtimestamp(ts)
+                    statement.email_opened_at = timezone.make_aware(
+                        datetime.fromtimestamp(ts))
                     statement.save()
 
 
