@@ -1,7 +1,7 @@
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
-from django.test import TestCase, RequestFactory
+from django.test import RequestFactory
 
 from rest_framework.views import APIView
 from rest_framework.test import APITestCase
@@ -10,9 +10,10 @@ from project.generators import OperatorGenerator, UserGenerator
 from project.tests.mixins import StripeTestCaseMixin, SubscriptionTestMixin
 
 from ..permissions import IsOperatorPermission, HasSubscriptionPermission
+from utils.session import add_company_to_session
 
 
-class IsOperatorPermissionTestCase(TestCase):
+class IsOperatorPermissionTestCase(APITestCase):
 
     def setUp(self):
         super(IsOperatorPermissionTestCase, self).setUp()
@@ -34,7 +35,9 @@ class IsOperatorPermissionTestCase(TestCase):
         self.assertFalse(self.permission.has_permission(req, view))
 
         # add operator for user
-        OperatorGenerator().generate(user=req.user)
+        op = OperatorGenerator().generate(user=req.user)
+        add_company_to_session(self.client.session, op.company)
+        req.session = self.client.session
         # user is authenticated and operator
         self.assertTrue(self.permission.has_permission(req, view))
 
