@@ -1837,7 +1837,6 @@ class ShareholderStatementReport(models.Model):
 
             if not self._create_statement_pdf(pdf_filepath, context):
                 # TODO: handle error properly
-                logger.exception('Error generating statement pdf')
                 raise Exception('Error generating statement pdf')
 
             if not statement:
@@ -1858,7 +1857,8 @@ class ShareholderStatementReport(models.Model):
         # check for a custom company template
         try:
             pdf = render_pdf(self.company.statement_template.render(context))
-        except:
+        except Exception as e:
+            logger.exception('Error generating statement pdf', extra={'ex': e})
             return False
 
         with open(filepath, 'w') as f:
