@@ -1,3 +1,4 @@
+import logging
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.module_loading import import_string
@@ -5,6 +6,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import permissions
 from utils.session import get_company_from_request
+
+logging.getLogger(__name__
 
 
 class SafeMethodsOnlyPermission(permissions.BasePermission):
@@ -48,6 +51,10 @@ class HasSubscriptionPermission(permissions.BasePermission):
             return True
 
         plan = settings.DJSTRIPE_PLANS.get(plan_name, {})
+        if not plan:
+            logger.error('plan lookup in rest api permissions failed',
+                         extra={'plan_name': plan_name,
+                                'DJSTRIPE_PLANS': settings.DJSTRIPE_PLANS})
         plan_features = plan.get('features', {})
         for feature in subscription_features:
             if feature not in plan_features:
