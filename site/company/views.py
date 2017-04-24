@@ -12,6 +12,7 @@ from django.template import loader
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DetailView, ListView, View
 # from company.forms import PlanForm  # stripe 1.0+
+from djstripe.forms import PlanForm
 from djstripe.models import CurrentSubscription, Customer, Invoice
 from djstripe.settings import (PAYMENT_PLANS,  # CANCELLATION_AT_PERIOD_END,
                                PLAN_LIST, PRORATION_POLICY_FOR_UPGRADES,
