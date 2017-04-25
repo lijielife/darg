@@ -90,19 +90,23 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                 self.assertEqual(start.has_shareholder_count(),
                                  Shareholder.objects.filter(
                                     company=op.company).count())
+                self.assertEqual(user.shareholder_set.filter(
+                    company=op.company).count(), 0)
                 start.click_open_add_shareholder()
                 start.wait_until_modal_opened('addShareholder')
                 start.add_shareholder(user)
                 start.click_save_add_shareholder()
+                start.is_no_errors_displayed()
                 start.close_modal('addShareholder')
 
+                time.sleep(3)
+
+                self.assertEqual(user.shareholder_set.filter(
+                    company=op.company).count(), 1)
                 # wait for list entry
                 xpath = (
                     u'//div[@id="shareholder_list"]//span[text()="{}"]'
-                    u''.format(
-                        user.shareholder_set.first().get_full_name()
-                    )
-                )
+                    u''.format(user.shareholder_set.first().get_full_name()))
                 start.wait_until_visible((By.XPATH, xpath))
                 self.assertEqual(start.has_shareholder_count(),
                                  Shareholder.objects.filter(
@@ -231,7 +235,7 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             start.add_shareholder(user)
             start.click_save_add_shareholder()
             start.close_modal('addShareholder')
-            time.sleep(3)
+            time.sleep(5)
             # wait for list entry
             xpath = (
                 '//div[@id="shareholder_list"]//span[text()="{}"]'
@@ -425,8 +429,9 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             start.wait_until_modal_opened('addShareholder')
             start.add_shareholder(self.operator.user)
             start.click_save_add_shareholder()
+            start.is_no_errors_displayed()
             start.close_modal('addShareholder')
-            time.sleep(3)
+            time.sleep(5)
             # wait for list entry
             xpath = (
                 u'//div[@id="shareholder_list"]//div/span[text()="{}"]'.format(
