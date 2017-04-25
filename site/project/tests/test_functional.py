@@ -95,8 +95,10 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                 start.click_open_add_shareholder()
                 start.wait_until_modal_opened('addShareholder')
                 start.add_shareholder(user)
+                self._screenshot()
                 start.click_save_add_shareholder()
                 start.is_no_errors_displayed()
+                self._screenshot()
                 start.close_modal('addShareholder')
 
                 time.sleep(3)
@@ -310,9 +312,11 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             for shareholder in shs[1:]:  # not for company shareholder
                 # FIXME
                 row_xpath = (
-                    #'//div[contains(@class, "options")]/div[./div/span="{}" and contains(@class, "tr")]'.format(
+                    # '//div[contains(@class, "options")]/div[./div/span="{}"
+                    # and contains(@class, "tr")]'.format(
                     #    shareholder.get_full_name()))
-                    '//div[contains(@class, "options")]/div[contains(@class, "tr")]')
+                    '//div[contains(@class, "options")]/'
+                    'div[contains(@class, "tr")]')
                 row = self.selenium.find_elements_by_xpath(row_xpath)[0]
                 self.assertEqual(row.find_element_by_class_name('number').text,
                                  shareholder.number)
