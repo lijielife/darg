@@ -38,12 +38,14 @@ class HasSubscriptionPermission(permissions.BasePermission):
         """
         company = get_company_from_request(request, fail_silently=True)
         if not company:
+            logger.warning('cannot get company from request')
             return False
 
         plan_name = company.get_current_subscription_plan()
 
         if not plan_name:
             # FIXME: what now? True or False?
+            logger.warning('cannot get plan name. returning false for perm')
             return False
 
         subscription_features = getattr(view, 'subscription_features', [])
@@ -59,6 +61,9 @@ class HasSubscriptionPermission(permissions.BasePermission):
         for feature in subscription_features:
             if feature not in plan_features:
                 self.message = {feature: _('Feature not supported.')}
+                logger.warning(
+                    'feature %s is not in plan features %s. returning false',
+                    feature, plan_features)
                 return False
 
             feature_config = plan_features.get(feature, {})
@@ -74,6 +79,9 @@ class HasSubscriptionPermission(permissions.BasePermission):
                     validator_class(company)()
                 except ValidationError as err:
                     self.message = {feature: err.messages}
+                    logger.warning('validation error "%s" for feature %s by '
+                                   'validator %s. returning false for perm',
+                                   err.messages, feature, validator)
                     return False
 
         return True
