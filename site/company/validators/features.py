@@ -1,10 +1,14 @@
 
+import logging
 
 from django.conf import settings
 from django.core.validators import MaxValueValidator
 from django.utils.translation import ugettext_lazy as _
 
 from .base import BaseCompanyValidator
+
+
+logger = logging.getLogger(__name__)
 
 
 class ShareholderCountPlanValidator(BaseCompanyValidator):
@@ -32,8 +36,8 @@ class ShareholderCountPlanValidator(BaseCompanyValidator):
         max_shareholder_count = shareholders_feature.get('max')
         # FIXME: use company.shareholder_count for only active shareholders?
         shareholder_count = self.company.shareholder_set.count()
-        if (max_shareholder_count
-                and shareholder_count > max_shareholder_count):
+        if (max_shareholder_count and
+                shareholder_count > max_shareholder_count):
             error_message = self.message.format(
                 **dict(count=shareholder_count,
                        max_shareholders=max_shareholder_count))
@@ -84,6 +88,9 @@ class ShareholderCreateMaxCountValidator(BaseCompanyValidator):
         shareholders_feature = plan.get('features', {}).get('shareholders', {})
         max_shareholders = shareholders_feature.get('max', None)
         if max_shareholders is not None:
+            if company_shareholders + 1 > max_shareholders:
+                logger.warning('cannot create more shareholders acc to subscr.'
+                               ' plan.', extra={'plan': plan})
             validator = MaxValueValidator(max_shareholders)
             return validator(company_shareholders + 1)
 
