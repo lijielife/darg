@@ -41,5 +41,6 @@ RAVEN_CONFIG = {
 
 try:
     from .dev_local import *
+    print "using dev_local settings"
 except ImportError:
-    pass
+    print "dev_local settings not present or broken"
