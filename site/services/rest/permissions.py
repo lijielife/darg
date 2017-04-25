@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework import permissions
 from utils.session import get_company_from_request
 
-logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class SafeMethodsOnlyPermission(permissions.BasePermission):
