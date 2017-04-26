@@ -1,33 +1,30 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os
 import copy
-
-from django.conf import settings
-from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse, NoReverseMatch, resolve
-from django.http import Http404
-from django.test import TestCase, Client, modify_settings, RequestFactory
-from django.utils.translation import gettext as _
+import os
 
 import mock
-
+from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.core.urlresolvers import NoReverseMatch, resolve, reverse
+from django.http import Http404
+from django.test import Client, RequestFactory, TestCase, modify_settings
+from django.utils.translation import gettext as _
 from djstripe import settings as djstripe_settings
 from djstripe.models import Invoice
 from model_mommy import mommy, random_gen
 from stripe import StripeError
 from two_factor.admin import AdminSiteOTPRequiredMixin
 
-from shareholder.models import Company
-from project.generators import (
-    CompanyGenerator, SecurityGenerator,
-    OperatorGenerator, DEFAULT_TEST_DATA, UserGenerator)
+from company.views import (AccountView, ChangeCardView, ChangePlanView,
+                           ConfirmFormView, InvoiceDetailView, SubscribeView,
+                           SubscriptionsListView, SyncHistoryView)
+from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
+                                OperatorGenerator, SecurityGenerator,
+                                UserGenerator)
 from project.tests.mixins import StripeTestCaseMixin, SubscriptionTestMixin
-
-from ..views import (SubscriptionsListView, AccountView, ChangeCardView,
-                     ConfirmFormView, ChangePlanView, SyncHistoryView,
-                     SubscribeView, InvoiceDetailView)
+from shareholder.models import Company
 
 
 class CompanyAdminDetailViewTestCase(TestCase):
@@ -393,9 +390,10 @@ class ChangePlanViewTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
 
             with mock.patch('company.views.PRORATION_POLICY_FOR_UPGRADES',
                             return_value=True):
-                plans = copy.deepcopy(settings.DJSTRIPE_PLANS)
-                plans['test']['price'] = 1
-                with self.settings(DJSTRIPE_PLANS=plans):
+                plans = copy.deepcopy(djstripe_settings.PLAN_LIST)
+                plans[0]['price'] = 1
+                with mock.patch('company.views.PLAN_LIST', return_value=plans) as plan_mock:
+                    plan_mock.__iter__.return_value = plans
                     self.view.post(req)
                     mock_sub.assert_called_with('test', prorate=True)
 
