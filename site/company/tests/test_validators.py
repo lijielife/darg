@@ -1,4 +1,4 @@
-from copy import copy
+import copy
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -133,7 +133,7 @@ class ShareholderCountPlanValidatorTestCase(TestCase):
 
         self.assertIsNone(self.validator(plan_name))
 
-        MODIFIED_DJSTRIPE_PLANS = copy(settings.DJSTRIPE_PLANS)
+        MODIFIED_DJSTRIPE_PLANS = copy.deepcopy(settings.DJSTRIPE_PLANS
         MODIFIED_DJSTRIPE_PLANS[plan_name]['features']['shareholders'] = {
             'max': 1
         }
@@ -170,7 +170,7 @@ class SecurityCountPlanValidatorTestCase(TestCase):
 
         self.assertIsNone(self.validator(plan_name))
 
-        MODIFIED_DJSTRIPE_PLANS = copy(settings.DJSTRIPE_PLANS)
+        MODIFIED_DJSTRIPE_PLANS = copy.deepcopy(settings.DJSTRIPE_PLANS)
         MODIFIED_DJSTRIPE_PLANS[plan_name]['features']['securities'] = {
             'max': 1
         }
@@ -212,7 +212,7 @@ class ShareholderCreateMaxCountValidatorTestCase(StripeTestCaseMixin,
 
         plan_name = self.validator.company.get_current_subscription_plan()
 
-        MODIFIED_DJSTRIPE_PLANS = copy(settings.DJSTRIPE_PLANS)
+        MODIFIED_DJSTRIPE_PLANS = copy.deepcopy(settings.DJSTRIPE_PLANS)
         MODIFIED_DJSTRIPE_PLANS[plan_name]['features']['shareholders'] = {
             'max': 1
         }
@@ -247,7 +247,7 @@ class SecurityCreateMaxCountValidatorTestCase(StripeTestCaseMixin,
 
         plan_name = self.validator.company.get_current_subscription_plan()
 
-        MODIFIED_DJSTRIPE_PLANS = copy(settings.DJSTRIPE_PLANS)
+        MODIFIED_DJSTRIPE_PLANS = copy.deepcopy(settings.DJSTRIPE_PLANS)
         MODIFIED_DJSTRIPE_PLANS[plan_name]['features']['securities'] = {
             'max': 1
         }

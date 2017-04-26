@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import copy
 import datetime
 import logging
 import math
@@ -262,7 +263,7 @@ class CompanyTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
         self.assertTrue(
             self.company.validate_plan('test', include_errors=False))
 
-        plans = settings.DJSTRIPE_PLANS.copy()
+        plans = copy.deepcopy(settings.DJSTRIPE_PLANS)
         plans['test']['validators'] = [
             'company.validators.features.ShareholderCountPlanValidator'
         ]
@@ -296,7 +297,7 @@ class CompanyTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
         # add company subscription
         self.add_subscription(self.company)
 
-        plans = settings.DJSTRIPE_PLANS.copy()
+        plans = copy.deepcopy(settings.DJSTRIPE_PLANS)
         plans['test']['features']['shareholders']['max'] = 1
         plans['test']['features']['shareholders']['validators']['create'] = [
             'company.validators.features.ShareholderCreateMaxCountValidator'

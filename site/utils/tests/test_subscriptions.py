@@ -1,3 +1,6 @@
+# coding=utf-8
+
+import copy
 
 from django.core.urlresolvers import reverse, resolve
 from django.test import TestCase, RequestFactory
@@ -37,7 +40,7 @@ class SubsciptionUtilsTestCase(StripeTestCaseMixin, TestCase):
 
         from django.conf import settings
 
-        plans = settings.DJSTRIPE_PLANS.copy()
+        plans = copy.deepcopy(settings.DJSTRIPE_PLANS)
         plans['test']['features']['shareholders']['price'] = 10
 
         with self.settings(DJSTRIPE_PLANS=plans):
@@ -74,7 +77,7 @@ class SubsciptionUtilsTestCase(StripeTestCaseMixin, TestCase):
 
         from django.conf import settings
 
-        plans = settings.DJSTRIPE_PLANS.copy()
+        plans = copy.deepcopy(settings.DJSTRIPE_PLANS)
         plans['test']['features']['securities']['price'] = 20
 
         with self.settings(DJSTRIPE_PLANS=plans):

@@ -1,3 +1,6 @@
+# coding=utf-8
+
+import copy
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
@@ -85,7 +88,7 @@ class HasSubscriptionPermissionTestCase(StripeTestCaseMixin,
 
         view.subscription_features = ['shareholders']
 
-        plans = settings.DJSTRIPE_PLANS.copy()
+        plans = copy.deepcopy(settings.DJSTRIPE_PLANS)
         plans['test']['features']['shareholders'] = {}
         with self.settings(DJSTRIPE_PLANS=plans):
             self.assertTrue(self.permission.has_permission(req, view))
