@@ -13,7 +13,7 @@
         <hr />
       {% endifchanged %}
       <p>
-        <a href="{% url 'statement_download_pdf' object.pk %}">
+        <a href="{{ object.get_pdf_download_url }}">
           {{ object.report.report_date }}
         </a>
       </p>

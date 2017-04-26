@@ -3,6 +3,7 @@
 
 from django.core.urlresolvers import reverse
 from django.test import Client, TestCase
+from django.utils import timezone
 
 from project.generators import (OperatorGenerator, OptionTransactionGenerator,
                                 PositionGenerator, ShareholderGenerator)
@@ -82,3 +83,23 @@ class OptionTransactionViewTestCase(BaseViewTestCase):
                               kwargs={'pk': self.optiontransaction2.pk}))
         self.assertEqual(res.status_code, 302)  # redirect to login
         self.assertIn('login', res.url)
+
+
+class StatementListViewTestCase(BaseViewTestCase):
+
+    def test_get(self):
+        """ shareholder can view list of statements for him """
+        shareholder = ShareholderGenerator().generate()
+        PositionGenerator().generate(buyer=shareholder, seller=None, count=100)
+        company = shareholder.company
+        self.add_subscription(company)
+        report = company.shareholderstatementreport_set.create(
+            report_date=timezone.now())
+        report.generate_statements()
+
+        response = self.client.get(reverse('statements'))
+        self.assertEqual(response.status_code, 302)
+
+        self.client.force_login(shareholder.user)
+        response = self.client.get(reverse('statements'))
+        self.assertEqual(response.status_code, 200)
