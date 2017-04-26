@@ -149,7 +149,7 @@ class AccountViewTestCase(StripeTestCaseMixin, TestCase):
         operator = OperatorGenerator().generate()
         customer = operator.company.get_customer()
         plans = []
-        payment_plans = settings.DJSTRIPE_PLANS
+        payment_plans = settings.DJSTRIPE_PLANS.copy()
         for plan in payment_plans:
             payment_plans[plan]['plan'] = plan
             plans.append(payment_plans[plan])
@@ -392,7 +392,7 @@ class ChangePlanViewTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
 
             with mock.patch('company.views.PRORATION_POLICY_FOR_UPGRADES',
                             return_value=True):
-                plans = settings.DJSTRIPE_PLANS
+                plans = settings.DJSTRIPE_PLANS.copy()
                 plans['test']['price'] = 1
                 with self.settings(DJSTRIPE_PLANS=plans):
                     self.view.post(req)
@@ -460,7 +460,7 @@ class SubscribeViewTestCase(StripeTestCaseMixin, TestCase):
         customer = company.get_customer()
 
         # FIXME: somehow, settings can be modified
-        plans = settings.DJSTRIPE_PLANS
+        plans = settings.DJSTRIPE_PLANS.copy()
         if 'unsubscribable' in plans['test']:
             del plans['test']['unsubscribable']
         mock_get_context_data.return_value = dict(
