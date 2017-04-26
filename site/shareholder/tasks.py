@@ -262,7 +262,8 @@ def send_statement_report_operator_notify():
 @app.task
 def generate_statements_report():
     """
-    generate shareholder statement report and statements
+    generate shareholder statement report and statements for companies with
+    statement sending date set to today
     """
     today = now().date()
     company_qs = Company.objects.filter(is_statement_sending_enabled=True,
