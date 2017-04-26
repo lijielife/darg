@@ -133,7 +133,7 @@ class ShareholderCountPlanValidatorTestCase(TestCase):
 
         self.assertIsNone(self.validator(plan_name))
 
-        MODIFIED_DJSTRIPE_PLANS = copy.deepcopy(settings.DJSTRIPE_PLANS
+        MODIFIED_DJSTRIPE_PLANS = copy.deepcopy(settings.DJSTRIPE_PLANS)
         MODIFIED_DJSTRIPE_PLANS[plan_name]['features']['shareholders'] = {
             'max': 1
         }
