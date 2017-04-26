@@ -1,7 +1,8 @@
+from copy import copy
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from model_mommy import random_gen
 
@@ -132,7 +133,7 @@ class ShareholderCountPlanValidatorTestCase(TestCase):
 
         self.assertIsNone(self.validator(plan_name))
 
-        MODIFIED_DJSTRIPE_PLANS = settings.DJSTRIPE_PLANS
+        MODIFIED_DJSTRIPE_PLANS = copy(settings.DJSTRIPE_PLANS)
         MODIFIED_DJSTRIPE_PLANS[plan_name]['features']['shareholders'] = {
             'max': 1
         }
@@ -169,7 +170,7 @@ class SecurityCountPlanValidatorTestCase(TestCase):
 
         self.assertIsNone(self.validator(plan_name))
 
-        MODIFIED_DJSTRIPE_PLANS = settings.DJSTRIPE_PLANS
+        MODIFIED_DJSTRIPE_PLANS = copy(settings.DJSTRIPE_PLANS)
         MODIFIED_DJSTRIPE_PLANS[plan_name]['features']['securities'] = {
             'max': 1
         }
@@ -199,6 +200,7 @@ class ShareholderCreateMaxCountValidatorTestCase(StripeTestCaseMixin,
         company = CompanyGenerator().generate()
         self.validator = ShareholderCreateMaxCountValidator(company)
 
+    @override_settings()
     def test_call(self):
 
         self.assertIsNone(self.validator())
@@ -210,18 +212,19 @@ class ShareholderCreateMaxCountValidatorTestCase(StripeTestCaseMixin,
 
         plan_name = self.validator.company.get_current_subscription_plan()
 
-        MODIFIED_DJSTRIPE_PLANS = settings.DJSTRIPE_PLANS
+        MODIFIED_DJSTRIPE_PLANS = copy(settings.DJSTRIPE_PLANS)
         MODIFIED_DJSTRIPE_PLANS[plan_name]['features']['shareholders'] = {
             'max': 1
         }
 
-        self.assertIsNone(self.validator())
+        with self.settings(DJSTRIPE_PLANS=MODIFIED_DJSTRIPE_PLANS):
+            self.assertIsNone(self.validator())
 
-        # add shareholder
-        ShareholderGenerator().generate(company=self.validator.company)
+            # add shareholder
+            ShareholderGenerator().generate(company=self.validator.company)
 
-        with self.assertRaises(ValidationError):
-            self.validator()
+            with self.assertRaises(ValidationError):
+                self.validator()
 
 
 class SecurityCreateMaxCountValidatorTestCase(StripeTestCaseMixin,
@@ -244,7 +247,7 @@ class SecurityCreateMaxCountValidatorTestCase(StripeTestCaseMixin,
 
         plan_name = self.validator.company.get_current_subscription_plan()
 
-        MODIFIED_DJSTRIPE_PLANS = settings.DJSTRIPE_PLANS
+        MODIFIED_DJSTRIPE_PLANS = copy(settings.DJSTRIPE_PLANS)
         MODIFIED_DJSTRIPE_PLANS[plan_name]['features']['securities'] = {
             'max': 1
         }

@@ -95,11 +95,9 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                 start.click_open_add_shareholder()
                 start.wait_until_modal_opened('addShareholder')
                 start.add_shareholder(user)
-                self._screenshot()
                 start.click_save_add_shareholder()
                 time.sleep(3)
                 start.is_no_errors_displayed()
-                self._screenshot()
                 start.close_modal('addShareholder')
 
                 self.assertEqual(user.shareholder_set.filter(
