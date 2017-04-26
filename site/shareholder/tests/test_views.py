@@ -103,3 +103,29 @@ class StatementListViewTestCase(BaseViewTestCase):
         self.client.force_login(shareholder.user)
         response = self.client.get(reverse('statements'))
         self.assertEqual(response.status_code, 200)
+
+
+class StatementReportViewTestCase(BaseViewTestCase):
+
+    def test_get(self):
+        """ shareholder can view list of statements for him """
+        shareholder = ShareholderGenerator().generate()
+        PositionGenerator().generate(buyer=shareholder, seller=None, count=100)
+        company = shareholder.company
+        operator = OperatorGenerator().generate(company=company)
+        self.add_subscription(company)
+        report = company.shareholderstatementreport_set.create(
+            report_date=timezone.now())
+        report.generate_statements()
+
+        response = self.client.get(reverse('statement_report',
+                                   kwargs={'pk': report.pk}))
+        self.assertEqual(response.status_code, 302)
+
+        self.client.force_login(operator.user)
+        response = self.client.get(reverse('statement_report',
+                                   kwargs={'pk': report.pk}))
+        self.assertEqual(response.status_code, 200)
+        statement = shareholder.user.shareholderstatement_set.first()
+        self.assertIn(statement.get_pdf_download_url(),
+                      response.content.decode('utf-8'))

@@ -24,6 +24,7 @@
       <div class="td" title="{% trans 'Statement letter was sent to shareholder at' %}">
         {% trans "Letter" %}
       </div>
+      <div class="td"></div>
     </div>
 
     {% for statement in object.shareholderstatement_set.all %}
@@ -33,6 +34,9 @@
         <div class="td">{{ statement.email_opened_at|date:"SHORT_DATETIME_FORMAT" }}</div>
         <div class="td">{{ statement.pdf_downloaded_at|date:"SHORT_DATETIME_FORMAT" }}</div>
         <div class="td">{{ statement.letter_sent_at|date:"SHORT_DATETIME_FORMAT" }}</div>
+        <div class="td order-6 flex-inline flex-center">
+          <a href="{{ statement.get_pdf_download_url }}" target="_blank"><span class="el-icon-download-alt"></span></a>
+        </div>
       </div>
     {% empty %}
       <p class="note">{% trans "No statements found." %}</p>
