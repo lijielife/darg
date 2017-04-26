@@ -252,10 +252,11 @@ class SecurityCreateMaxCountValidatorTestCase(StripeTestCaseMixin,
             'max': 1
         }
 
-        self.assertIsNone(self.validator())
+        with self.settings(DJSTRIPE_PLANS=MODIFIED_DJSTRIPE_PLANS):
+            self.assertIsNone(self.validator())
 
-        # add security
-        SecurityGenerator().generate(company=self.validator.company)
+            # add security
+            SecurityGenerator().generate(company=self.validator.company)
 
-        with self.assertRaises(ValidationError):
-            self.validator()
+            with self.assertRaises(ValidationError):
+                self.validator()
