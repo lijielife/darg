@@ -130,7 +130,11 @@ class StatementDownloadPDFView(AuthTokenSingleViewMixin, DetailView):
 
     def get_queryset(self):
         # TODO: consider admin/superusers
-        return self.request.user.shareholderstatement_set.all()
+        user = self.request.user
+        shareholder_statements = user.shareholderstatement_set.all()
+        operator_statements = ShareholderStatement.objects.filter(
+            report__company__operator__user=user)
+        return shareholder_statements | operator_statements
 
     def get_object(self, queryset=None):
 
@@ -151,16 +155,19 @@ class StatementDownloadPDFView(AuthTokenSingleViewMixin, DetailView):
             # Get the single item from the filtered queryset
             obj = queryset.get()
         except queryset.model.DoesNotExist:
-            self.raise_404_error()
+            self.raise_404_error('obj not found')
 
         # check all stored parameters in data
+        operators_pks = obj.report.company.operator_set.all().values_list(
+            'user__pk', flat=True)
         if not data.get('company_pk') == obj.report.company_id:
-            self.raise_404_error()
+            self.raise_404_error('company mismatch')
         elif not data.get('date') == str(obj.report.report_date):
-            self.raise_404_error()
-        elif not data.get('user_pk') == obj.user_id:
-            self.raise_404_error()
-        # FIXME: check for request.user as well? (consider admin/superusers)
+            self.raise_404_error('date mismatch')
+        elif (data.get('user_pk') != obj.user_id and
+              self.request.user.pk not in operators_pks and
+              self.request.user.is_superuser is not True):
+            self.raise_404_error('user mismatch')
 
         return obj
 

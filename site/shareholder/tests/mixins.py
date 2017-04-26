@@ -1,6 +1,10 @@
 
 from django.db.models import ForeignKey
+from django.utils import timezone
 from model_mommy import mommy, random_gen
+
+from project.generators import (OperatorGenerator, PositionGenerator,
+                                ShareholderGenerator)
 
 
 class AddressTestMixin(object):  # pragma: nocover
@@ -24,3 +28,19 @@ class AddressTestMixin(object):  # pragma: nocover
 
         if save:
             instance.save()
+
+
+class StatementTestMixin(object):
+
+    def setUp(self):
+        super(StatementTestMixin, self).setUp()
+        self.shareholder = ShareholderGenerator().generate()
+        PositionGenerator().generate(
+            buyer=self.shareholder, seller=None, count=100)
+        self.company = self.shareholder.company
+        self.add_subscription(self.company)
+        self.report = self.company.shareholderstatementreport_set.create(
+            report_date=timezone.now())
+        self.report.generate_statements()
+        self.operator = OperatorGenerator().generate(company=self.company)
+        self.statement = self.shareholder.user.shareholderstatement_set.first()

@@ -8,6 +8,7 @@ from django.utils import timezone
 from project.generators import (OperatorGenerator, OptionTransactionGenerator,
                                 PositionGenerator, ShareholderGenerator)
 from project.tests.mixins import StripeTestCaseMixin, SubscriptionTestMixin
+from shareholder.tests.mixins import StatementTestMixin
 
 
 class BaseViewTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
@@ -85,47 +86,49 @@ class OptionTransactionViewTestCase(BaseViewTestCase):
         self.assertIn('login', res.url)
 
 
-class StatementListViewTestCase(BaseViewTestCase):
+# ----- STATEMENT VIEW TESTS
+class StatementListViewTestCase(StatementTestMixin, BaseViewTestCase):
 
     def test_get(self):
         """ shareholder can view list of statements for him """
-        shareholder = ShareholderGenerator().generate()
-        PositionGenerator().generate(buyer=shareholder, seller=None, count=100)
-        company = shareholder.company
-        self.add_subscription(company)
-        report = company.shareholderstatementreport_set.create(
-            report_date=timezone.now())
-        report.generate_statements()
 
         response = self.client.get(reverse('statements'))
         self.assertEqual(response.status_code, 302)
 
-        self.client.force_login(shareholder.user)
+        self.client.force_login(self.shareholder.user)
         response = self.client.get(reverse('statements'))
         self.assertEqual(response.status_code, 200)
 
 
-class StatementReportViewTestCase(BaseViewTestCase):
+class StatementReportViewTestCase(StatementTestMixin, BaseViewTestCase):
 
     def test_get(self):
         """ shareholder can view list of statements for him """
-        shareholder = ShareholderGenerator().generate()
-        PositionGenerator().generate(buyer=shareholder, seller=None, count=100)
-        company = shareholder.company
-        operator = OperatorGenerator().generate(company=company)
-        self.add_subscription(company)
-        report = company.shareholderstatementreport_set.create(
-            report_date=timezone.now())
-        report.generate_statements()
 
         response = self.client.get(reverse('statement_report',
-                                   kwargs={'pk': report.pk}))
+                                   kwargs={'pk': self.report.pk}))
         self.assertEqual(response.status_code, 302)
 
-        self.client.force_login(operator.user)
+        self.client.force_login(self.operator.user)
         response = self.client.get(reverse('statement_report',
-                                   kwargs={'pk': report.pk}))
+                                   kwargs={'pk': self.report.pk}))
         self.assertEqual(response.status_code, 200)
-        statement = shareholder.user.shareholderstatement_set.first()
-        self.assertIn(statement.get_pdf_download_url(),
+        self.assertIn(self.statement.get_pdf_download_url(),
                       response.content.decode('utf-8'))
+
+
+class StatementDownloadPDFViewTestCase(StatementTestMixin, BaseViewTestCase):
+
+    def test_get(self):
+        """ shareholder can view list of statements for him """
+
+        response = self.client.get(self.statement.get_pdf_download_url())
+        self.assertEqual(response.status_code, 302)
+
+        self.client.force_login(self.shareholder.user)
+        response = self.client.get(self.statement.get_pdf_download_url())
+        self.assertEqual(response.status_code, 200)
+
+        self.client.force_login(self.operator.user)
+        response = self.client.get(self.statement.get_pdf_download_url())
+        self.assertEqual(response.status_code, 200)
