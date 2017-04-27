@@ -63,6 +63,7 @@ MAILING_TYPES = [
 ]
 
 DISPO_SHAREHOLDER_TAG = 'dispo_shareholder'
+TRANSFER_SHAREHOLDER_TAG = 'transfer_shareholder'
 
 logger = logging.getLogger(__name__)
 
@@ -357,6 +358,14 @@ class Company(AddressModelMixin, models.Model):
         else:
             return 1
 
+    def get_logo_url(self):
+        """ return url for logo """
+        if not self.logo:
+            return
+
+        kwargs = {'crop': 'center', 'quality': 99, 'format': "PNG"}
+        return get_thumbnail(self.logo.file, 'x80', **kwargs).url
+
     def get_operators(self):
         return self.operator_set.all().distinct()
 
@@ -521,13 +530,14 @@ class Company(AddressModelMixin, models.Model):
 
         return val
 
-    def get_logo_url(self):
-        """ return url for logo """
-        if not self.logo:
-            return
-
-        kwargs = {'crop': 'center', 'quality': 99, 'format': "PNG"}
-        return get_thumbnail(self.logo.file, 'x80', **kwargs).url
+    def get_transfer_shareholder(self):
+        """ return shareholder which is tagged as transfer shareholder """
+        shareholders = Shareholder.tagged.with_all(
+            TRANSFER_SHAREHOLDER_TAG, self.shareholder_set.all())
+        if shareholders.count() > 1:
+            raise ValueError('too many transfer shareholders for this company')
+        elif shareholders.count() == 1:
+            return shareholders.first()
 
     # --- CHECKS
     def has_management(self):
@@ -1148,6 +1158,20 @@ class Shareholder(TagMixin, models.Model):
             raise ValueError('disposhareholder already set')
 
         self.set_tag(DISPO_SHAREHOLDER_TAG)
+
+    def set_transfer_shareholder(self):
+        """ mark shareholder as transfer shareholder. this one is used
+        when a share register is transfered into this application. in that case
+        this shareholder will serve a s selling party for the initial seeding
+        of shares to each resp. shareholder
+        """
+        if (
+                self.company.get_transfer_shareholder() and
+                self.company.get_transfer_shareholder() != self
+        ):
+            raise ValueError('transfer shareholder already set')
+
+        self.set_tag(TRANSFER_SHAREHOLDER_TAG)
 
     def share_percent(self, date=None, security=None):
         """

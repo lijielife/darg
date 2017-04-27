@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import os
 import csv
 import datetime
 import logging
+import os
 
 from dateutil.parser import parse
 from django.conf import settings
@@ -13,11 +13,11 @@ from django.db.models import Sum
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
 
-from project.generators import (DEFAULT_TEST_DATA, OperatorGenerator,)
+from project.generators import DEFAULT_TEST_DATA, OperatorGenerator
+from shareholder.models import Country  # OptionPlan, OptionTransaction
 from shareholder.models import (DEPOT_TYPES, REGISTRATION_TYPES, Company,
-                                Country, OptionPlan, OptionTransaction,
-                                Position, Security, Shareholder, UserProfile,
-                                )
+                                Position, Security,
+                                Shareholder, UserProfile)
 from utils.geo import COUNTRY_MAP, _get_language_iso_code
 
 SISWARE_CSV_HEADER = [
@@ -134,6 +134,29 @@ class SisWareImportBackend(BaseImportBackend):
                                            }
                                            )
 
+        # transfer all initial shares from company shareholder to shareholder
+        # named "AK Uebertrag" which represents the old deprecated share
+        # register. this shareholder will serve as source for distributing all
+        # shares each resp. shareholder
+        user = self._get_or_create_user(_('TRANSFER-1'), _('TRANSFER'),
+                                        _('SHAREHOLDER'))
+        self.transfer_shareholder = self._get_or_create_shareholder(
+            _('TRANSFER-1'), user)
+        self.transfer_shareholder.set_transfer_shareholder()
+        # transfer shares from corp sh to transfer sh
+        for face_value, count in SECURITIES.iteritems():
+            Position.objects.get_or_create(security=s, count=count,
+                                           seller=self.company_shareholder,
+                                           buyer=self.transfer_shareholder,
+                                           defaults={
+                                               'bought_at': datetime.datetime(
+                                                   2013, 9, 21),
+                                               'depot_type': '1',
+                                               'registration_type': '1',
+                                               'stock_book_id': '1913,001',
+                                               'is_draft': False,
+                                           })
+
         # and a matching operator? take the first one we find inside db
         self.operator = self.company.operator_set.first()
         if not self.operator:
@@ -192,20 +215,6 @@ class SisWareImportBackend(BaseImportBackend):
         check data consistency, company data, total sums to ensure the import is
         fully valid
         """
-        # now that we have all certificates loaded, add the initial transaction
-        # for options
-        for op in self.company.optionplan_set.all():
-            count = -self.company_shareholder.options_count(
-                security=op.security)
-            if count:
-                OptionTransaction.objects.get_or_create(
-                    bought_at=datetime.datetime(2013, 9, 21),
-                    option_plan=op,
-                    count=count,
-                    buyer=self.company_shareholder,
-                    depot_type='1'
-                    )
-
         # first before summarizing
         # create dispo shares (non registered shares placeholder)
         self.dispo_shareholder = self._get_or_create_dispo_shareholder()
@@ -237,7 +246,8 @@ class SisWareImportBackend(BaseImportBackend):
             # the dispo share count and remove the Positions. use `get()` as it
             # should only be one.
             pos = Position.objects.filter(
-                buyer=self.company_shareholder, seller=self.company_shareholder,
+                buyer=self.company_shareholder,
+                seller=self.transfer_shareholder,
                 security=security)
             if pos.exists():
                 pos = pos.get()
@@ -253,7 +263,7 @@ class SisWareImportBackend(BaseImportBackend):
             )
 
     def _get_or_create_shareholder(self, shareholder_number, user,
-                                   mailing_type):
+                                   mailing_type='Unzustellbar'):
         MAILING_TYPE_MAP = {
             'Papier': '1',
             'Unzustellbar': '0',
@@ -302,7 +312,7 @@ class SisWareImportBackend(BaseImportBackend):
         we have no history data, hence, we start with an initial position/
         transaction of the day of the import
         """
-        seller = self.company.get_company_shareholder()
+        seller = self.transfer_shareholder
         registration_type = self._match_registration_type(registration_type)
         depot_type = self._match_depot_type(depot_type)
 
@@ -326,43 +336,47 @@ class SisWareImportBackend(BaseImportBackend):
 
         return position
 
-    def _get_or_create_option_transaction(self, cert_id, bought_at, buyer,
-                                          count, face_value, registration_type,
-                                          certificate_id, stock_book_id,
-                                          depot_type, security):
-        """
-        not used at this time as RFB does not import options
-        """
-        registration_type = self._match_registration_type(registration_type)
-        depot_type = self._match_depot_type(depot_type)
-
-        option_plan, c_ = OptionPlan.objects.get_or_create(
-            company=self.company, security=security,
-            defaults={
-                'title': _('Default OptionPlan for {}').format(security),
-                'count': 0,
-                'exercise_price': 1,
-                'board_approved_at': datetime.datetime(2013, 1, 1),
-            })
-        seller = self.company.get_company_shareholder()
-
-        option, c_ = OptionTransaction.objects.get_or_create(
-            certificate_id=cert_id, bought_at=bought_at[0:10], buyer=buyer,
-            seller=seller, count=count, option_plan=option_plan,
-            defaults={
-                'registration_type': registration_type,
-                'certificate_id': certificate_id,
-                'depot_type': depot_type,
-                'stock_book_id': stock_book_id,
-            })
-
-        return option
+# not used:
+#     def _get_or_create_option_transaction(self, cert_id, bought_at, buyer,
+#                                          count, face_value, registration_type,
+#                                           certificate_id, stock_book_id,
+#                                           depot_type, security):
+#         """
+#         not used at this time as RFB does not import options
+#         """
+#         registration_type = self._match_registration_type(registration_type)
+#         depot_type = self._match_depot_type(depot_type)
+#
+#         option_plan, c_ = OptionPlan.objects.get_or_create(
+#             company=self.company, security=security,
+#             defaults={
+#                 'title': _('Default OptionPlan for {}').format(security),
+#                 'count': 0,
+#                 'exercise_price': 1,
+#                 'board_approved_at': datetime.datetime(2013, 1, 1),
+#             })
+#         seller = self.company.get_company_shareholder()
+#
+#         option, c_ = OptionTransaction.objects.get_or_create(
+#             certificate_id=cert_id, bought_at=bought_at[0:10], buyer=buyer,
+#             seller=seller, count=count, option_plan=option_plan,
+#             defaults={
+#                 'registration_type': registration_type,
+#                 'certificate_id': certificate_id,
+#                 'depot_type': depot_type,
+#                 'stock_book_id': stock_book_id,
+#             })
+#
+#         return option
 
     def _get_or_create_user(self, shareholder_id, first_name, last_name,
-                            legal_type, company, department, title,
-                            salutation, street, street2, pobox,
-                            postal_code, city, country, language, birthday,
-                            c_o, nationality,):
+                            legal_type='Corp', company=None, department=None,
+                            title=None,
+                            salutation=None, street=None, street2=None,
+                            pobox=None,
+                            postal_code=None, city=None, country=None,
+                            language=None, birthday=None,
+                            c_o=None, nationality=None):
         """
         we have no email to identify duplicates and merge then. hence we are
         using the shareholder id to create new users for each shareholder id

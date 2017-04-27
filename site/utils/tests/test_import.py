@@ -67,7 +67,7 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
         # does the company be a seller for each position?
         self.company_shareholder = self.company.get_company_shareholder()
         self.assertEqual(self.backend.row_count,
-                         self.company_shareholder.seller.count() -
+                         self.backend.transfer_shareholder.seller.count() -
                          self.company.get_dispo_shareholder().buyer.count() +
                          1  # deleted but previously imported
                          )
@@ -79,7 +79,7 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
         # does the company be a seller for each position?
         self.company_shareholder = self.company.get_company_shareholder()
         self.assertEqual(self.backend.row_count,
-                         self.company_shareholder.seller.count() -
+                         self.backend.transfer_shareholder.seller.count() -
                          self.company.get_dispo_shareholder().buyer.count() +
                          1  # deleted but previously imported
                          )
@@ -97,9 +97,9 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
                 Shareholder.objects.filter(number=line.split(',')[0]).count(),
                 1)
 
-        # check registration type
+        # check registration type: 3 for corp sh and 3 for transfer sh
         self.assertEqual(
-            Position.objects.filter(registration_type='1').count(), 3)
+            Position.objects.filter(registration_type='1').count(), 6)
 
         # maling_type
         self.assertEqual(
@@ -107,7 +107,7 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
                 mailing_type__isnull=True).exists(), False)
         self.assertEqual(
             self.company.shareholder_set.filter(mailing_type='0').count(),
-            1 + 1)  # + 1 dispo sh
+            3)  # dispo sh, corp sh, transfer sh
 
         # cuspip
         self.assertEqual(
@@ -121,8 +121,8 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
         # positions
         self.assertEqual(
             Position.objects.filter(depot_type__isnull=True).count(), 0)
-        #  10 regular + 3 dispo sh + 3 initial positions = 16
-        self.assertEqual(Position.objects.filter(depot_type='1').count(), 15)
+        #  10 regular + 3 dispo sh + 3 initial positions + 3 transfer sh = 19
+        self.assertEqual(Position.objects.filter(depot_type='1').count(), 19)
         self.assertEqual(Position.objects.filter(depot_type='2').count(), 1)
         self.assertEqual(Position.objects.filter(depot_type='0').count(), 8)
         self.assertEqual(
@@ -209,7 +209,8 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
 
         self.backend._init_import(self.company.pk)
         self.assertEqual(self.company.security_set.count(), 3)
-        self.assertEqual(self.company.shareholder_set.count(), 1)
+        # corp sh and transfer shareholder
+        self.assertEqual(self.company.shareholder_set.count(), 2)
         self.assertEqual(self.company.operator_set.count(), 1)
 
     def test_match_depot_type(self):
