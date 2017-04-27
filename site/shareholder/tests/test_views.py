@@ -2,13 +2,17 @@
 # -*- coding: utf-8 -*-
 
 from django.core.urlresolvers import reverse
-from django.test import Client, TestCase
-from django.utils import timezone
+from django.test import Client, TestCase, RequestFactory
+from django.utils.translation import ugettext as _
+from model_mommy import mommy
 
 from project.generators import (OperatorGenerator, OptionTransactionGenerator,
                                 PositionGenerator, ShareholderGenerator)
 from project.tests.mixins import StripeTestCaseMixin, SubscriptionTestMixin
+from shareholder.models import ShareholderStatement, ShareholderStatementReport
 from shareholder.tests.mixins import StatementTestMixin
+from shareholder.views import ShareholderView
+from utils.session import add_company_to_session
 
 
 class BaseViewTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
@@ -28,26 +32,67 @@ class BaseViewTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
         self.optiontransaction2 = OptionTransactionGenerator().generate(
             buyer=self.shareholder2)
 
+        self.statement_report = mommy.make(
+            ShareholderStatementReport, company=self.shareholder1.company)
+        self.statement = mommy.make(ShareholderStatement,
+                                    user=self.shareholder1.user,
+                                    pdf_file='example.pdf',
+                                    report=self.statement_report)
+
         # add company subscription
         self.add_subscription(self.company)
+
+        self.shareholder1_url = reverse('shareholder',
+                                        kwargs={'pk': self.shareholder1.pk})
 
 
 class ShareholderViewTestCase(BaseViewTestCase):
 
-    def test_view(self):
+    def setUp(self):
+        super(ShareholderViewTestCase, self).setUp()
+
+        self.factory = RequestFactory()
+        self.view = ShareholderView()
+        self.view.kwargs = {'pk': self.shareholder1.pk}
+        request = self.factory.get(self.shareholder1_url)
+        self.view.request = request
+        add_company_to_session(self.client.session, self.shareholder1.company)
+        self.view.request.session = self.client.session
+
+    def test_get_statements(self):
+        """ get statements for shareholder """
+        self.assertEqual(list(self.view._get_statements().get('statements')),
+                         [self.statement])
+
+    def test_permissions(self):
         """
-        test shareholder detail view
+        test shareholder detail access check
         """
         self.client.force_login(self.operator.user)
 
-        res = self.client.get(reverse('shareholder',
-                              kwargs={'pk': self.shareholder1.pk}))
+        res = self.client.get(self.shareholder1_url)
         self.assertEqual(res.status_code, 200)
 
         res = self.client.get(reverse('shareholder',
                               kwargs={'pk': self.shareholder2.pk}))
         self.assertEqual(res.status_code, 302)  # redirect to login
         self.assertIn('login', res.url)
+
+    def test_display(self):
+        """ test display of certain content """
+
+        self.client.force_login(self.operator.user)
+        res = self.client.get(reverse('shareholder',
+                              kwargs={'pk': self.shareholder1.pk}))
+        self.assertEqual(res.status_code, 200)
+        self.assertIn(_('Depot Statements'), res.content.decode('utf-8'))
+
+    def test_enrich_security_objects(self):
+        """ obj get addtional data attached before display """
+        context_dict = self.view._enrich_security_objects()
+        for sec in context_dict['securities']:
+            self.assertIsNotNone(sec.count)
+            self.assertIsNotNone(sec.options_count)
 
 
 class PositionViewTestCase(BaseViewTestCase):

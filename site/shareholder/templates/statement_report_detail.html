@@ -9,38 +9,6 @@
   <h3>{{ object.company }} - {{ object.report_date }}</h3>
   <hr />
 
-  <div class="table">
-    <div class="tr th">
-      <div class="td td-width-2">{% trans "User" %}</div>
-      <div class="td" title="{% trans 'Statement email sent to shareholder at' %}">
-        {% trans "email" %}
-      </div>
-      <div class="td" title="{% trans 'Statement email was opened at' %}">
-        {% trans "Opened" %}
-      </div>
-      <div class="td" title="{% trans 'Statement PDF was downloaded at' %}">
-        {% trans "Downloaded" %}
-      </div>
-      <div class="td" title="{% trans 'Statement letter was sent to shareholder at' %}">
-        {% trans "Letter" %}
-      </div>
-      <div class="td"></div>
-    </div>
-
-    {% for statement in object.shareholderstatement_set.all %}
-      <div class="tr">
-        <div class="td td-width-2">{{ statement.user|user_name }}</div>
-        <div class="td">{{ statement.email_sent_at|date:"SHORT_DATETIME_FORMAT" }}</div>
-        <div class="td">{{ statement.email_opened_at|date:"SHORT_DATETIME_FORMAT" }}</div>
-        <div class="td">{{ statement.pdf_downloaded_at|date:"SHORT_DATETIME_FORMAT" }}</div>
-        <div class="td">{{ statement.letter_sent_at|date:"SHORT_DATETIME_FORMAT" }}</div>
-        <div class="td order-6 flex-inline flex-center">
-          <a href="{{ statement.get_pdf_download_url }}" target="_blank"><span class="el-icon-download-alt"></span></a>
-        </div>
-      </div>
-    {% empty %}
-      <p class="note">{% trans "No statements found." %}</p>
-    {% endfor %}
-  </div>
+  {% include "_statements_table.html" with statements=object.shareholderstatement_set.all %}
 
 {% endblock content %}

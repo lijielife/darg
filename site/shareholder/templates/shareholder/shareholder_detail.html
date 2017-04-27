@@ -321,5 +321,12 @@
 
   <!-- <a class="btn btn-focus btn-danger" title="{% trans "Delete shareholder" %}" >{% trans "Delete shareholder" %}</a> -->
 
+
+  <!-- DEPOT STATEMENTS -->
+  {% if statements %}
+    <h2>{% trans "Depot Statements" %}</h2>
+    {% include "_statements_table.html" %}
+  {% endif %}
+
 </div>
 {% endblock %}

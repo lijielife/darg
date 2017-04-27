@@ -15,6 +15,7 @@ from project.permissions import OperatorPermissionRequiredMixin
 from shareholder.models import (OptionPlan, OptionTransaction, Position,
                                 Shareholder, ShareholderStatement)
 from utils.formatters import human_readable_segments
+from utils.session import get_company_from_request
 
 from .mixins import (AuthTokenSingleViewMixin,
                      ShareholderStatementReportViewMixin)
@@ -55,10 +56,8 @@ class ShareholderView(OperatorPermissionRequiredMixin, DetailView):
     model = Shareholder
     context_object_name = 'shareholder'
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(ShareholderView, self).get_context_data(
-            *args, **kwargs)
-
+    def _enrich_security_objects(self):
+        """ add more attributes to objects for plain display """
         shareholder = self.get_object()
         securities = shareholder.company.security_set.all()
 
@@ -70,9 +69,20 @@ class ShareholderView(OperatorPermissionRequiredMixin, DetailView):
                         shareholder.current_segments(sec))
             sec.count = shareholder.share_count(security=sec) or 0
             sec.options_count = shareholder.options_count(security=sec) or 0
+        return {'securities': securities}
 
-        context.update({
-            'securities': securities})
+    def _get_statements(self):
+        """ return qs with statements for this user for this company """
+        company = get_company_from_request(self.request)
+        statements = self.get_object().user.shareholderstatement_set.filter(
+            report__company=company)
+        return {'statements': statements}
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ShareholderView, self).get_context_data(
+            *args, **kwargs)
+        context.update(self._get_statements())
+        context.update(self._enrich_security_objects())
 
         return context
 
