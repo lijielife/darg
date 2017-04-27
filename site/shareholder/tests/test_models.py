@@ -789,6 +789,141 @@ class ShareholderTestCase(TestCase):
             self.shareholder2.cumulated_face_value(security=self.security),
             Decimal('200.0000'))
 
+    def test_current_segments(self):
+        """
+        get shareholders list of segments owned
+        """
+        positions, shs = ComplexPositionsWithSegmentsGenerator().generate()
+
+        self.assertEqual(
+            shs[1].current_segments(positions[0].security),
+            [u'1000-1200', 1666])
+
+    def test_current_segments_performance(self):
+        """
+        checks speed of method
+        """
+        poss, shs = MassPositionsWithSegmentsGenerator().generate()
+
+        start = timezone.now()
+        shs[0].current_segments(poss[0].security)
+        end = timezone.now()
+        delta = end-start
+        self.assertLess(delta, datetime.timedelta(seconds=4))
+
+    def test_current_options_segments(self):
+        """
+        which segments does a shareholder own via options
+        """
+        positions, shs = ComplexOptionTransactionsWithSegmentsGenerator()\
+            .generate()
+
+        self.assertEqual(
+            shs[1].current_options_segments(positions[0].option_plan.security),
+            [u'1000-1200', 1666])
+
+        # test company shareholder
+        self.assertEqual(
+            shs[0].current_options_segments(positions[0].option_plan.security),
+            [u'1201-1665', u'1667-2000'])
+
+    def test_current_options_segments_same_day(self):
+        """
+        very simple scenario with one CS and one shareholder
+        """
+        company = CompanyGenerator().generate()
+        OperatorGenerator().generate(company=company)
+
+        # intial securities
+        s1, s2 = TwoInitialSecuritiesGenerator().generate(company=company)
+        s1.track_numbers = True
+        s1.number_segments = [u'0001-2000']
+        s1.save()
+
+        # initial company shareholder
+        cs = CompanyShareholderGenerator().generate(
+            company=company, security=s1)
+        s = ShareholderGenerator().generate(company=company)
+        optionplan = OptionPlanGenerator().generate(
+            company=company, number_segments=[u'1000-2000'], security=s1)
+        # initial option grant to CompanyShareholder
+        OptionTransactionGenerator().generate(
+            company=company, security=s1, buyer=cs,
+            number_segments=[u'1000-2000'], option_plan=optionplan)
+        # single shareholder option grant
+        OptionTransactionGenerator().generate(
+            company=company, security=s1, buyer=s, seller=cs,
+            number_segments=[u'1500-2000'], option_plan=optionplan)
+
+        self.assertEqual(
+            s.current_options_segments(s1),
+            [u'1500-2000'])
+
+        # test company shareholder
+        self.assertEqual(
+            cs.current_options_segments(s1),
+            [u'1000-1499'])
+
+    def test_current_options_segments_same_day_single_digit(self):
+        """
+        very simple scenario with one CS and one shareholder
+        """
+        company = CompanyGenerator().generate()
+        OperatorGenerator().generate(company=company)
+
+        # intial securities
+        s1, s2 = TwoInitialSecuritiesGenerator().generate(company=company)
+        s1.track_numbers = True
+        s1.number_segments = [1, 2, 3, 4]
+        s1.save()
+
+        # initial company shareholder
+        cs = CompanyShareholderGenerator().generate(
+            company=company, security=s1)
+        s = ShareholderGenerator().generate(company=company)
+        optionplan = OptionPlanGenerator().generate(
+            company=company, number_segments=[1, 2], security=s1)
+        # initial option grant to CompanyShareholder
+        OptionTransactionGenerator().generate(
+            company=company, security=s1, buyer=cs,
+            number_segments=[1, 2], option_plan=optionplan)
+        # single shareholder option grant
+        OptionTransactionGenerator().generate(
+            company=company, security=s1, buyer=s, seller=cs,
+            number_segments=[1], option_plan=optionplan)
+
+        self.assertEqual(
+            s.current_options_segments(s1),
+            [1])
+
+        # test company shareholder
+        self.assertEqual(
+            cs.current_options_segments(s1),
+            [2])
+
+    def test_get_management_share_count(self):
+        """ get count of shares owned by management """
+        self.shareholder1.is_management = True
+        self.shareholder1.save()
+        self.assertEqual(
+            self.shareholder1.company.get_management_share_count(),
+            self.shareholder1.share_count())
+
+    def test_get_management_cumulated_face_value(self):
+        """ get cumulated face value for all shares owned by management """
+        self.shareholder1.is_management = True
+        self.shareholder1.save()
+        self.assertEqual(
+            self.shareholder1.company.get_management_cumulated_face_value(),
+            self.shareholder1.cumulated_face_value())
+
+    def test_has_management(self):
+        """ flag if company has shareholders marked as management """
+        self.assertFalse(self.shareholder1.company.has_management())
+        self.shareholder1.is_management = True
+        self.shareholder1.save()
+        self.assertTrue(self.shareholder1.company.has_management())
+
     def test_index(self):
 
         response = self.client.get("/", follow=True)
@@ -818,81 +953,86 @@ class ShareholderTestCase(TestCase):
         self.assertFalse(self.shareholder1.has_vested_shares())  # corp shareh
         self.assertFalse(shareholder3.has_vested_shares())       # fresh sh
 
-    def test_validate_gafi(self):
-        """ test the gafi validation """
+    def test_owns_segments(self):
+        """
+        check if shareholder owns this list of segments. returns false on first
+        fail
+        """
+        positions, shs = ComplexPositionsWithSegmentsGenerator().generate()
+        segments = [1000, 1050, 1666, u'1103-1105']
 
-        # --- invalid street
-        shareholder = ShareholderGenerator().generate()
-        # must be in switzerland
-        shareholder.company.country = Country.objects.get(
-            iso_code__iexact='ch')
+        self.assertEqual(
+            shs[1].owns_segments(segments, positions[0].security),
+            (True, [], [u'1000-1200', 1666]))
 
-        shareholder.user.userprofile.street = ''
-        shareholder.user.userprofile.save()
+        segments = [1000, 1050, 1666, 1667]
 
-        self.assertFalse(shareholder.validate_gafi()['is_valid'])
+        self.assertEqual(
+            shs[1].owns_segments(segments, positions[0].security),
+            (False, [1667], [u'1000-1200', 1666]))
 
-        # --- invalid company name
-        shareholder = ShareholderGenerator().generate()
-        # must be in switzerland
-        shareholder.company.country = Country.objects.get(
-            iso_code__iexact='ch')
-        shareholder.user.userprofile.legal_type = 'C'
-        shareholder.user.userprofile.company_name = None
-        shareholder.user.userprofile.save()
+    def test_owns_segments_performance(self):
+        """
+        speed of segment owning check
+        """
+        poss, shs = MassPositionsWithSegmentsGenerator().generate()
 
-        self.assertFalse(shareholder.validate_gafi()['is_valid'])
+        start = timezone.now()
+        shs[0].owns_segments([10000-200000, 350000-800000], poss[0].security)
+        end = timezone.now()
+        delta = end - start
+        if delta > datetime.timedelta(seconds=4):
+            logger.error(
+                'BUILD performance error: test_owns_segments_performance',
+                extra={'delta': delta})
+        self.assertLess(delta, datetime.timedelta(seconds=5))
 
-        # company name not relevant for humans
-        shareholder = ShareholderGenerator().generate()
-        # must be in switzerland
-        shareholder.company.country = Country.objects.get(
-            iso_code__iexact='ch')
-        shareholder.user.userprofile.legal_type = 'H'
-        shareholder.user.userprofile.company_name = None
-        shareholder.user.userprofile.save()
+    def test_owns_segments_rma_performance(self):
+        """
+        speed of segment owning check to meet RMA data
+        """
+        logger.info('preparing test...')
+        operator = OperatorGenerator().generate()
+        sec1, sec2 = TwoInitialSecuritiesGenerator().generate(
+            company=operator.company)
+        sec1.track_numbers = True
+        sec1.number_segments = [u"1-10000000"]
+        sec1.save()
 
-        self.assertTrue(shareholder.validate_gafi()['is_valid'])
+        cs = CompanyShareholderGenerator().generate(
+            security=sec1, company=operator.company)
 
-        # --- valid data
-        shareholder = ShareholderGenerator().generate()
-        # must be in switzerland
-        shareholder.company.country = Country.objects.get(
-            iso_code__iexact='ch')
+        logger.info('data preparation done.')
 
-        self.assertTrue(shareholder.validate_gafi()['is_valid'])
+        start = timezone.now()
+        res = cs.owns_segments([u'1-582912'], sec1)
+        end = timezone.now()
+        delta = end - start
+        self.assertTrue(res[0])
+        if delta > datetime.timedelta(seconds=4):
+            logger.error(
+                'BUILD performance error: test_owns_segments_rma_performance',
+                extra={'delta': delta})
+        self.assertLess(delta, datetime.timedelta(seconds=7))
 
-    def test_validate_gafi_with_missing_userprofile(self):
-        shareholder = ShareholderGenerator().generate()
-        # must be in switzerland
-        shareholder.company.country = Country.objects.get(
-            iso_code__iexact='ch')
+    def test_owns_options_segments(self):
+        """
+        does the user own this options segment?
+        """
+        positions, shs = \
+            ComplexOptionTransactionsWithSegmentsGenerator().generate()
+        security = positions[0].option_plan.security
+        segments = [1000, 1050, 1666, u'1103-1105']
 
-        profile = shareholder.user.userprofile
-        profile.delete()
+        self.assertEqual(
+            shs[1].owns_options_segments(segments, security),
+            (True, [], [u'1000-1200', 1666]))
 
-        shareholder = Shareholder.objects.get(id=shareholder.id)
-        # must be in switzerland
-        shareholder.company.country = Country.objects.get(
-            iso_code__iexact='ch')
+        segments = [1000, 1050, 1666, 1667]
 
-        self.assertFalse(hasattr(shareholder.user, 'userprofile'))
-        self.assertFalse(shareholder.validate_gafi()['is_valid'])
-
-    def test_shareholder_detail(self):
-        """ test detail view for shareholder """
-
-        shareholder = ShareholderGenerator().generate()
-
-        response = self.client.login(
-            username=shareholder.user.username,
-            password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(response)
-
-        response = self.client.get(
-            reverse("shareholder", args=(shareholder.id,)))
-
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            shs[1].owns_options_segments(segments, security),
+            (False, [1667], [u'1000-1200', 1666]))
 
     def test_share_count(self):
         """
@@ -1093,198 +1233,66 @@ class ShareholderTestCase(TestCase):
 
         self.assertEqual(s1.share_value(), Decimal('500000.0000'))
 
-    def test_owns_segments(self):
-        """
-        check if shareholder owns this list of segments. returns false on first
-        fail
-        """
-        positions, shs = ComplexPositionsWithSegmentsGenerator().generate()
-        segments = [1000, 1050, 1666, u'1103-1105']
+    def test_validate_gafi(self):
+        """ test the gafi validation """
 
-        self.assertEqual(
-            shs[1].owns_segments(segments, positions[0].security),
-            (True, [], [u'1000-1200', 1666]))
+        # --- invalid street
+        shareholder = ShareholderGenerator().generate()
+        # must be in switzerland
+        shareholder.company.country = Country.objects.get(
+            iso_code__iexact='ch')
 
-        segments = [1000, 1050, 1666, 1667]
+        shareholder.user.userprofile.street = ''
+        shareholder.user.userprofile.save()
 
-        self.assertEqual(
-            shs[1].owns_segments(segments, positions[0].security),
-            (False, [1667], [u'1000-1200', 1666]))
+        self.assertFalse(shareholder.validate_gafi()['is_valid'])
 
-    def test_owns_segments_performance(self):
-        """
-        speed of segment owning check
-        """
-        poss, shs = MassPositionsWithSegmentsGenerator().generate()
+        # --- invalid company name
+        shareholder = ShareholderGenerator().generate()
+        # must be in switzerland
+        shareholder.company.country = Country.objects.get(
+            iso_code__iexact='ch')
+        shareholder.user.userprofile.legal_type = 'C'
+        shareholder.user.userprofile.company_name = None
+        shareholder.user.userprofile.save()
 
-        start = timezone.now()
-        shs[0].owns_segments([10000-200000, 350000-800000], poss[0].security)
-        end = timezone.now()
-        delta = end - start
-        if delta > datetime.timedelta(seconds=4):
-            logger.error(
-                'BUILD performance error: test_owns_segments_performance',
-                extra={'delta': delta})
-        self.assertLess(delta, datetime.timedelta(seconds=5))
+        self.assertFalse(shareholder.validate_gafi()['is_valid'])
 
-    def test_owns_segments_rma_performance(self):
-        """
-        speed of segment owning check to meet RMA data
-        """
-        logger.info('preparing test...')
-        operator = OperatorGenerator().generate()
-        sec1, sec2 = TwoInitialSecuritiesGenerator().generate(
-            company=operator.company)
-        sec1.track_numbers = True
-        sec1.number_segments = [u"1-10000000"]
-        sec1.save()
+        # company name not relevant for humans
+        shareholder = ShareholderGenerator().generate()
+        # must be in switzerland
+        shareholder.company.country = Country.objects.get(
+            iso_code__iexact='ch')
+        shareholder.user.userprofile.legal_type = 'H'
+        shareholder.user.userprofile.company_name = None
+        shareholder.user.userprofile.save()
 
-        cs = CompanyShareholderGenerator().generate(
-            security=sec1, company=operator.company)
+        self.assertTrue(shareholder.validate_gafi()['is_valid'])
 
-        logger.info('data preparation done.')
+        # --- valid data
+        shareholder = ShareholderGenerator().generate()
+        # must be in switzerland
+        shareholder.company.country = Country.objects.get(
+            iso_code__iexact='ch')
 
-        start = timezone.now()
-        res = cs.owns_segments([u'1-582912'], sec1)
-        end = timezone.now()
-        delta = end - start
-        self.assertTrue(res[0])
-        if delta > datetime.timedelta(seconds=4):
-            logger.error(
-                'BUILD performance error: test_owns_segments_rma_performance',
-                extra={'delta': delta})
-        self.assertLess(delta, datetime.timedelta(seconds=7))
+        self.assertTrue(shareholder.validate_gafi()['is_valid'])
 
-    def test_owns_options_segments(self):
-        """
-        does the user own this options segment?
-        """
-        positions, shs = \
-            ComplexOptionTransactionsWithSegmentsGenerator().generate()
-        security = positions[0].option_plan.security
-        segments = [1000, 1050, 1666, u'1103-1105']
+    def test_validate_gafi_with_missing_userprofile(self):
+        shareholder = ShareholderGenerator().generate()
+        # must be in switzerland
+        shareholder.company.country = Country.objects.get(
+            iso_code__iexact='ch')
 
-        self.assertEqual(
-            shs[1].owns_options_segments(segments, security),
-            (True, [], [u'1000-1200', 1666]))
+        profile = shareholder.user.userprofile
+        profile.delete()
 
-        segments = [1000, 1050, 1666, 1667]
+        shareholder = Shareholder.objects.get(id=shareholder.id)
+        # must be in switzerland
+        shareholder.company.country = Country.objects.get(
+            iso_code__iexact='ch')
 
-        self.assertEqual(
-            shs[1].owns_options_segments(segments, security),
-            (False, [1667], [u'1000-1200', 1666]))
-
-    def test_current_segments(self):
-        """
-        get shareholders list of segments owned
-        """
-        positions, shs = ComplexPositionsWithSegmentsGenerator().generate()
-
-        self.assertEqual(
-            shs[1].current_segments(positions[0].security),
-            [u'1000-1200', 1666])
-
-    def test_current_segments_performance(self):
-        """
-        checks speed of method
-        """
-        poss, shs = MassPositionsWithSegmentsGenerator().generate()
-
-        start = timezone.now()
-        shs[0].current_segments(poss[0].security)
-        end = timezone.now()
-        delta = end-start
-        self.assertLess(delta, datetime.timedelta(seconds=4))
-
-    def test_current_options_segments(self):
-        """
-        which segments does a shareholder own via options
-        """
-        positions, shs = ComplexOptionTransactionsWithSegmentsGenerator()\
-            .generate()
-
-        self.assertEqual(
-            shs[1].current_options_segments(positions[0].option_plan.security),
-            [u'1000-1200', 1666])
-
-        # test company shareholder
-        self.assertEqual(
-            shs[0].current_options_segments(positions[0].option_plan.security),
-            [u'1201-1665', u'1667-2000'])
-
-    def test_current_options_segments_same_day(self):
-        """
-        very simple scenario with one CS and one shareholder
-        """
-        company = CompanyGenerator().generate()
-        OperatorGenerator().generate(company=company)
-
-        # intial securities
-        s1, s2 = TwoInitialSecuritiesGenerator().generate(company=company)
-        s1.track_numbers = True
-        s1.number_segments = [u'0001-2000']
-        s1.save()
-
-        # initial company shareholder
-        cs = CompanyShareholderGenerator().generate(
-            company=company, security=s1)
-        s = ShareholderGenerator().generate(company=company)
-        optionplan = OptionPlanGenerator().generate(
-            company=company, number_segments=[u'1000-2000'], security=s1)
-        # initial option grant to CompanyShareholder
-        OptionTransactionGenerator().generate(
-            company=company, security=s1, buyer=cs,
-            number_segments=[u'1000-2000'], option_plan=optionplan)
-        # single shareholder option grant
-        OptionTransactionGenerator().generate(
-            company=company, security=s1, buyer=s, seller=cs,
-            number_segments=[u'1500-2000'], option_plan=optionplan)
-
-        self.assertEqual(
-            s.current_options_segments(s1),
-            [u'1500-2000'])
-
-        # test company shareholder
-        self.assertEqual(
-            cs.current_options_segments(s1),
-            [u'1000-1499'])
-
-    def test_current_options_segments_same_day_single_digit(self):
-        """
-        very simple scenario with one CS and one shareholder
-        """
-        company = CompanyGenerator().generate()
-        OperatorGenerator().generate(company=company)
-
-        # intial securities
-        s1, s2 = TwoInitialSecuritiesGenerator().generate(company=company)
-        s1.track_numbers = True
-        s1.number_segments = [1, 2, 3, 4]
-        s1.save()
-
-        # initial company shareholder
-        cs = CompanyShareholderGenerator().generate(
-            company=company, security=s1)
-        s = ShareholderGenerator().generate(company=company)
-        optionplan = OptionPlanGenerator().generate(
-            company=company, number_segments=[1, 2], security=s1)
-        # initial option grant to CompanyShareholder
-        OptionTransactionGenerator().generate(
-            company=company, security=s1, buyer=cs,
-            number_segments=[1, 2], option_plan=optionplan)
-        # single shareholder option grant
-        OptionTransactionGenerator().generate(
-            company=company, security=s1, buyer=s, seller=cs,
-            number_segments=[1], option_plan=optionplan)
-
-        self.assertEqual(
-            s.current_options_segments(s1),
-            [1])
-
-        # test company shareholder
-        self.assertEqual(
-            cs.current_options_segments(s1),
-            [2])
+        self.assertFalse(hasattr(shareholder.user, 'userprofile'))
+        self.assertFalse(shareholder.validate_gafi()['is_valid'])
 
     def test_vote_count(self):
         self.assertEqual(self.shareholder1.vote_count(), 400)  # corps sh

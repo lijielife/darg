@@ -124,30 +124,6 @@
 
     <div class="tr th">
       <div class="td">
-        {% trans "total votes count based on existing shares" as msg %} 
-        {% trans "Total Vote Count" %}{% context_help msg %}:
-      </div>
-      <div class="td">
-        {% verbatim %}
-          {{ (company.vote_count | number ) || 'k.A.' }}
-        {% endverbatim %}
-      </div>
-    </div>
-
-    <div class="tr th">
-      <div class="td">
-        {% trans "total votes count effective. excludes unregistered/dispo shares and shares in company ownership" as msg %}
-        {% trans "Total Vote Count Floating" %}{% context_help msg %}:
-      </div>
-      <div class="td">
-        {% verbatim %}
-          {{ (company.vote_count_floating | number) || 'k.A.' }}
-        {% endverbatim %}
-      </div>
-    </div>
-
-    <div class="tr th">
-      <div class="td">
         {% trans "Company Headquarter Country" %}:
       </div>
       <div class="td">
@@ -157,7 +133,8 @@
           <span class="el-icon-pencil"></span>
         </span>
       {% endverbatim %}
-<<<<<<< HEAD
+      </div>
+    </div>
 
     <div class="tr th" ng-show="company.subscription_features.indexOf('is_statement_sending_enabled') > -1">
       <div class="td">{% trans "Is statement sending enabled" %}</div>
@@ -173,7 +150,7 @@
 
     <div class="tr th statement-send-date"
         ng-show="company.is_statement_sending_enabled && company.subscription_features.indexOf('statement_sending_date') > -1">
-      <div class="td">{% trans "Statement seding date" %}:</td>
+      <div class="td">{% trans "Statement seding date" %}:</div>
       <div class="td date-field">
         {% verbatim %}
         <span editable-bsdate="company.statement_sending_date"
@@ -196,7 +173,140 @@
       </div>
     </div>
 
-  </div>
+    
+    <div class="tr th">
+      <div class="td">
+        {% trans "Total count of current shareholders" %}
+      </div>
+      <div class="td">
+        {{company.get_active_shareholders.count }}
+      </div>
+    </div>
+
+    <!-- KPI dispo shareholder -->
+    {% if company.get_dispo_shareholder %}
+    <div class="tr th">
+      <div class="td">
+        {% trans "total count of shares of dispo shareholder" %}
+      </div>
+      <div class="td">
+        {{company.get_dispo_shareholder.share_count }}
+      </div>
+    </div>
+    <div class="tr th">
+      <div class="td">
+        {% trans "total capital of shares of dispo shareholder" %}
+        {% trans "based on face value of all shares assigned to dispo shareholder" as msg %}
+        {% context_help msg %}
+      </div>
+      <div class="td">
+        {{company.get_dispo_shareholder.cumulated_face_value }} CHF
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- management shares -->
+    {% if company.has_management %}
+    <div class="tr th">
+      <div class="td">
+        {% trans "total count of shares of management/vr" %}
+      </div>
+      <div class="td">
+        {{company.get_management_share_count }}
+      </div>
+    </div>
+    <div class="tr th">
+      <div class="td">
+        {% trans "total capital of shares of management/vf" %}
+        {% trans "based on face value of all shares assigned to management/vr" as msg %}
+        {% context_help msg %}
+      </div>
+      <div class="td">
+        {{company.get_management_cumulated_face_value }} CHF
+      </div>
+    </div>
+    {% endif %}
+
+  <!-- company shareholder only: -->
+  {% with shareholder=company.get_company_shareholder %}
+
+    {% trans "total capital of the company. math: all shares existing * face value" as msg %}
+    <div class="tr th">
+      <div class="td">
+      {% trans "Provisioned Capital" %}{% context_help msg %} 
+      </div>
+      <div class="td">
+      {{shareholder.company.get_total_capital }} CHF
+      </div>
+    </div>
+
+    {% if shareholder.company.get_total_share_count %}
+    <div class="tr th">
+      <div class="td">
+        {% trans "Provisioned Share Count" %}
+      </div>
+      <div class="td">
+        {{shareholder.company.get_total_share_count }}
+      </div>
+    </div>
+    {% endif %}
+
+    {% if shareholder.company.get_total_share_count_floating %}
+    <div class="tr th">
+      <div class="td">
+        {% trans "Share Count Floating" %}
+      </div>
+      <div class="td">
+        {{shareholder.company.get_total_share_count_floating }}
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="tr th">
+      <div class="td">
+        {% trans "total votes count based on existing shares" as msg %}
+        {% trans "Total votes count based on shares existing" %}{% context_help msg %}
+      </div>
+      <div class="td">
+        {{shareholder.company.get_total_votes }}
+      </div>
+    </div>
+
+    <div class="tr th">
+      <div class="td">
+        {% trans "total votes count effective. excludes unregistered/dispo shares and shares in company ownership" as msg %}
+        {% trans "Total votes count based on shares floating" %}{% context_help msg %}
+      </div>
+      <div class="td">
+        {{shareholder.company.get_total_votes_floating }}
+	    <div class="note">
+          {% trans "Does include shares used for options. Without options it would be" %}: {{shareholder.company.get_total_votes_eligible }}
+        </div>
+      </div>
+    </div>
+
+    <div class="tr th">
+      <div class="td">
+        {% trans "Total option count based on shares dedicated to options" %}
+      </div>
+      <div class="td">
+        {{shareholder.company.get_total_options }}
+      </div>
+    </div>
+
+    <div class="tr th">
+      <div class="td">
+        {% trans "Total option count based on shares dedicated to options floating" %}
+      </div>
+      <div class="td">
+        {{shareholder.company.get_total_options_floating }}
+      </div>
+    </div>
+
+  {% endwith %}
+
+
+  </div><!-- table end -->
 
   <!-- SECURITIES -->
   <h2>{% trans "Securities" %}</h2>

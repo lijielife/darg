@@ -236,7 +236,7 @@
   <h2>{% trans "Owned Stock" %}</h2>
 
   {% trans "total shares owned" as msg %}
-  <p>{% trans "Count Shares Owned Total" %}{% context_help msg %}: {% verbatim %}{{ shareholder.share_count }}{% endverbatim %}</p>
+  <p>{% trans "Count Shares Owned Total" %}{% context_help msg %}: {% verbatim %}{{ shareholder.share_count|number }}{% endverbatim %}</p>
 
   {% trans "total values of all shares based on face value" as msg %}
   <p class="cumulated-face-value">{% trans "Total face value" %}{% context_help msg %}: {% verbatim %}{{ shareholder.cumulated_face_value | currency }}{% endverbatim %}</p>
@@ -252,35 +252,7 @@
 	</p>
 	{# company shareholder does not have voting rights #}
     <p>{% trans "Voting rights total count" %}: {% verbatim %}{{ shareholder.vote_count|number }}{% endverbatim %}</p>
-    <p>{% trans "Voting rights percent" %}: {% verbatim %}{{ shareholder.vote_percent | percentage:4 }}{% endverbatim %}</p>
-  {% endif %}
-
-  <!-- company shareholder only: -->
-  {% if shareholder.is_company_shareholder %}
-
-    {% trans "total capital of the company. math: all shares existing * face value" as msg %}
-    <p>{% trans "Provisioned Capital" %}{% context_help msg %}: {{shareholder.company.get_total_capital }} CHF</p>
-
-    {% if shareholder.company.get_total_share_count %}
-      <p>{% trans "Provisioned Share Count" %}: {{shareholder.company.get_total_share_count }}</p>
-    {% endif %}
-
-    {% if shareholder.company.get_total_share_count_floating %}
-      <p>{% trans "Share Count Floating" %}: {{shareholder.company.get_total_share_count_floating }}</p>
-    {% endif %}
-
-    {% trans "total votes count based on existing shares" as msg %}
-    <p>{% trans "Total votes count based on shares existing" %}{% context_help msg %}: {{shareholder.company.get_total_votes }}</p>
-
-    <p>
-      {% trans "total votes count effective. excludes unregistered/dispo shares and shares in company ownership" as msg %}
-      {% trans "Total votes count based on shares floating" %}{% context_help msg %}: {{shareholder.company.get_total_votes_floating }}
-	  <div class="note">{% trans "Does include shares used for options. Without options it would be" %}: {{shareholder.company.get_total_votes_eligible }}</div>
-	</p>
-
-    <p>{% trans "Total option count based on shares dedicated to options" %}: {{shareholder.company.get_total_options }}</p>
-    <p>{% trans "Total option count based on shares dedicated to options floating" %}: {{shareholder.company.get_total_options_floating }}</p>
-
+    <p>{% trans "Voting rights percent" %}: {% verbatim %}{{ shareholder.vote_percent | percentage:6 }}{% endverbatim %}</p>
   {% endif %}
 
   <!-- asset ownership table -->
@@ -299,9 +271,7 @@
         <div class="note">{% trans "including shares inside certificate depot" %}</div>
       </div>
       <div class="td">{% trans "options owned" %}</div>
-      {% if security.track_numbers %}
       <div class="td">{% trans "share segments" %}</div>
-      {% endif %}
     </div>
     {% for security in securities %}
     <div class="tr security">
@@ -312,7 +282,7 @@
       {% endif %}
       <div class="td count" data-header="{% trans 'shares owned' %}">{{ security.count }}</div>
       <div class="td count" data-header="{% trans 'options owned' %}">{{ security.options_count }}</div>
-      {% if security.segments %}
+      {% if security.track_numbers %}
       <div class="td number-segments" data-header="{% trans 'share segments' %}" >{{ security.segments }}</div>
       {% endif %}
     </div>

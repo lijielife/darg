@@ -305,6 +305,20 @@ class Company(AddressModelMixin, models.Model):
         elif shareholders.count() == 1:
             return shareholders[0]
 
+    def get_management_share_count(self, security=None, date=None):
+        """ return number of shares owned by management """
+        count = 0
+        for sh in self.shareholder_set.filter(is_management=True):
+            count += sh.share_count(security=security, date=date)
+        return count
+
+    def get_management_cumulated_face_value(self, security=None, date=None):
+        """ return number of shares owned by management """
+        count = 0
+        for sh in self.shareholder_set.filter(is_management=True):
+            count += sh.cumulated_face_value(security=security, date=date)
+        return count
+
     def get_new_certificate_id(self):
         """
         returns new usable certificate id
@@ -516,6 +530,9 @@ class Company(AddressModelMixin, models.Model):
         return get_thumbnail(self.logo.file, 'x80', **kwargs).url
 
     # --- CHECKS
+    def has_management(self):
+        return self.shareholder_set.filter(is_management=True).exists()
+
     def has_printed_certificates(self):
         """ returns bool if at least one certificate was printed/has printed
         date

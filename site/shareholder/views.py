@@ -73,7 +73,11 @@ class ShareholderView(OperatorPermissionRequiredMixin, DetailView):
 
     def _get_statements(self):
         """ return qs with statements for this user for this company """
-        company = get_company_from_request(self.request)
+        #
+        company = get_company_from_request(self.request, fail_silently=True)
+        if not company:
+            return {}
+
         statements = self.get_object().user.shareholderstatement_set.filter(
             report__company=company)
         return {'statements': statements}

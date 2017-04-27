@@ -94,6 +94,18 @@ class ShareholderViewTestCase(BaseViewTestCase):
             self.assertIsNotNone(sec.count)
             self.assertIsNotNone(sec.options_count)
 
+    def test_shareholder_detail(self):
+        """ test detail view access for shareholder user """
+
+        shareholder = ShareholderGenerator().generate()
+
+        response = self.client.force_login(shareholder.user)
+
+        response = self.client.get(
+            reverse("shareholder", args=(shareholder.id,)))
+
+        self.assertEqual(response.status_code, 200)
+
 
 class PositionViewTestCase(BaseViewTestCase):
 
