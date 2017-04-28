@@ -203,6 +203,7 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
             # wait for form to disappear
             p.wait_until_invisible(
                 (By.CSS_SELECTOR, '.mailing-type form'))
+            p.wait_until_js_rendered()
 
             self.buyer.refresh_from_db()
             self.assertEqual(self.buyer.mailing_type, '2')
