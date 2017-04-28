@@ -6,7 +6,14 @@
 {% block content %}
 
   <h2>{% trans "Shareholder Statement Report" %}</h2>
-  <h3>{{ object.company }} - {{ object.report_date }}</h3>
+  <h3>
+    {{ object.company }} - {{ object.report_date }}
+    {% if object.get_pdf_download_url %}
+    <a href="{{ object.get_pdf_download_url }}" target="_blank" title="{% trans "download all statements as a single file" %}">
+      <span class="el-icon-download-alt"></span>
+    </a>
+    {% endif %}
+  </h3>
   <hr />
 
   {% include "_statements_table.html" with statements=object.shareholderstatement_set.all %}

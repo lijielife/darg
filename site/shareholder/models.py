@@ -30,13 +30,14 @@ from django.utils.translation import ugettext as _
 from django_languages import fields as language_fields
 from djstripe.models import Customer as DjStripeCustomer
 from natsort import natsorted
+from PyPDF2 import PdfFileMerger
 from rest_framework.authtoken.models import Token
 from sorl.thumbnail import get_thumbnail
 from tagging.models import Tag
 from tagging.registry import register
 
-from shareholder.validators import ShareRegisterValidator
 from shareholder.mixins import DiscountedTaxByVestingModelMixin
+from shareholder.validators import ShareRegisterValidator
 from utils.formatters import (deflate_segments, flatten_list,
                               human_readable_segments, inflate_segments,
                               string_list_to_json)
@@ -1738,12 +1739,44 @@ class ShareholderStatementReport(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    # file including all statements for easy download
+    pdf_file = models.FilePathField(path=settings.SHAREHOLDER_STATEMENT_ROOT,
+                                    match='.+\.pdf', recursive=True,
+                                    max_length=500, null=True, blank=True)
+
+    SIGNING_SALT = 'shareholder.shareholderstatementreport.pdf_download'
+
     class Meta:
         verbose_name = _('shareholder statement report')
         verbose_name_plural = _('shareholder statement reports')
 
     def __unicode__(self):  # pragma: nocover
         return u'{} - {}'.format(self.company, date_format(self.report_date))
+
+    def get_pdf_download_url(self, absolute=True):
+        """
+        return url to download pdf file
+
+        Keyword arguments:
+        absolute -- get absolute url including domain (default: True)
+        with_auth_token -- append authentication token (default: False)
+        """
+        url = reverse('all_statements_download_pdf')
+        signing_data = dict(
+            pk=self.pk,
+            company_pk=self.company_id,
+            date=str(self.report_date)
+        )
+        file_hash = signing.dumps(signing_data, salt=self.SIGNING_SALT)
+        url += u'?file={}'.format(file_hash)
+        if absolute:
+            url = u'{}://{}{}'.format(
+                (getattr(settings, 'FORCE_SECURE_CONNECTION',
+                         not settings.DEBUG) and 'https' or 'http'),
+                Site.objects.get_current().domain, url)
+        return url
+
+    pdf_download_url = property(get_pdf_download_url)
 
     def get_statement_count(self):
         """
@@ -1790,7 +1823,7 @@ class ShareholderStatementReport(models.Model):
 
     statement_downloaded_count = property(get_statement_downloaded_count)
 
-    def generate_statements(self):
+    def generate_statements(self, send_notify=True):
         """
         generate statements for shareholder users of company,
         then set the statement_sending_date on company to next year
@@ -1806,14 +1839,44 @@ class ShareholderStatementReport(models.Model):
         for user in users:
             statement, created = self._create_shareholder_statement_for_user(
                 user)
-            if created:
+            if created and send_notify:
                 statement.send_email_notification()
+
+        self._create_joint_statements_pdf()
 
         # set new sending date
         if self.company.statement_sending_date:
             self.company.statement_sending_date += relativedelta(
                 year=self.company.statement_sending_date.year + 1)
             self.company.save()
+
+    def _create_joint_statements_pdf(self):
+        """ merge all statement pdf files into a big single one for download """
+        # prepare path and filename
+        path = os.path.join(settings.SHAREHOLDER_STATEMENT_ROOT,
+                            'allinone',
+                            str(self.company_id),
+                            str(self.report_date.year))
+        if not os.path.exists(path):
+            os.makedirs(path)
+        pdf_filename = u'all-statements-{}-{}.pdf'.format(
+            slugify(self.company),
+            self.report_date.strftime('%Y-%m-%d')
+        )
+        pdf_filepath = os.path.join(path, pdf_filename)
+
+        # merge
+        merger = PdfFileMerger()
+        pdfs = [statement.pdf_file for statement in
+                self.shareholderstatement_set.all() if statement.pdf_file]
+        for pdf in pdfs:
+            merger.append(pdf)
+        merger.write(pdf_filepath)
+        merger.close()
+
+        # save to model
+        self.pdf_file = pdf_filepath
+        self.save()
 
     def _get_statement_pdf_path_for_user(self, user):
         """

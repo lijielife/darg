@@ -45,7 +45,8 @@ def company(request, company_id):
     show company detail page
     """
     template = loader.get_template('company.html')
-    company = get_object_or_404(Company, id=int(company_id))
+    company = get_object_or_404(Company.objects.filter(
+        operator__user=request.user), id=int(company_id))
     context = {'company': company}
     return HttpResponse(template.render(context=context, request=request))
 

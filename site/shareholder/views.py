@@ -13,7 +13,8 @@ from sendfile import sendfile
 from company.mixins import SubscriptionViewMixin
 from project.permissions import OperatorPermissionRequiredMixin
 from shareholder.models import (OptionPlan, OptionTransaction, Position,
-                                Shareholder, ShareholderStatement)
+                                Shareholder, ShareholderStatement,
+                                ShareholderStatementReport)
 from utils.formatters import human_readable_segments
 from utils.session import get_company_from_request
 
@@ -179,8 +180,8 @@ class StatementDownloadPDFView(AuthTokenSingleViewMixin, DetailView):
         elif not data.get('date') == str(obj.report.report_date):
             self.raise_404_error('date mismatch')
         elif (data.get('user_pk') != obj.user_id and
-              self.request.user.pk not in operators_pks and
-              self.request.user.is_superuser is not True):
+                self.request.user.pk not in operators_pks and
+                self.request.user.is_superuser is not True):
             self.raise_404_error('user mismatch')
 
         return obj
@@ -201,15 +202,93 @@ class StatementDownloadPDFView(AuthTokenSingleViewMixin, DetailView):
         #     # raise Http404(_('We could not read this file.'))
         #     self.raise_404_error()
 
-        # set download date
-        self.object.pdf_downloaded_at = now()
-        self.object.save()
+        # set download date if user downloaded it
+        if (hasattr(self.object, 'pdf_downloaded_at') and
+                self.request.user == self.object.user):
+            self.object.pdf_downloaded_at = now()
+            self.object.save()
 
         # return FileResponse(content, content_type='application/pdf')
         return sendfile(request, self.object.pdf_file)
 
 
 statement_download_pdf = StatementDownloadPDFView.as_view()
+
+
+class StatementReportDownloadPDFView(AuthTokenSingleViewMixin, DetailView):
+
+    model = ShareholderStatementReport
+    http_method_names = ['get']
+    login_required = True  # see AuthTokenViewMixin
+
+    def raise_404_error(self, message=None):
+        if message is None:
+            message = (_("No %(verbose_name)s found matching the query") %
+                       {'verbose_name': self.model._meta.verbose_name})
+        raise Http404(message)
+
+    def get_queryset(self):
+        # TODO: consider admin/superusers
+        user = self.request.user
+        operator_reports = self.model.objects.filter(
+            company__operator__user=user)
+        return operator_reports
+
+    def get_object(self, queryset=None):
+
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        file_hash = self.request.GET.get('file', '')
+        salt = getattr(self.model, 'SIGNING_SALT', '')
+        try:
+            data = signing.loads(file_hash, salt=salt)
+        except signing.BadSignature:
+            # FIXME: should we reveal that hash is invalid?
+            self.raise_404_error()
+
+        queryset = queryset.filter(pk=data.get('pk'))
+
+        try:
+            # Get the single item from the filtered queryset
+            obj = queryset.get()
+        except queryset.model.DoesNotExist:
+            self.raise_404_error('obj not found')
+
+        # check all stored parameters in data
+        operators_pks = obj.company.operator_set.all().values_list(
+            'user__pk', flat=True)
+        if not data.get('company_pk') == obj.company_id:
+            self.raise_404_error('company mismatch')
+        elif not data.get('date') == str(obj.report_date):
+            self.raise_404_error('date mismatch')
+        elif (self.request.user.pk not in operators_pks and
+                self.request.user.is_superuser is not True):
+            self.raise_404_error('user mismatch')
+
+        return obj
+
+    def get(self, request, *args, **kwargs):
+
+        self.object = self.get_object()
+
+        if not os.path.isfile(self.object.pdf_file):
+            # TODO: how to handle this without outraging the user?
+            self.raise_404_error()
+
+        # try:
+        #     with open(self.object.pdf_file, 'r') as f:
+        #         content = f.read()
+        # except:
+        #     # TODO: proper error handling
+        #     # raise Http404(_('We could not read this file.'))
+        #     self.raise_404_error()
+
+        # return FileResponse(content, content_type='application/pdf')
+        return sendfile(request, self.object.pdf_file)
+
+
+all_statements_download_pdf = StatementReportDownloadPDFView.as_view()
 
 
 class StatementReportListView(ShareholderStatementReportViewMixin,

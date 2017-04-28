@@ -226,6 +226,7 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
                     )
                 )
             # wait for 'link'
+            p.wait_until_js_rendered()
             p.wait_until_visible(
                 (By.CSS_SELECTOR, 'div.birthday span.el-icon-pencil'))
             p.click_to_edit("birthday")

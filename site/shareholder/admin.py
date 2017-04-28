@@ -211,9 +211,10 @@ class ShareholderStatementReportAdmin(admin.ModelAdmin):
     search_fields = ('company__name',)
     readonly_fields = ('statement_count', 'statement_sent_count',
                        'statement_opened_count', 'statement_downloaded_count',
-                       'statement_letter_count', 'created_at', 'updated_at')
+                       'statement_letter_count', 'created_at', 'updated_at',
+                       'pdf_file')
     fieldsets = (
-        ('', {'fields': ('company', 'report_date')}),
+        ('', {'fields': ('company', 'report_date', 'pdf_file')}),
         (_('shareholder statements'), {
             'fields': ('statement_count', 'statement_sent_count',
                        'statement_opened_count', 'statement_downloaded_count',

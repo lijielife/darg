@@ -68,7 +68,11 @@
         </div>
   	{% endif %}
       </li>
-      <!-- <li><a href="" title="">{% trans "Depot Statement per Shareholder" %}</a></li> -->
+      <li>
+        <a href="{% url "statement_reports" %}" title="{% trans "See all depot statements created for shareholders" %}">
+          {% trans "Depot Statements Overview" %}
+        </a>
+      </li>
     </ul>
   </div>
 </div>

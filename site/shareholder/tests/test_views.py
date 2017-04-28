@@ -172,6 +172,9 @@ class StatementReportViewTestCase(StatementTestMixin, BaseViewTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(self.statement.get_pdf_download_url(),
                       response.content.decode('utf-8'))
+        # self.report.get_pdf_download_url inside?
+        self.assertIn('allstatements/download/pdf',
+                      response.content.decode('utf-8'))
 
 
 class StatementDownloadPDFViewTestCase(StatementTestMixin, BaseViewTestCase):
@@ -188,4 +191,22 @@ class StatementDownloadPDFViewTestCase(StatementTestMixin, BaseViewTestCase):
 
         self.client.force_login(self.operator.user)
         response = self.client.get(self.statement.get_pdf_download_url())
+        self.assertEqual(response.status_code, 200)
+
+
+class StatementReportDownloadPDFViewTestCase(StatementTestMixin,
+                                             BaseViewTestCase):
+
+    def test_get(self):
+        """ shareholder can view list of statements for him """
+
+        response = self.client.get(self.report.get_pdf_download_url())
+        self.assertEqual(response.status_code, 302)
+
+        self.client.force_login(self.shareholder.user)
+        response = self.client.get(self.report.get_pdf_download_url())
+        self.assertEqual(response.status_code, 404)
+
+        self.client.force_login(self.operator.user)
+        response = self.client.get(self.report.get_pdf_download_url())
         self.assertEqual(response.status_code, 200)

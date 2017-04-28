@@ -18,7 +18,14 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):  # pragma: no cover
         parser.add_argument('company_pk', nargs='+', type=int)
-        parser.add_argument('shareholder_pk', nargs='+', type=int)
+
+        parser.add_argument(
+            '--shareholder_pk',
+            action='store_true',
+            dest='shareholder_pk',
+            default=False,
+            help='provide single shareholder to generate stmts for',
+        )
 
     def handle(self, *args, **options):
         for pk in options.get('company_pk', []):
@@ -49,4 +56,5 @@ class Command(BaseCommand):
                     user=shareholder.user).delete()
             report._create_shareholder_statement_for_user(shareholder.user)
         else:
-            report.generate_statements()
+            report.shareholderstatement_set.all().delete()
+            report.generate_statements(send_notify=False)

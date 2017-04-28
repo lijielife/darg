@@ -16,7 +16,6 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.core import mail
-from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.test import TestCase, TransactionTestCase, override_settings
 from django.test.client import Client, RequestFactory
@@ -24,7 +23,7 @@ from django.utils import timezone
 from django.utils.encoding import force_text
 from model_mommy import mommy
 
-from project.generators import (DEFAULT_TEST_DATA, BankGenerator,
+from project.generators import (BankGenerator,
                                 CompanyGenerator, CompanyShareholderGenerator,
                                 ComplexOptionTransactionsWithSegmentsGenerator,
                                 ComplexPositionsWithSegmentsGenerator,
@@ -1338,7 +1337,7 @@ class ShareholderStatementReportTestCase(StripeTestCaseMixin,
 
         self.company = CompanyGenerator().generate()
         self.report = mommy.make(ShareholderStatementReport,
-                                 company=self.company)
+                                 company=self.company, pdf_file='test.pdf')
 
     def test_statement_count(self):
         self.assertEqual(self.report.statement_count, 0)
@@ -1386,7 +1385,9 @@ class ShareholderStatementReportTestCase(StripeTestCaseMixin,
 
     @mock.patch(
         'shareholder.models.ShareholderStatement.send_email_notification')
-    def test_generate_statements(self, mock_email_notify):
+    @mock.patch(
+        'shareholder.models.ShareholderStatementReport._create_joint_statements_pdf')  # noqa
+    def test_generate_statements(self, mock_merge_pdfs, mock_email_notify):
         self.assertIsNone(self.company.statement_sending_date)
 
         with mock.patch.object(
@@ -1421,15 +1422,19 @@ class ShareholderStatementReportTestCase(StripeTestCaseMixin,
 
             mommy.make(Shareholder, company=self.company, _quantity=3)
 
-            self.report.generate_statements()
+            self.report.generate_statements(send_notify=False)
             mock_statment_create.assert_called()
-            mock_email_notify.assert_called()
+            mock_email_notify.assert_not_called()
+            mock_merge_pdfs.assert_called()
 
             company = Company.objects.get(pk=self.company.pk)
             self.assertEqual(
                 company.statement_sending_date,
                 (today + relativedelta(year=today.year + 2))
             )
+
+            self.report.generate_statements(send_notify=True)
+            mock_email_notify.assert_called()
 
     @override_settings(SHAREHOLDER_STATEMENT_ROOT=SHAREHOLDER_STATEMENT_ROOT)
     def test_get_statement_pdf_path_for_user(self):
@@ -1440,6 +1445,26 @@ class ShareholderStatementReportTestCase(StripeTestCaseMixin,
         self.assertIn(str(self.report.report_date.year), path)
         self.assertTrue(os.path.exists(path))
         self.assertTrue(os.path.isdir(path))
+
+    @override_settings(SHAREHOLDER_STATEMENT_ROOT=SHAREHOLDER_STATEMENT_ROOT)
+    def test_create_joint_statements_pdf(self):
+        """ merge all pdfs with each other """
+        user = UserGenerator().generate()
+        shareholders = mommy.make(Shareholder, user=user, _quantity=2)
+        PositionGenerator().generate(company=self.company,
+                                     buyer=shareholders[0])
+        statement, created = (
+            self.report._create_shareholder_statement_for_user(user))
+        self.report._create_joint_statements_pdf()
+        self.report.refresh_from_db()
+        self.assertIsNotNone(self.report.pdf_file)
+        self.assertTrue(os.path.isfile(self.report.pdf_file))
+
+        # test recreation
+        os.remove(self.report.pdf_file)
+        filepath = statement.pdf_file
+        statement.delete()
+        os.remove(filepath)
 
     @override_settings(SHAREHOLDER_STATEMENT_ROOT=SHAREHOLDER_STATEMENT_ROOT)
     def test_create_shareholder_statement_for_user(self):
@@ -1515,6 +1540,19 @@ class ShareholderStatementReportTestCase(StripeTestCaseMixin,
 
         # cleanup
         os.remove(tfile.name)
+
+    def test_get_pdf_download_url(self):
+        domain = Site.objects.get_current().domain
+
+        url = self.report.pdf_download_url
+        self.assertIn('file=', url)
+        self.assertIn(domain, url)
+        self.assertNotIn('&token=', url)
+
+        url = self.report.get_pdf_download_url(
+            absolute=False)
+        self.assertIn('?file=', url)
+        self.assertNotIn(domain, url)
 
 
 class ShareholderStatementTestCase(TestCase):

@@ -40,7 +40,7 @@ class StatementTestMixin(object):
         self.company = self.shareholder.company
         self.add_subscription(self.company)
         self.report = self.company.shareholderstatementreport_set.create(
-            report_date=timezone.now())
+            report_date=timezone.now().date())
         self.report.generate_statements()
         self.operator = OperatorGenerator().generate(company=self.company)
         self.statement = self.shareholder.user.shareholderstatement_set.first()
