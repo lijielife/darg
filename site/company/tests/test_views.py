@@ -21,8 +21,8 @@ from company.views import (AccountView, ChangeCardView, ChangePlanView,
                            ConfirmFormView, InvoiceDetailView, SubscribeView,
                            SubscriptionsListView, SyncHistoryView)
 from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
-                                OperatorGenerator, SecurityGenerator,
-                                UserGenerator)
+                                CompanyShareholderGenerator, OperatorGenerator,
+                                SecurityGenerator, UserGenerator)
 from project.tests.mixins import StripeTestCaseMixin, SubscriptionTestMixin
 from shareholder.models import Company
 
@@ -62,6 +62,7 @@ class CompanyDetailViewTestCase(TestCase):
     def test_numbered_shares(self):
 
         company = CompanyGenerator().generate()
+        CompanyShareholderGenerator().generate(company=company)
         SecurityGenerator().generate(
             company=company, track_numbers=True)
         operator = OperatorGenerator().generate(company=company)
