@@ -1,4 +1,4 @@
-{% load i18n shareholder_tags %}
+{% load i18n shareholder_tags thumbnail %}
 <!DOCTYPE html>
 <html>
   <head>
@@ -14,17 +14,23 @@
     </style>
   </head>
   <body>
-    <div id="header_content">
-      <table>
-        <tr>
-          <td>
-            <h1>Das Aktienregister</h1>
-          </td>
-          <td class="pull-right">
-            <h3>{{site.domain}}</h3>
-          </td>
-        </tr>
-      </table>
+    <div id="header_content"> 
+      {% if company.pdf_header_image %}
+        {% thumbnail company.pdf_header_image "1000x200" crop="center" as img %}
+          <img src="file://{{ MEDIA_ROOT }}/../../{{ img.url }}">
+        {% endthumbnail %}
+      {% else %}
+        <table>
+          <tr>
+            <td>
+              <h1>Das Aktienregister</h1>
+            </td>
+            <td class="pull-right">
+              <h3>{{site.domain}}</h3>
+            </td>
+          </tr>
+        </table>
+      {% endif %}
     </div>
 
     <div id="footer_content">
@@ -72,12 +78,13 @@
                 {{ operator.user.get_full_name }}{% if not forloop.last %}, {% endif %}
               {% endfor %}
               <br /><br />
-              {% trans "Your shareholder number:" %}<br />
+              {% trans "Your shareholder number:" %}
               {{ shareholder.number }}
             </td>
           </tr>
           <tr>
-            <td colspan="2" class="pull-right">{{ report_date|date:"DATE_FORMAT" }}</td>
+            <td>&nbsp;</td>
+            <td  class="company">{{ report_date|date:"DATE_FORMAT" }}</td>
           </tr>
         </table>
       </div>
@@ -89,20 +96,20 @@
 
         <p>{% trans "Herewith company" %}</p>
 
-        <p>
-          <span class="indent">{{ shareholder.company.name }}</span>
+        <p class="indent">
+          {{ shareholder.company.name }}
           {% if shareholder.company.has_address %}
             {% if shareholder.company.street %}
-              <span class="indent">{{ shareholder.company.street }}</span>
+              {{ shareholder.company.street }}, 
             {% endif %}
             {% if shareholder.company.street or shareholder.company.city %}
-              <span class="indent">{{ shareholder.company.postal_code }} {{ shareholder.company.city }}</span>
+              {{ shareholder.company.postal_code }} {{ shareholder.company.city }}, 
             {% endif %}
             {% if shareholder.company.province %}
-              <span class="indent">{{ shareholder.company.province }}</span>
+              {{ shareholder.company.province }}, 
             {% endif %}
             {% if shareholder.company.country %}
-              <span class="indent">{{ shareholder.company.country }}</span>
+              {{ shareholder.company.country }}, 
             {% endif %}
           {% endif %}
         </p>
@@ -117,8 +124,6 @@
           {% trans "is the record holder of the following investment(s)" %}:
         </p>
 
-        <div class="break"></div>
-
         {% get_shareholder_assets shareholder report_date as asset_list %}
         {% if asset_list %}
           <p>{% trans "Assets" %}</p>
@@ -126,8 +131,8 @@
             <tr class="head">
               <td>{% trans "Type" %}</td>
               <td>{% trans "Record Date" %}</td>
-              <td>{% trans "Quantity" %}</td>
-              <td>{% trans "Nominal Value" %}</td>
+              <td class="pull-right">{% trans "Quantity" %}</td>
+              <td class="pull-right">{% trans "Nominal Value" %}</td>
             </tr>
             {% for asset in asset_list %}
               <tr class="row {% cycle 'odd' 'even' %}">
@@ -155,8 +160,8 @@
             <tr class="head">
               <td>{% trans "Type" %}</td>
               <td>{% trans "Record Date" %}</td>
-              <td>{% trans "Quantity" %}</td>
-              <td>{% trans "Strike Price" %}</td>
+              <td class="pull-right">{% trans "Quantity" %}</td>
+              <td class="pull-right">{% trans "Strike Price" %}</td>
             </tr>
             {% for option in option_list %}
               <tr class="row {% cycle 'odd' 'even' %}">
@@ -203,20 +208,20 @@ holdings currently value: {{share_value}} in shares and {{options_value}} in opt
 
         <p>{% trans "Herewith company" %}</p>
 
-        <p>
-          <span class="indent">{{ shareholder.company.name }}</span>
+        <p class="indent">
+          {{ shareholder.company.name }}
           {% if shareholder.company.has_address %}
             {% if shareholder.company.street %}
-              <span class="indent">{{ shareholder.company.street }}</span>
+              {{ shareholder.company.street }}, 
             {% endif %}
             {% if shareholder.company.street or shareholder.company.city %}
-              <span class="indent">{{ shareholder.company.postal_code }} {{ shareholder.company.city }}</span>
+              {{ shareholder.company.postal_code }} {{ shareholder.company.city }}, 
             {% endif %}
             {% if shareholder.company.province %}
-              <span class="indent">{{ shareholder.company.province }}</span>
+              {{ shareholder.company.province }}, 
             {% endif %}
             {% if shareholder.company.country %}
-              <span class="indent">{{ shareholder.company.country }}</span>
+              {{ shareholder.company.country }}, 
             {% endif %}
           {% endif %}
         </p>
@@ -235,8 +240,8 @@ holdings currently value: {{share_value}} in shares and {{options_value}} in opt
             <tr class="head">
               <td>{% trans "Type" %}</td>
               <td>{% trans "Record Date" %}</td>
-              <td>{% trans "Quantity" %}</td>
-              <td>{% trans "Nominal Value" %}</td>
+              <td class="pull-right">{% trans "Quantity" %}</td>
+              <td class="pull-right">{% trans "Nominal Value" %}</td>
             </tr>
             {% for asset in asset_list %}
               <tr class="row {% cycle 'odd' 'even' %}">
@@ -263,8 +268,8 @@ holdings currently value: {{share_value}} in shares and {{options_value}} in opt
             <tr class="head">
               <td>{% trans "Type" %}</td>
               <td>{% trans "Record Date" %}</td>
-              <td>{% trans "Quantity" %}</td>
-              <td>{% trans "Strike Price" %}</td>
+              <td class="pull-right">{% trans "Quantity" %}</td>
+              <td class="pull-right">{% trans "Strike Price" %}</td>
             </tr>
             {% for option in option_list %}
               <tr class="row {% cycle 'odd' 'even' %}">
@@ -299,20 +304,20 @@ holdings currently value: {{share_value}} in shares and {{options_value}} in opt
             <td>{% trans "bought at" %}</td>
             <td>{% trans "count" %}</td>
             <td>{% trans "security" %}</td>
-            <td>{% trans "vesting months" %}</td>
+            <td class="pull-right">{% trans "vesting months" %}</td>
             <td>{% trans "vesting expiration date" %}</td>
-            <td>{% trans "discounted tax ratio(%)" %}</td>
-            <td>{% trans "discounted tax value" %}</td>
+            <td class="pull-right">{% trans "discounted tax ratio(%)" %}</td>
+            <td class="pull-right">{% trans "discounted tax value" %}</td>
           </tr>
           {% for position in vested_positions %}
           <tr class="row {% cycle 'odd' 'even' %}">
             <td>{{ position.bought_at}}</td>
             <td>{{ position.count }}</td>
             <td>{{ position.security }}</td>
-            <td>{{ position.vesting_months }}</td>
+            <td class="pull-right">{{ position.vesting_months }}</td>
             <td>{{ position.vesting_expires_at }}</td>
-            <td>{% widthratio position.get_discounted_tax_ratio 1 100 %}%</td>
-            <td>{{ position.get_discounted_tax_value|floatformat:"2" }} CHF</td>
+            <td class="pull-right">{% widthratio position.get_discounted_tax_ratio 1 100 %}%</td>
+            <td class="pull-right">{{ position.get_discounted_tax_value|floatformat:"2" }} CHF</td>
           </tr>
           {% endfor %}
         </table>
@@ -326,20 +331,20 @@ holdings currently value: {{share_value}} in shares and {{options_value}} in opt
             <td>{% trans "bought at" %}</td>
             <td>{% trans "count" %}</td>
             <td>{% trans "security" %}</td>
-            <td>{% trans "vesting months" %}</td>
+            <td class="pull-right">{% trans "vesting months" %}</td>
             <td>{% trans "vesting expiration date" %}</td>
-            <td>{% trans "discounted tax ratio(%)" %}</td>
-            <td>{% trans "discounted tax value" %}</td>
+            <td class="pull-right">{% trans "discounted tax ratio(%)" %}</td>
+            <td class="pull-right">{% trans "discounted tax value" %}</td>
           </tr>
           {% for position in vested_option_positions %}
           <tr class="row {% cycle 'odd' 'even' %}">
             <td>{{ position.bought_at}}</td>
             <td>{{ position.count }}</td>
             <td>{{ position.option_plan.security }}</td>
-            <td>{{ position.vesting_months }}</td>
+            <td class="pull-right">{{ position.vesting_months }}</td>
             <td>{{ position.vesting_expires_at }}</td>
-            <td>{% widthratio position.get_discounted_tax_ratio 1 100 %}%</td>
-            <td>{{ position.get_discounted_tax_value|floatformat:"4" }} CHF</td>
+            <td class="pull-right">{% widthratio position.get_discounted_tax_ratio 1 100 %}%</td>
+            <td class="pull-right">{{ position.get_discounted_tax_value|floatformat:"4" }} CHF</td>
           </tr>
           {% endfor %}
         </table>
