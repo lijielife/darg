@@ -36,6 +36,7 @@ from tagging.models import Tag
 from tagging.registry import register
 
 from shareholder.validators import ShareRegisterValidator
+from shareholder.mixins import DiscountedTaxByVestingModelMixin
 from utils.formatters import (deflate_segments, flatten_list,
                               human_readable_segments, inflate_segments,
                               string_list_to_json)
@@ -1498,7 +1499,7 @@ class Security(models.Model):
         return ''
 
 
-class Position(CertificateMixin):
+class Position(DiscountedTaxByVestingModelMixin, CertificateMixin):
     """
     aka Transaction
     """
@@ -1674,7 +1675,7 @@ class OptionPlan(models.Model):
         return "/optionsplan/{}/download/pdf/".format(self.pk)
 
 
-class OptionTransaction(CertificateMixin):
+class OptionTransaction(DiscountedTaxByVestingModelMixin, CertificateMixin):
     """ Transfer of options from someone to anyone """
     bought_at = models.DateField()
     buyer = models.ForeignKey('Shareholder', related_name="option_buyer")

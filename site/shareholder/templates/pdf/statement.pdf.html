@@ -241,7 +241,7 @@ holdings currently value: {{share_value}} in shares and {{options_value}} in opt
             {% for asset in asset_list %}
               <tr class="row {% cycle 'odd' 'even' %}">
                 <td>
-                  {% if asset.name %}{{ asset.name }}{% else %}&nsp;{% endif %}
+                  {{ asset.name }}
                 </td>
                 <td>
                   {% if report_date %}{{ report_date|date:"DATE_FORMAT" }}{% else %}&nsp;{% endif %}
@@ -284,6 +284,81 @@ holdings currently value: {{share_value}} in shares and {{options_value}} in opt
             {% endfor %}
           </table>
         {% endif %}
+
+        {% if shareholder.is_management %}
+        <p>
+          <br />
+          {{ shareholder.get_full_name }} {% trans "is as of today a member of the management/vr of this company. he holds the following positions with vesting and adjusted tax value according to swiss law. See https://goo.gl/U6ufgL for underlying regulations." %}
+        </p>
+
+        {% get_vested_positions shareholder report_date as vested_positions %}
+        {% if vested_positions %}
+        <p>{% trans "vested shares" %}</p>
+        <table>
+          <tr class="head">
+            <td>{% trans "bought at" %}</td>
+            <td>{% trans "count" %}</td>
+            <td>{% trans "security" %}</td>
+            <td>{% trans "vesting months" %}</td>
+            <td>{% trans "vesting expiration date" %}</td>
+            <td>{% trans "discounted tax ratio(%)" %}</td>
+            <td>{% trans "discounted tax value" %}</td>
+          </tr>
+          {% for position in vested_positions %}
+          <tr class="row {% cycle 'odd' 'even' %}">
+            <td>{{ position.bought_at}}</td>
+            <td>{{ position.count }}</td>
+            <td>{{ position.security }}</td>
+            <td>{{ position.vesting_months }}</td>
+            <td>{{ position.vesting_expires_at }}</td>
+            <td>{% widthratio position.get_discounted_tax_ratio 1 100 %}%</td>
+            <td>{{ position.get_discounted_tax_value|floatformat:"2" }} CHF</td>
+          </tr>
+          {% endfor %}
+        </table>
+        {% endif %}
+
+        {% get_vested_option_positions shareholder report_date as vested_option_positions %}
+        {% if vested_option_positions %}
+        <p>{% trans "vested options" %}</p>
+        <table>
+          <tr class="head">
+            <td>{% trans "bought at" %}</td>
+            <td>{% trans "count" %}</td>
+            <td>{% trans "security" %}</td>
+            <td>{% trans "vesting months" %}</td>
+            <td>{% trans "vesting expiration date" %}</td>
+            <td>{% trans "discounted tax ratio(%)" %}</td>
+            <td>{% trans "discounted tax value" %}</td>
+          </tr>
+          {% for position in vested_option_positions %}
+          <tr class="row {% cycle 'odd' 'even' %}">
+            <td>{{ position.bought_at}}</td>
+            <td>{{ position.count }}</td>
+            <td>{{ position.option_plan.security }}</td>
+            <td>{{ position.vesting_months }}</td>
+            <td>{{ position.vesting_expires_at }}</td>
+            <td>{% widthratio position.get_discounted_tax_ratio 1 100 %}%</td>
+            <td>{{ position.get_discounted_tax_value|floatformat:"4" }} CHF</td>
+          </tr>
+          {% endfor %}
+        </table>
+        {% endif %}
+
+        {% if not vested_option_positions and not vested_positions %}
+        <p>
+          {% trans "There are not positions and no options with applied vesting at this point of time." %}
+        </p>
+        {% endif %}
+
+        <p>
+          <br />
+          {% trans "Total amount of discounted tax value is:" %} 
+          {% get_total_discounted_tax_value shareholder report_date as total_discounted_tax_value %}
+          {{ total_discounted_tax_value|floatformat:"4" }} CHF
+        </p>
+
+        {% endif %} {# end of discounted tax data for management#}
 
         <p>
           <br />

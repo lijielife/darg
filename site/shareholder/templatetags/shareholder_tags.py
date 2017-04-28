@@ -1,10 +1,11 @@
-
-from decimal import Decimal
+from dateutil.relativedelta import relativedelta
 
 from django import template
 from django.conf import settings
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
+
+from shareholder.models import Position, OptionTransaction
 
 
 register = template.Library()
@@ -28,7 +29,7 @@ def get_shareholder_assets(shareholder, date=None):
         count = shareholder.share_count(security=sec, date=date) or 0
         if count:
             result_list.append(dict(
-                name=sec.get_title_display(),
+                name=unicode(sec),
                 count=count,
                 date=date or now().date(),
                 value=sec.face_value
@@ -129,8 +130,8 @@ def get_plan_features(plan_name):
                 security_count = plan_feature.get('count')
                 security_price = plan_feature.get('price')
                 if security_count:
-                    label = (security_count == 1 and _('Security')
-                             or _('Securities'))
+                    label = (security_count == 1 and _('Security') or
+                             _('Securities'))
                     title += u'{} {}'.format(security_count, label)
                 if security_price:  # NOTE: we assuming a valid number
                     if title:
@@ -192,3 +193,48 @@ def invoice_get_total_css_class(item_count, vat_included):
     if vat_included:
         item_count += 1
     return invoice_get_vat_css_class(item_count)
+
+
+# tags/filters for vesting/tax discounts
+@register.assignment_tag
+def get_vested_positions(shareholder, date=None):
+    positions = shareholder.buyer.filter(vesting_months__isnull=False)
+    position_pks = []
+    date = date or now().date()
+    for position in positions:
+        expiration_date = position.bought_at + relativedelta(
+            months=position.vesting_months)
+        if expiration_date > date:
+            position_pks.append(position.pk)
+
+    positions = Position.objects.filter(pk__in=position_pks)
+    return positions
+
+
+@register.assignment_tag
+def get_vested_option_positions(shareholder, date=None):
+    positions = shareholder.option_buyer.filter(
+        vesting_months__isnull=False)
+    position_pks = []
+    date = date or now().date()
+    for position in positions:
+        expiration_date = position.bought_at + relativedelta(
+            months=position.vesting_months)
+        if expiration_date > date:
+            position_pks.append(position.pk)
+
+    positions = OptionTransaction.objects.filter(pk__in=position_pks)
+    return positions
+
+
+@register.assignment_tag
+def get_total_discounted_tax_value(shareholder, date=None):
+    tax_value = 0
+    positions = get_vested_positions(shareholder, date)
+    for position in positions:
+        tax_value += position.get_discounted_tax_value(date=date)
+    options = get_vested_option_positions(shareholder, date)
+    for option in options:
+        tax_value += option.get_discounted_tax_value(date=date)
+
+    return tax_value

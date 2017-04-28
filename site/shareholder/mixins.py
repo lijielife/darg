@@ -1,8 +1,13 @@
+import math
+from decimal import Decimal
 
-from django.contrib.auth import login, logout, decorators as auth_decorators
+from dateutil.relativedelta import relativedelta
+from django.conf import settings
+from django.contrib.auth import decorators as auth_decorators
+from django.contrib.auth import login, logout
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-
 from rest_framework.authtoken.models import Token
 
 
@@ -117,6 +122,48 @@ class AddressModelMixin(models.Model):
 
         if save:
             self.save()
+
+
+class DiscountedTaxByVestingModelMixin(object):
+
+    def get_vesting_expires_at(self):
+        """ return date when vesting expires """
+        if not self.vesting_months:
+            raise ValueError('cannot calculate vesting expiration')
+
+        return self.bought_at + relativedelta(months=self.vesting_months)
+
+    vesting_expires_at = property(get_vesting_expires_at)
+
+    def get_discounted_tax_ratio(self, date=None):
+        """ return percent of discount for tax reduction for management owning
+        shares with vesting - read: https://goo.gl/n5p0IR
+        """
+        discount_ratio = getattr(
+            settings, 'SWISS_VESTED_SHARES_DISCOUNT_RATIO', 1.06)
+        today = date or timezone.now().date()
+        # rounding up!
+        years_to_go = int(math.ceil((
+            self.vesting_expires_at - today).days / 365))
+
+        # vesting is expired
+        if years_to_go < 1:
+            return 1
+
+        # bought at date is in future
+        if self.bought_at > today:
+            return 0
+
+        return round(1 / (discount_ratio ** years_to_go), 5)
+
+    def get_discounted_tax_value(self, date=None):
+        """ return taxable value of position with vesting """
+        security = getattr(self, 'security', False) or self.option_plan.security
+        capital = security.face_value * self.count
+        taxable_capital = capital * Decimal(
+            self.get_discounted_tax_ratio(date=date))
+
+        return round(taxable_capital, 4)
 
 
 class ShareholderStatementReportViewMixin(object):

@@ -373,6 +373,10 @@ class OptionTransactionGenerator(object):
             kwargs2.update(
                 {'certificate_id': kwargs.get('certificate_id')})
 
+        if kwargs.get('vesting_months'):
+            kwargs2.update(
+                {'vesting_months': kwargs.get('vesting_months')})
+
         if kwargs.get('save', True):
             position = OptionTransaction.objects.create(**kwargs2)
         else:

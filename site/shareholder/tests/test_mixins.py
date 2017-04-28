@@ -1,16 +1,20 @@
-
-from django.contrib.auth.models import AnonymousUser
-from django.test import TestCase, RequestFactory
+import datetime
 
 import mock
+from dateutil.relativedelta import relativedelta
+from django.contrib.auth.models import AnonymousUser
+from django.test import RequestFactory, TestCase
+from django.utils import timezone
 from model_mommy import mommy, random_gen
 
-from project.generators import (CompanyGenerator, UserGenerator,
-                                OperatorGenerator)
-from ..models import Country, Company, ShareholderStatementReport
+from project.generators import (CompanyGenerator, OperatorGenerator,
+                                OptionTransactionGenerator, PositionGenerator,
+                                ShareholderGenerator, UserGenerator)
 
 from ..mixins import (AuthTokenLoginViewMixin,
+                      DiscountedTaxByVestingModelMixin,
                       ShareholderStatementReportViewMixin)
+from ..models import Country, ShareholderStatementReport
 
 
 class AuthTokenLoginViewMixinTestCase(TestCase):
@@ -130,6 +134,53 @@ class AddressModelMixinTestCase(TestCase):
         ))
         self.company.read_address_from_stripe_object(stripe_data)
         self.assertTrue(bool(self.company.country))
+
+
+class DiscountedTaxByVestingModelMixinTestCase(TestCase):
+
+    def setUp(self):
+        self.shareholder = ShareholderGenerator().generate()
+        self.company = self.shareholder.company
+        self.position = PositionGenerator().generate(
+            buyer=self.shareholder, count=30, vesting_months=24)
+        self.option = OptionTransactionGenerator().generate(
+            buyer=self.shareholder, count=16, vesting_months=120)
+        self.mixin = DiscountedTaxByVestingModelMixin()
+
+    def test_get_vesting_expires_at(self):
+        """ return date when vesting expires """
+        today = timezone.now().date()
+        self.assertEqual(
+            self.position.get_vesting_expires_at(),
+            today + relativedelta(years=2))
+        self.assertEqual(
+            self.option.get_vesting_expires_at(),
+            today + relativedelta(years=10))
+
+    def test_get_discounted_tax_ratio(self):
+        """ return percent to be applied for discounted tax value calculation
+        read: https://goo.gl/n5p0IR
+        """
+        passed_date = timezone.make_aware(datetime.datetime(2013, 1, 1)).date()
+        future_date = timezone.now().date() + relativedelta(years=1)
+
+        self.assertEqual(self.position.get_discounted_tax_ratio(), 0.89)
+        self.assertEqual(self.position.get_discounted_tax_ratio(
+            date=passed_date), 0)
+        self.assertEqual(self.position.get_discounted_tax_ratio(
+            date=future_date), 0.9434)
+
+        self.assertEqual(self.option.get_discounted_tax_ratio(), 0.55839)
+        self.assertEqual(self.option.get_discounted_tax_ratio(
+            date=passed_date), 0)
+        self.assertEqual(self.option.get_discounted_tax_ratio(
+            date=future_date), 0.5919)
+
+    def test_get_discounted_tax_value(self):
+        """ return value to be used for discounted tax """
+        self.assertEqual(self.position.get_discounted_tax_value(),
+                         2670)
+        self.assertEqual(self.option.get_discounted_tax_value(), 893.424)
 
 
 class ShareholderStatementReportViewMixinTestCase(TestCase):
