@@ -173,14 +173,19 @@ class ShareholderStatementReportViewMixin(object):
 
     subscription_features = ['shareholder_statements']
 
+    """ DEPRECATED?
     def get_user_companies(self):
         from shareholder.models import Company
         if not self.request.user.is_authenticated():
             return Company.objects.none()
         return Company.objects.filter(operator__user=self.request.user)
+    """
 
     def get_queryset(self):
         from shareholder.models import ShareholderStatementReport
+        from utils.session import get_company_from_request
+
+        company = get_company_from_request(self.request)
         qs = ShareholderStatementReport.objects.filter(
-            company__in=self.get_company_pks())
+            company=company)
         return qs.order_by('company__name', '-report_date')

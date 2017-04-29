@@ -104,6 +104,7 @@ class AccountView(CompanyOperatorPermissionRequiredViewMixin,
                 plan.update(dict(unsubscribable=True))
         return context
 
+
 class ChangeCardView(CompanyOperatorPermissionRequiredViewMixin,
                      SubscriptionViewCompanyObjectMixin,
                      DjStripeChangeCardView):

@@ -1764,6 +1764,9 @@ class ShareholderStatementReport(models.Model):
         absolute -- get absolute url including domain (default: True)
         with_auth_token -- append authentication token (default: False)
         """
+        if not self.pdf_file:
+            return
+
         url = reverse('all_statements_download_pdf')
         signing_data = dict(
             pk=self.pk,
@@ -2047,6 +2050,9 @@ class ShareholderStatement(models.Model):
         absolute -- get absolute url including domain (default: True)
         with_auth_token -- append authentication token (default: False)
         """
+        if not self.pdf_file:
+            return
+
         url = reverse('statement_download_pdf')
         signing_data = dict(
             pk=self.pk,
