@@ -612,7 +612,7 @@ COMPANY_INVOICES_ROOT = os.path.join(SENDFILE_ROOT, 'company', 'invoices')
 # NOTE: invoice id will be added to invoice filename
 COMPANY_INVOICE_FILENAME = u'das-aktienregister-rechnung'
 # whether to include VAT in company (pdf) invoices or not
-COMPANY_INVOICE_INCLUDE_VAT = True
+COMPANY_INVOICE_INCLUDE_VAT = False
 COMPANY_INVOICE_VAT = 19  # in percent
 # NOTE: set this to True to include all invoice items directly into the invoice
 #       email. If not set, the items will only we included, if pdf invoice is
