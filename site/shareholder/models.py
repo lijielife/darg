@@ -170,6 +170,9 @@ class Company(AddressModelMixin, models.Model):
         _('Is statement sending enabled'), default=True)
     statement_sending_date = models.DateField(_('statement sending date'),
                                               null=True, blank=True)
+    send_shareholder_statement_via_letter_enabled = models.BooleanField(
+        _('Is sending the shareholder statement via snail mail enabled'),
+        default=False)
 
     # pdf invoice
     invoice_template = 'pdf/invoice.pdf.html'  # shareholder/templates

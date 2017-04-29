@@ -297,6 +297,11 @@ class TasksTestCase(AddressTestMixin, FakeResponseMixin, StripeTestCaseMixin,
         statement = mommy.make(ShareholderStatement, report=report,
                                pdf_file='example.pdf')
 
+        # disabled for this company
+        company.send_shareholder_statement_via_letter_enabled = False
+        company.save()
+        self.assertFalse(send_statement_letter(statement.pk))
+
         # no postal address
         self.assertFalse(send_statement_letter(statement.pk))
 
@@ -305,6 +310,8 @@ class TasksTestCase(AddressTestMixin, FakeResponseMixin, StripeTestCaseMixin,
         self.add_address(statement.user.userprofile)
         self.assertTrue(statement.user.userprofile.has_address)
 
+        company.send_shareholder_statement_via_letter_enabled = True
+        company.save()
         send_statement_letter(statement.pk)
         mock_upload_document.assert_called_once()
 

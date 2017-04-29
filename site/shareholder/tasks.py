@@ -436,7 +436,9 @@ def send_statement_letter(statement_id):
     """
     send letter to statement user via service
     """
-    qs = ShareholderStatement.objects.filter(pk=statement_id)
+    qs = ShareholderStatement.objects.filter(
+        pk=statement_id,
+        report__company__send_shareholder_statement_via_letter_enabled=True)
 
     if not qs.exists():
         # TODO: error handling?!
