@@ -50,7 +50,7 @@ def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(
         crontab(hour=3, minute=0), backup.s())  # Nightly backups at 3AM
 
-    shareholder tasks
+    # shareholder tasks
     from shareholder.tasks import (send_statement_generation_operator_notify,
                                    send_statement_report_operator_notify,
                                    generate_statements_report,
