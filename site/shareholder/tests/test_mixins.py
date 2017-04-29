@@ -3,7 +3,7 @@ import datetime
 import mock
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.models import AnonymousUser
-from django.test import RequestFactory, TestCase
+from django.test import RequestFactory, TestCase, Client
 from django.utils import timezone
 from model_mommy import mommy, random_gen
 
@@ -15,6 +15,7 @@ from ..mixins import (AuthTokenLoginViewMixin,
                       DiscountedTaxByVestingModelMixin,
                       ShareholderStatementReportViewMixin)
 from ..models import Country, ShareholderStatementReport
+from utils.session import add_company_to_session
 
 
 class AuthTokenLoginViewMixinTestCase(TestCase):
@@ -192,27 +193,17 @@ class ShareholderStatementReportViewMixinTestCase(TestCase):
         self.mixin = ShareholderStatementReportViewMixin()
         self.mixin.request = self.factory.get('/')
 
-    def test_get_user_companies(self):
-        # anonymous user
-        self.mixin.request.user = AnonymousUser()
-        self.assertEqual(self.mixin.get_user_companies().count(), 0)
-
-        # auth user, but not operator
-        self.mixin.request.user = UserGenerator().generate()
-        self.assertEqual(self.mixin.get_user_companies().count(), 0)
-
-        # add operator
-        operator = OperatorGenerator().generate(user=self.mixin.request.user)
-        company_qs = self.mixin.get_user_companies()
-        self.assertEqual(company_qs.count(), 1)
-        self.assertIn(operator.company, company_qs)
+        self.client = Client()
 
     def test_get_queryset(self):
         self.mixin.get_company_pks = mock.Mock(return_value=[])
 
-        self.assertEqual(self.mixin.get_queryset().count(), 0)
+        with self.assertRaises(ValueError):
+            self.mixin.get_queryset()
 
         company = CompanyGenerator().generate()
+        add_company_to_session(self.client.session, company)
+        self.mixin.request.session = self.client.session
         report = mommy.make(ShareholderStatementReport, company=company)
 
         self.mixin.get_company_pks.return_value = [company.pk]
