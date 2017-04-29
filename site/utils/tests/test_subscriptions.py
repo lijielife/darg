@@ -4,6 +4,7 @@ import copy
 
 from django.core.urlresolvers import reverse, resolve
 from django.test import TestCase, RequestFactory
+from django.utils.translation import ugettext as _
 
 import mock
 
@@ -64,7 +65,7 @@ class SubsciptionUtilsTestCase(StripeTestCaseMixin, TestCase):
                     amount=10,
                     currency=settings.DJSTRIPE_CURRENCIES[0][0],
                     invoice=None,
-                    description=u'Shareholders (1 x 0.10)'
+                    description=_(u'Shareholders (1 x 0.10)')
                 )
 
     @mock.patch('stripe.InvoiceItem.create')
@@ -99,5 +100,5 @@ class SubsciptionUtilsTestCase(StripeTestCaseMixin, TestCase):
                 amount=20,
                 currency=settings.DJSTRIPE_CURRENCIES[0][0],
                 invoice=None,
-                description=u'Extra Securities (1 x 0.20)'
+                description=_(u'Extra Securities (1 x 0.20)')
             )

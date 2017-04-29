@@ -3438,7 +3438,7 @@ nav.navbar .dropdown-toggle {
   border-top: 2px solid #f5f5f5;
 }
 
-.table {
+div.table {
   display: -webkit-flex;
   display: flex;
   -webkit-flex-flow: column;
@@ -3447,7 +3447,7 @@ nav.navbar .dropdown-toggle {
   justify-content: space-between;
   line-height: 1.5;
 }
-.table.shareholder_detail_table .td:before {
+div.table.shareholder_detail_table .td:before {
   content: attr(data-header);
   width: 65%;
   margin-top: 10px;

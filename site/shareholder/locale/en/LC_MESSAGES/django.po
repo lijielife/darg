@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-28 21:53+0000\n"
+"POT-Creation-Date: 2017-04-29 13:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -175,8 +175,8 @@ msgstr ""
 msgid "Personal ownership"
 msgstr ""
 
-#: shareholder/models.py:52 shareholder/tests/test_functional.py:1047
-#: shareholder/tests/test_functional.py:1648
+#: shareholder/models.py:52 shareholder/tests/test_functional.py:1049
+#: shareholder/tests/test_functional.py:1650
 msgid "Personal representation"
 msgstr ""
 
@@ -200,7 +200,7 @@ msgstr ""
 msgid "Postal Mail"
 msgstr ""
 
-#: shareholder/models.py:64 shareholder/tests/test_functional.py:201
+#: shareholder/models.py:64 shareholder/tests/test_functional.py:202
 msgid "via Email"
 msgstr ""
 
@@ -300,7 +300,7 @@ msgstr ""
 msgid "Human Being"
 msgstr ""
 
-#: shareholder/models.py:777 shareholder/tests/test_functional.py:172
+#: shareholder/models.py:777 shareholder/tests/test_functional.py:173
 msgid "Corporate"
 msgstr ""
 
@@ -592,8 +592,7 @@ msgid "Statement email was opened at"
 msgstr ""
 
 #: shareholder/templates/_statements_table.html:11
-#: shareholder/templates/statement_report_list.html:25
-msgid "Opened"
+msgid "Opened at"
 msgstr ""
 
 #: shareholder/templates/_statements_table.html:13
@@ -1664,6 +1663,10 @@ msgstr ""
 msgid "Number of shareholders that opened statement email"
 msgstr ""
 
+#: shareholder/templates/statement_report_list.html:25
+msgid "Opened"
+msgstr ""
+
 #: shareholder/templates/statement_report_list.html:27
 msgid "Number of shareholders that downloaded statement PDF"
 msgstr ""
@@ -1685,7 +1688,7 @@ msgstr ""
 msgid "Unlimited"
 msgstr ""
 
-#: shareholder/tests/test_functional.py:305
+#: shareholder/tests/test_functional.py:307
 msgid "This email is already taken by another user/shareholder."
 msgstr ""
 

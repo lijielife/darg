@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-28 21:53+0000\n"
-"PO-Revision-Date: 2017-04-28 22:33+0000\n"
+"POT-Creation-Date: 2017-04-29 13:50+0000\n"
+"PO-Revision-Date: 2017-04-29 13:50+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -24,7 +24,6 @@ msgid "Called management command \"generate_invoice_pdf\" for {} object(s)"
 msgstr "Management command \"generate_invoice_pdf\" für {} Objekt(e) aufgerufen"
 
 #: company/admin.py:71
-#| msgid "Generate Tokens"
 msgid "Generate PDF"
 msgstr "PDF erstellen"
 
@@ -33,7 +32,6 @@ msgid "Generate PDF (override existing)"
 msgstr "PDF generieren und überschreiben"
 
 #: company/apps.py:26 company/templates/subscriptions.html:9
-#| msgid "Company Logo"
 msgid "Company"
 msgstr "Unternehmen"
 
@@ -67,7 +65,6 @@ msgid "Could not find Invoice with id {}! Skipping..."
 msgstr "Rechnung mit ID {} kann nicht gefunden werden! Überspringe..."
 
 #: company/management/commands/generate_statement_pdf.py:17
-#| msgid "Address data of all shareholders"
 msgid "Generate Report for one or all shareholders"
 msgstr "Depotauszug für einen oder alle Gesellschafter erstellen"
 
@@ -180,17 +177,14 @@ msgstr ""
 "multipliziert mit dem Nennwert ebendieser."
 
 #: company/templates/company.html:236
-#| msgid "Provisioned Capital (Liberiertes Kapital)"
 msgid "Provisioned Capital"
 msgstr "Liberiertes/eingelegtes Kapital"
 
 #: company/templates/company.html:246
-#| msgid "Company Share Count"
 msgid "Provisioned Share Count"
 msgstr "Anzahl der Aktien des Unternehmens"
 
 #: company/templates/company.html:257
-#| msgid "Total Vote Count Floating"
 msgid "Share Count Floating"
 msgstr "Stimmrechte effektiv"
 
@@ -199,7 +193,6 @@ msgid "total votes count based on existing shares"
 msgstr "Anzahl Stimmrechte basierend auf existierenden Aktien"
 
 #: company/templates/company.html:268
-#| msgid "total votes count based on existing shares"
 msgid "Total votes count based on shares existing"
 msgstr "Anzahl Stimmrechte basierend auf existierenden Aktien"
 
@@ -212,7 +205,6 @@ msgstr ""
 " im Unternehmensbesitz aus."
 
 #: company/templates/company.html:278
-#| msgid "total votes count based on existing shares"
 msgid "Total votes count based on shares floating"
 msgstr "Anzahl Stimmrechte basierend auf ausgegebenen Aktien"
 
@@ -332,9 +324,8 @@ msgid "add company"
 msgstr "Unternehmen hinzufügen"
 
 #: company/templates/subscriptions.html:5
-#| msgid "Select your company"
 msgid "Subscriptions of your companies"
-msgstr "Abonnement Ihres Unternehmens"
+msgstr "Abonnement Ihrer Unternehmen"
 
 #: company/templates/subscriptions.html:10
 msgid "Subscription"
@@ -418,7 +409,6 @@ msgid "files"
 msgstr "Dateien"
 
 #: pingen/models.py:28
-#| msgid "Start page"
 msgid "Started at"
 msgstr "Gestartet am"
 
@@ -427,7 +417,6 @@ msgid "Ended at"
 msgstr "Geendet am"
 
 #: pingen/models.py:30
-#| msgid "Administration"
 msgid "duration"
 msgstr "Dauer"
 
@@ -488,6 +477,16 @@ msgstr "Aktionäre ({count} x {amount:.2f})"
 #, python-brace-format
 msgid "Extra Securities ({count} x {amount:.2f})"
 msgstr "Weitere Aktienart ({count} x {amount:.2f})"
+
+#: utils/tests/test_subscriptions.py:68
+#| msgid "Shareholders ({count} x {amount:.2f})"
+msgid "Shareholders (1 x 0.10)"
+msgstr "Aktionäre (1 x 0.10)"
+
+#: utils/tests/test_subscriptions.py:103
+#| msgid "Extra Securities ({count} x {amount:.2f})"
+msgid "Extra Securities (1 x 0.20)"
+msgstr "Weitere Aktienart (1 x 0.20)"
 
 #~ msgid "Total Vote Count"
 #~ msgstr "Stimmrechte gesamt"

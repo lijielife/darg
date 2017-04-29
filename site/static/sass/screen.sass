@@ -663,7 +663,8 @@ nav.navbar
   @include justify-content(flex-end) //make text right aligned
 .totals
   border-top: 2px solid $color-gray-lighten
-.table
+// div only for resp. table. djstripe table tags have this one too hence breaking
+div.table
   &.shareholder_detail_table
     .td
       &:before
