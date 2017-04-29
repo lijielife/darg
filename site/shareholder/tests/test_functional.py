@@ -165,6 +165,7 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
                     kwargs={'pk': self.buyer.id}
                     )
                 )
+            p.wait_until_js_rendered()
             # wait for 'link'
             p.wait_until_visible(
                 (By.CSS_SELECTOR, '.legal-type span.el-icon-pencil'))
