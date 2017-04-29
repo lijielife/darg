@@ -50,32 +50,32 @@ def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(
         crontab(hour=3, minute=0), backup.s())  # Nightly backups at 3AM
 
-    # shareholder tasks
-    # from shareholder.tasks import (send_statement_generation_operator_notify,
-    #                                send_statement_report_operator_notify,
-    #                                generate_statements_report,
-    #                                fetch_statement_email_opened_mandrill,
-    #                                send_statement_letters)
-    # sender.add_periodic_task(
-    #     crontab(hour=9, minute=0),  # every morning at 9AM
-    #     send_statement_generation_operator_notify.s()
-    # )
-    # sender.add_periodic_task(
-    #     crontab(hour=9, minute=0),  # every morning at 9AM
-    #     send_statement_report_operator_notify.s()
-    # )
-    # sender.add_periodic_task(
-    #     crontab(hour=10, minute=0),  # every morning at 10AM
-    #     generate_statements_report.s()
-    # )
-    # sender.add_periodic_task(
-    #     crontab(hour=5, minute=0),  # every morning at 5AM
-    #     fetch_statement_email_opened_mandrill.s()
-    # )
-    # sender.add_periodic_task(
-    #     crontab(hour=11, minute=0),  # every morning at 11AM
-    #     send_statement_letters.s()
-    # )
+    shareholder tasks
+    from shareholder.tasks import (send_statement_generation_operator_notify,
+                                   send_statement_report_operator_notify,
+                                   generate_statements_report,
+                                   fetch_statement_email_opened_mandrill,
+                                   send_statement_letters)
+    sender.add_periodic_task(
+        crontab(hour=9, minute=0),  # every morning at 9AM
+        send_statement_generation_operator_notify.s()
+    )
+    sender.add_periodic_task(
+        crontab(hour=9, minute=0),  # every morning at 9AM
+        send_statement_report_operator_notify.s()
+    )
+    sender.add_periodic_task(
+        crontab(hour=10, minute=0),  # every morning at 10AM
+        generate_statements_report.s()
+    )
+    sender.add_periodic_task(
+        crontab(hour=5, minute=0),  # every morning at 5AM
+        fetch_statement_email_opened_mandrill.s()
+    )
+    sender.add_periodic_task(
+        crontab(hour=11, minute=0),  # every morning at 11AM
+        send_statement_letters.s()
+    )
     sender.add_periodic_task(
         crontab(hour=4, minute=0, day_of_month=1), update_banks_from_six.s())
     sender.add_periodic_task(
