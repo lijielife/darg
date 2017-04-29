@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-21 07:43+0000\n"
+"POT-Creation-Date: 2017-04-28 21:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,54 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: company/admin.py:67
+msgid "Called management command \"generate_invoice_pdf\" for {} object(s)"
+msgstr ""
+
+#: company/admin.py:71
+msgid "Generate PDF"
+msgstr ""
+
+#: company/admin.py:80
+msgid "Generate PDF (override existing)"
+msgstr ""
+
+#: company/apps.py:26 company/templates/subscriptions.html:9
+msgid "Company"
+msgstr ""
+
+#: company/apps.py:75
+msgid "Company \"{}\" (ID {}) was charged but has no email address stored"
+msgstr ""
+
+#: company/apps.py:82 company/apps.py:202
+msgid "Company \"{}\" (ID {}) was charged but has no postal address stored"
+msgstr ""
+
+#: company/apps.py:229
+msgid "Invoice PDF for company \"{}\" (ID {}) could not be generated."
+msgstr ""
+
+#: company/management/commands/generate_invoice_pdf.py:10
+msgid "(Re)Generate PDF for invoice"
+msgstr ""
+
+#: company/management/commands/generate_invoice_pdf.py:21
+msgid "Override existing file(s)"
+msgstr ""
+
+#: company/management/commands/generate_invoice_pdf.py:29
+msgid "Could not find Invoice with id {}! Skipping..."
+msgstr ""
+
+#: company/management/commands/generate_statement_pdf.py:17
+msgid "Generate Report for one or all shareholders"
+msgstr ""
+
+#: company/management/commands/generate_statement_pdf.py:35
+msgid "Could not find Company with id {}! Skipping..."
+msgstr ""
 
 #: company/page.py:60
 msgid "DELETE"
@@ -70,86 +118,150 @@ msgid "CHF for one vote based on face value of securities"
 msgstr ""
 
 #: company/templates/company.html:127
+msgid "Company Headquarter Country"
+msgstr ""
+
+#: company/templates/company.html:140
+msgid "Is statement sending enabled"
+msgstr ""
+
+#: company/templates/company.html:153
+msgid "Statement seding date"
+msgstr ""
+
+#: company/templates/company.html:179
+msgid "Total count of current shareholders"
+msgstr ""
+
+#: company/templates/company.html:190
+msgid "total count of shares of dispo shareholder"
+msgstr ""
+
+#: company/templates/company.html:198
+msgid "total capital of shares of dispo shareholder"
+msgstr ""
+
+#: company/templates/company.html:199
+msgid "based on face value of all shares assigned to dispo shareholder"
+msgstr ""
+
+#: company/templates/company.html:212
+msgid "total count of shares of management/vr"
+msgstr ""
+
+#: company/templates/company.html:220
+msgid "total capital of shares of management/vf"
+msgstr ""
+
+#: company/templates/company.html:221
+msgid "based on face value of all shares assigned to management/vr"
+msgstr ""
+
+#: company/templates/company.html:233
+msgid "total capital of the company. math: all shares existing * face value"
+msgstr ""
+
+#: company/templates/company.html:236
+msgid "Provisioned Capital"
+msgstr ""
+
+#: company/templates/company.html:246
+msgid "Provisioned Share Count"
+msgstr ""
+
+#: company/templates/company.html:257
+msgid "Share Count Floating"
+msgstr ""
+
+#: company/templates/company.html:267
 msgid "total votes count based on existing shares"
 msgstr ""
 
-#: company/templates/company.html:128
-msgid "Total Vote Count"
+#: company/templates/company.html:268
+msgid "Total votes count based on shares existing"
 msgstr ""
 
-#: company/templates/company.html:139
+#: company/templates/company.html:277
 msgid ""
 "total votes count effective. excludes unregistered/dispo shares and shares "
 "in company ownership"
 msgstr ""
 
-#: company/templates/company.html:140
-msgid "Total Vote Count Floating"
+#: company/templates/company.html:278
+msgid "Total votes count based on shares floating"
 msgstr ""
 
-#: company/templates/company.html:151
-msgid "Company Headquarter Country"
+#: company/templates/company.html:283
+msgid "Does include shares used for options. Without options it would be"
 msgstr ""
 
-#: company/templates/company.html:166
+#: company/templates/company.html:290
+msgid "Total option count based on shares dedicated to options"
+msgstr ""
+
+#: company/templates/company.html:299
+msgid "Total option count based on shares dedicated to options floating"
+msgstr ""
+
+#: company/templates/company.html:312
 msgid "Securities"
 msgstr ""
 
-#: company/templates/company.html:169
+#: company/templates/company.html:315
 msgid "security"
 msgstr ""
 
-#: company/templates/company.html:170
+#: company/templates/company.html:316
 msgid "cusip"
 msgstr ""
 
-#: company/templates/company.html:171
+#: company/templates/company.html:317
 msgid "count"
 msgstr ""
 
-#: company/templates/company.html:181 company/tests/test_views.py:54
+#: company/templates/company.html:327 company/tests/test_views.py:78
 msgid "tracking security numbers for owners enabled. segments:"
 msgstr ""
 
-#: company/templates/company.html:195
+#: company/templates/company.html:341
 msgid "Please contact us at our"
 msgstr ""
 
-#: company/templates/company.html:197
+#: company/templates/company.html:343
 msgid ""
 "for getting more security types (common stock, preferred stock, numbered "
 "shares) added"
 msgstr ""
 
-#: company/templates/company.html:203
+#: company/templates/company.html:349
 msgid "Administrators"
 msgstr ""
 
-#: company/templates/company.html:204
+#: company/templates/company.html:350
 msgid "add operator"
 msgstr ""
 
-#: company/templates/company.html:232
+#: company/templates/company.html:378
 msgid "Option Plans"
 msgstr ""
 
-#: company/templates/company.html:238
+#: company/templates/company.html:384
 msgid "Options Plan Name"
 msgstr ""
 
-#: company/templates/company.html:241
+#: company/templates/company.html:387
 msgid "Edit Option Plan"
 msgstr ""
 
-#: company/templates/company.html:252
+#: company/templates/company.html:398
 msgid "Administration"
 msgstr ""
 
-#: company/templates/company.html:256
+#: company/templates/company.html:402
 msgid "reset company"
 msgstr ""
 
-#: company/templates/company.html:259
+#: company/templates/company.html:405
 msgid ""
 "the company, shareholders, transactions, options, and all other assigned "
 "data are deleted. the user can then create the company anew and start fresh"
@@ -186,14 +298,152 @@ msgstr ""
 msgid "add company"
 msgstr ""
 
+#: company/templates/subscriptions.html:5
+msgid "Subscriptions of your companies"
+msgstr ""
+
+#: company/templates/subscriptions.html:10
+msgid "Subscription"
+msgstr ""
+
+#: company/templates/subscriptions.html:23
+msgid "View"
+msgstr ""
+
+#: company/validators/__init__.py:37
+msgid "An address is required."
+msgstr ""
+
+#: company/validators/base.py:14
+msgid "company must be instance of {}"
+msgstr ""
+
+#: company/validators/features.py:25
+#, python-brace-format
+msgid ""
+"Too many shareholders are registered ({count}). (max: {max_shareholders})"
+msgstr ""
+
+#: company/validators/features.py:58
+#, python-brace-format
+msgid "Too many securities in use ({count}). (max: {max_securities})"
+msgstr ""
+
+#: company/views.py:86
+#, python-format
+msgid "Empty list and '%(class_name)s.allow_empty' is False."
+msgstr ""
+
+#: company/views.py:136
+msgid "You already subscribed to this plan"
+msgstr ""
+
+#: company/views.py:220
+msgid "You must already be subscribed to a plan before you can change it."
+msgstr ""
+
+#: company/views.py:363
+msgid "Could not find requested filed."
+msgstr ""
+
+#: pingen/admin.py:13 pingen/models.py:21
+msgid "URL"
+msgstr ""
+
+#: pingen/admin.py:22
+msgid "request"
+msgstr ""
+
+#: pingen/admin.py:24
+msgid "Timestamps"
+msgstr ""
+
+#: pingen/admin.py:26
+msgid "response"
+msgstr ""
+
+#: pingen/models.py:22
+msgid "method"
+msgstr ""
+
+#: pingen/models.py:24
+msgid "request headers"
+msgstr ""
+
+#: pingen/models.py:25
+msgid "request data"
+msgstr ""
+
+#: pingen/models.py:26
+msgid "files"
+msgstr ""
+
+#: pingen/models.py:28
+msgid "Started at"
+msgstr ""
+
+#: pingen/models.py:29
+msgid "Ended at"
+msgstr ""
+
+#: pingen/models.py:30
+msgid "duration"
+msgstr ""
+
+#: pingen/models.py:32
+msgid "status_code"
+msgstr ""
+
+#: pingen/models.py:33
+msgid "response headers"
+msgstr ""
+
+#: pingen/models.py:34
+msgid "response text"
+msgstr ""
+
+#: pingen/models.py:36
+msgid "Created at"
+msgstr ""
+
+#: pingen/models.py:37
+msgid "Updated at"
+msgstr ""
+
+#: pingen/models.py:40
+msgid "API Call"
+msgstr ""
+
+#: pingen/models.py:41
+msgid "API Calls"
+msgstr ""
+
 #: utils/geo.py:31
 msgid "German"
 msgstr ""
 
-#: utils/import_backends.py:274
+#: utils/import_backends.py:141 utils/import_backends.py:144
+msgid "TRANSFER-1"
+msgstr ""
+
+#: utils/import_backends.py:141
+msgid "TRANSFER"
+msgstr ""
+
+#: utils/import_backends.py:142
+msgid "SHAREHOLDER"
+msgstr ""
+
+#: utils/import_backends.py:284
 msgid "Disposhareholder"
 msgstr ""
 
-#: utils/import_backends.py:342
-msgid "Default OptionPlan for {}"
+#: utils/subscriptions.py:52
+#, python-brace-format
+msgid "Shareholders ({count} x {amount:.2f})"
+msgstr ""
+
+#: utils/subscriptions.py:77
+#, python-brace-format
+msgid "Extra Securities ({count} x {amount:.2f})"
 msgstr ""

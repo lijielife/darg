@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-21 07:43+0000\n"
+"POT-Creation-Date: 2017-04-28 21:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -326,8 +326,12 @@ msgid ""
 "option transaction"
 msgstr ""
 
-#: reports/templates/reports/index.html:71
-msgid "Depot Statement per Shareholder"
+#: reports/templates/reports/index.html:72
+msgid "See all depot statements created for shareholders"
+msgstr ""
+
+#: reports/templates/reports/index.html:73
+msgid "Depot Statements Overview"
 msgstr ""
 
 #: reports/views.py:23

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-21 07:43+0000\n"
+"POT-Creation-Date: 2017-04-28 21:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: project/admin.py:73
+msgid "Card"
+msgstr ""
 
 #: project/forms.py:23
 msgid ""
@@ -30,6 +34,91 @@ msgstr ""
 
 #: project/models.py:17
 msgid "modified at"
+msgstr ""
+
+#: project/settings/base.py:473
+msgid "Swiss franc"
+msgstr ""
+
+#: project/settings/base.py:477
+msgid "StartUp"
+msgstr ""
+
+#: project/settings/base.py:478
+msgid "Designed für StartUps und Neugründungen"
+msgstr ""
+
+#: project/settings/base.py:512
+msgid "Professional"
+msgstr ""
+
+#: project/settings/base.py:513
+msgid "Für etablierte Aktiengesellschaften und KMU"
+msgstr ""
+
+#: project/settings/base.py:543
+msgid "Enterprise"
+msgstr ""
+
+#: project/settings/base.py:545
+msgid "First-Class-Service für grosse Aktionärsgesellschaften"
+msgstr ""
+
+#: project/settings/base.py:583
+msgid "Shareholders"
+msgstr ""
+
+#: project/settings/base.py:584 project/templates/_menu.html:35
+msgid "Positions"
+msgstr ""
+
+#: project/settings/base.py:585 project/templates/_menu.html:38
+#: project/templates/active_shareholder_captable.pdf.html:139
+msgid "Options"
+msgstr ""
+
+#: project/settings/base.py:586
+msgid "Securities"
+msgstr ""
+
+#: project/settings/base.py:588
+msgid "Aktienausgabe, Aktienkauf, -verkauf, Kapitalerhöhung, Aktiensplit"
+msgstr ""
+
+#: project/settings/base.py:591
+msgid "GAFI Validierung"
+msgstr ""
+
+#: project/settings/base.py:592
+msgid "Revisionssicherheit"
+msgstr ""
+
+#: project/settings/base.py:594
+msgid "Depotauszug Email & Brief"
+msgstr ""
+
+#: project/settings/base.py:595
+msgid "Es entstehen weitere Kosten bei Briefversand pro versendetem Brief."
+msgstr ""
+
+#: project/settings/base.py:602
+msgid "Nummerierte Aktien"
+msgstr ""
+
+#: project/settings/base.py:603
+msgid "Email Support"
+msgstr ""
+
+#: project/settings/base.py:604
+msgid "Profi-Verwaltung Aktionäre"
+msgstr ""
+
+#: project/settings/base.py:605
+msgid "Premium-Support 24/7"
+msgstr ""
+
+#: project/settings/base.py:606
+msgid "Custom Export/Import"
 msgstr ""
 
 #: project/tasks.py:21
@@ -58,6 +147,7 @@ msgstr ""
 #: project/templates/_add_position_form.html:92
 #: project/templates/_add_shareholder_form.html:20
 #: project/templates/_split_shares_form.html:39
+#: project/templates/djstripe/change_card.html:55
 msgid "Cancel"
 msgstr ""
 
@@ -165,71 +255,78 @@ msgid "Please enter your shareholder data:"
 msgstr ""
 
 #: project/templates/_add_shareholder_form.html:21
-#: project/templates/start.html:43 project/templates/start.html:52
+#: project/templates/start.html:44 project/templates/start.html:53
 msgid "Add Shareholder"
 msgstr ""
 
-#: project/templates/_menu.html:31
+#: project/templates/_menu.html:32
 msgid "Start"
 msgstr ""
 
-#: project/templates/_menu.html:34
-msgid "Positions"
-msgstr ""
-
-#: project/templates/_menu.html:37
-#: project/templates/active_shareholder_captable.pdf.html:136
-msgid "Options"
-msgstr ""
-
-#: project/templates/_menu.html:40
+#: project/templates/_menu.html:41
 msgid "Reports"
 msgstr ""
 
-#: project/templates/_menu.html:50
+#: project/templates/_menu.html:51
 msgid "Logged in as"
 msgstr ""
 
-#: project/templates/_menu.html:61
+#: project/templates/_menu.html:62
 msgid "Admin"
 msgstr ""
 
-#: project/templates/_menu.html:64
+#: project/templates/_menu.html:65
 msgid "I18N"
 msgstr ""
 
-#: project/templates/_menu.html:69 project/templates/_menu.html:70
+#: project/templates/_menu.html:70 project/templates/_menu.html:71
 msgid "Select Company"
 msgstr ""
 
-#: project/templates/_menu.html:75
+#: project/templates/_menu.html:77
+msgid "Subscriptions"
+msgstr ""
+
+#: project/templates/_menu.html:85
+msgid "Statements"
+msgstr ""
+
+#: project/templates/_menu.html:93
+msgid "Statement reports"
+msgstr ""
+
+#: project/templates/_menu.html:94
+msgid "Depot Statments"
+msgstr ""
+
+#: project/templates/_menu.html:99
 #: project/templates/registration/password_reset_form.html:4
 #: project/templates/registration/password_reset_form.html:14
 #: project/templates/registration/password_reset_form.html:33
 msgid "Reset password"
 msgstr ""
 
-#: project/templates/_menu.html:76
+#: project/templates/_menu.html:100
 #: project/templates/registration/password_change_form.html:4
 #: project/templates/registration/password_change_form.html:12
 msgid "Change password"
 msgstr ""
 
-#: project/templates/_menu.html:79
+#: project/templates/_menu.html:103
 msgid "Security Settings"
 msgstr ""
 
-#: project/templates/_menu.html:81
+#: project/templates/_menu.html:105
 msgid "Logout"
 msgstr ""
 
-#: project/templates/_menu.html:87
+#: project/templates/_menu.html:111
 #: project/templates/two_factor/core/login.html:61
 #: project/tests/test_views.py:206
 msgid "Register"
 msgstr ""
 
-#: project/templates/_menu.html:90 project/templates/index.html:40
+#: project/templates/_menu.html:114 project/templates/index.html:40
 #: project/templates/registration/registration_form.html:26
 #: project/templates/two_factor/core/login.html:12
 msgid "Login"
@@ -270,73 +367,73 @@ msgstr ""
 msgid "No Results Found"
 msgstr ""
 
-#: project/templates/active_shareholder_captable.pdf.html:66
-#: project/templates/start.html:32
+#: project/templates/active_shareholder_captable.pdf.html:69
+#: project/templates/start.html:31
 msgid "Your Shareholders for"
 msgstr ""
 
-#: project/templates/active_shareholder_captable.pdf.html:80
+#: project/templates/active_shareholder_captable.pdf.html:83
 #: project/templates/index.html:24
 msgid "Das Aktienregister"
 msgstr ""
 
-#: project/templates/active_shareholder_captable.pdf.html:80
+#: project/templates/active_shareholder_captable.pdf.html:83
 #: project/templates/certificate.pdf.html:80
 #: project/templates/option.pdf.html:80
 msgid "Page"
 msgstr ""
 
-#: project/templates/active_shareholder_captable.pdf.html:81
+#: project/templates/active_shareholder_captable.pdf.html:84
 #: project/templates/certificate.pdf.html:81
 #: project/templates/option.pdf.html:81
 msgid "of"
 msgstr ""
 
-#: project/templates/active_shareholder_captable.pdf.html:82
+#: project/templates/active_shareholder_captable.pdf.html:85
 #: project/templates/certificate.pdf.html:82
 #: project/templates/option.pdf.html:82
 msgid "Date generated"
 msgstr ""
 
-#: project/templates/active_shareholder_captable.pdf.html:87
+#: project/templates/active_shareholder_captable.pdf.html:90
 msgid "Total company capital"
 msgstr ""
 
-#: project/templates/active_shareholder_captable.pdf.html:89
+#: project/templates/active_shareholder_captable.pdf.html:92
 msgid "Provisioned Capital"
 msgstr ""
 
-#: project/templates/active_shareholder_captable.pdf.html:92
+#: project/templates/active_shareholder_captable.pdf.html:95
 msgid "Founding Date"
 msgstr ""
 
-#: project/templates/active_shareholder_captable.pdf.html:98
-#: project/templates/active_shareholder_captable.pdf.html:141
-#: project/templates/start.html:93
+#: project/templates/active_shareholder_captable.pdf.html:101
+#: project/templates/active_shareholder_captable.pdf.html:144
+#: project/templates/start.html:95
 msgid "Name"
 msgstr ""
 
-#: project/templates/active_shareholder_captable.pdf.html:99
-#: project/templates/active_shareholder_captable.pdf.html:142
+#: project/templates/active_shareholder_captable.pdf.html:102
+#: project/templates/active_shareholder_captable.pdf.html:145
 msgid "Email"
 msgstr ""
 
-#: project/templates/active_shareholder_captable.pdf.html:100
-#: project/templates/active_shareholder_captable.pdf.html:143
-#: project/templates/start.html:94
+#: project/templates/active_shareholder_captable.pdf.html:103
+#: project/templates/active_shareholder_captable.pdf.html:146
+#: project/templates/start.html:96
 msgid "Shareholder Number"
 msgstr ""
 
-#: project/templates/active_shareholder_captable.pdf.html:101
+#: project/templates/active_shareholder_captable.pdf.html:104
 #, python-format
 msgid "Shares (%%)"
 msgstr ""
 
-#: project/templates/active_shareholder_captable.pdf.html:104
+#: project/templates/active_shareholder_captable.pdf.html:107
 msgid "Aktiennummern"
 msgstr ""
 
-#: project/templates/active_shareholder_captable.pdf.html:144
+#: project/templates/active_shareholder_captable.pdf.html:147
 #, python-format
 msgid "Optionen (%%)"
 msgstr ""
@@ -356,15 +453,16 @@ msgid ""
 "Publikumsgesellschaften"
 msgstr ""
 
-#: project/templates/base_auth.html:15
+#: project/templates/base_auth.html:24 project/templates/email/base.html:69
+#: project/templates/email/base.txt:10
 msgid "The Share Register, 2016"
 msgstr ""
 
-#: project/templates/base_auth.html:17
+#: project/templates/base_auth.html:26
 msgid "do you know our"
 msgstr ""
 
-#: project/templates/base_auth.html:18
+#: project/templates/base_auth.html:28
 msgid "our blog"
 msgstr ""
 
@@ -440,11 +538,432 @@ msgstr ""
 msgid " in the name of the supervisory board"
 msgstr ""
 
+#: project/templates/djstripe/_annotations.html:5
+msgid ""
+"Kündigung oder Änderung eines Paketes ist jederzeit möglich. Daten können "
+"bequem per CSV-Download gesichert werden. Nach Kündigung des Abos werden "
+"alle Daten unwiederbringlich gelöscht."
+msgstr ""
+
+#: project/templates/djstripe/_plan.html:5
+msgid "per"
+msgstr ""
+
+#: project/templates/djstripe/_plan.html:11
+msgid "Shareholder"
+msgstr ""
+
+#: project/templates/djstripe/account.html:15
+msgid "Account Information for"
+msgstr ""
+
+#: project/templates/djstripe/account.html:22
+msgid "Credit Card on file."
+msgstr ""
+
+#: project/templates/djstripe/account.html:24
+msgid "Show Card"
+msgstr ""
+
+#: project/templates/djstripe/account.html:27
+msgid "No Credit Card on file."
+msgstr ""
+
+#: project/templates/djstripe/account.html:36
+#: project/templates/djstripe/change_card.html:56
+msgid "Change Card"
+msgstr ""
+
+#: project/templates/djstripe/account.html:38
+msgid "Add Card"
+msgstr ""
+
+#: project/templates/djstripe/account.html:46
+msgid "Next billed on"
+msgstr ""
+
+#: project/templates/djstripe/account.html:49
+#, python-format
+msgid ""
+"\n"
+"      <p>You can <a href=\"%(subscribe_url)s\">change</a> your plan.</p>\n"
+"    "
+msgstr ""
+
+#: project/templates/djstripe/account.html:54
+#, python-format
+msgid ""
+"\n"
+"      <p>You can <a href=\"%(subscribe_url)s\">subscribe</a>.</p>\n"
+"    "
+msgstr ""
+
+#: project/templates/djstripe/account.html:60
+#, python-format
+msgid ""
+"\n"
+"    <p>Or consult your <a href=\"%(history_url)s\">payment history</a>.</p>\n"
+"  "
+msgstr ""
+
+#: project/templates/djstripe/account.html:68
+#: project/templates/djstripe/email/receipt_body.html:20
+#: project/templates/djstripe/email/receipt_body.txt:20
+msgid "Subscription"
+msgstr ""
+
+#: project/templates/djstripe/account.html:76
+#: project/templates/djstripe/confirm_form.html:89
+msgid "Plan"
+msgstr ""
+
+#: project/templates/djstripe/account.html:77
+msgid "Interval"
+msgstr ""
+
+#: project/templates/djstripe/account.html:78
+msgid "Description"
+msgstr ""
+
+#: project/templates/djstripe/account.html:96
+#: project/templates/djstripe/subscribe.html:26
+msgid "Your plan"
+msgstr ""
+
+#: project/templates/djstripe/account.html:100
+#: project/templates/djstripe/confirm_form.html:90
+#: project/templates/djstripe/subscribe.html:43
+msgid "Subscribe"
+msgstr ""
+
+#: project/templates/djstripe/account.html:120
+msgid "Card on File"
+msgstr ""
+
+#: project/templates/djstripe/account.html:123
+msgid "Type"
+msgstr ""
+
+#: project/templates/djstripe/account.html:124
+msgid "Last 4 Digits"
+msgstr ""
+
+#: project/templates/djstripe/account.html:125
+msgid ""
+"\n"
+"            <p>\n"
+"              <small>\n"
+"                For security, your card information is stored on\n"
+"                <a href=\"https://stripe.com\">stripe.com</a>.\n"
+"              </small>\n"
+"            </p>\n"
+"          "
+msgstr ""
+
+#: project/templates/djstripe/account.html:136
+msgid "Close"
+msgstr ""
+
+#: project/templates/djstripe/cancel_subscription.html:14
+msgid "Cancel Subscription"
+msgstr ""
+
+#: project/templates/djstripe/cancel_subscription.html:16
+#, python-format
+msgid ""
+"\n"
+"        <p>You have no subscription on file.</p>\n"
+"        <p>\n"
+"          See your <a href=\"%(account_url)s\">account status</a> or better "
+"yet,\n"
+"          <a href=\"%(subscribe_url)s\">subscribe</a>.\n"
+"        </p>\n"
+"      "
+msgstr ""
+
+#: project/templates/djstripe/cancel_subscription.html:24
+#, python-format
+msgid ""
+"\n"
+"        <p>Your subscription has already been canceled.</p>\n"
+"        <p>\n"
+"          See your <a href=\"%(account_url)s\">account status</a> or better "
+"yet,\n"
+"          get a <a href=\"%(subscribe_url)s\">fresh subscription</a>.\n"
+"        </p>\n"
+"      "
+msgstr ""
+
+#: project/templates/djstripe/cancel_subscription.html:32
+#, python-format
+msgid ""
+"\n"
+"        <p>Your subscription has already been canceled.</p>\n"
+"        <p>However, you can still use the site for another "
+"%(subscription_end)s.</p>\n"
+"      "
+msgstr ""
+
+#: project/templates/djstripe/cancel_subscription.html:38
+msgid "Are you sure you want to cancel your subscription?"
+msgstr ""
+
+#: project/templates/djstripe/cancel_subscription.html:41
+msgid "What you lose by cancelling your subscription:"
+msgstr ""
+
+#: project/templates/djstripe/cancel_subscription.html:43
+msgid "Access to subscription-only content."
+msgstr ""
+
+#: project/templates/djstripe/cancel_subscription.html:44
+msgid "Ability to use subscription-only features."
+msgstr ""
+
+#: project/templates/djstripe/cancel_subscription.html:48
+msgid "Are you sure you want to cancel?"
+msgstr ""
+
+#: project/templates/djstripe/cancel_subscription.html:53
+msgid "I change my mind!"
+msgstr ""
+
+#: project/templates/djstripe/cancel_subscription.html:56
+msgid "Cancel my subscription!"
+msgstr ""
+
+#: project/templates/djstripe/change_card.html:11
+msgid "Current Card"
+msgstr ""
+
+#: project/templates/djstripe/change_card.html:14
+#, python-format
+msgid ""
+"\n"
+"          Current card on file is a <strong>%(card_kind)s</strong>\n"
+"          ending in the digits <strong>%(card_last_4)s</strong>.\n"
+"        "
+msgstr ""
+
+#: project/templates/djstripe/change_card.html:19
+msgid "You do not currently have a card on file."
+msgstr ""
+
+#: project/templates/djstripe/change_card.html:36
+msgid "Card Number"
+msgstr ""
+
+#: project/templates/djstripe/change_card.html:41
+msgid "CVC"
+msgstr ""
+
+#: project/templates/djstripe/change_card.html:46
+msgid "Expiration (MM/YYYY)"
+msgstr ""
+
+#: project/templates/djstripe/confirm_form.html:11
+msgid "Confirm your Subscription for"
+msgstr ""
+
+#: project/templates/djstripe/confirm_form.html:58
+msgid "Confirm subscription"
+msgstr ""
+
+#: project/templates/djstripe/email/receipt_body.html:9
+#, python-format
+msgid ""
+"\n"
+"      Your %(site_name)s account was successfully charged %(amount)s to the "
+"credit card ending in %(card)s. The invoice below is for your records.\n"
+"    "
+msgstr ""
+
+#: project/templates/djstripe/email/receipt_body.html:14
+#: project/templates/djstripe/email/receipt_body.txt:11
+msgid "INVOICE"
+msgstr ""
+
+#: project/templates/djstripe/email/receipt_body.html:15
+#: project/templates/djstripe/email/receipt_body.txt:14
+msgid "CUSTOMER"
+msgstr ""
+
+#: project/templates/djstripe/email/receipt_body.html:17
+#: project/templates/djstripe/email/receipt_body.txt:17
+msgid "DETAILS"
+msgstr ""
+
+#: project/templates/djstripe/email/receipt_body.html:26
+#: project/templates/djstripe/email/receipt_body.txt:24
+msgid "incl. VAT"
+msgstr ""
+
+#: project/templates/djstripe/email/receipt_body.html:28
+#: project/templates/djstripe/email/receipt_body.txt:26
+msgid "TOTAL"
+msgstr ""
+
+#: project/templates/djstripe/email/receipt_body.html:29
+#: project/templates/djstripe/email/receipt_body.txt:27
+msgid "PAID BY CREDIT CARD"
+msgstr ""
+
+#: project/templates/djstripe/email/receipt_body.html:35
+#, python-format
+msgid ""
+"\n"
+"      Your credit card ending in %(card)s was refunded %(amount)s.\n"
+"    "
+msgstr ""
+
+#: project/templates/djstripe/email/receipt_body.html:42
+#, python-format
+msgid ""
+"\n"
+"        We are sorry, but we failed to charge your credit card ending in "
+"%(card)s for the amount %(amount)s.\n"
+"      "
+msgstr ""
+
+#: project/templates/djstripe/email/receipt_body.html:51
+#: project/templates/djstripe/email/receipt_body.txt:34
+msgid "Please contact us with any questions regarding this invoice."
+msgstr ""
+
+#: project/templates/djstripe/email/receipt_body.txt:6
+#, python-format
+msgid ""
+"\n"
+"Your %(site_name)s account was successfully charged %(currency)s%(amount)s "
+"to the credit card ending in %(card)s. The invoice below is for your records."
+msgstr ""
+
+#: project/templates/djstripe/email/receipt_body.txt:30
+#, python-format
+msgid ""
+"Your credit card ending in %(card)s was refunded %(currency)s%(amount)s."
+msgstr ""
+
+#: project/templates/djstripe/email/receipt_body.txt:31
+#, python-format
+msgid ""
+"We are sorry, but we failed to charge your credit card ending in %(card)s "
+"for the amount %(currency)s%(amount)s."
+msgstr ""
+
+#: project/templates/djstripe/email/receipt_subject.txt:2
+msgid "Payment Receipt"
+msgstr ""
+
+#: project/templates/djstripe/email/receipt_subject.txt:2
+msgid "Invoice"
+msgstr ""
+
+#: project/templates/djstripe/history.html:11
+#, python-format
+msgid ""
+"\n"
+"      Go back to your <a href=\"%(account_url)s\">Account</a>.\n"
+"    "
+msgstr ""
+
+#: project/templates/djstripe/includes/_history_table.html:5
+msgid "Payment History"
+msgstr ""
+
+#: project/templates/djstripe/includes/_history_table.html:10
+msgid "Invoice Number"
+msgstr ""
+
+#: project/templates/djstripe/includes/_history_table.html:11
+#: project/templates/log.html:20
+msgid "Date"
+msgstr ""
+
+#: project/templates/djstripe/includes/_history_table.html:12
+msgid "Amount"
+msgstr ""
+
+#: project/templates/djstripe/includes/_history_table.html:29
+msgid "Paid"
+msgstr ""
+
+#: project/templates/djstripe/includes/_history_table.html:36
+msgid "Credit"
+msgstr ""
+
+#: project/templates/djstripe/includes/_subscription_status.html:6
+#, python-format
+msgid ""
+"\n"
+"        Your subscription is <strong>%(subscription_status)s</strong>.\n"
+"      "
+msgstr ""
+
+#: project/templates/djstripe/includes/_subscription_status.html:14
+#, python-format
+msgid ""
+"\n"
+"            Your free trial will end in <strong>%(subscription_end)s</"
+"strong>\n"
+"            after which you commence a <strong>%(plan_display)s</strong> "
+"plan.\n"
+"          "
+msgstr ""
+
+#: project/templates/djstripe/includes/_subscription_status.html:21
+#, python-format
+msgid ""
+"\n"
+"            Your free trial will end in <strong>%(subscription_end)s</"
+"strong>\n"
+"            after which you will need to get a subscription to continue "
+"using the site.\n"
+"          "
+msgstr ""
+
+#: project/templates/djstripe/includes/_subscription_status.html:30
+msgid ""
+"\n"
+"            Your subscription has been <strong>canceled</strong>.\n"
+"          "
+msgstr ""
+
+#: project/templates/djstripe/includes/_subscription_status.html:36
+#, python-format
+msgid ""
+"\n"
+"            Your subscription has been <strong>canceled</strong> on "
+"%(subscription_canceled)s\n"
+"          "
+msgstr ""
+
+#: project/templates/djstripe/includes/_subscription_status.html:40
+#, python-format
+msgid ""
+"\n"
+"              You can continue to use the site for another\n"
+"              <strong>%(subscription_end)s.</strong>\n"
+"            "
+msgstr ""
+
+#: project/templates/djstripe/includes/_subscription_status.html:48
+#, python-format
+msgid ""
+"\n"
+"            Your subscription is <strong>%(subscription_status)s</strong>.\n"
+"          "
+msgstr ""
+
+#: project/templates/djstripe/subscribe.html:9
+msgid "Choose a Subscription for"
+msgstr ""
+
 #: project/templates/index.html:32
 msgid "Gratis Aktienbuch-Muster"
 msgstr ""
 
-#: project/templates/index.html:36 project/tests/test_views.py:82
+#: project/templates/index.html:36 project/tests/test_views.py:83
 msgid "My Dashboard"
 msgstr ""
 
@@ -582,10 +1101,6 @@ msgstr ""
 
 #: project/templates/log.html:15
 msgid "Your Transaction Log"
-msgstr ""
-
-#: project/templates/log.html:20
-msgid "Date"
 msgstr ""
 
 #: project/templates/log.html:21
@@ -744,44 +1259,40 @@ msgstr ""
 msgid "Captable"
 msgstr ""
 
-#: project/templates/start.html:60
+#: project/templates/start.html:61
 msgid "Shareholderr added. record share transfers here"
 msgstr ""
 
-#: project/templates/start.html:73
+#: project/templates/start.html:75
 msgid "Need more advices? Read"
 msgstr ""
 
-#: project/templates/start.html:74
+#: project/templates/start.html:76
 msgid "share register quickstart guide"
 msgstr ""
 
-#: project/templates/start.html:75
+#: project/templates/start.html:77
 msgid "our quickstart tutorial!"
 msgstr ""
 
-#: project/templates/start.html:81
+#: project/templates/start.html:83
 msgid "Share Ownership"
 msgstr ""
 
-#: project/templates/start.html:95
+#: project/templates/start.html:97
 #, python-format
 msgid "Shares (%%%%)"
 msgstr ""
 
-#: project/templates/start.html:99
+#: project/templates/start.html:101
 msgid "Gafi Validation failed"
 msgstr ""
 
-#: project/templates/start.html:113
-msgid "Total Shares distributed"
-msgstr ""
-
-#: project/templates/start.html:123
+#: project/templates/start.html:121
 msgid "Option Holders"
 msgstr ""
 
-#: project/templates/start.html:124
+#: project/templates/start.html:122
 msgid "Option Holders note"
 msgstr ""
 
@@ -972,21 +1483,21 @@ msgstr ""
 msgid "Weblog index"
 msgstr ""
 
-#: project/tests/test_views.py:140 project/views.py:202
+#: project/tests/test_views.py:141 project/views.py:201
 msgid ""
 "You have already an existing user account. Please login or reset your "
 "password."
 msgstr ""
 
-#: project/tests/test_views.py:338
+#: project/tests/test_views.py:341
 msgid "None"
 msgstr ""
 
-#: project/tests/test_views.py:445 project/views.py:36
+#: project/tests/test_views.py:450 project/views.py:36
 msgid "shareholder number"
 msgstr ""
 
-#: project/tests/test_views.py:490 project/views.py:93
+#: project/tests/test_views.py:495 project/views.py:93
 msgid "date"
 msgstr ""
 
@@ -1074,7 +1585,7 @@ msgstr ""
 msgid "seller"
 msgstr ""
 
-#: project/views.py:94 project/views.py:380
+#: project/views.py:94 project/views.py:379
 msgid "count"
 msgstr ""
 
@@ -1082,7 +1593,7 @@ msgstr ""
 msgid "value"
 msgstr ""
 
-#: project/views.py:95 project/views.py:380
+#: project/views.py:95 project/views.py:379
 msgid "security"
 msgstr ""
 
@@ -1114,50 +1625,50 @@ msgstr ""
 msgid "Transactions for options:"
 msgstr ""
 
-#: project/views.py:325 project/views.py:380
+#: project/views.py:324 project/views.py:379
 msgid "full name"
 msgstr ""
 
-#: project/views.py:325
+#: project/views.py:324
 msgid "share count"
 msgstr ""
 
-#: project/views.py:325
+#: project/views.py:324
 msgid "security name"
 msgstr ""
 
-#: project/views.py:326
+#: project/views.py:325
 msgid "certificate id"
 msgstr ""
 
-#: project/views.py:326
+#: project/views.py:325
 msgid "certificate printed at"
 msgstr ""
 
-#: project/views.py:327
+#: project/views.py:326
 msgid "security type"
 msgstr ""
 
-#: project/views.py:334
+#: project/views.py:333
 msgid "option"
 msgstr ""
 
-#: project/views.py:342 project/views.py:385
+#: project/views.py:341 project/views.py:384
 msgid "stock"
 msgstr ""
 
-#: project/views.py:381
+#: project/views.py:380
 msgid "is management member"
 msgstr ""
 
-#: project/views.py:382
+#: project/views.py:381
 msgid "vesting in months"
 msgstr ""
 
-#: project/views.py:382
+#: project/views.py:381
 msgid "asset type"
 msgstr ""
 
-#: project/views.py:390
+#: project/views.py:389
 msgid "certificate"
 msgstr ""
