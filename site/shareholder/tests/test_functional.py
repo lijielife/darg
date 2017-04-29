@@ -1137,6 +1137,7 @@ class PositionFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             app.show_optional_fields()
             app.enter_new_position_data(position)
             app.click_save_position()
+            app.wait_until_js_rendered()
 
             # wait for form to disappear
             app.close_modal('addPosition')
