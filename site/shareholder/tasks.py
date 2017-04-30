@@ -3,6 +3,7 @@
 
 import json
 import os
+import logging
 
 import requests
 from django.conf import settings
@@ -24,6 +25,8 @@ from shareholder.import_backends import SwissBankImportBackend
 from utils.pdf import render_pdf
 
 from .models import Company, ShareholderStatement, ShareholderStatementReport
+
+logger = logging.getLogger(__name__)
 
 
 # helpers
@@ -429,6 +432,9 @@ def fetch_statement_email_opened_mandrill():
                     statement.email_opened_at = timezone.make_aware(
                         datetime.fromtimestamp(ts))
                     statement.save()
+        else:
+            logger.warning('bad mandrill response on email open fetching',
+                           extra={'response': response.content})
 
 
 @app.task
@@ -477,6 +483,8 @@ def send_statement_letters():
             # check if statement user has an postal address
             if not statement.user.userprofile.has_address:
                 # bummer
+                logger.warning('cannot send statement, missing address',
+                               extra={'statement_pk': statement.pk})
                 continue
 
             # send letter via service to user

@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-04-30 09:37+0000\n"
-"PO-Revision-Date: 2017-04-30 09:38+0000\n"
+"PO-Revision-Date: 2017-04-30 12:10+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -803,7 +803,7 @@ msgstr ""
 #: shareholder/templates/email/statement_report_operator_notify.html:6
 #: shareholder/templates/email/statement_report_operator_notify.txt:6
 msgid "Statement report"
-msgstr "Kontoauzüge"
+msgstr "Kontoauzüge "
 
 #: shareholder/templates/email/statement_report_operator_notify.html:6
 #: shareholder/templates/email/statement_report_operator_notify.txt:6

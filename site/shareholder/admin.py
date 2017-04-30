@@ -82,6 +82,7 @@ class CompanyAdmin(VersionAdmin):
                          'email', 'vote_ratio', 'signatures')}),
         (_('Address'), {'fields': Company.ADDRESS_FIELDS}),
         (_('Statements'), {'fields': ('is_statement_sending_enabled',
+                                      'send_shareholder_statement_via_letter_enabled',  # noqa
                                       'statement_sending_date')})
     )
 
