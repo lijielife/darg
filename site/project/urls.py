@@ -166,6 +166,7 @@ urlpatterns = [
     url(r'^company/(?P<company_id>[0-9]+)/subscriptions/',
         include('company.urls_djstripe', namespace="djstripe")),
     url(r'^_stripe/webhooks/$', WebHook.as_view()),
+
     # chrome needs this:
     url(r'^favicon\.ico$', RedirectView.as_view(
         url='/static/compiled/images/favicon.ico')),

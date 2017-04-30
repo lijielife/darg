@@ -468,6 +468,7 @@ PINGEN_API_URL = 'https://api.pingen.com'  # can't upload to stage api!
 # stripe
 STRIPE_PUBLIC_KEY = get_env_variable('STRIPE_PUBLIC_KEY', fail_on_error=False)
 STRIPE_SECRET_KEY = get_env_variable('STRIPE_SECRET_KEY', fail_on_error=False)
+DJSTRIPE_WEBHOOK_URL = r"^_stripe/webhooks/$"
 DJSTRIPE_INVOICE_FROM_EMAIL = DEFAULT_FROM_EMAIL
 DJSTRIPE_SUBSCRIBER_MODEL = 'shareholder.Company'
 DJSTRIPE_CURRENCIES = (('chf', _('Swiss franc'),),)
