@@ -136,7 +136,7 @@
       </div>
     </div>
 
-    <div class="tr th" ng-show="company.subscription_features.indexOf('is_statement_sending_enabled') > -1">
+    <div class="tr th" ng-show="company.subscription_features.indexOf('shareholder_statements') > -1">
       <div class="td">{% trans "Is statement sending enabled" %}</div>
       <div class="td">
         {% verbatim %}
@@ -149,22 +149,22 @@
     </div>
 
     <div class="tr th statement-send-date"
-        ng-show="company.is_statement_sending_enabled && company.subscription_features.indexOf('statement_sending_date') > -1">
-      <div class="td">{% trans "Statement seding date" %}:</div>
+        ng-show="company.is_statement_sending_enabled && company.subscription_features.indexOf('shareholder_statements') > -1">
+      <div class="td">{% trans "Statement sending date" %}:</div>
       <div class="td date-field">
         {% verbatim %}
         <span editable-bsdate="company.statement_sending_date"
-              edit-disabled="{{ !company.is_statement_sending_enabled }}"
+              edit-disabled="{{ company.is_statement_sending_enabled==false }}"
               onaftersave="edit_company()"
               e-showWeeks=false
-              e-is-open="datepicker.opened"
-              e-ng-click="open_datepicker()"
-              e-datepicker-options="datepicker.options"
+              e-is-open="datepicker1.opened"
+              e-ng-click="open_datepicker1()"
+              e-datepicker-options="datepicker1.options"
               e-show-button-bar="true"
               e-close-text="Schliessen"
               e-clear-text="Leeren"
               e-current-text="Heute"
-              e-datepicker-popup="{{datepicker.format}}"
+              e-datepicker-popup="{{datepicker1.format}}"
               >
             {{ (company.statement_sending_date|date:"dd.MM.yy") || 'nicht angegeben' }}
             <span class="el-icon-pencil"></span>

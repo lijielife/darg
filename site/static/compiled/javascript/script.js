@@ -43915,17 +43915,24 @@ return deCh;
         });
       };
       $scope.edit_company = function() {
+        var founded_at, statement_sending_date;
         if ($scope.company.country) {
           $scope.company.country = $scope.company.country.url;
         }
         if ($scope.company.founded_at) {
-          $scope.company.founded_at = $scope.company.founded_at.toISOString().substring(0, 10);
+          founded_at = $scope.company.founded_at;
+          founded_at.setHours(founded_at.getHours() - founded_at.getTimezoneOffset() / 60);
+          $scope.company.founded_at = founded_at.toISOString().substring(0, 10);
         }
         if ($scope.company.statement_sending_date) {
-          $scope.company.statement_sending_date = $scope.company.statement_sending_date.toISOString().substring(0, 10);
+          statement_sending_date = $scope.company.statement_sending_date;
+          statement_sending_date.setHours(statement_sending_date.getHours() - statement_sending_date.getTimezoneOffset() / 60);
+          $scope.company.statement_sending_date = statement_sending_date.toISOString().substring(0, 10);
         }
         return $scope.company.$update().then(function(result) {
-          result.founded_at = new Date(result.founded_at);
+          if (result.founded_at) {
+            result.founded_at = new Date(result.founded_at);
+          }
           if (result.statement_sending_date) {
             result.statement_sending_date = new Date(result.statement_sending_date);
           }
@@ -44011,6 +44018,18 @@ return deCh;
       };
       $scope.open_datepicker = function() {
         return $scope.datepicker.opened = true;
+      };
+      $scope.datepicker1 = {
+        opened: false
+      };
+      $scope.datepicker1.format = 'd.MM.yy';
+      $scope.datepicker1.options = {
+        formatYear: 'yy',
+        startingDay: 1,
+        showWeeks: false
+      };
+      $scope.open_datepicker1 = function() {
+        return $scope.datepicker1.opened = true;
       };
       return $scope.confirm_company_reset = function() {
         var label;

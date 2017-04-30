@@ -79,13 +79,19 @@ app.controller 'CompanyController', ['$scope', '$http', '$window', 'Company', 'C
     $scope.edit_company = () ->
         if $scope.company.country
             $scope.company.country = $scope.company.country.url
+        # dates: to ISO and remove timezone offset
         if $scope.company.founded_at
-            $scope.company.founded_at = $scope.company.founded_at.toISOString().substring(0, 10)
+            founded_at = $scope.company.founded_at
+            founded_at.setHours(founded_at.getHours() - founded_at.getTimezoneOffset() / 60)
+            $scope.company.founded_at = founded_at.toISOString().substring(0, 10)
         if $scope.company.statement_sending_date
-            $scope.company.statement_sending_date = $scope.company.statement_sending_date.toISOString().substring(0, 10)
+            statement_sending_date = $scope.company.statement_sending_date
+            statement_sending_date.setHours(statement_sending_date.getHours() - statement_sending_date.getTimezoneOffset() / 60)
+            $scope.company.statement_sending_date = statement_sending_date.toISOString().substring(0, 10)
             
         $scope.company.$update().then (result) ->
-            result.founded_at = new Date(result.founded_at)
+            if result.founded_at
+                result.founded_at = new Date(result.founded_at)
             if (result.statement_sending_date)
                 result.statement_sending_date = new Date(result.statement_sending_date)
             $scope.company = new Company(result)
@@ -156,6 +162,7 @@ app.controller 'CompanyController', ['$scope', '$http', '$window', 'Company', 'C
               return
 
     # --- DATEPICKER
+    # founding date:
     $scope.datepicker = { opened: false }
     $scope.datepicker.format = 'd.MM.yy'
     $scope.datepicker.options = {
@@ -165,6 +172,17 @@ app.controller 'CompanyController', ['$scope', '$http', '$window', 'Company', 'C
     }
     $scope.open_datepicker = ->
         $scope.datepicker.opened = true
+
+    # statement sending date:
+    $scope.datepicker1 = { opened: false }
+    $scope.datepicker1.format = 'd.MM.yy'
+    $scope.datepicker1.options = {
+        formatYear: 'yy',
+        startingDay: 1,
+        showWeeks: false,
+    }
+    $scope.open_datepicker1 = ->
+        $scope.datepicker1.opened = true
 
     # --- company reset form
     $scope.confirm_company_reset = () ->
