@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-29 13:50+0000\n"
+"POT-Creation-Date: 2017-04-30 09:37+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -72,7 +72,7 @@ msgstr ""
 msgid "Positions"
 msgstr ""
 
-#: project/settings/base.py:585 project/templates/_menu.html:38
+#: project/settings/base.py:585
 #: project/templates/active_shareholder_captable.pdf.html:139
 msgid "Options"
 msgstr ""
@@ -263,12 +263,16 @@ msgstr ""
 msgid "Start"
 msgstr ""
 
-#: project/templates/_menu.html:41
+#: project/templates/_menu.html:38
 msgid "Reports"
 msgstr ""
 
-#: project/templates/_menu.html:51
+#: project/templates/_menu.html:48
 msgid "Logged in as"
+msgstr ""
+
+#: project/templates/_menu.html:58
+msgid "ESOP"
 msgstr ""
 
 #: project/templates/_menu.html:62
@@ -664,6 +668,10 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
+#: project/templates/djstripe/base.html:13
+msgid "Server Update In-Progress"
+msgstr ""
+
 #: project/templates/djstripe/cancel_subscription.html:14
 msgid "Cancel Subscription"
 msgstr ""
@@ -884,11 +892,11 @@ msgstr ""
 msgid "Amount"
 msgstr ""
 
-#: project/templates/djstripe/includes/_history_table.html:29
+#: project/templates/djstripe/includes/_history_table.html:31
 msgid "Paid"
 msgstr ""
 
-#: project/templates/djstripe/includes/_history_table.html:36
+#: project/templates/djstripe/includes/_history_table.html:38
 msgid "Credit"
 msgstr ""
 

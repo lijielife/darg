@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-29 13:50+0000\n"
+"POT-Creation-Date: 2017-04-30 09:37+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -334,15 +334,15 @@ msgstr ""
 msgid "Empty list and '%(class_name)s.allow_empty' is False."
 msgstr ""
 
-#: company/views.py:136
+#: company/views.py:137
 msgid "You already subscribed to this plan"
 msgstr ""
 
-#: company/views.py:220
+#: company/views.py:221
 msgid "You must already be subscribed to a plan before you can change it."
 msgstr ""
 
-#: company/views.py:363
+#: company/views.py:364
 msgid "Could not find requested filed."
 msgstr ""
 
