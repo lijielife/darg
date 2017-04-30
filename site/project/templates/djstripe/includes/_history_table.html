@@ -14,11 +14,13 @@
       {% for invoice in customer.invoices.all  %}
         <div class="tr">
           <div class="td td-width-2">
-            {% if invoice.has_invoice_pdf %}
+            {# {% if invoice.has_invoice_pdf %} #}
               <a href="{% url 'djstripe:invoice' customer.subscriber_id invoice.pk %}">
-            {% endif %}
+            {# {% endif %} #}
               #{{ invoice.pk }}
-            {% if invoice.has_invoice_pdf %}</a>{% endif %}
+            {# {% if invoice.has_invoice_pdf %} #}
+              </a>
+            {# {% endif %} #}
           </div>
           <div class="td td-width-2">
             {{ invoice.date|date:'DATE_FORMAT' }}
