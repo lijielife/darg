@@ -51,9 +51,8 @@ class ShareholderDetailPage(BaseDetailPage):
 
     def click_to_edit(self, class_name):
         el = self.wait_until_visible((
-            By.XPATH,
-            u'//div[contains(@class, "{}")]//'
-            u'span[contains(@class, "editable-click")]'.format(class_name)
+            By.CSS_SELECTOR,
+            u'div.{} span.editable-click'.format(class_name)
         ))
         el.click()
 

@@ -170,10 +170,11 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
             p.wait_until_visible(
                 (By.CSS_SELECTOR, '.legal-type span.el-icon-pencil'))
             p.click_to_edit("legal-type")
+            time.sleep(1)
             p.select_type("legal-type", _('Corporate'))
+            time.sleep(1)
             p.save_edit("legal-type")
-            p.wait_until_js_rendered()
-            time.sleep(2)
+            time.sleep(1)
 
             profile = self.buyer.user.userprofile
             profile.refresh_from_db()
@@ -195,6 +196,7 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
                     kwargs={'pk': self.buyer.id}
                     )
                 )
+            p.wait_until_js_rendered()
             # wait for 'link'
             p.wait_until_visible(
                 (By.CSS_SELECTOR, '.mailing-type span.el-icon-pencil'))
