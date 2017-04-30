@@ -201,8 +201,11 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
             p.wait_until_visible(
                 (By.CSS_SELECTOR, '.mailing-type span.el-icon-pencil'))
             p.click_to_edit("mailing-type")
+            time.sleep(1)
             p.select_type("mailing-type", _('via Email'))
+            time.sleep(1)
             p.save_edit("mailing-type")
+            time.sleep(1)
             # wait for form to disappear
             p.wait_until_invisible(
                 (By.CSS_SELECTOR, '.mailing-type form'))
