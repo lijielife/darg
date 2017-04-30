@@ -70,10 +70,10 @@ class Pingen(object):
             color=color is not None and color or pingen_settings.SEND_COLOR,
             duplex=(
                 duplex is not None and duplex or pingen_settings.SEND_DUPLEX),
-            rightaddress=(rightaddress is not None and rightaddress
-                          or pingen_settings.RIGHT_ADDRESS),
-            envelope=(envelope is not None and envelope
-                      or pingen_settings.SEND_ENVELOPE)
+            rightaddress=(rightaddress is not None and rightaddress or
+                          pingen_settings.RIGHT_ADDRESS),
+            envelope=(envelope is not None and envelope or
+                      pingen_settings.SEND_ENVELOPE)
         )
 
         # api call
@@ -88,6 +88,12 @@ class Pingen(object):
             res_data = res.json()
             error = res_data.get('error', False)
             success = not error and res_data.get('id') or False
+            # handle requirement fail:
+            # {u'item': {u'status': 1, u'requirement_failure': 8192,
+            # u'rightaddress'...
+            success = (
+                res_data.get('requirement_failure', 0) == 0 and success or False
+            )
         else:
             success = False
 

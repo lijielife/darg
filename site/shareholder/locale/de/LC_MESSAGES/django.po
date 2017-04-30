@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-04-30 09:37+0000\n"
-"PO-Revision-Date: 2017-04-30 12:10+0000\n"
+"PO-Revision-Date: 2017-04-30 12:21+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -248,7 +248,7 @@ msgstr "Datum für Versand der Kontoauszüge"
 
 #: shareholder/models.py:174
 msgid "Is sending the shareholder statement via snail mail enabled"
-msgstr "Das Senden der Depotauszüge per Mail ist aktiviert"
+msgstr "Das Senden der Depotauszüge per Brief/Post ist aktiviert"
 
 #: shareholder/models.py:181
 #: shareholder/templates/pdf/_statement_preview.pdf.html:14
