@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-04-30 12:52+0000\n"
-"PO-Revision-Date: 2017-04-28 22:01+0000\n"
+"PO-Revision-Date: 2017-05-01 19:41+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -291,11 +291,11 @@ msgstr "Berichte und Downloads für"
 
 #: reports/templates/reports/index.html:19
 msgid ""
-"Use CSV for Excel like Downloads. Follow this <a href='https://goo.gl/"
-"aQ2gVx'>guide for instructions</a>."
+"Use CSV for Excel like Downloads. Follow this <a "
+"href='https://goo.gl/aQ2gVx'>guide for instructions</a>."
 msgstr ""
 "Verwenden Sie CSV für Downloads für MS Excel. Folgen Sie dieser <a "
-"href='https://goo.gl/aQ2gVx'>Anleitung zum Import/a>."
+"href='https://goo.gl/aQ2gVx'>Anleitung zum Import</a>."
 
 #: reports/templates/reports/index.html:33
 msgid "Other Downloads"

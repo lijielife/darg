@@ -84,18 +84,16 @@
               {% if shareholder.company.province %}{{ shareholder.company.province }}<br />{% endif %}
               {{ shareholder.company.country.name }}
               <br /><br />
-              {% trans "Your contact person(s):" %}<br />
+              {% trans "Your contact person(s):" %}:<br />
               {% for operator in shareholder.company.get_operators %}
                 {{ operator.user.get_full_name }}{% if not forloop.last %}, {% endif %}
               {% endfor %}
               <br /><br />
-              {% trans "Your shareholder number:" %}
+              {% trans "Your shareholder number:" %}:
               {{ shareholder.number }}
+              <br /><br />
+              {{ report_date|date:"DATE_FORMAT" }}
             </td>
-          </tr>
-          <tr>
-            <td>&nbsp;</td>
-            <td  class="company">{{ report_date|date:"DATE_FORMAT" }}</td>
           </tr>
         </table>
       </div>
