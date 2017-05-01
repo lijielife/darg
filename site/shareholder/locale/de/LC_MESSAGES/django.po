@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-01 20:30+0000\n"
-"PO-Revision-Date: 2017-05-01 20:34+0000\n"
+"PO-Revision-Date: 2017-05-01 22:46+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -1699,11 +1699,11 @@ msgstr "Gesellschafter hält Wertpapiere gesamt"
 msgid "total values of all shares based on face value"
 msgstr ""
 "Gesamtkapital des Gesellschafters basierend auf dem Nennwert. Mathematisch: "
-"Anzahl Aktien pro Nennwert multipliziert mit dem Nennwert."
+"Summe über: ( Anzahl Aktien pro Nennwert multipliziert mit dem Nennwert )."
 
 #: shareholder/templates/shareholder/shareholder_detail.html:250
 msgid "Total face value"
-msgstr "Kumuliertes Kapital (Nennwert Aktie * Stückzahl)"
+msgstr "Kumuliertes Kapital"
 
 #: shareholder/templates/shareholder/shareholder_detail.html:253
 #, python-format

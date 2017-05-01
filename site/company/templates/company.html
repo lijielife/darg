@@ -254,7 +254,8 @@
     {% if shareholder.company.get_total_share_count_floating %}
     <div class="tr th">
       <div class="td">
-        {% trans "Share Count Floating" %}
+        {% trans "number of shares which are given to shareholders. or overall share count minus dispo shareholder and minus company shareholder" as msg %}
+        {% trans "Share Count Floating" %}{% context_help msg %}
       </div>
       <div class="td">
         {{shareholder.company.get_total_share_count_floating }}
@@ -264,7 +265,7 @@
 
     <div class="tr th">
       <div class="td">
-        {% trans "total votes count based on existing shares" as msg %}
+        {% trans "total votes count based on existing shares. math: overall share count * face value" as msg %}
         {% trans "Total votes count based on shares existing" %}{% context_help msg %}
       </div>
       <div class="td">

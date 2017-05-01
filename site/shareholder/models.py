@@ -482,11 +482,6 @@ class Company(AddressModelMixin, models.Model):
             self.get_total_votes_in_options(security=security)
         )
 
-        # if we have a dispo shareholder, substract his votes too...
-        dsh = self.get_dispo_shareholder()
-        if dsh:
-            total = total - dsh.vote_count(date=date, security=security)
-
         return int(total)
 
     def get_total_options(self, security=None):
