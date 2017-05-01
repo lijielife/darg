@@ -77,6 +77,8 @@ def setup_periodic_tasks(sender, **kwargs):
         send_statement_letters.s()
     )
     sender.add_periodic_task(
-        crontab(hour=4, minute=0, day_of_month=1), update_banks_from_six.s())
+        crontab(hour=4, minute=0, day_of_month=1), update_banks_from_six.s()
+    )
     sender.add_periodic_task(
-        crontab(hour=2, minute=0), prerender_reports.s())
+        crontab(hour=2, minute=0), prerender_reports.s()
+    )
