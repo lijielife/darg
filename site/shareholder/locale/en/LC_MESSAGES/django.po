@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-30 09:37+0000\n"
+"POT-Creation-Date: 2017-04-30 12:52+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,45 +45,45 @@ msgstr ""
 msgid "Statements"
 msgstr ""
 
-#: shareholder/admin.py:108 shareholder/tasks.py:118
+#: shareholder/admin.py:109 shareholder/tasks.py:121
 msgid "Preview"
 msgstr ""
 
-#: shareholder/admin.py:218 shareholder/models.py:2018
+#: shareholder/admin.py:219 shareholder/models.py:2018
 msgid "shareholder statements"
 msgstr ""
 
-#: shareholder/admin.py:223
+#: shareholder/admin.py:224
 msgid "Timestamps"
 msgstr ""
 
-#: shareholder/admin.py:231 shareholder/admin.py:289 shareholder/admin.py:297
-#: shareholder/admin.py:305 shareholder/admin.py:314
+#: shareholder/admin.py:232 shareholder/admin.py:290 shareholder/admin.py:298
+#: shareholder/admin.py:306 shareholder/admin.py:315
 msgid "Yes"
 msgstr ""
 
-#: shareholder/admin.py:232 shareholder/admin.py:289 shareholder/admin.py:297
-#: shareholder/admin.py:305 shareholder/admin.py:314
+#: shareholder/admin.py:233 shareholder/admin.py:290 shareholder/admin.py:298
+#: shareholder/admin.py:306 shareholder/admin.py:315
 msgid "No"
 msgstr ""
 
-#: shareholder/admin.py:245
+#: shareholder/admin.py:246
 msgid "Was email sent"
 msgstr ""
 
-#: shareholder/admin.py:252
+#: shareholder/admin.py:253
 msgid "Was email opened"
 msgstr ""
 
-#: shareholder/admin.py:259
+#: shareholder/admin.py:260
 msgid "Was PDF downloaded"
 msgstr ""
 
-#: shareholder/admin.py:266
+#: shareholder/admin.py:267
 msgid "Was letter sent"
 msgstr ""
 
-#: shareholder/admin.py:275 shareholder/templates/_statements_table.html:6
+#: shareholder/admin.py:276 shareholder/templates/_statements_table.html:6
 #: shareholder/templates/pdf/_statement_preview.pdf.html:6
 #: shareholder/templates/pdf/_statement_preview.pdf.html:7
 #: shareholder/templates/pdf/_statement_preview.pdf.html:8
@@ -97,31 +97,31 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: shareholder/admin.py:279 shareholder/models.py:1739
+#: shareholder/admin.py:280 shareholder/models.py:1739
 msgid "company"
 msgstr ""
 
-#: shareholder/admin.py:283 shareholder/models.py:1740
+#: shareholder/admin.py:284 shareholder/models.py:1740
 msgid "report date"
 msgstr ""
 
-#: shareholder/admin.py:290
+#: shareholder/admin.py:291
 msgid "email sent"
 msgstr ""
 
-#: shareholder/admin.py:298
+#: shareholder/admin.py:299
 msgid "email opened"
 msgstr ""
 
-#: shareholder/admin.py:307
+#: shareholder/admin.py:308
 msgid "pdf downloaded"
 msgstr ""
 
-#: shareholder/admin.py:315
+#: shareholder/admin.py:316
 msgid "letter sent"
 msgstr ""
 
-#: shareholder/admin.py:323
+#: shareholder/admin.py:324
 msgid "Download PDF"
 msgstr ""
 
@@ -175,8 +175,8 @@ msgstr ""
 msgid "Personal ownership"
 msgstr ""
 
-#: shareholder/models.py:52 shareholder/tests/test_functional.py:1049
-#: shareholder/tests/test_functional.py:1651
+#: shareholder/models.py:52 shareholder/tests/test_functional.py:1054
+#: shareholder/tests/test_functional.py:1656
 msgid "Personal representation"
 msgstr ""
 
@@ -200,7 +200,7 @@ msgstr ""
 msgid "Postal Mail"
 msgstr ""
 
-#: shareholder/models.py:64 shareholder/tests/test_functional.py:202
+#: shareholder/models.py:64 shareholder/tests/test_functional.py:205
 msgid "via Email"
 msgstr ""
 
@@ -304,7 +304,7 @@ msgstr ""
 msgid "Human Being"
 msgstr ""
 
-#: shareholder/models.py:780 shareholder/tests/test_functional.py:173
+#: shareholder/models.py:780 shareholder/tests/test_functional.py:174
 msgid "Corporate"
 msgstr ""
 
@@ -497,24 +497,24 @@ msgstr ""
 msgid "shareholder statement"
 msgstr ""
 
-#: shareholder/tasks.py:65 shareholder/tasks.py:179
+#: shareholder/tasks.py:68 shareholder/tasks.py:182
 msgid "Company has not operators"
 msgstr ""
 
-#: shareholder/tasks.py:66 shareholder/tasks.py:180
+#: shareholder/tasks.py:69 shareholder/tasks.py:183
 msgid "Company {} (ID: {}) has no active operator(s) with an email address!"
 msgstr ""
 
-#: shareholder/tasks.py:102
+#: shareholder/tasks.py:105
 #, python-brace-format
 msgid "Shareholder statement about to be sent for {company}"
 msgstr ""
 
-#: shareholder/tasks.py:148
+#: shareholder/tasks.py:151
 msgid "Shareholder Statement Operator Notify failed"
 msgstr ""
 
-#: shareholder/tasks.py:149
+#: shareholder/tasks.py:152
 msgid ""
 "The notification for company operators about an upcoming statement "
 "generation could not be sent:\n"
@@ -524,20 +524,20 @@ msgid ""
 "The company is: {} (ID: {})"
 msgstr ""
 
-#: shareholder/tasks.py:153 shareholder/tasks.py:256
+#: shareholder/tasks.py:156 shareholder/tasks.py:259
 msgid "[No information]"
 msgstr ""
 
-#: shareholder/tasks.py:234
+#: shareholder/tasks.py:237
 #, python-brace-format
 msgid "Shareholder statement report for {company}"
 msgstr ""
 
-#: shareholder/tasks.py:251
+#: shareholder/tasks.py:254
 msgid "Shareholder Statement Report Operator Notify failed"
 msgstr ""
 
-#: shareholder/tasks.py:252
+#: shareholder/tasks.py:255
 msgid ""
 "The notification for company operators about a report for shareholder "
 "statements could not be sent:\n"
@@ -547,11 +547,11 @@ msgid ""
 "The company is: {} (ID: {})"
 msgstr ""
 
-#: shareholder/tasks.py:308
+#: shareholder/tasks.py:311
 msgid "A user is missing an email address"
 msgstr ""
 
-#: shareholder/tasks.py:309
+#: shareholder/tasks.py:312
 #, python-brace-format
 msgid ""
 "The following users, who is a shareholder of {company} is missing an email "
@@ -563,11 +563,11 @@ msgid ""
 "provided."
 msgstr ""
 
-#: shareholder/tasks.py:326
+#: shareholder/tasks.py:329
 msgid "A statement is missing the PDF file"
 msgstr ""
 
-#: shareholder/tasks.py:327
+#: shareholder/tasks.py:330
 #, python-brace-format
 msgid ""
 "The following statement of user {user} is missing the PDF file.\n"
@@ -577,7 +577,7 @@ msgid ""
 "We can not send him the shareholder statement until a valid file is provided."
 msgstr ""
 
-#: shareholder/tasks.py:371
+#: shareholder/tasks.py:374
 #, python-brace-format
 msgid "Your personal shareholder statement for {company}"
 msgstr ""
@@ -1692,7 +1692,7 @@ msgstr ""
 msgid "Unlimited"
 msgstr ""
 
-#: shareholder/tests/test_functional.py:307
+#: shareholder/tests/test_functional.py:312
 msgid "This email is already taken by another user/shareholder."
 msgstr ""
 

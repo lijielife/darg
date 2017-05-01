@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-30 09:37+0000\n"
-"PO-Revision-Date: 2017-04-30 09:38+0000\n"
+"POT-Creation-Date: 2017-04-30 12:52+0000\n"
+"PO-Revision-Date: 2017-04-30 12:57+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -44,88 +44,88 @@ msgstr "erstellt am"
 msgid "modified at"
 msgstr "geändert am"
 
-#: project/settings/base.py:473
+#: project/settings/base.py:474
 msgid "Swiss franc"
 msgstr "Schweizer Franken"
 
-#: project/settings/base.py:477
+#: project/settings/base.py:478
 msgid "StartUp"
 msgstr "StartUp"
 
-#: project/settings/base.py:478
+#: project/settings/base.py:479
 msgid "Designed für StartUps und Neugründungen"
 msgstr "Designed für StartUps und Neugründungen"
 
-#: project/settings/base.py:512
+#: project/settings/base.py:513
 msgid "Professional"
 msgstr "Professional"
 
-#: project/settings/base.py:513
+#: project/settings/base.py:514
 msgid "Für etablierte Aktiengesellschaften und KMU"
 msgstr "Für etablierte Aktiengesellschaften und KMU"
 
-#: project/settings/base.py:543
+#: project/settings/base.py:544
 msgid "Enterprise"
 msgstr "Enterprise"
 
-#: project/settings/base.py:545
+#: project/settings/base.py:546
 msgid "First-Class-Service für grosse Aktionärsgesellschaften"
 msgstr "First-Class-Service für grosse Aktionärsgesellschaften"
 
-#: project/settings/base.py:583
+#: project/settings/base.py:584
 msgid "Shareholders"
 msgstr "Aktionäre"
 
-#: project/settings/base.py:584 project/templates/_menu.html:35
+#: project/settings/base.py:585 project/templates/_menu.html:35
 msgid "Positions"
 msgstr "Transaktionen"
 
-#: project/settings/base.py:585
+#: project/settings/base.py:586
 #: project/templates/active_shareholder_captable.pdf.html:139
 msgid "Options"
 msgstr "Optionen"
 
-#: project/settings/base.py:586
+#: project/settings/base.py:587
 msgid "Securities"
 msgstr "Aktienarten"
 
-#: project/settings/base.py:588
+#: project/settings/base.py:589
 msgid "Aktienausgabe, Aktienkauf, -verkauf, Kapitalerhöhung, Aktiensplit"
 msgstr "Aktienausgabe, Aktienkauf, -verkauf, Kapitalerhöhung, Aktiensplit"
 
-#: project/settings/base.py:591
+#: project/settings/base.py:592
 msgid "GAFI Validierung"
 msgstr "GAFI Validierung"
 
-#: project/settings/base.py:592
+#: project/settings/base.py:593
 msgid "Revisionssicherheit"
 msgstr "Revisionssicherheit"
 
-#: project/settings/base.py:594
+#: project/settings/base.py:595
 msgid "Depotauszug Email & Brief"
 msgstr "Depotauszug Email & Brief"
 
-#: project/settings/base.py:595
+#: project/settings/base.py:596
 msgid "Es entstehen weitere Kosten bei Briefversand pro versendetem Brief."
 msgstr "Es entstehen weitere Kosten bei Briefversand pro versendetem Brief."
 
-#: project/settings/base.py:602
+#: project/settings/base.py:603
 msgid "Nummerierte Aktien"
 msgstr "Nummerierte Aktien"
 
-#: project/settings/base.py:603
+#: project/settings/base.py:604
 msgid "Email Support"
 msgstr "Email Support"
 
-#: project/settings/base.py:604
+#: project/settings/base.py:605
 msgid "Profi-Verwaltung Aktionäre"
 msgstr "Profi-Verwaltung Aktionäre"
 
-#: project/settings/base.py:605
+#: project/settings/base.py:606
 msgid "Premium-Support 24/7"
 msgstr "Premium-Support 24/7"
 
-#: project/settings/base.py:606
+#: project/settings/base.py:607
 msgid "Custom Export/Import"
 msgstr "Custom Export/Import"
 
@@ -344,11 +344,10 @@ msgstr "Ausloggen"
 msgid "Register"
 msgstr "Anmelden"
 
-#: project/templates/_menu.html:114 project/templates/index.html:40
-#: project/templates/registration/registration_form.html:26
-#: project/templates/two_factor/core/login.html:12
-msgid "Login"
-msgstr "Login"
+#: project/templates/_menu.html:114
+#| msgid "log in"
+msgid "Log in"
+msgstr "Einloggen"
 
 #: project/templates/_messages.html:7
 msgid "Important:"
@@ -1052,6 +1051,12 @@ msgstr "Gratis Aktienbuch-Muster"
 msgid "My Dashboard"
 msgstr "Mein Dashboard"
 
+#: project/templates/index.html:40
+#: project/templates/registration/registration_form.html:26
+#: project/templates/two_factor/core/login.html:12
+msgid "Login"
+msgstr "Login"
+
 #: project/templates/index.html:44
 msgid "prices and plans"
 msgstr "Preise und Pakete"
@@ -1302,7 +1307,7 @@ msgid ""
 "wish to reset your password, please ignore this message.\n"
 msgstr ""
 "\n"
-"Sie erhalten diese email weil Sie (oder jemand anderes, welcher vorgibt Sie zu sein) das Passwortes Ihres Nutzerkontos auf %(domain)s zurücksetzen will. Wenn Sie dieses nicht wünschen, ignorieren Sie diese Nachricht bitte.\n"
+"Sie erhalten diese Email, weil Sie (oder jemand anderes, welcher vorgibt Sie zu sein) das Passwortes Ihres Nutzerkontos auf %(domain)s zurücksetzen wollen. Wenn Sie dieses nicht wünschen, ignorieren Sie diese Nachricht bitte.\n"
 
 #: project/templates/registration/password_reset_email.html:11
 msgid ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-30 09:37+0000\n"
+"POT-Creation-Date: 2017-04-30 12:52+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,88 +36,88 @@ msgstr ""
 msgid "modified at"
 msgstr ""
 
-#: project/settings/base.py:473
+#: project/settings/base.py:474
 msgid "Swiss franc"
 msgstr ""
 
-#: project/settings/base.py:477
+#: project/settings/base.py:478
 msgid "StartUp"
 msgstr ""
 
-#: project/settings/base.py:478
+#: project/settings/base.py:479
 msgid "Designed für StartUps und Neugründungen"
 msgstr ""
 
-#: project/settings/base.py:512
+#: project/settings/base.py:513
 msgid "Professional"
 msgstr ""
 
-#: project/settings/base.py:513
+#: project/settings/base.py:514
 msgid "Für etablierte Aktiengesellschaften und KMU"
 msgstr ""
 
-#: project/settings/base.py:543
+#: project/settings/base.py:544
 msgid "Enterprise"
 msgstr ""
 
-#: project/settings/base.py:545
+#: project/settings/base.py:546
 msgid "First-Class-Service für grosse Aktionärsgesellschaften"
 msgstr ""
 
-#: project/settings/base.py:583
+#: project/settings/base.py:584
 msgid "Shareholders"
 msgstr ""
 
-#: project/settings/base.py:584 project/templates/_menu.html:35
+#: project/settings/base.py:585 project/templates/_menu.html:35
 msgid "Positions"
 msgstr ""
 
-#: project/settings/base.py:585
+#: project/settings/base.py:586
 #: project/templates/active_shareholder_captable.pdf.html:139
 msgid "Options"
 msgstr ""
 
-#: project/settings/base.py:586
+#: project/settings/base.py:587
 msgid "Securities"
 msgstr ""
 
-#: project/settings/base.py:588
+#: project/settings/base.py:589
 msgid "Aktienausgabe, Aktienkauf, -verkauf, Kapitalerhöhung, Aktiensplit"
 msgstr ""
 
-#: project/settings/base.py:591
+#: project/settings/base.py:592
 msgid "GAFI Validierung"
 msgstr ""
 
-#: project/settings/base.py:592
+#: project/settings/base.py:593
 msgid "Revisionssicherheit"
 msgstr ""
 
-#: project/settings/base.py:594
+#: project/settings/base.py:595
 msgid "Depotauszug Email & Brief"
 msgstr ""
 
-#: project/settings/base.py:595
+#: project/settings/base.py:596
 msgid "Es entstehen weitere Kosten bei Briefversand pro versendetem Brief."
 msgstr ""
 
-#: project/settings/base.py:602
+#: project/settings/base.py:603
 msgid "Nummerierte Aktien"
 msgstr ""
 
-#: project/settings/base.py:603
+#: project/settings/base.py:604
 msgid "Email Support"
 msgstr ""
 
-#: project/settings/base.py:604
+#: project/settings/base.py:605
 msgid "Profi-Verwaltung Aktionäre"
 msgstr ""
 
-#: project/settings/base.py:605
+#: project/settings/base.py:606
 msgid "Premium-Support 24/7"
 msgstr ""
 
-#: project/settings/base.py:606
+#: project/settings/base.py:607
 msgid "Custom Export/Import"
 msgstr ""
 
@@ -330,10 +330,8 @@ msgstr ""
 msgid "Register"
 msgstr ""
 
-#: project/templates/_menu.html:114 project/templates/index.html:40
-#: project/templates/registration/registration_form.html:26
-#: project/templates/two_factor/core/login.html:12
-msgid "Login"
+#: project/templates/_menu.html:114
+msgid "Log in"
 msgstr ""
 
 #: project/templates/_messages.html:7
@@ -973,6 +971,12 @@ msgstr ""
 
 #: project/templates/index.html:36 project/tests/test_views.py:83
 msgid "My Dashboard"
+msgstr ""
+
+#: project/templates/index.html:40
+#: project/templates/registration/registration_form.html:26
+#: project/templates/two_factor/core/login.html:12
+msgid "Login"
 msgstr ""
 
 #: project/templates/index.html:44
