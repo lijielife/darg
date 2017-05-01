@@ -1039,6 +1039,12 @@ class Shareholder(TagMixin, models.Model):
         """
         return self.company.get_dispo_shareholder() == self
 
+    def is_transfer_shareholder(self):
+        """
+        returns bool if shareholder is dispo shareholder
+        """
+        return self.company.get_transfer_shareholder() == self
+
     def last_traded_share_price(self, date=None, security=None):
         qs = Position.objects.filter(buyer__company=self.company)
         if date:

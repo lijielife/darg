@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-30 12:52+0000\n"
+"POT-Creation-Date: 2017-05-01 20:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -328,10 +328,6 @@ msgstr ""
 #: project/templates/two_factor/core/login.html:61
 #: project/tests/test_views.py:206
 msgid "Register"
-msgstr ""
-
-#: project/templates/_menu.html:114
-msgid "Log in"
 msgstr ""
 
 #: project/templates/_messages.html:7

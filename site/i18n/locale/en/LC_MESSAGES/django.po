@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-30 12:52+0000\n"
+"POT-Creation-Date: 2017-05-01 20:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -422,19 +422,7 @@ msgstr ""
 msgid "German"
 msgstr ""
 
-#: utils/import_backends.py:141 utils/import_backends.py:144
-msgid "TRANSFER-1"
-msgstr ""
-
-#: utils/import_backends.py:141
-msgid "TRANSFER"
-msgstr ""
-
-#: utils/import_backends.py:142
-msgid "SHAREHOLDER"
-msgstr ""
-
-#: utils/import_backends.py:284
+#: utils/import_backends.py:289
 msgid "Disposhareholder"
 msgstr ""
 

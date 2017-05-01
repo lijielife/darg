@@ -22,12 +22,20 @@
 
   {% include "_form_errors.html" %}
 
+  <!-- general warning/infos -->
   {% if shareholder.is_dispo_shareholder %}
   <div class="alert alert-info">
     {% trans "This is the dispo shareholder, which does not exist in the real world. but is meant to hold all shares which were not registered by their owners. <strong>DO NOT EDIT ITS DATA.</strong>" %}
   </div>
   {% endif %}
 
+  {% if shareholder.is_transfer_shareholder %}
+  <div class="alert alert-info">
+    {% trans "This is the transfer shareholder, which does not exist in the real world. but is meant to hold all shares when transfering from an existing share register when there is no history provided. right after import finishing the transfer shareholder should not have any shares anymore but is supposed to server as selling party in each first transaction for existing shareholders. <strong>DO NOT EDIT ITS DATA.</strong>" %}
+  </div>
+  {% endif %}
+
+  <!-- MAIN CONTENT -->
   <h2>{% trans "Shareholder Data" %}</h2>
 
   {# gafi warning #}
