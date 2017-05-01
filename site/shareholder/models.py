@@ -30,7 +30,6 @@ from django.utils.translation import ugettext as _
 from django_languages import fields as language_fields
 from djstripe.models import Customer as DjStripeCustomer
 from natsort import natsorted
-from PyPDF2 import PdfFileMerger
 from rest_framework.authtoken.models import Token
 from sorl.thumbnail import get_thumbnail
 from tagging.models import Tag
@@ -42,7 +41,7 @@ from utils.formatters import (deflate_segments, flatten_list,
                               human_readable_segments, inflate_segments,
                               string_list_to_json)
 from utils.math import substract_list
-from utils.pdf import render_pdf
+from utils.pdf import render_pdf, merge_pdf
 
 from .mixins import AddressModelMixin
 from .validators import validate_remote_email_id
@@ -1858,6 +1857,29 @@ class ShareholderStatementReport(models.Model):
 
     def _create_joint_statements_pdf(self):
         """ merge all statement pdf files into a big single one for download """
+        pdf_filepath = self._get_statement_pdf_path_for_joint_pdf()
+        # merge
+        count = int(math.ceil(
+            self.shareholderstatement_set.all().count() / 100))
+        # merge in chunks to avoid "Too many files open"
+        partials = []
+        for x in range(1, count):
+            partial_filepath = pdf_filepath + '-{}'.format(x)
+            qs = self.shareholderstatement_set.all()[(x-1)*100:x*100]
+            pdf_file_paths = [statement.pdf_file for statement in
+                              qs if statement.pdf_file]
+            merge_pdf(pdf_file_paths, partial_filepath)
+            partials.append(partial_filepath)
+
+        merge_pdf(partials, pdf_filepath)
+        for f in partials:  # remove partials
+            os.remove(f)
+
+        # save to model
+        self.pdf_file = pdf_filepath
+        self.save()
+
+    def _get_statement_pdf_path_for_joint_pdf(self):
         # prepare path and filename
         path = os.path.join(settings.SHAREHOLDER_STATEMENT_ROOT,
                             'allinone',
@@ -1870,19 +1892,7 @@ class ShareholderStatementReport(models.Model):
             self.report_date.strftime('%Y-%m-%d')
         )
         pdf_filepath = os.path.join(path, pdf_filename)
-
-        # merge
-        merger = PdfFileMerger()
-        pdfs = [statement.pdf_file for statement in
-                self.shareholderstatement_set.all() if statement.pdf_file]
-        for pdf in pdfs:
-            merger.append(pdf)
-        merger.write(pdf_filepath)
-        merger.close()
-
-        # save to model
-        self.pdf_file = pdf_filepath
-        self.save()
+        return pdf_filepath
 
     def _get_statement_pdf_path_for_user(self, user):
         """

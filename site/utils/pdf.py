@@ -2,6 +2,7 @@ import os
 
 import cStringIO as StringIO
 from xhtml2pdf import pisa
+from PyPDF2 import PdfFileMerger
 
 from django.conf import settings
 from django.contrib.staticfiles import finders
@@ -25,6 +26,15 @@ def fetch_resources(uri, rel):
         # pass
         path = uri
     return path
+
+
+def merge_pdf(pdf_file_paths, file_path):
+        merger = PdfFileMerger()
+
+        for pdf in pdf_file_paths:
+            merger.append(pdf)
+        merger.write(file_path)
+        merger.close()
 
 
 def render_pdf(html):
