@@ -2767,9 +2767,12 @@ html, body {
   line-height: normal;
   border: 1px solid #e0e0e0;
   border-radius: 4px;
-  padding: 10px 15px;
 }
-.core .container form input:focus, .core .container form select:focus {
+.core .container form select {
+  /* right spacing to allow for arrow-down */
+  padding-right: 30px;
+}
+.core .container form select:focus {
   box-shadow: unset;
   border-color: #337ab7;
 }
