@@ -12,6 +12,8 @@ from django.db import DataError
 from django.db.models import Sum
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as __
+from django.utils import translation
 
 from project.generators import DEFAULT_TEST_DATA, OperatorGenerator
 from shareholder.models import Country  # OptionPlan, OptionTransaction
@@ -92,6 +94,9 @@ class SisWareImportBackend(BaseImportBackend):
         security not treated here, will be created upon existence while parsing
         the rows
         """
+        # activate proper language
+        translation.activate(settings.LANGUAGE_CODE)
+
         # do we have a company?
         try:
             self.company = Company.objects.get(pk=company_pk)
@@ -138,10 +143,10 @@ class SisWareImportBackend(BaseImportBackend):
         # named "AK Uebertrag" which represents the old deprecated share
         # register. this shareholder will serve as source for distributing all
         # shares each resp. shareholder
-        user = self._get_or_create_user(_('TRANSFER-1'), _('TRANSFER'),
-                                        _('SHAREHOLDER'))
+        user = self._get_or_create_user(__('TRANSFER-1'), __('TRANSFER'),
+                                        __('SHAREHOLDER'))
         self.transfer_shareholder = self._get_or_create_shareholder(
-            _('TRANSFER-1'), user)
+            __('TRANSFER-1'), user)
         self.transfer_shareholder.set_transfer_shareholder()
         # transfer shares from corp sh to transfer sh
         for face_value, count in SECURITIES.iteritems():
