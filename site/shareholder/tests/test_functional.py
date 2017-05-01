@@ -106,8 +106,11 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
             p.wait_until_visible(
                 (By.CSS_SELECTOR, 'div.shareholder-number span.el-icon-pencil'))
             p.click_to_edit("shareholder-number")
+            time.sleep(1)
             p.edit_field(99, "shareholder-number")
+            time.sleep(1)
             p.save_edit("shareholder-number")
+            time.sleep(1)
             # wait for form to disappear
             p.wait_until_invisible(
                 (By.CSS_SELECTOR, 'div.shareholder-number form'))
@@ -139,9 +142,12 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
             p.wait_until_visible(
                 (By.CSS_SELECTOR, 'div.company-department span.el-icon-pencil'))
             p.click_to_edit("company-department")
+            time.sleep(1)
             p.edit_field('IT Security Dep.', "company-department")
+            time.sleep(1)
             p.save_edit("company-department")
             # wait for form to disappear
+            time.sleep(1)
             p.wait_until_invisible(
                 (By.CSS_SELECTOR, 'div.company-department form'))
 
@@ -237,9 +243,13 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
             p.wait_until_visible(
                 (By.CSS_SELECTOR, 'div.birthday span.el-icon-pencil'))
             p.click_to_edit("birthday")
+            time.sleep(1)
             p.click_open_datepicker("birthday")
+            time.sleep(1)
             p.click_date_in_datepicker("birthday", birthday)
+            time.sleep(1)
             p.save_edit("birthday")
+            time.sleep(1)
             # wait for form to disappear
             p.wait_until_invisible((By.CSS_SELECTOR, 'div.birthday form'))
 
@@ -298,8 +308,11 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
                 (By.CSS_SELECTOR, 'div.user-email span.el-icon-pencil'))
             p.wait_until_js_rendered()  # prevent Element is not clickable ...
             p.click_to_edit("user-email")
+            time.sleep(1)
             p.edit_field(self.operator.user.email, "user-email")
+            time.sleep(1)
             p.save_edit("user-email")
+            time.sleep(1)
             # wait for form to disappear
             p.wait_until_invisible((By.CSS_SELECTOR, 'div.user-email form'))
 
