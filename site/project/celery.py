@@ -42,14 +42,11 @@ def backup():
     call_command('mediabackup')
 
 
-@app.on_after_configure.connect
+@app.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):
 
     from shareholder.tasks import update_banks_from_six
     from reports.tasks import prerender_reports
-    sender.add_periodic_task(
-        crontab(hour=3, minute=0), backup.s())  # Nightly backups at 3AM
-
     # shareholder tasks
     from shareholder.tasks import (send_statement_generation_operator_notify,
                                    send_statement_report_operator_notify,
@@ -81,4 +78,7 @@ def setup_periodic_tasks(sender, **kwargs):
     )
     sender.add_periodic_task(
         crontab(hour=2, minute=0), prerender_reports.s()
+    )
+    sender.add_periodic_task(
+        crontab(hour=3, minute=0), backup.s()  # Nightly backups at 3AM
     )
