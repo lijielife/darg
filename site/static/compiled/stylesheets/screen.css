@@ -3966,7 +3966,7 @@ div.address-data {
     padding: 0.5em;
   }
   .table .tr .td:before {
-    content: none;
+    content: none !important;
   }
   .table .tr .td a {
     padding-left: 10px;
