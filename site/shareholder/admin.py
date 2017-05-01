@@ -133,7 +133,7 @@ class PositionAdmin(VersionAdmin):
     list_display = (
         'bought_at', 'get_buyer', 'get_seller', 'count', 'value', 'get_company'
         )
-    list_filter = ('buyer__company', 'seller__company')
+    list_filter = ('buyer__company', 'seller__company', 'depot_type')
     search_fields = [
         'buyer__user__email', 'seller__user__email',
         'buyer__company__name', 'seller__company__name'
