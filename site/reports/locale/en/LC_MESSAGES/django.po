@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-01 20:30+0000\n"
+"POT-Creation-Date: 2017-05-01 23:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,51 +17,51 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: reports/models.py:21
+#: reports/models.py:22
 msgid "Active Shareholders"
 msgstr ""
 
-#: reports/models.py:25
+#: reports/models.py:26
 msgid "Last Name"
 msgstr ""
 
-#: reports/models.py:26
+#: reports/models.py:27
 msgid "Last Name (descending)"
 msgstr ""
 
-#: reports/models.py:27
+#: reports/models.py:28
 msgid "Share Count"
 msgstr ""
 
-#: reports/models.py:28
+#: reports/models.py:29
 msgid "Share Count (descending)"
 msgstr ""
 
-#: reports/models.py:29
+#: reports/models.py:30
 msgid "Shareholder Number"
 msgstr ""
 
-#: reports/models.py:30
+#: reports/models.py:31
 msgid "Shareholder Number (descending)"
 msgstr ""
 
-#: reports/models.py:31
+#: reports/models.py:32
 msgid "Share Percent Ownership"
 msgstr ""
 
-#: reports/models.py:32
+#: reports/models.py:33
 msgid "Share Percent Ownership (descending)"
 msgstr ""
 
-#: reports/models.py:54
+#: reports/models.py:55
 msgid "Estimated rendering completion time"
 msgstr ""
 
-#: reports/models.py:55
+#: reports/models.py:56
 msgid "file creation datetime"
 msgstr ""
 
-#: reports/models.py:58
+#: reports/models.py:59
 msgid "time it took to generate the file in seconds"
 msgstr ""
 
@@ -334,6 +334,6 @@ msgstr ""
 msgid "Depot Statements Overview"
 msgstr ""
 
-#: reports/views.py:23
+#: reports/views.py:24
 msgid "Permission denied"
 msgstr ""

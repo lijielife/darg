@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-01 20:30+0000\n"
-"PO-Revision-Date: 2017-05-01 22:55+0000\n"
+"POT-Creation-Date: 2017-05-01 23:12+0000\n"
+"PO-Revision-Date: 2017-05-01 23:13+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -185,18 +185,29 @@ msgid "Provisioned Share Count"
 msgstr "Anzahl der Aktien des Unternehmens"
 
 #: company/templates/company.html:257
+msgid ""
+"number of shares which are given to shareholders. or overall share count "
+"minus dispo shareholder and minus company shareholder"
+msgstr ""
+"Anzahl Aktien, welche an Aktionäre ausgegeben sind. Oder Gesamtaktienzahl "
+"minus Dispo-Aktionär und Aktien, welche vom Unternehmen gehalten werden."
+
+#: company/templates/company.html:258
 msgid "Share Count Floating"
 msgstr "Anzahl ausgegebener Aktien"
 
-#: company/templates/company.html:267
-msgid "total votes count based on existing shares"
+#: company/templates/company.html:268
+#| msgid "total votes count based on existing shares"
+msgid ""
+"total votes count based on existing shares. math: overall share count * face"
+" value"
 msgstr "Anzahl Stimmrechte basierend auf existierenden Aktien"
 
-#: company/templates/company.html:268
+#: company/templates/company.html:269
 msgid "Total votes count based on shares existing"
 msgstr "Anzahl Stimmrechte basierend auf existierenden Aktien"
 
-#: company/templates/company.html:277
+#: company/templates/company.html:278
 msgid ""
 "total votes count effective. excludes unregistered/dispo shares and shares "
 "in company ownership"
@@ -204,48 +215,48 @@ msgstr ""
 "Stimmrechte effektiv. Schliesst Dispoaktien/unregistrierte Aktien und Aktien"
 " im Unternehmensbesitz aus."
 
-#: company/templates/company.html:278
+#: company/templates/company.html:279
 msgid "Total votes count based on shares floating"
 msgstr "Anzahl Stimmrechte basierend auf ausgegebenen Aktien"
 
-#: company/templates/company.html:283
+#: company/templates/company.html:284
 msgid "Does include shares used for options. Without options it would be"
 msgstr "Beinhaltet Aktien geblockt für Optionen. Ohne diese Aktien wären dies"
 
-#: company/templates/company.html:290
+#: company/templates/company.html:291
 msgid "Total option count based on shares dedicated to options"
 msgstr ""
 "Gesamtzahl Optionen basierend auf Aktien, welche für Optionen geblockt sind"
 
-#: company/templates/company.html:299
+#: company/templates/company.html:300
 msgid "Total option count based on shares dedicated to options floating"
 msgstr "Anzahl Optionen basierend ausgegebenen Optionen "
 
-#: company/templates/company.html:312
+#: company/templates/company.html:313
 msgid "Securities"
 msgstr "Aktienart"
 
-#: company/templates/company.html:315
+#: company/templates/company.html:316
 msgid "security"
 msgstr "Aktienart"
 
-#: company/templates/company.html:316
+#: company/templates/company.html:317
 msgid "cusip"
 msgstr "Valor/WKN"
 
-#: company/templates/company.html:317
+#: company/templates/company.html:318
 msgid "count"
 msgstr "Anzahl"
 
-#: company/templates/company.html:327 company/tests/test_views.py:78
+#: company/templates/company.html:328 company/tests/test_views.py:78
 msgid "tracking security numbers for owners enabled. segments:"
 msgstr "Nummerierte Aktiensegmente:"
 
-#: company/templates/company.html:341
+#: company/templates/company.html:342
 msgid "Please contact us at our"
 msgstr "Bitte kontaktieren Sie uns unter"
 
-#: company/templates/company.html:343
+#: company/templates/company.html:344
 msgid ""
 "for getting more security types (common stock, preferred stock, numbered "
 "shares) added"
@@ -253,35 +264,35 @@ msgstr ""
 "um mehr Wertpapierarten (Vorzugsaktien, Stammaktien, Aktien mit "
 "verschiedenen Nennwerten, Nummerierte Aktien) zu erhalten."
 
-#: company/templates/company.html:349
+#: company/templates/company.html:350
 msgid "Administrators"
 msgstr "Administratoren"
 
-#: company/templates/company.html:350
+#: company/templates/company.html:351
 msgid "add operator"
 msgstr "Administrator hinzufügen"
 
-#: company/templates/company.html:378
+#: company/templates/company.html:379
 msgid "Option Plans"
 msgstr "Optionsplan"
 
-#: company/templates/company.html:384
+#: company/templates/company.html:385
 msgid "Options Plan Name"
 msgstr "Name des Optionsplanes"
 
-#: company/templates/company.html:387
+#: company/templates/company.html:388
 msgid "Edit Option Plan"
 msgstr "Optionsplan editieren"
 
-#: company/templates/company.html:398
+#: company/templates/company.html:399
 msgid "Administration"
 msgstr "Verwaltung"
 
-#: company/templates/company.html:402
+#: company/templates/company.html:403
 msgid "reset company"
 msgstr "Unternehmen zurücksetzen"
 
-#: company/templates/company.html:405
+#: company/templates/company.html:406
 msgid ""
 "the company, shareholders, transactions, options, and all other assigned "
 "data are deleted. the user can then create the company anew and start fresh"
@@ -452,7 +463,7 @@ msgstr "API Anfragen"
 msgid "German"
 msgstr "Deutsch"
 
-#: utils/import_backends.py:289
+#: utils/import_backends.py:284
 msgid "Disposhareholder"
 msgstr "Gesellschafter für Dispoaktien"
 

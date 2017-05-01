@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-01 20:30+0000\n"
+"POT-Creation-Date: 2017-05-01 23:12+0000\n"
 "PO-Revision-Date: 2017-04-30 12:57+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -397,19 +397,19 @@ msgid "Das Aktienregister"
 msgstr "Das Aktienregister"
 
 #: project/templates/active_shareholder_captable.pdf.html:83
-#: project/templates/certificate.pdf.html:80
+#: project/templates/certificate.pdf.html:94
 #: project/templates/option.pdf.html:80
 msgid "Page"
 msgstr "Seite"
 
 #: project/templates/active_shareholder_captable.pdf.html:84
-#: project/templates/certificate.pdf.html:81
+#: project/templates/certificate.pdf.html:95
 #: project/templates/option.pdf.html:81
 msgid "of"
 msgstr "von"
 
 #: project/templates/active_shareholder_captable.pdf.html:85
-#: project/templates/certificate.pdf.html:82
+#: project/templates/certificate.pdf.html:96
 #: project/templates/option.pdf.html:82
 msgid "Date generated"
 msgstr "Datum der Erstellung des Dokuments"
@@ -485,67 +485,67 @@ msgstr "Kennen Sie unser"
 msgid "our blog"
 msgstr "unser Blog"
 
-#: project/templates/certificate.pdf.html:80
+#: project/templates/certificate.pdf.html:94
 #: project/templates/option.pdf.html:80
 msgid "www.das-aktienregister.ch"
 msgstr "www.das-aktienregister.ch"
 
-#: project/templates/certificate.pdf.html:89
+#: project/templates/certificate.pdf.html:103
 #: project/templates/option.pdf.html:89
 msgid "Total capital"
 msgstr "Aktienkapital"
 
-#: project/templates/certificate.pdf.html:91
+#: project/templates/certificate.pdf.html:105
 #: project/templates/option.pdf.html:91
 msgid "based on"
 msgstr "eingeteilt in "
 
-#: project/templates/certificate.pdf.html:95
+#: project/templates/certificate.pdf.html:109
 #: project/templates/option.pdf.html:95
 msgid "with face value of"
 msgstr "im Nominalwert von je"
 
-#: project/templates/certificate.pdf.html:99
+#: project/templates/certificate.pdf.html:113
 #: project/templates/option.pdf.html:99
 msgid "share certificate "
 msgstr "AKTIENZERTIFIKAT"
 
-#: project/templates/certificate.pdf.html:101
+#: project/templates/certificate.pdf.html:115
 #: project/templates/option.pdf.html:101
 msgid "Nr."
 msgstr "Nr."
 
-#: project/templates/certificate.pdf.html:104
+#: project/templates/certificate.pdf.html:118
 #: project/templates/option.pdf.html:104
 msgid "representing"
 msgstr "über"
 
-#: project/templates/certificate.pdf.html:110
+#: project/templates/certificate.pdf.html:124
 #: project/templates/option.pdf.html:110
 msgid "with face value"
 msgstr "zum Nennwert"
 
-#: project/templates/certificate.pdf.html:113
+#: project/templates/certificate.pdf.html:127
 #: project/templates/option.pdf.html:113
 msgid "of each"
 msgstr "von je"
 
-#: project/templates/certificate.pdf.html:113
+#: project/templates/certificate.pdf.html:127
 #: project/templates/option.pdf.html:113
 msgid "with total value of"
 msgstr "im Gesamtwert von"
 
-#: project/templates/certificate.pdf.html:115
+#: project/templates/certificate.pdf.html:129
 #: project/templates/option.pdf.html:115
 msgid "cusip"
 msgstr "Valoren-Nr."
 
-#: project/templates/certificate.pdf.html:116
+#: project/templates/certificate.pdf.html:130
 #: project/templates/option.pdf.html:116
 msgid "ISIN"
 msgstr "ISIN"
 
-#: project/templates/certificate.pdf.html:126
+#: project/templates/certificate.pdf.html:140
 #: project/templates/option.pdf.html:126
 msgid ""
 "is as owner of the certificate with all legal and statuary rights "
@@ -554,7 +554,7 @@ msgstr ""
 "ist als Eigentümer dieses Zertifikates mit allen gesetzlichen und "
 "statutarischen Rechten und Pflichten an unserer Gesellschaft beteiligt."
 
-#: project/templates/certificate.pdf.html:137
+#: project/templates/certificate.pdf.html:151
 #: project/templates/option.pdf.html:137
 msgid " in the name of the supervisory board"
 msgstr "Namens des Verwaltungsrates"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-01 20:30+0000\n"
+"POT-Creation-Date: 2017-05-01 23:12+0000\n"
 "PO-Revision-Date: 2017-05-01 19:41+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,51 +19,51 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Translated-Using: django-rosetta 0.7.13\n"
 
-#: reports/models.py:21
+#: reports/models.py:22
 msgid "Active Shareholders"
 msgstr "Aktive Gesellschafter"
 
-#: reports/models.py:25
+#: reports/models.py:26
 msgid "Last Name"
 msgstr "Nachname"
 
-#: reports/models.py:26
+#: reports/models.py:27
 msgid "Last Name (descending)"
 msgstr "Nachname (absteigend)"
 
-#: reports/models.py:27
+#: reports/models.py:28
 msgid "Share Count"
 msgstr "Anzahl Aktien"
 
-#: reports/models.py:28
+#: reports/models.py:29
 msgid "Share Count (descending)"
 msgstr "Anzahl Aktien (absteigend)"
 
-#: reports/models.py:29
+#: reports/models.py:30
 msgid "Shareholder Number"
 msgstr "Aktionärsnummer"
 
-#: reports/models.py:30
+#: reports/models.py:31
 msgid "Shareholder Number (descending)"
 msgstr "Aktionärsnummer (absteigend)"
 
-#: reports/models.py:31
+#: reports/models.py:32
 msgid "Share Percent Ownership"
 msgstr "Prozent Aktienanteil"
 
-#: reports/models.py:32
+#: reports/models.py:33
 msgid "Share Percent Ownership (descending)"
 msgstr "Prozent Aktienanteil(absteigend)"
 
-#: reports/models.py:54
+#: reports/models.py:55
 msgid "Estimated rendering completion time"
 msgstr "Geschätzte Dauer für die Erstellung des Berichts"
 
-#: reports/models.py:55
+#: reports/models.py:56
 msgid "file creation datetime"
 msgstr "Dauer zur Erstellung der Datei"
 
-#: reports/models.py:58
+#: reports/models.py:59
 msgid "time it took to generate the file in seconds"
 msgstr "Dauer der Dateierstellung in Sekunden"
 
@@ -342,7 +342,7 @@ msgstr "Alle Kontoauszüge pro Gesellschafter ansehen"
 msgid "Depot Statements Overview"
 msgstr "Überblick der Depotauzüge"
 
-#: reports/views.py:23
+#: reports/views.py:24
 msgid "Permission denied"
 msgstr "Zugriff verboten"
 
