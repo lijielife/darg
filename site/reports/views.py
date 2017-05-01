@@ -18,7 +18,8 @@ def report_download(request, report_id):
         if not report.downloaded_at:
             report.downloaded_at = timezone.now()
             report.save()
-        return sendfile(request, report.file.path)
+        return sendfile(request, report.file.path, attachment=True,
+                        attachment_filename=report.get_filename())
     else:
         return HttpResponseForbidden(_("Permission denied"))
 

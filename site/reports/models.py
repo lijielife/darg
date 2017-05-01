@@ -6,6 +6,7 @@ import os
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 
@@ -65,6 +66,11 @@ class Report(TimeStampedModel):
 
     def get_absolute_url(self):
         return reverse('reports:download', kwargs={'report_id': self.pk})
+
+    def get_filename(self):
+        return u"report-{}-{}-{}.{}".format(slugify(self.company), self.pk,
+                                            self.report_type,
+                                            self.file_type.lower())
 
     def render(self, notify=False, track_downloads=False):
         """ trigger the right task to render the file """
