@@ -66,10 +66,8 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
 
         # does the company be a seller for each position?
         self.company_shareholder = self.company.get_company_shareholder()
-        self.assertEqual(self.backend.row_count,
-                         self.backend.transfer_shareholder.seller.count() -
-                         self.company.get_dispo_shareholder().buyer.count() +
-                         1  # deleted but previously imported
+        self.assertEqual(self.backend.row_count + 3,  # +1 for disp sh transact
+                         self.backend.transfer_shareholder.seller.count()
                          )
 
         # redo the import and validate again
@@ -78,10 +76,8 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
 
         # does the company be a seller for each position?
         self.company_shareholder = self.company.get_company_shareholder()
-        self.assertEqual(self.backend.row_count,
-                         self.backend.transfer_shareholder.seller.count() -
-                         self.company.get_dispo_shareholder().buyer.count() +
-                         1  # deleted but previously imported
+        self.assertEqual(self.backend.row_count + 3,  # +1 for disp sh transact
+                         self.backend.transfer_shareholder.seller.count()
                          )
         self.assertEqual(self.company_shareholder.number, u'1913')
 
@@ -97,9 +93,10 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
                 Shareholder.objects.filter(number=line.split(',')[0]).count(),
                 1)
 
-        # check registration type: 3 for corp sh and 3 for transfer sh
+        # check registration type: 3 for corp sh and 3 for transfer sh and one
+        # for transfer to corp shareholder
         self.assertEqual(
-            Position.objects.filter(registration_type='1').count(), 6)
+            Position.objects.filter(registration_type='1').count(), 7)
 
         # maling_type
         self.assertEqual(
@@ -121,7 +118,7 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
         # positions
         self.assertEqual(
             Position.objects.filter(depot_type__isnull=True).count(), 0)
-        #  10 regular + 3 dispo sh + 3 initial positions + 3 transfer sh = 19
+        #  10 regular + 2 dispo sh + 3 initial positions + 3 transfer sh = 19
         self.assertEqual(Position.objects.filter(depot_type='1').count(), 19)
         self.assertEqual(Position.objects.filter(depot_type='2').count(), 1)
         self.assertEqual(Position.objects.filter(depot_type='0').count(), 8)
@@ -135,6 +132,12 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
             self.assertEqual(
                 sec.count,
                 SECURITIES[str(sec.face_value).split('.')[0]])
+
+        # at the very end: transfer shareholder must not hold any shares anymore
+        # because he got all shares at once and then "sold" each of them to its
+        # resp. owner
+        tshareholder = self.company.get_transfer_shareholder()
+        self.assertEqual(tshareholder.share_count(), 0)
 
     def test_get_or_create_user(self):
         self.backend.company = CompanyGenerator().generate()

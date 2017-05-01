@@ -11,8 +11,8 @@ from django.contrib.auth.models import User
 from django.db import DataError
 from django.db.models import Sum
 from django.utils.text import slugify
-from django.utils.translation import gettext as _
-from django.utils.translation import gettext_lazy as __
+from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as __
 from django.utils import translation
 
 from project.generators import DEFAULT_TEST_DATA, OperatorGenerator
@@ -149,8 +149,9 @@ class SisWareImportBackend(BaseImportBackend):
             __('TRANSFER-1'), user)
         self.transfer_shareholder.set_transfer_shareholder()
         # transfer shares from corp sh to transfer sh
-        for face_value, count in SECURITIES.iteritems():
-            Position.objects.get_or_create(security=s, count=count,
+        for s in self.company.security_set.all():
+            Position.objects.get_or_create(security=s,
+                                           count=SECURITIES[str(int(s.face_value))],
                                            seller=self.company_shareholder,
                                            buyer=self.transfer_shareholder,
                                            defaults={
@@ -160,6 +161,7 @@ class SisWareImportBackend(BaseImportBackend):
                                                'registration_type': '1',
                                                'stock_book_id': '1913,001',
                                                'is_draft': False,
+                                               'value': s.face_value,
                                            })
 
         # and a matching operator? take the first one we find inside db
@@ -245,19 +247,12 @@ class SisWareImportBackend(BaseImportBackend):
         create positions to have dispo shares properly listed
         """
         for security in self.company.security_set.all():
-            count = security.calculate_dispo_share_count()
-            # during import the corp shs owned shares are imported as Position
-            # objects too. but this is invalid. We need to subscract this from
-            # the dispo share count and remove the Positions. use `get()` as it
-            # should only be one.
-            pos = Position.objects.filter(
-                buyer=self.company_shareholder,
-                seller=self.transfer_shareholder,
-                security=security)
-            if pos.exists():
-                pos = pos.get()
-                count = count - pos.count
-                pos.delete()
+            # as we initially transfered all shares to the transfer sh and he
+            # then gave them to each shareholder including the company
+            # shareholder, it means that the tshareholder holds now all shares
+            # which are not registered. move all of them to the dispo
+            # shareholder respectively
+            count = self.transfer_shareholder.share_count(security=security)
 
             if count < 1:  # skip if there are none
                 continue
