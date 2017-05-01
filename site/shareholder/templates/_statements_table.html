@@ -21,7 +21,7 @@
 
   {% for statement in statements %}
     <div class="tr">
-      <div class="td td-width-2">{{ statement.user|user_name }}</div>
+      <div class="td td-width-2">{{ statement.user.shareholder_set.first.get_full_name }}</div>
       <div class="td">{{ statement.email_sent_at|date:"SHORT_DATETIME_FORMAT" }}</div>
       <div class="td">{{ statement.email_opened_at|date:"SHORT_DATETIME_FORMAT" }}</div>
       <div class="td">{{ statement.pdf_downloaded_at|date:"SHORT_DATETIME_FORMAT" }}</div>
