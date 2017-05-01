@@ -15,11 +15,13 @@
 
 @font-face {
   font-family: 'Muli';
-  src: url(https://fonts.googleapis.com/css?family=Muli:400);
+  /*src: url(https://fonts.googleapis.com/css?family=Muli:400);*/
+  src: "static/compiled/fonts/Muli-Regular.ttf";
 }
 @font-face {
   font-family: 'Muli-Light';
-  src: url(https://fonts.googleapis.com/css?family=Muli:300);
+  /*src: url(https://fonts.googleapis.com/css?family=Muli:300);*/
+  src: "static/compiled/fonts/Muli-Light.ttf";
 }
 
 .break {page-break-before: always;}
