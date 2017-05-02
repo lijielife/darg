@@ -2860,6 +2860,9 @@ html, body {
   padding-left: 5px;
   display: block;
 }
+.core .container span.note {
+  display: inline;
+}
 .core .container .footer {
   clear: left;
   float: left;

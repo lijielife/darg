@@ -41,6 +41,7 @@ from shareholder.validators import ShareRegisterValidator
 from utils.formatters import (deflate_segments, flatten_list,
                               human_readable_segments, inflate_segments,
                               string_list_to_json)
+from utils.files import human_readable_file_size
 from utils.math import substract_list
 from utils.pdf import render_pdf, merge_pdf
 
@@ -1801,6 +1802,15 @@ class ShareholderStatementReport(models.Model):
         return self.shareholderstatement_set.count()
 
     statement_count = property(get_statement_count)
+
+    def get_pdf_file_size(self, human_readable=True):
+        if not self.pdf_file:
+            return 0
+
+        if human_readable:
+            return human_readable_file_size(os.path.getsize(self.pdf_file))
+
+        return os.path.getsize(self.pdf_file)
 
     def get_statement_sent_count(self):
         """
