@@ -204,9 +204,7 @@ holdings currently value: {{share_value}} in shares and {{options_value}} in opt
         <br />
         <p>{% trans "Zurich" %}, {{ report_date|date:"DATE_FORMAT" }}</p>
         <p>
-          {% for operator in shareholder.company.get_operators %}
-            {{ operator.company.name }}{% if not forloop.last %}<br />{% endif %}
-          {% endfor %}
+          {{ company.name }}
         </p>
 
         <div class="break"></div>
@@ -382,9 +380,7 @@ holdings currently value: {{share_value}} in shares and {{options_value}} in opt
         <br />
         <p>{% trans "Zurich" %}, {{ report_date|date:"DATE_FORMAT" }}</p>
         <p>
-          {% for operator in company.get_operators %}
-            {{ operator.company.name }}{% if not forloop.last %}<br />{% endif %}
-          {% endfor %}
+            {{ company.name }}
         </p>
       </div>
 
