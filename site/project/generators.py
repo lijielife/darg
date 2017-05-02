@@ -397,6 +397,7 @@ class ReportGenerator(object):
             'user': UserGenerator().generate(),
             'report_type': 'captable',
             'file_type': 'PDF',
+            'report_at': timezone.now().date()
         }
         rkwargs.update(kwargs)
 

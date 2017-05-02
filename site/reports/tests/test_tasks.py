@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from django.core import mail
 from django.test import TestCase
+from django.utils import timezone
 from mock import patch
 
 from project.generators import (CompanyGenerator,
@@ -29,12 +30,14 @@ class TaskTestCase(TestCase):
     def test_get_captable_pdf_context(self):
 
         res = _get_captable_pdf_context(self.shs[0].company,
-                                        ordering='-share_count')
+                                        ordering='-share_count',
+                                        date=timezone.now().date())
         self.assertEqual(len(res), 9)
 
         # order by share percent
         res = _get_captable_pdf_context(self.shs[0].company,
-                                        ordering='-share_percent')
+                                        ordering='-share_percent',
+                                        date=timezone.now().date())
         self.assertEqual(len(res), 9)
         for idx, sh in enumerate(res['active_shareholders']):
             if idx == 0:
@@ -45,7 +48,8 @@ class TaskTestCase(TestCase):
 
         # order by share_count
         res = _get_captable_pdf_context(self.shs[0].company,
-                                        ordering='-share_count')
+                                        ordering='-share_count',
+                                        date=timezone.now().date())
         self.assertEqual(len(res), 9)
         for idx, sh in enumerate(res['active_shareholders']):
             if idx == 0:
@@ -57,7 +61,8 @@ class TaskTestCase(TestCase):
 
         # order by number
         res = _get_captable_pdf_context(self.shs[0].company,
-                                        ordering='-number')
+                                        ordering='-number',
+                                        date=timezone.now().date())
         self.assertEqual(len(res), 9)
         for idx, sh in enumerate(res['active_shareholders']):
             if idx == 0:
@@ -68,7 +73,8 @@ class TaskTestCase(TestCase):
 
         # order by user last name
         res = _get_captable_pdf_context(self.shs[0].company,
-                                        ordering='-user__last_name')
+                                        ordering='-user__last_name',
+                                        date=timezone.now().date())
         self.assertEqual(len(res), 9)
         for idx, sh in enumerate(res['active_shareholders']):
             if idx == 0:

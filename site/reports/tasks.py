@@ -187,7 +187,7 @@ def _prepare_report(company, report_type, ordering, file_type):
     """ create report object with predefined data """
     report = Report.objects.create(company=company, report_type=report_type,
                                    order_by=ordering, file_type=file_type,
-                                   eta=timezone.now())
+                                   eta=timezone.now(), report_at=timezone.now())
     report.update_eta()
     return report
 
