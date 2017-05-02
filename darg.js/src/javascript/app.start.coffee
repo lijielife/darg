@@ -6,7 +6,7 @@ app.config ['$translateProvider', ($translateProvider) ->
     $translateProvider.useSanitizeValueStrategy('escaped')
 ]
 
-app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', 'Shareholder', 'User', 'Company', '$timeout', ($scope, $window, $http, CompanyAdd, Shareholder, User, Company, $timeout) ->
+app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'CompanyAdd', 'Shareholder', 'User', 'Company', '$timeout', ($scope, $window, $http, $location, CompanyAdd, Shareholder, User, Company, $timeout) ->
 
     # from server
     $scope.shareholders = []
@@ -274,6 +274,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
             $scope.load_user()
             $scope.load_all_shareholders()  # new shareholder is added, reload
             $scope.show_full_menu()  # remove hidden class from menu items
+            $scope.company_pk = result.pk
         .then ->
             # Reset our editor to a new blank post
             $scope.newCompany = new Company()
@@ -284,6 +285,10 @@ app.controller 'StartController', ['$scope', '$window', '$http', 'CompanyAdd', '
         .then ->
             # Clear any errors
             $scope.errors = null
+            # redirect to subscription page
+            url = '/company/' + $scope.company_pk.toString() + '/subscriptions/subscribe/'
+            $window.location.href = url
+
         , (rejection) ->
             $scope.errors = rejection.data
             Raven.captureMessage('add corp form error', {

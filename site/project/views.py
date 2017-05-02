@@ -14,7 +14,7 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import (HttpResponse, HttpResponseBadRequest,
                          HttpResponseForbidden)
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, resolve_url
 from django.template import loader
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _
@@ -25,9 +25,21 @@ from services.instapage import InstapageSubmission as Instapage
 from shareholder.models import (Company, Operator, OptionTransaction, Position,
                                 Security, Shareholder)
 from utils.pdf import render_to_pdf_response
+from utils.session import get_company_from_request
 
 logger = logging.getLogger(__name__)
 
+
+def _check_subscription(request):
+    company = get_company_from_request(request, fail_silently=True)
+    if company:
+        customer = company.get_customer()
+        if customer and not customer.has_active_subscription():
+            redirect_url = resolve_url(
+                'djstripe:subscribe',
+                **dict(company_id=company.pk)
+            )
+            return redirect(redirect_url)
 
 def _get_contacts(company):
 
@@ -157,6 +169,10 @@ def index(request):
 
 @login_required
 def start(request):
+    subscription_redirect = _check_subscription(request)
+    if subscription_redirect:
+        return subscription_redirect
+
     template = loader.get_template('start.html')
     return HttpResponse(template.render(request=request))
 
