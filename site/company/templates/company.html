@@ -3,6 +3,7 @@
 {% load staticfiles %}
 {% load l10n %}
 {% load context_help %}
+{% load cache %}
 
 {% block ng_app %}js.darg.app.company{% endblock %}
 
@@ -44,7 +45,7 @@
     <pre>{{log}}</pre>
   </div>-->
   {% endverbatim %}
-
+  
   <h2>{% trans "Data" %}</h2>
   <div class="table table-striped">
     <div class="tr th">
@@ -173,16 +174,18 @@
       </div>
     </div>
 
-    
+    {% cache 86400 active-shareholder company %}
     <div class="tr th">
       <div class="td">
-        {% trans "Total count of current shareholders" %}
+        {% trans "This value is calculated every 24hrs." as msg %}
+        {% trans "Total count of current shareholders" %} {% context_help msg %}
       </div>
       <div class="td">
         {{company.get_active_shareholders.count }}
       </div>
     </div>
-
+    {% endcache %}
+    
     <!-- KPI dispo shareholder -->
     {% if company.get_dispo_shareholder %}
     <div class="tr th">
@@ -204,7 +207,7 @@
       </div>
     </div>
     {% endif %}
-
+    
     <!-- management shares -->
     {% if company.has_management %}
     <div class="tr th">
@@ -226,7 +229,7 @@
       </div>
     </div>
     {% endif %}
-
+    
   <!-- company shareholder only: -->
   {% with shareholder=company.get_company_shareholder %}
 
@@ -305,7 +308,7 @@
     </div>
 
   {% endwith %}
-
+  
 
   </div><!-- table end -->
 
@@ -336,7 +339,7 @@
     </div>
     {% endverbatim %}
   </div>
-
+  #
 
   <div class="alert alert-info" role="alert">
     {% trans 'Please contact us at our' %}
@@ -407,7 +410,6 @@
 	</div>
 	{% include "company/_reset_company_modal.html" %}
   </div>
-
 
 
 </div>
