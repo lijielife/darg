@@ -1551,7 +1551,7 @@ class ReportViewSetTestCase(SubscriptionTestMixin, APITestCase):
     def test_perform_create_pdf(self):
         """ create report with adding some automatic data """
         data = {'report_type': 'captable', 'file_type': 'PDF',
-                'order_by': 'share_count'}
+                'order_by': 'share_count', 'report_at': '2017-05-02'}
         serializer = ReportSerializer(
             data=data)
         serializer.is_valid()
@@ -1562,7 +1562,7 @@ class ReportViewSetTestCase(SubscriptionTestMixin, APITestCase):
     def test_perform_create_csv(self):
         """ create report with adding some automatic data """
         data = {'report_type': 'captable', 'file_type': 'CSV',
-                'order_by': 'share_count'}
+                'order_by': 'share_count', 'report_at': '2017-05-02'}
         serializer = ReportSerializer(
             data=data)
         serializer.is_valid()
