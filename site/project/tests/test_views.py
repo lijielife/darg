@@ -144,7 +144,7 @@ class InstapageTestCase(TestCase):
         self.assertContains(response, msg)
 
 
-class TrackingTestCase(TestCase):
+class TrackingTestCase(TestCase, SubscriptionTestMixin):
 
     def setUp(self):
         self.client = Client()
@@ -181,10 +181,9 @@ class TrackingTestCase(TestCase):
         is_operator_added = _add_company_to_user_via_rest(user)
         self.assertTrue(is_operator_added)
 
-        is_loggedin = self.client.login(
-            username=user.username, password=DEFAULT_TEST_DATA['password'])
+        self.client.force_login(user)
 
-        self.assertTrue(is_loggedin)
+        self.add_subscription(user.operator_set.first().company)
 
         response = self.client.get(reverse('start'), follow=True)
 
