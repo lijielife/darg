@@ -7,6 +7,7 @@ from django.contrib.flatpages.views import flatpage
 from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
 from djstripe.views import WebHook
+from django.views.decorators.cache import cache_page
 from django.views.i18n import javascript_catalog  # JavaScriptCatalog
 from django.contrib.sitemaps import views as sitemap_views
 from registration.backends.simple.views import RegistrationView
@@ -157,7 +158,7 @@ urlpatterns = [
         shareholder_views.statement_report_list,
         name='statement_reports'),
     url(r'^statements/reports/(?P<pk>\d+)/$',
-        shareholder_views.statement_report_detail,
+        cache_page(60*60*24)(shareholder_views.statement_report_detail),
         name='statement_report'),
 
     # stripe
