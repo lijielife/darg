@@ -3,6 +3,7 @@
 {% load trans from i18n %}
 
 {% block content %}
+<div>
   <h2>{% trans "Your shareholder statements reports" %}</h2>
 
   {% for object in object_list %}
@@ -45,9 +46,12 @@
       <div class="td">{{ object.statement_downloaded_count }}</div>
       <div class="td">{{ object.statement_letter_count }}</div>
     </div>
-
+  {% empty %}
+    <div class="note">
+      {% trans "no reports/statements yet" %}
+    </div>
   {% endfor %}
 
-  </div>
+</div>
 
 {% endblock content %}

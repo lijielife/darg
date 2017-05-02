@@ -20,7 +20,8 @@ class CompanySubscriptionRequired(object):
         r'^shareholder/',
         r'^optionsplan/',
         r'^reports/',
-    ]
+        r'^statements/',
+   ]
 
     def process_request(self, request):
 

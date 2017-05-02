@@ -11,6 +11,7 @@
     {% if object.get_pdf_download_url %}
     <a href="{{ object.get_pdf_download_url }}" target="_blank" title="{% trans "download all statements as a single file" %}">
       <span class="el-icon-download-alt"></span>
+      <span class="note">{{ object.get_pdf_file_size }}</span>
     </a>
     {% endif %}
   </h3>
