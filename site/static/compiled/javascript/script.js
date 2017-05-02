@@ -45431,7 +45431,7 @@ return deCh;
   ]);
 
   app.controller('StartController', [
-    '$scope', '$window', '$http', 'CompanyAdd', 'Shareholder', 'User', 'Company', '$timeout', function($scope, $window, $http, CompanyAdd, Shareholder, User, Company, $timeout) {
+    '$scope', '$window', '$http', '$location', 'CompanyAdd', 'Shareholder', 'User', 'Company', '$timeout', function($scope, $window, $http, $location, CompanyAdd, Shareholder, User, Company, $timeout) {
       $scope.shareholders = [];
       $scope.option_holders = [];
       $scope.user = [];
@@ -45745,13 +45745,17 @@ return deCh;
         return $scope.newCompany.$save().then(function(result) {
           $scope.load_user();
           $scope.load_all_shareholders();
-          return $scope.show_full_menu();
+          $scope.show_full_menu();
+          return $scope.company_pk = result.pk;
         }).then(function() {
           $scope.newCompany = new Company();
           $window.ga('send', 'event', 'form-send', 'add-company');
           return $scope.hide_captable = true;
         }).then(function() {
-          return $scope.errors = null;
+          var url;
+          $scope.errors = null;
+          url = '/company/' + $scope.company_pk.toString() + '/subscriptions/subscribe/';
+          return $window.location.href = url;
         }, function(rejection) {
           $scope.errors = rejection.data;
           return Raven.captureMessage('add corp form error', {

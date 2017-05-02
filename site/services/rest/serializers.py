@@ -146,6 +146,7 @@ class AddCompanySerializer(serializers.Serializer):
                                           required=False)
     founded_at = serializers.DateTimeField(required=False)
     share_count = serializers.IntegerField()
+    pk = serializers.IntegerField(read_only=True)
 
     def create(self, validated_data):
         """ check data, add company, add company_itself shareholder, add first
