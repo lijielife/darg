@@ -12,6 +12,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import JSONField
 from django.contrib.sites.models import Site
 from django.core import signing
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
@@ -235,17 +236,26 @@ class Company(AddressModelMixin, models.Model):
         return validator.is_valid()
 
     def get_active_shareholders(self, date=None):
-        """ returns list of all active shareholders """
+        """ returns list of all active shareholders. this is a very expensive
+        must use heavy caching"""
+        cache_key = 'company-{}-active-shareholders'.format(self.pk)
+        cached = cache.get(cache_key)
+        if cached:
+            return cached
+
         shareholder_list = []
         for shareholder in self.shareholder_set.all().order_by('number'):
             if shareholder.share_count(date=date) > 0:
                 shareholder_list.append(shareholder.pk)
 
-        return Shareholder.objects.filter(
+        result = Shareholder.objects.filter(
             pk__in=shareholder_list
         ).select_related(
             'user', 'user__userprofile', 'user__userprofile__country', 'company'
         ).order_by('number')
+
+        cache.set(cache_key, result, 60*60*24)
+        return result
 
     def get_active_option_holders(self, date=None):
         """ returns list of all active shareholders """
