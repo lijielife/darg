@@ -5,6 +5,8 @@ from django.shortcuts import redirect, resolve_url
 # django 1.10
 # from django.utils.deprecation import MiddlewareMixin
 
+from utils.session import get_company_from_request
+
 
 # class CompanySubscriptionRequired(MiddlewareMixin):
 class CompanySubscriptionRequired(object):
@@ -27,11 +29,12 @@ class CompanySubscriptionRequired(object):
         if (request.user.is_authenticated() and
                 any(re.compile(m).match(path) for m in self.BLACKLIST_URLS)):
             # check if any companies have no active subscription
-            for operator in request.user.operator_set.all():
-                customer = operator.company.get_customer()
+            company = get_company_from_request(request, fail_silently=True)
+            if company:
+                customer = company.get_customer()
                 if customer and not customer.has_active_subscription():
                     redirect_url = resolve_url(
                         'djstripe:subscribe',
-                        **dict(company_id=operator.company_id)
+                        **dict(company_id=company.pk)
                     )
                     return redirect(redirect_url)
