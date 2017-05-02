@@ -186,6 +186,9 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             self.add_subscription(user.operator_set.first().company)
 
             self.assertEqual(p.get_form_errors(), [])
+            """ invalidated by changing the next step to subscription selection
+            leaving here as this might return later again...
+
             self.assertFalse(p.is_add_company_form_displayed())
             self.assertTrue(user.operator_set.exists())
             company = user.operator_set.first().company
@@ -207,7 +210,8 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                 p.wait_until_visible((By.CSS_SELECTOR, '#captable'))
                 .is_displayed())
             self.assertEqual(company.founded_at, datetime.date.today())
-
+            """
+            self.assertIn('subscription', p.driver.current_url)
         except Exception, e:
             self._handle_exception(e)
 

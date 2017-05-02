@@ -141,6 +141,7 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
             # wait for 'link'
             p.wait_until_visible(
                 (By.CSS_SELECTOR, 'div.company-department span.el-icon-pencil'))
+            time.sleep(1)
             p.click_to_edit("company-department")
             time.sleep(1)
             p.edit_field('IT Security Dep.', "company-department")
@@ -206,6 +207,7 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
             # wait for 'link'
             p.wait_until_visible(
                 (By.CSS_SELECTOR, '.mailing-type span.el-icon-pencil'))
+            time.sleep(1)
             p.click_to_edit("mailing-type")
             time.sleep(1)
             p.select_type("mailing-type", _('via Email'))
