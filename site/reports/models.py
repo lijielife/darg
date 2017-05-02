@@ -58,6 +58,7 @@ class Report(TimeStampedModel):
     generation_time = models.PositiveIntegerField(
         _('time it took to generate the file in seconds'),
         null=True, blank=True)
+    report_at = models.DateField(_('report filter date'))
     downloaded_at = models.DateTimeField(null=True, blank=True)
 
     def __unicode__(self):

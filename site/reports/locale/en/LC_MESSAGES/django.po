@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-01 23:12+0000\n"
+"POT-Creation-Date: 2017-05-02 00:18+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -65,143 +65,147 @@ msgstr ""
 msgid "time it took to generate the file in seconds"
 msgstr ""
 
+#: reports/models.py:61
+msgid "report filter date"
+msgstr ""
+
 #: reports/tasks.py:94
 msgid "None"
 msgstr ""
 
-#: reports/tasks.py:216
+#: reports/tasks.py:217
 msgid "Your pdf captable file"
 msgstr ""
 
-#: reports/tasks.py:217 reports/tasks.py:283
+#: reports/tasks.py:218 reports/tasks.py:284
 msgid "Your file is attached to this email"
 msgstr ""
 
-#: reports/tasks.py:218
+#: reports/tasks.py:219
 msgid "PDF Captable/Active Shareholders"
 msgstr ""
 
-#: reports/tasks.py:243
+#: reports/tasks.py:244
 msgid "shareholder number"
 msgstr ""
 
-#: reports/tasks.py:243
+#: reports/tasks.py:244
 msgid "legal type"
 msgstr ""
 
-#: reports/tasks.py:243
+#: reports/tasks.py:244
 msgid "registration types"
 msgstr ""
 
-#: reports/tasks.py:244
+#: reports/tasks.py:245
 msgid "company_department"
 msgstr ""
 
-#: reports/tasks.py:244
+#: reports/tasks.py:245
 msgid "title"
 msgstr ""
 
-#: reports/tasks.py:244
+#: reports/tasks.py:245
 msgid "salutation"
 msgstr ""
 
-#: reports/tasks.py:244
+#: reports/tasks.py:245
 msgid "last name"
 msgstr ""
 
-#: reports/tasks.py:245
+#: reports/tasks.py:246
 msgid "first name"
 msgstr ""
 
-#: reports/tasks.py:245
+#: reports/tasks.py:246
 msgid "address"
 msgstr ""
 
-#: reports/tasks.py:245
+#: reports/tasks.py:246
 msgid "postal_code"
 msgstr ""
 
-#: reports/tasks.py:245
+#: reports/tasks.py:246
 msgid "city"
 msgstr ""
 
-#: reports/tasks.py:246
+#: reports/tasks.py:247
 msgid "birthday"
 msgstr ""
 
-#: reports/tasks.py:246
+#: reports/tasks.py:247
 msgid "mailing_type"
 msgstr ""
 
-#: reports/tasks.py:246
+#: reports/tasks.py:247
 msgid "nationality"
 msgstr ""
 
-#: reports/tasks.py:246
+#: reports/tasks.py:247
 msgid "security type"
 msgstr ""
 
-#: reports/tasks.py:247
+#: reports/tasks.py:248
 msgid "cusip"
 msgstr ""
 
-#: reports/tasks.py:247
+#: reports/tasks.py:248
 msgid "face_value"
 msgstr ""
 
-#: reports/tasks.py:247
+#: reports/tasks.py:248
 msgid "certificate_ids (issue date)"
 msgstr ""
 
-#: reports/tasks.py:248
+#: reports/tasks.py:249
 msgid "stock book id"
 msgstr ""
 
-#: reports/tasks.py:248
+#: reports/tasks.py:249
 msgid "depot_type"
 msgstr ""
 
-#: reports/tasks.py:249
+#: reports/tasks.py:250
 msgid "email"
 msgstr ""
 
-#: reports/tasks.py:249
+#: reports/tasks.py:250
 msgid "share count"
 msgstr ""
 
-#: reports/tasks.py:249
+#: reports/tasks.py:250
 msgid "share percent"
 msgstr ""
 
-#: reports/tasks.py:250
+#: reports/tasks.py:251
 msgid "votes percent"
 msgstr ""
 
-#: reports/tasks.py:251
+#: reports/tasks.py:252
 msgid "cumulated face value"
 msgstr ""
 
-#: reports/tasks.py:251
+#: reports/tasks.py:252
 msgid "is management"
 msgstr ""
 
-#: reports/tasks.py:252
+#: reports/tasks.py:253
 msgid "language ISO"
 msgstr ""
 
-#: reports/tasks.py:252
+#: reports/tasks.py:253
 msgid "language full"
 msgstr ""
 
-#: reports/tasks.py:256
+#: reports/tasks.py:257
 msgid "Share IDs"
 msgstr ""
 
-#: reports/tasks.py:282
+#: reports/tasks.py:283
 msgid "Your csv captable file"
 msgstr ""
 
-#: reports/tasks.py:284
+#: reports/tasks.py:285
 msgid "CSV Captable/Active Shareholders"
 msgstr ""
 
@@ -241,17 +245,17 @@ msgstr ""
 msgid "Sort by:"
 msgstr ""
 
-#: reports/templates/reports/_captable_form.html:57
+#: reports/templates/reports/_captable_form.html:78
 #: reports/templates/reports/index.html:24
 msgid "Download active Shareholders"
 msgstr ""
 
-#: reports/templates/reports/_captable_form.html:61
+#: reports/templates/reports/_captable_form.html:82
 msgid "File generated at "
 msgstr ""
 
-#: reports/templates/reports/_captable_form.html:64
-#: reports/templates/reports/_captable_form.html:71
+#: reports/templates/reports/_captable_form.html:85
+#: reports/templates/reports/_captable_form.html:92
 msgid "Generate fresh file"
 msgstr ""
 

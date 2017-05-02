@@ -1258,7 +1258,8 @@ class ReportSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         fields = ('file_type', 'report_type', 'order_by', 'url', 'created_at',
-                  'eta', 'company', 'user', 'downloaded_at', 'generated_at')
+                  'eta', 'company', 'user', 'downloaded_at', 'generated_at',
+                  'report_at')
         model = Report
         extra_kwargs = {
             'url': {'read_only': True},

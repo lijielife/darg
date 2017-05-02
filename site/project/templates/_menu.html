@@ -34,6 +34,9 @@
             <li class="{% ifequal request.path positions_url %}active{% endifequal %}">
               <a href="{{ positions_url }}">{% trans "Positions" %}</a>
             </li>
+            <li class="{% ifequal request.path options_url %}active{% endifequal %}">
+              <a href="{{options_url}}">{% trans "ESOP" %}</a>
+            </li>
             <li class="{% ifequal request.path reports_url %}active{% endifequal %}">
               <a href="{{reports_url}}">{% trans "Reports" %}</a>
             </li>
@@ -54,9 +57,6 @@
                 </span>
               </a>
               <ul class="dropdown-menu">
-                <li class="{% ifequal request.path options_url %}active{% endifequal %}">
-                  <a href="{{options_url}}">{% trans "ESOP" %}</a>
-                </li>
                 {% if request.user.is_superuser %}
                   <li>
                     <a href="{% url 'admin:index' %}" target="_blank">{% trans "Admin" %}</a>

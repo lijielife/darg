@@ -45,6 +45,27 @@
                 ng-change="get_captable_report()">
         </select>
       </span>
+      <span class="input-group date-field">
+        <input type="text" class="form-control"
+           ng-model="last_captable_report.report_at"
+           uib-datepicker-popup="{{ datepicker3.format }}"
+           datepicker-options="datepicker3.options"
+           is-open="datepicker3.opened"
+           show-button-bar="true"
+           close-text="Schliessen"
+           clear-text="Leeren"
+           current-text="Heute"
+           readonly="readonly"
+           placeholder="{{'Date'|translate}}"
+           ng-click="toggle_datepicker3()"
+           />
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default" ng-click="toggle_datepicker3()">
+            <i class="glyphicon glyphicon-calendar"></i>
+          </button>
+        </span>
+      </span>
+    
     </div>
   </form>
   {% endverbatim %}

@@ -238,3 +238,13 @@ def get_total_discounted_tax_value(shareholder, date=None):
         tax_value += option.get_discounted_tax_value(date=date)
 
     return tax_value
+
+
+@register.assignment_tag
+def shareholder_share_count(shareholder, date=None):
+    return shareholder.share_count(date=date) or 0
+
+
+@register.assignment_tag
+def shareholder_share_percent(shareholder, date=None):
+    return shareholder.share_percent(date=date) or 0

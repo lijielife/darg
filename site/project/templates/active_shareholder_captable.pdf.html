@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load humanize %}
+{% load shareholder_tags %}
 
 {% block head_links %}
 {% endblock %}
@@ -42,7 +43,7 @@
     }
 
     .heading {
-        font-size: 14pt;
+        font-size: 18pt;
     }
 
     .text-right {
@@ -66,7 +67,7 @@
 
     <!-- Content for Static Frame 'header_frame' -->
     <div id="header_content">
-      {% trans "Your Shareholders for" %}
+      {% trans "Your Shareholders on" %} {{ report_date }} {% trans "for company" %}
       <h2 class="heading">{{ company.name }}</h2>
     </div>
 
@@ -123,7 +124,10 @@
           {{ shareholder.number }}
         </td>
         <td align="right">
-          {{ shareholder.share_count|intcomma }} {% if shareholder.share_percent %}({{shareholder.share_percent }}){% endif %}
+          {% shareholder_share_count shareholder report_date as share_count %}
+          {{ share_count|intcomma }}
+          {% shareholder_share_percent shareholder report_date as share_percent %}
+          {% if share_percent %}({{share_percent }}){% endif %}
         </td>
         {% if securities_with_track_numbers.exists %}
         <td>
@@ -151,7 +155,7 @@
 
     {% for shareholder in active_option_holders %}
     <table>
-      <tr class="panel">
+        <tr class="panel {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
         <td>
           {{ shareholder.get_full_name }}
         </td>

@@ -45091,7 +45091,8 @@ return deCh;
       $scope.last_captable_report = new Report({
         order_by: $scope.captable_orderings[6],
         file_type: 'PDF',
-        report_type: 'captable'
+        report_type: 'captable',
+        report_at: new Date()
       });
       $scope.$watchCollection('transactions_download_params', function(transactions_download_params) {
         if (transactions_download_params.to && transactions_download_params.from && transactions_download_params.security) {
@@ -45104,6 +45105,7 @@ return deCh;
           delete $scope.last_captable_report.pk;
         }
         $scope.last_captable_report.order_by = $scope.last_captable_report.order_by.value;
+        $scope.last_captable_report.report_at = $scope.last_captable_report.report_at.toISOString().substring(0, 10);
         $scope.captable_loading = true;
         return $scope.last_captable_report.$save().then(function(result) {
           $scope.last_captable_report = new Report($scope.get_report_from_api_result({
@@ -45140,7 +45142,8 @@ return deCh;
           order_by: $scope.last_captable_report.order_by.value,
           report_type: $scope.last_captable_report.report_type,
           file_type: $scope.last_captable_report.file_type,
-          limit: 1
+          limit: 1,
+          report_at: $scope.last_captable_report.report_at
         };
         $scope.captable_loading = true;
         return $http.get('/services/rest/report', {
@@ -45167,6 +45170,7 @@ return deCh;
         var report;
         report = result.data.results[0];
         report.order_by = $scope.lookup_ordering(result.data.results[0].order_by);
+        report.report_at = new Date(result.data.results[0].report_at);
         return report;
       };
       $scope.lookup_ordering = function(order_by) {
@@ -45206,8 +45210,20 @@ return deCh;
         startingDay: 1,
         showWeeks: false
       };
-      return $scope.toggle_datepicker2 = function() {
+      $scope.toggle_datepicker2 = function() {
         return $scope.datepicker2.opened = !$scope.datepicker2.opened;
+      };
+      $scope.datepicker3 = {
+        opened: false
+      };
+      $scope.datepicker3.format = 'd. MMM yyyy';
+      $scope.datepicker3.options = {
+        formatYear: 'yy',
+        startingDay: 1,
+        showWeeks: false
+      };
+      return $scope.toggle_datepicker3 = function() {
+        return $scope.datepicker3.opened = !$scope.datepicker3.opened;
       };
     }
   ]);
