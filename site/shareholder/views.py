@@ -295,7 +295,7 @@ class StatementReportListView(ShareholderStatementReportViewMixin,
                               SubscriptionViewMixin, ListView):
 
     template_name = 'statement_report_list.html'  # in shareholder/templates
-    allow_empty = False
+    # allow_empty = False  # removed otherwise users gets unexpected 404
 
 
 statement_report_list = login_required(StatementReportListView.as_view())
