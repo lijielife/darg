@@ -1,12 +1,13 @@
 
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponseRedirect
-from django.test import TestCase, RequestFactory
+from django.test import TestCase, RequestFactory, Client
 
 from project.generators import OperatorGenerator, UserGenerator
 from project.tests.mixins import StripeTestCaseMixin, SubscriptionTestMixin
 
 from ..middleware import CompanySubscriptionRequired, resolve_url
+from utils.session import add_company_to_session
 
 
 class CompanySubscriptionRequiredTestCase(StripeTestCaseMixin,
@@ -28,6 +29,8 @@ class CompanySubscriptionRequiredTestCase(StripeTestCaseMixin,
         self.anonymous_user = AnonymousUser()
         self.user = UserGenerator().generate()
         self.operator = OperatorGenerator().generate()
+
+        self.client = Client()
 
     def test_process_request(self):
 
@@ -58,12 +61,16 @@ class CompanySubscriptionRequiredTestCase(StripeTestCaseMixin,
         # check whitelisted url for operator user
         req = self.whitelist_req
         req.user = self.operator.user
+        add_company_to_session(self.client.session, self.operator.company)
+        req.session = self.client.session
         res = self.middleware.process_request(req)
         self.assertIsNone(res)
 
         # check blacklisted url for operator user
         req = self.blacklist_req
         req.user = self.operator.user
+        add_company_to_session(self.client.session, self.operator.company)
+        req.session = self.client.session
         res = self.middleware.process_request(req)
         self.assertIsNotNone(res)
         self.assertTrue(isinstance(res, HttpResponseRedirect))
