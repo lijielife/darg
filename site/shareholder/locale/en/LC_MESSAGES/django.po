@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-02 01:06+0000\n"
+"POT-Creation-Date: 2017-05-02 06:18+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -587,7 +587,7 @@ msgid "Statement email sent to shareholder at"
 msgstr ""
 
 #: shareholder/templates/_statements_table.html:8
-#: shareholder/templates/statement_report_list.html:22
+#: shareholder/templates/statement_report_list.html:23
 msgid "email"
 msgstr ""
 
@@ -604,7 +604,7 @@ msgid "Statement PDF was downloaded at"
 msgstr ""
 
 #: shareholder/templates/_statements_table.html:14
-#: shareholder/templates/statement_report_list.html:28
+#: shareholder/templates/statement_report_list.html:29
 msgid "Downloaded"
 msgstr ""
 
@@ -613,7 +613,7 @@ msgid "Statement letter was sent to shareholder at"
 msgstr ""
 
 #: shareholder/templates/_statements_table.html:17
-#: shareholder/templates/statement_report_list.html:31
+#: shareholder/templates/statement_report_list.html:32
 msgid "Letter"
 msgstr ""
 
@@ -1348,13 +1348,13 @@ msgstr ""
 
 #: shareholder/templates/shareholder/optiontransaction_detail.html:44
 #: shareholder/templates/shareholder/position_detail.html:69
-#: shareholder/templates/statement_report_list.html:16
+#: shareholder/templates/statement_report_list.html:17
 msgid "Date"
 msgstr ""
 
 #: shareholder/templates/shareholder/optiontransaction_detail.html:52
 #: shareholder/templates/shareholder/position_detail.html:61
-#: shareholder/templates/statement_report_list.html:19
+#: shareholder/templates/statement_report_list.html:20
 msgid "Count"
 msgstr ""
 
@@ -1657,36 +1657,40 @@ msgstr ""
 msgid "download all statements as a single file"
 msgstr ""
 
-#: shareholder/templates/statement_report_list.html:6
+#: shareholder/templates/statement_report_list.html:7
 msgid "Your shareholder statements reports"
 msgstr ""
 
-#: shareholder/templates/statement_report_list.html:15
+#: shareholder/templates/statement_report_list.html:16
 msgid "Date when report was created"
 msgstr ""
 
-#: shareholder/templates/statement_report_list.html:18
+#: shareholder/templates/statement_report_list.html:19
 msgid "Number of generated statements"
 msgstr ""
 
-#: shareholder/templates/statement_report_list.html:21
+#: shareholder/templates/statement_report_list.html:22
 msgid "Number of statements sent to shareholder via email"
 msgstr ""
 
-#: shareholder/templates/statement_report_list.html:24
+#: shareholder/templates/statement_report_list.html:25
 msgid "Number of shareholders that opened statement email"
 msgstr ""
 
-#: shareholder/templates/statement_report_list.html:25
+#: shareholder/templates/statement_report_list.html:26
 msgid "Opened"
 msgstr ""
 
-#: shareholder/templates/statement_report_list.html:27
+#: shareholder/templates/statement_report_list.html:28
 msgid "Number of shareholders that downloaded statement PDF"
 msgstr ""
 
-#: shareholder/templates/statement_report_list.html:30
+#: shareholder/templates/statement_report_list.html:31
 msgid "Number of shareholders the statment was sent via letter"
+msgstr ""
+
+#: shareholder/templates/statement_report_list.html:51
+msgid "no reports/statements yet"
 msgstr ""
 
 #: shareholder/templatetags/shareholder_tags.py:134
