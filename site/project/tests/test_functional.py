@@ -183,6 +183,8 @@ class StartFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
             # wait for form to disappear
             p.wait_until_invisible((By.CSS_SELECTOR, '#add_company'))
 
+            self.add_subscription(user.operator_set.first().company)
+
             self.assertEqual(p.get_form_errors(), [])
             self.assertFalse(p.is_add_company_form_displayed())
             self.assertTrue(user.operator_set.exists())
