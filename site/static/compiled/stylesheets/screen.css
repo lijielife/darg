@@ -2417,7 +2417,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   background-image: url("/static/compiled/images/csv-icon.png");
 }
 #reports .captable .form .input-group {
-  display: block;
+  margin-bottom: 1em;
 }
 
 blockquote {
