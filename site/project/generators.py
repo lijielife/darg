@@ -339,7 +339,7 @@ class OptionTransactionGenerator(object):
 
         buyer = kwargs.get('buyer') or ShareholderGenerator().generate(
             company=company)
-        seller = kwargs.get('seller')
+        seller = kwargs.get('seller', ShareholderGenerator().generate())
         count = kwargs.get('count') or 3
         kwargs.get('value') or 2
         bought_at = kwargs.get('bought_at') or datetime.datetime.now().date()

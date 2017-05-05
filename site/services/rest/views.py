@@ -1,6 +1,7 @@
 import dateutil.parser
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from django.db.models.expressions import RawSQL
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.translation import ugettext as _
@@ -32,6 +33,7 @@ from services.rest.serializers import (AddCompanySerializer, BankSerializer,
 from shareholder.models import (Bank, Company, Country, Operator, OptionPlan,
                                 OptionTransaction, Position, Security,
                                 Shareholder)
+from shareholder.tasks import update_order_cache_task
 from utils.session import get_company_from_request
 
 User = get_user_model()
@@ -146,6 +148,11 @@ class PositionViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
 
         position = self.get_object()
         if position.is_draft is True:
+            # update cached shareholder `field order_cache`
+            if position.buyer:
+                update_order_cache_task.apply_async([position.buyer.pk])
+            if position.seller:
+                update_order_cache_task.apply_async([position.seller.pk])
             position.delete()
             return Response(
                 {"success": True}, status=status.HTTP_204_NO_CONTENT)
@@ -285,6 +292,11 @@ class OptionTransactionViewSet(SubscriptionViewMixin,
         """ delete position. but not if is_draft-False"""
         position = self.get_object()
         if position.is_draft is True:
+            # update cached shareholder `field order_cache`
+            if position.buyer:
+                update_order_cache_task.apply_async([position.buyer.pk])
+            if position.seller:
+                update_order_cache_task.apply_async([position.seller.pk])
             position.delete()
             return Response(
                 {"success": True}, status=status.HTTP_204_NO_CONTENT)
@@ -362,6 +374,20 @@ class ShareholderViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
 
     subscription_features = ('shareholders',)
 
+    def _filter_queryset_by_order_cache(self, qs):
+        """ sort queryset by jsonfield called order_cache on model """
+        # FIXME hack, replace once django supports order_by for JSONField
+        order_by = self.request.GET.get('ordering')
+        if (order_by and 'order_cache' in order_by and '__' in order_by):
+            prefix, order_by = self.request.GET.get('ordering').split('__')
+            desc = prefix.startswith('-')
+
+            qs = qs.order_by(RawSQL("((order_cache->>%s)::numeric)", (order_by,)))
+            if desc:
+                qs = qs.reverse()
+
+        return qs
+
     def get_queryset(self):
         """
         user has no company selected
@@ -374,6 +400,7 @@ class ShareholderViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
         company = get_company_from_request(self.request)
 
         qs = Shareholder.objects.filter(company=company)
+        qs = self._filter_queryset_by_order_cache(qs)
         return qs.select_related('company', 'user', 'user__userprofile') \
             .prefetch_related('user__operator_set') \
             .distinct()

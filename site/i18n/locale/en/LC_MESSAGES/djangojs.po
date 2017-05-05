@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-28 21:51+0000\n"
+"POT-Creation-Date: 2017-05-05 19:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,17 +24,17 @@ msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:4
 #: static/compiled/javascript/i18n_noop.js:24
-#: static/compiled/javascript/script.js:45047
-#: static/compiled/javascript/script.js:45424
-#: static/compiled/javascript/script.js:45446
+#: static/compiled/javascript/script.js:45066
+#: static/compiled/javascript/script.js:45465
+#: static/compiled/javascript/script.js:45508
 msgid "Last Name"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:5
 #: static/compiled/javascript/i18n_noop.js:25
-#: static/compiled/javascript/script.js:45059
-#: static/compiled/javascript/script.js:45421
-#: static/compiled/javascript/script.js:45443
+#: static/compiled/javascript/script.js:45078
+#: static/compiled/javascript/script.js:45459
+#: static/compiled/javascript/script.js:45505
 msgid "Shareholder Number"
 msgstr ""
 
@@ -80,7 +80,7 @@ msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:16
 #: static/compiled/javascript/i18n_noop.js:18
-#: static/compiled/javascript/script.js:45053
+#: static/compiled/javascript/script.js:45072
 msgid "Share Count"
 msgstr ""
 
@@ -201,12 +201,12 @@ msgid "Vesting period in months"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:50
-#: static/compiled/javascript/script.js:44027
+#: static/compiled/javascript/script.js:44046
 msgid "Input"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:51
-#: static/compiled/javascript/script.js:44029
+#: static/compiled/javascript/script.js:44048
 msgid "Please enter DELETE"
 msgstr ""
 
@@ -222,99 +222,135 @@ msgstr ""
 msgid "last_name"
 msgstr ""
 
-#: static/compiled/javascript/script.js:44018
+#: static/compiled/javascript/script.js:44037
 msgid "DELETE"
 msgstr ""
 
-#: static/compiled/javascript/script.js:44101
-#: static/compiled/javascript/script.js:44644
+#: static/compiled/javascript/script.js:44120
+#: static/compiled/javascript/script.js:44663
 msgid "Sperrdepot"
 msgstr ""
 
-#: static/compiled/javascript/script.js:44104
-#: static/compiled/javascript/script.js:44647
+#: static/compiled/javascript/script.js:44123
+#: static/compiled/javascript/script.js:44666
 msgid "Zertifikatsdepot"
 msgstr ""
 
-#: static/compiled/javascript/script.js:44107
-#: static/compiled/javascript/script.js:44650
+#: static/compiled/javascript/script.js:44126
+#: static/compiled/javascript/script.js:44669
 msgid "Gesellschaftsdepot"
 msgstr ""
 
-#: static/compiled/javascript/script.js:44280
-#: static/compiled/javascript/script.js:44832
+#: static/compiled/javascript/script.js:44299
+#: static/compiled/javascript/script.js:44851
 msgid ""
 "This shareholder was not found inside the database. Please add as a "
 "shareholder, then enter name here and click the right one inside the "
 "provided list"
 msgstr ""
 
-#: static/compiled/javascript/script.js:44396
-#: static/compiled/javascript/script.js:44417
+#: static/compiled/javascript/script.js:44415
+#: static/compiled/javascript/script.js:44436
 msgid "Available security segments for option plan on selected date or now: "
 msgstr ""
 
-#: static/compiled/javascript/script.js:44398
+#: static/compiled/javascript/script.js:44417
 msgid ""
 "Available security segments for option plan on selected date or now: None"
 msgstr ""
 
-#: static/compiled/javascript/script.js:44419
+#: static/compiled/javascript/script.js:44438
 msgid "No security segments available for option plan on selected date or now."
 msgstr ""
 
-#: static/compiled/javascript/script.js:44989
+#: static/compiled/javascript/script.js:45008
 msgid ""
 "Available security segments from this shareholder on selected date or now: "
 msgstr ""
 
-#: static/compiled/javascript/script.js:44991
+#: static/compiled/javascript/script.js:45010
 msgid ""
 "Available security segments from this shareholder on selected date or now: "
 "None"
 msgstr ""
 
-#: static/compiled/javascript/script.js:45050
+#: static/compiled/javascript/script.js:45069
 msgid "Last Name (descending)"
 msgstr ""
 
-#: static/compiled/javascript/script.js:45056
+#: static/compiled/javascript/script.js:45075
 msgid "Share Count (descending)"
 msgstr ""
 
-#: static/compiled/javascript/script.js:45062
+#: static/compiled/javascript/script.js:45081
 msgid "Shareholder Number (descending)"
 msgstr ""
 
-#: static/compiled/javascript/script.js:45065
+#: static/compiled/javascript/script.js:45084
 msgid "Share Percent Ownership"
 msgstr ""
 
-#: static/compiled/javascript/script.js:45068
+#: static/compiled/javascript/script.js:45087
 msgid "Share Percent Ownership (descending)"
 msgstr ""
 
-#: static/compiled/javascript/script.js:45236
+#: static/compiled/javascript/script.js:45271
 msgid "Human Being"
 msgstr ""
 
-#: static/compiled/javascript/script.js:45239
+#: static/compiled/javascript/script.js:45274
 msgid "Corporate"
 msgstr ""
 
-#: static/compiled/javascript/script.js:45245
+#: static/compiled/javascript/script.js:45280
 msgid "Not deliverable"
 msgstr ""
 
-#: static/compiled/javascript/script.js:45248
+#: static/compiled/javascript/script.js:45283
 msgid "Postal Mail"
 msgstr ""
 
-#: static/compiled/javascript/script.js:45251
+#: static/compiled/javascript/script.js:45286
 msgid "via Email"
 msgstr ""
 
-#: static/compiled/javascript/script.js:45418
-#: static/compiled/javascript/script.js:45440
+#: static/compiled/javascript/script.js:45453
+#: static/compiled/javascript/script.js:45502
 msgid "Email"
+msgstr ""
+
+#: static/compiled/javascript/script.js:45456
+msgid "Email desc"
+msgstr ""
+
+#: static/compiled/javascript/script.js:45462
+msgid "Shareholder Number desc"
+msgstr ""
+
+#: static/compiled/javascript/script.js:45468
+msgid "Last Name desc"
+msgstr ""
+
+#: static/compiled/javascript/script.js:45471
+msgid "Capital based on face value"
+msgstr ""
+
+#: static/compiled/javascript/script.js:45474
+msgid "Capital based on face value desc"
+msgstr ""
+
+#: static/compiled/javascript/script.js:45477
+msgid "Postal Code"
+msgstr ""
+
+#: static/compiled/javascript/script.js:45480
+msgid "Postal Code desc"
+msgstr ""
+
+#: static/compiled/javascript/script.js:45483
+msgid "Share count"
+msgstr ""
+
+#: static/compiled/javascript/script.js:45486
+msgid "Share count desc"
 msgstr ""
