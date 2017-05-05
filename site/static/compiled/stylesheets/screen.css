@@ -3136,6 +3136,10 @@ nav.navbar .dropdown-toggle {
   float: left;
 }
 
+select.form-control {
+  border-radius: 4px !important;
+}
+
 .form .form-control {
   box-shadow: unset;
   font-size: initial;
