@@ -52,7 +52,8 @@ def setup_periodic_tasks(sender, **kwargs):
                                    send_statement_report_operator_notify,
                                    generate_statements_report,
                                    fetch_statement_email_opened_mandrill,
-                                   send_statement_letters)
+                                   send_statement_letters,
+                                   update_order_cache_for_all_shareholders)
     sender.add_periodic_task(
         crontab(hour=9, minute=0),  # every morning at 9AM
         send_statement_generation_operator_notify.s()
@@ -81,4 +82,7 @@ def setup_periodic_tasks(sender, **kwargs):
     )
     sender.add_periodic_task(
         crontab(hour=3, minute=0), backup.s()  # Nightly backups at 3AM
+    )
+    sender.add_periodic_task(
+        crontab(hour=5, minute=0), update_order_cache_for_all_shareholders.s()
     )

@@ -2296,7 +2296,7 @@ class ShareholderViewSetTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         # ASC
         self.client.force_login(operator.user)
         response = self.client.get(
-            '/services/rest/shareholders?order_by=order_cache__share_count')
+            '/services/rest/shareholders?ordering=order_cache__share_count')
 
         for idx, dataset in enumerate(response.data['results']):
             if idx == 0:
@@ -2307,7 +2307,7 @@ class ShareholderViewSetTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
 
         # DESC
         response = self.client.get(
-            '/services/rest/shareholders?order_by=-order_cache__share_count')
+            '/services/rest/shareholders?ordering=-order_cache__share_count')
 
         for idx, dataset in enumerate(response.data['results']):
             if idx == 0:
@@ -2318,13 +2318,13 @@ class ShareholderViewSetTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
 
         # bad param
         response = self.client.get(
-            '/services/rest/shareholders?order_by=-order_cache__share_countX')
+            '/services/rest/shareholders?ordering=-order_cache__share_countX')
         self.assertEqual(response.status_code, 200)
         response = self.client.get(
-            '/services/rest/shareholders?order_by=-order_cache__')
+            '/services/rest/shareholders?ordering=-order_cache__')
         self.assertEqual(response.status_code, 200)
         response = self.client.get(
-            '/services/rest/shareholders?order_by=-order_cache')
+            '/services/rest/shareholders?ordering=-order_cache')
         self.assertEqual(response.status_code, 200)
 
 

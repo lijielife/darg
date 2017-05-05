@@ -514,9 +514,15 @@ def update_order_cache_task(shareholder_pk):
     order_cache['share_count'] = shareholder.share_count()
     order_cache['postal_code'] = (
         shareholder.user.userprofile.postal_code or 0)
-    order_cache['cumulated_face_capital'] = (
+    order_cache['cumulated_face_value'] = (
         float(shareholder.cumulated_face_value()))
 
     # use `update()` to not trigger the signal itself again
     Shareholder.objects.filter(pk=shareholder.pk).update(
         order_cache=order_cache)
+
+
+@app.task
+def update_order_cache_for_all_shareholders():
+    for sh in Shareholder.objects.all():
+        update_order_cache_task.apply_async([sh.pk])

@@ -7,6 +7,7 @@ from django.core.mail import mail_managers, send_mail
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.db.models import Q
+from django.db.models.signals import post_save
 from django.utils.translation import ugettext as _
 from django.utils import timezone
 from rest_framework import serializers
@@ -462,8 +463,9 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
             defaults={"number": validated_data.get("number")},
         )
 
-        # trigger signal? must that be?
-        shareholder.save()
+        # fire signal to update order_cache
+        post_save.send(
+            Shareholder, instance=shareholder, using='default', created=True)
 
         return shareholder
 
@@ -747,8 +749,10 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
                     pk=validated_data.get("depot_bank")['pk'])})
 
         position = Position.objects.create(**kwargs)
+
         # fire signal to update order_cache
-        position.save()
+        post_save.send(
+            Position, instance=position, using='default', created=True)
 
         return position
 
@@ -1168,6 +1172,11 @@ class OptionTransactionSerializer(serializers.HyperlinkedModelSerializer):
                 'certificate_id': validated_data.get("certificate_id")})
 
         option_transaction = OptionTransaction.objects.create(**kwargs)
+
+        # fire signal to update order_cache
+        post_save.send(
+            OptionTransaction, instance=option_transaction, using='default',
+            created=True)
 
         return option_transaction
 

@@ -377,9 +377,9 @@ class ShareholderViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
     def _filter_queryset_by_order_cache(self, qs):
         """ sort queryset by jsonfield called order_cache on model """
         # FIXME hack, replace once django supports order_by for JSONField
-        order_by = self.request.GET.get('order_by')
+        order_by = self.request.GET.get('ordering')
         if (order_by and 'order_cache' in order_by and '__' in order_by):
-            prefix, order_by = self.request.GET.get('order_by').split('__')
+            prefix, order_by = self.request.GET.get('ordering').split('__')
             desc = prefix.startswith('-')
 
             qs = qs.order_by(RawSQL("order_cache->>%s", (order_by,)))
