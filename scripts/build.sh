@@ -6,8 +6,8 @@ if [ ! -d "scripts" ]; then
 fi
 
 export DEBIAN_FRONTEND=noninteractive; export DBUS_SESSION_BUS_ADDRESS=/dev/null
-export INSTAPAGE_TOKEN='0tIg7LJHIgF04pIP1pBYUq9tsjVTVlnefHYjHFzJCiwD34g5X4rPAAcK9kF5m8e6'
-export INSTAPAGE_ACCESS_TOKEN='5vaWSHQYOLDmxwThfub0Aao72jWyrzKz'
+export INSTAPAGE_TOKEN=''
+export INSTAPAGE_ACCESS_TOKEN=''
 export LC_ALL=en_US.UTF-8
 
 echo 'WARNING setting empty raven dsn, you wont have sentry tracking...'
