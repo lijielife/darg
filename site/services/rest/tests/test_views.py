@@ -2040,7 +2040,9 @@ class ShareholderViewSetTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
 
         self.client.force_login(user)
 
-        query = operator.company.shareholder_set.first().user.first_name
+        query = u'{} {}'.format(
+            operator.company.shareholder_set.first().user.first_name,
+            operator.company.shareholder_set.first().user.last_name)
         res = self.client.get(
             '/services/rest/shareholders?search={}'.format(query))
 
