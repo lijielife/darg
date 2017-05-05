@@ -15,7 +15,6 @@ from rest_framework.exceptions import ValidationError
 from services.rest.mixins import (FieldValidationMixin,
                                   SubscriptionSerializerMixin)
 from reports.models import Report
-from services.rest.validators import DependedFieldsValidator
 from shareholder.models import (Bank, Company, Country, Operator, OptionPlan,
                                 OptionTransaction, Position, Security,
                                 Shareholder, UserProfile)
@@ -370,6 +369,7 @@ class ShareholderListSerializer(serializers.HyperlinkedModelSerializer):
             'validate_gafi',
             'is_company',
             'full_name',
+            # 'order_cache',  not needed as of now, for ordering only
         )
 
     def get_full_name(self, obj):
@@ -461,6 +461,9 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
             company=company,
             defaults={"number": validated_data.get("number")},
         )
+
+        # trigger signal? must that be?
+        shareholder.save()
 
         return shareholder
 
@@ -582,7 +585,6 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
 
     class Meta:
         model = Position
-        validators = [DependedFieldsValidator(fields=('seller', 'buyer'))]
         fields = (
             'pk', 'buyer', 'seller', 'bought_at', 'count', 'value',
             'security', 'comment', 'is_split', 'is_draft', 'number_segments',
@@ -656,72 +658,9 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
 
         # --- TRACK NUMBERS validation
         if security and Security.objects.get(
-                company=company, title=security.get('title'),
-                face_value=security.get('face_value')).track_numbers:
+                company=company, pk=security.get('pk')).track_numbers:
 
-            logger.info('validation: prepare data...')
-            security = Security.objects.get(id=security['pk'])
-            if (isinstance(initial_data.get('number_segments'), str) or
-                    isinstance(initial_data.get('number_segments'), unicode)):
-                segments = string_list_to_json(
-                    initial_data.get('number_segments'))
-            else:
-                segments = initial_data.get('number_segments')
-
-            # if we have seller (non capital increase)
-            if initial_data.get('seller'):
-                logger.info('validation: get seller segments...')
-                seller = Shareholder.objects.get(
-                    pk=initial_data.get('seller')['pk'])
-                owning, failed_segments, owned_segments = seller.owns_segments(
-                    segments, security)
-                logger.info(
-                    'validation: seller segs {} for security {} done'.format(
-                        segments, security))
-
-            # we need number_segments if this is a security with .track_numbers
-            if not segments:
-                raise serializers.ValidationError(
-                    {'number_segments':
-                        [_('Invalid security numbers segments.')]})
-
-            # segments must be owned by seller
-            elif initial_data.get('seller') and not owning:
-                raise serializers.ValidationError({
-                    'number_segments':
-                        [_('Segments "{}" must be owned by seller "{}". '
-                           'Available are {}').format(
-                              failed_segments, seller.user.last_name,
-                              owned_segments
-                        )]
-                })
-
-            # validate segment count == share count
-            elif (security.count_in_segments(segments) !=
-                    initial_data.get('count')):
-                logger.info('validation: checking count...')
-                raise serializers.ValidationError({
-                    'count':
-                        [_('Number of shares in segments ({}) '
-                           'does not match count {}').format(
-                                security.count_in_segments(segments),
-                                initial_data.get('count')
-                           )]
-                })
-
-            # segment must not be used by option plan
-            logger.info('validation: option plan validation...')
-            inflated_segments = inflate_segments(segments)
-            oplan_segments = inflate_segments(
-                security.company.get_all_option_plan_segments())
-            if substract_list(
-                inflated_segments, oplan_segments
-            ) != inflated_segments:
-                raise serializers.ValidationError({
-                    'number_segments':
-                        [_('Segment {} is blocked for options and cannot be'
-                           ' transfered to a shareholder.').format(segments)]
-                })
+            self._validate_number_segments(company, security, initial_data)
 
         return res
 
@@ -808,6 +747,8 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
                     pk=validated_data.get("depot_bank")['pk'])})
 
         position = Position.objects.create(**kwargs)
+        # fire signal to update order_cache
+        position.save()
 
         return position
 
@@ -875,6 +816,73 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
                       'depot'
                       ''))
         return value
+
+    def _validate_number_segments(self, company, security,
+                                  raise_exception=False):
+        initial_data = self.initial_data
+        security = Security.objects.get(company=company, pk=security.get('pk'))
+        logger.info('validation: prepare data...')
+        if (isinstance(initial_data.get('number_segments'), str) or
+                isinstance(initial_data.get('number_segments'), unicode)):
+            segments = string_list_to_json(
+                initial_data.get('number_segments'))
+        else:
+            segments = initial_data.get('number_segments')
+
+        # if we have seller (non capital increase)
+        if initial_data.get('seller'):
+            logger.info('validation: get seller segments...')
+            seller = Shareholder.objects.get(
+                pk=initial_data.get('seller')['pk'])
+            owning, failed_segments, owned_segments = seller.owns_segments(
+                segments, security)
+            logger.info(
+                'validation: seller segs {} for security {} done'.format(
+                    segments, security))
+
+        # we need number_segments if this is a security with .track_numbers
+        if not segments:
+            raise serializers.ValidationError(
+                {'number_segments':
+                    [_('Invalid security numbers segments.')]})
+
+        # segments must be owned by seller
+        elif initial_data.get('seller') and not owning:
+            raise serializers.ValidationError({
+                'number_segments':
+                    [_('Segments "{}" must be owned by seller "{}". '
+                       'Available are {}').format(
+                          failed_segments, seller.user.last_name,
+                          owned_segments
+                    )]
+            })
+
+        # validate segment count == share count
+        elif (security.count_in_segments(segments) !=
+                initial_data.get('count')):
+            logger.info('validation: checking count...')
+            raise serializers.ValidationError({
+                'count':
+                    [_('Number of shares in segments ({}) '
+                       'does not match count {}').format(
+                            security.count_in_segments(segments),
+                            initial_data.get('count')
+                       )]
+            })
+
+        # segment must not be used by option plan
+        logger.info('validation: option plan validation...')
+        inflated_segments = inflate_segments(segments)
+        oplan_segments = inflate_segments(
+            security.company.get_all_option_plan_segments())
+        if substract_list(
+            inflated_segments, oplan_segments
+        ) != inflated_segments:
+            raise serializers.ValidationError({
+                'number_segments':
+                    [_('Segment {} is blocked for options and cannot be'
+                       ' transfered to a shareholder.').format(segments)]
+            })
 
 
 class OptionPlanSerializer(serializers.HyperlinkedModelSerializer):

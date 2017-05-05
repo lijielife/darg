@@ -3,26 +3,25 @@ import json
 import os
 import time
 
+import mock
 from django.conf import settings
 from django.test import TestCase, override_settings
 from django.utils.timezone import now, timedelta
-
-import mock
-
 from model_mommy import mommy, random_gen
 
-from project.generators import CompanyGenerator, OperatorGenerator
+from project.generators import (CompanyGenerator, OperatorGenerator,
+                                ShareholderGenerator)
 from project.tests.mixins import (FakeResponseMixin, StripeTestCaseMixin,
                                   SubscriptionTestMixin)
 
-from ..models import ShareholderStatementReport, ShareholderStatement
+from ..models import ShareholderStatement, ShareholderStatementReport
 from ..tasks import (_context_email_defaults,
-                     send_statement_generation_operator_notify,
-                     send_statement_report_operator_notify,
-                     generate_statements_report, send_statement_email,
                      fetch_statement_email_opened_mandrill,
-                     send_statement_letter, send_statement_letters)
-
+                     generate_statements_report, send_statement_email,
+                     send_statement_generation_operator_notify,
+                     send_statement_letter, send_statement_letters,
+                     send_statement_report_operator_notify,
+                     update_order_cache_task)
 from .mixins import AddressTestMixin
 
 
@@ -347,3 +346,13 @@ class TasksTestCase(AddressTestMixin, FakeResponseMixin, StripeTestCaseMixin,
         send_statement_letters()
 
         mock_send_statement_letter.assert_called_once()
+
+    def test_update_order_cache_task(self):
+        """ update shareholder objs order_cache field """
+        shareholder = ShareholderGenerator().generate()
+        update_order_cache_task(shareholder.pk)
+        shareholder.refresh_from_db()
+        self.assertEqual(
+            shareholder.order_cache,
+            {u'cumulated_face_capital': 0, u'postal_code': u'12345',
+             u'share_count': 0})

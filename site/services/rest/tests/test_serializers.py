@@ -6,7 +6,7 @@ from decimal import Decimal
 import mock
 from dateutil.parser import parse
 from django.core.urlresolvers import reverse
-from django.test import RequestFactory, TestCase
+from django.test import RequestFactory, TestCase, Client
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from rest_framework.exceptions import ValidationError
@@ -32,6 +32,7 @@ from services.rest.serializers import (AddCompanySerializer, BankSerializer,
 from shareholder.models import (Bank, Country, OptionPlan, OptionTransaction,
                                 Position)
 from utils.formatters import human_readable_segments
+from utils.session import add_company_to_session
 
 
 class AddCompanySerializerTestCase(TestCase):
@@ -93,6 +94,44 @@ class BankSerializerTestCase(TestCase):
         self.assertIn(self.bank.name, name)
         self.assertIn(self.bank.city, name)
         self.assertIn(self.bank.address, name)
+
+
+class CompanySerializerTestCase(TestCase):
+
+    def setUp(self):
+        super(CompanySerializerTestCase, self).setUp()
+
+        self.serializer = CompanySerializer()
+        self.instance = CompanyGenerator().generate()
+
+    def test_get_profile_url(self):
+        url = self.serializer.get_profile_url(self.instance)
+        self.assertEqual(url, reverse('company',
+                                      kwargs={'company_id': self.instance.id}))
+
+
+class OperatorSerializerTestCase(TestCase):
+
+    def setUp(self):
+        super(OperatorSerializerTestCase, self).setUp()
+
+        self.serializer = OperatorSerializer()
+        self.instance = OperatorGenerator().generate()
+        self.factory = RequestFactory()
+
+    def test_get_is_myself(self):
+        req = self.factory.get('/')
+        req.user = UserGenerator().generate()
+        self.serializer.context = dict(request=req)
+        self.assertFalse(self.serializer.get_is_myself(self.instance))
+
+        req.user = self.instance.user
+        self.serializer.context = dict(request=req)
+        self.assertTrue(self.serializer.get_is_myself(self.instance))
+
+    @unittest.skip('TODO: OperatorSerializer.create')
+    def test_create(self):
+        pass
 
 
 class OptionPlanSerializerTestCase(TestCase):
@@ -210,6 +249,30 @@ class OptionTransactionSerializerTestCase(TestCase):
 
     def setUp(self):
         self.factory = RequestFactory()
+        self.client = Client()
+        self.session = self.client.session
+
+        self.transaction = OptionTransactionGenerator().generate()
+        self.operator = OperatorGenerator().generate(
+            company=self.transaction.buyer.company)
+
+        add_company_to_session(self.session, self.operator.company)
+        self.request = self.factory.get('/services/rest/position')
+        self.request.user = self.operator.user
+        self.request.session = self.session
+        self.new_data = OptionTransactionSerializer(
+            self.transaction, context={'request': self.request}).data
+        self.new_data.update({'bought_at': '2013-05-05'})
+
+    @mock.patch('shareholder.signals.update_order_cache_task')
+    def test_signal_on_create(self, signal_mock):
+        self.new_data['depot_type'] = 1
+        self.new_data['seller'] = self.new_data['buyer']
+        serializer = OptionTransactionSerializer(
+                data=self.new_data, context={'request': self.request})
+        serializer.is_valid()
+        obj = serializer.create(serializer.validated_data)
+        signal_mock.apply_async.assert_called_with([obj.pk])
 
     def test_fields(self):
         """
@@ -255,6 +318,15 @@ class OptionTransactionSerializerTestCase(TestCase):
         self.assertNotIn('u', result)
         self.assertNotIn('{', result)
         self.assertNotIn('}', result)
+
+    @unittest.skip('PLACEHOLDER - test for signal fired once implemented')
+    @mock.patch('shareholder.signals.update_order_cache_task')
+    def test_update(self, signal_mock):
+        serializer = OptionTransactionSerializer(
+            data=self.new_data, context={'request': self.request})
+        serializer.is_valid()
+        obj = serializer.update(self.position, serializer.validated_data)
+        signal_mock.apply_async.assert_called_with([obj.pk])
 
     def test_validate_certificate_id(self):
         """ certificate id must be unique """
@@ -326,6 +398,31 @@ class PositionSerializerTestCase(TestCase):
 
     def setUp(self):
         self.factory = RequestFactory()
+        self.client = Client()
+        self.session = self.client.session
+
+        self.position = PositionGenerator().generate(seller=None)
+        self.operator = OperatorGenerator().generate(
+            company=self.position.buyer.company)
+
+        add_company_to_session(self.session, self.operator.company)
+        self.request = self.factory.get('/services/rest/position')
+        self.request.user = self.operator.user
+        self.request.session = self.session
+        self.new_data = PositionSerializer(
+            self.position, context={'request': self.request}).data
+        self.new_data.update({'bought_at': '2013-05-05T00:00'})
+
+    @mock.patch('shareholder.signals.update_order_cache_task')
+    def test_create(self, signal_mock):
+        del self.new_data['seller']
+        del self.new_data['depot_bank']
+        self.new_data['depot_type'] = 1
+        serializer = PositionSerializer(data=self.new_data,
+                                        context={'request': self.request})
+        serializer.is_valid()
+        obj = serializer.create(serializer.validated_data)
+        signal_mock.apply_async.assert_called_with([obj.pk])
 
     def test_get_certificate_invalidation_position_url(self):
         """
@@ -480,6 +577,15 @@ class PositionSerializerTestCase(TestCase):
         self.assertIn('certificate_invalidation_initial_position_url', keys)
         self.assertIn('is_certificate_valid', keys)
 
+    @unittest.skip('PLACEHOLDER - test for signal fired once implemented')
+    @mock.patch('shareholder.signals.update_order_cache_task')
+    def test_update(self, signal_mock):
+        serializer = PositionSerializer(data=self.new_data,
+                                        context={'request': self.request})
+        serializer.is_valid()
+        obj = serializer.update(self.position, serializer.validated_data)
+        signal_mock.apply_async.assert_called_with([obj.pk])
+
     def test_validate_certificate_id(self):
         """ certificate id must be unique """
         serializer, position = self.__serialize('1, 3, 4, 6-9, 33')
@@ -571,6 +677,23 @@ class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin,
         super(ShareholderSerializerTestCase, self).setUp()
 
         self.factory = RequestFactory()
+        self.client = Client()
+        self.session = self.client.session
+
+        self.shareholder = ShareholderGenerator().generate()
+        self.operator = OperatorGenerator().generate(
+            company=self.shareholder.company)
+
+        add_company_to_session(self.session, self.operator.company)
+        self.request = self.factory.get('/services/rest/shareholders')
+        self.request.user = self.operator.user
+        self.request.session = self.session
+        self.new_data = ShareholderSerializer(
+            self.shareholder, context={'request': self.request}).data
+        self.new_data.update(
+            {'number': self.operator.company.get_new_shareholder_number()})
+        self.new_data['user']['userprofile'].update(
+            {'birthday': '2013-05-05T00:00'})
 
     def test_is_company(self):
 
@@ -662,17 +785,25 @@ class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin,
         for k in profile_data.keys():
             self.assertIsNotNone(profile_data[k])
 
-    @unittest.skip('TODO: ShareholderSerializer.create')
-    def test_create(self):
-        pass
+    @mock.patch('shareholder.signals.update_order_cache_task')
+    def test_create(self, signal_mock):
+        serializer = ShareholderSerializer(data=self.new_data,
+                                           context={'request': self.request})
+        serializer.is_valid()
+        sh = serializer.create(serializer.validated_data)
+        signal_mock.apply_async.assert_called_with([sh.pk])
 
     @unittest.skip('TODO: ShareholderSerializer.is_valid')
     def test_is_valid(self):
         pass
 
-    @unittest.skip('TODO: ShareholderSerializer.update')
-    def test_update(self):
-        pass
+    @mock.patch('shareholder.signals.update_order_cache_task')
+    def test_update(self, signal_mock):
+        serializer = ShareholderSerializer(data=self.new_data,
+                                           context={'request': self.request})
+        serializer.is_valid()
+        sh = serializer.update(self.shareholder, serializer.validated_data)
+        signal_mock.apply_async.assert_called_with([sh.pk])
 
     def test_validate_number(self):
         """
@@ -696,21 +827,6 @@ class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin,
             shs[1], context={'request': request})
         # no validationerror raised
         serializer.validate_number('345tfdw34rtf')
-
-
-class UserProfileSerializerTestCase(TestCase):
-
-    def setUp(self):
-        self.factory = RequestFactory()
-        self.user = UserGenerator().generate()
-        request = self.factory.get('services/rest/user')
-        self.serializer = UserProfileSerializer(self.user.userprofile,
-                                                context={'request': request})
-
-    def test_fields(self):
-        self.assertEqual(self.serializer.data.get('readable_legal_type'),
-                         _('Human Being'))
-        self.assertEqual(self.serializer.data.get('legal_type'), 'H')
 
 
 class SecuritySerializerTestCase(TestCase):
@@ -755,42 +871,19 @@ class SecuritySerializerTestCase(TestCase):
         self.assertEqual(obj.number_segments, data.get('number_segments'))
 
 
-class CompanySerializerTestCase(TestCase):
+class UserProfileSerializerTestCase(TestCase):
 
     def setUp(self):
-        super(CompanySerializerTestCase, self).setUp()
-
-        self.serializer = CompanySerializer()
-        self.instance = CompanyGenerator().generate()
-
-    def test_get_profile_url(self):
-        url = self.serializer.get_profile_url(self.instance)
-        self.assertEqual(url, reverse('company',
-                                      kwargs={'company_id': self.instance.id}))
-
-
-class OperatorSerializerTestCase(TestCase):
-
-    def setUp(self):
-        super(OperatorSerializerTestCase, self).setUp()
-
-        self.serializer = OperatorSerializer()
-        self.instance = OperatorGenerator().generate()
         self.factory = RequestFactory()
+        self.user = UserGenerator().generate()
+        request = self.factory.get('services/rest/user')
+        self.serializer = UserProfileSerializer(self.user.userprofile,
+                                                context={'request': request})
 
-    def test_get_is_myself(self):
-        req = self.factory.get('/')
-        req.user = UserGenerator().generate()
-        self.serializer.context = dict(request=req)
-        self.assertFalse(self.serializer.get_is_myself(self.instance))
-
-        req.user = self.instance.user
-        self.serializer.context = dict(request=req)
-        self.assertTrue(self.serializer.get_is_myself(self.instance))
-
-    @unittest.skip('TODO: OperatorSerializer.create')
-    def test_create(self):
-        pass
+    def test_fields(self):
+        self.assertEqual(self.serializer.data.get('readable_legal_type'),
+                         _('Human Being'))
+        self.assertEqual(self.serializer.data.get('legal_type'), 'H')
 
 
 class UserSerializerTestCase(TestCase):

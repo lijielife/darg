@@ -853,6 +853,8 @@ class Shareholder(TagMixin, models.Model):
         choices=MAILING_TYPES, blank=True, null=True)
     is_management = models.BooleanField(
         _('user is management/board member of company'), default=False)
+    order_cache = JSONField(_('cache data for fast sorting here'),
+                                   default=dict, blank=True, null=True)
 
     def __unicode__(self):
         return u'{} {} (#{})'.format(
