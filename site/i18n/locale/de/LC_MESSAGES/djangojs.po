@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-05 19:22+0000\n"
-"PO-Revision-Date: 2017-04-28 22:03+0000\n"
+"PO-Revision-Date: 2017-05-05 19:25+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -267,7 +267,8 @@ msgid ""
 msgstr "Aktionär hält aktuell keine Optionen."
 
 #: static/compiled/javascript/script.js:44438
-msgid "No security segments available for option plan on selected date or now."
+msgid ""
+"No security segments available for option plan on selected date or now."
 msgstr ""
 "Es sind aktuell keine Aktiennummern für den Optionsplan am ausgewählten "
 "Datum verfügbar."
@@ -329,49 +330,43 @@ msgid "Email"
 msgstr "Email"
 
 #: static/compiled/javascript/script.js:45456
-#, fuzzy
 #| msgid "Email"
 msgid "Email desc"
-msgstr "Email"
+msgstr "Email absteigend"
 
 #: static/compiled/javascript/script.js:45462
-#, fuzzy
 #| msgid "Shareholder Number"
 msgid "Shareholder Number desc"
-msgstr "Gesellschafter Nummer"
+msgstr "Gesellschafter Nummer absteigend"
 
 #: static/compiled/javascript/script.js:45468
-#, fuzzy
 #| msgid "Last Name"
 msgid "Last Name desc"
-msgstr "Nachname"
+msgstr "Nachname absteigend"
 
 #: static/compiled/javascript/script.js:45471
 msgid "Capital based on face value"
-msgstr ""
+msgstr "Kapital basierend auf Nennwert"
 
 #: static/compiled/javascript/script.js:45474
 msgid "Capital based on face value desc"
-msgstr ""
+msgstr "Kapital basierend auf Nennwert absteigend"
 
 #: static/compiled/javascript/script.js:45477
-#, fuzzy
 #| msgid "Postal Mail"
 msgid "Postal Code"
-msgstr "Briefversand"
+msgstr "Postleitzahl"
 
 #: static/compiled/javascript/script.js:45480
 msgid "Postal Code desc"
-msgstr ""
+msgstr "Postleitzahl absteigend"
 
 #: static/compiled/javascript/script.js:45483
-#, fuzzy
 #| msgid "Share Count"
 msgid "Share count"
 msgstr "Anzahl Aktien"
 
 #: static/compiled/javascript/script.js:45486
-#, fuzzy
 #| msgid "Share Count (descending)"
 msgid "Share count desc"
 msgstr "Anzahl Aktien (absteigend)"
