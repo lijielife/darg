@@ -176,6 +176,7 @@ class ShareholderDetailFunctionalTestCase(StripeTestCaseMixin,
             # wait for 'link'
             p.wait_until_visible(
                 (By.CSS_SELECTOR, '.legal-type span.el-icon-pencil'))
+            time.sleep(1)
             p.click_to_edit("legal-type")
             time.sleep(1)
             p.select_type("legal-type", _('Corporate'))
