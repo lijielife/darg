@@ -382,7 +382,7 @@ class ShareholderViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
             prefix, order_by = self.request.GET.get('ordering').split('__')
             desc = prefix.startswith('-')
 
-            qs = qs.order_by(RawSQL("order_cache->>%s", (order_by,)))
+            qs = qs.order_by(RawSQL("((order_cache->>%s)::numeric)", (order_by,)))
             if desc:
                 qs = qs.reverse()
 

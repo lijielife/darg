@@ -22,7 +22,8 @@ from shareholder.models import (Bank, Company, Country, Operator, OptionPlan,
 class ShareholderAdmin(VersionAdmin):
 
     list_display = ('user_name', 'company', 'number')
-    search_fields = ['user__email', 'user__first_name', 'user__last_name']
+    search_fields = ['user__email', 'user__first_name', 'user__last_name',
+                     'user__userprofile__company_name']
     list_filter = ('company',)
 
     def get_urls(self):
