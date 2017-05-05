@@ -412,9 +412,11 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
             self.assertEqual(row.count(','), 5)
         self.assertEqual(len(lines), 8)  # ensure we have the right data
         # assert company itself
-        self.assertIn(shs[0].get_full_name(), [f.split(',')[0] for f in lines])
+        self.assertIn(shs[0].get_full_name(),
+                      [f.split(',')[0].decode('utf-8') for f in lines])
         # assert share owner
-        self.assertIn(shs[1].get_full_name(), [f.split(',')[0] for f in lines])
+        self.assertIn(shs[1].get_full_name(),
+                      [f.split(',')[0].decode('utf-8') for f in lines])
 
     def test_contacts_csv(self):
         """ test download of all shareholders contact data """
