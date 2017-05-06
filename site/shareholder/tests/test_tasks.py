@@ -354,5 +354,5 @@ class TasksTestCase(AddressTestMixin, FakeResponseMixin, StripeTestCaseMixin,
         shareholder.refresh_from_db()
         self.assertEqual(
             shareholder.order_cache,
-            {u'cumulated_face_capital': 0, u'postal_code': u'12345',
+            {u'cumulated_face_value': 0, u'postal_code': u'12345',
              u'share_count': 0})
