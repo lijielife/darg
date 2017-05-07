@@ -2,7 +2,7 @@ describe 'Unit: Testing Reports Controller', ->
   $controller = undefined
   $scope = undefined
   $httpBackend = undefined
-  $response = {results: [{report_type: 'captableX', order_by: 'share_count', file_type: 'PDF'}]}
+  $response = {results: [{report_type: 'captableX', order_by: 'share_count', file_type: 'PDF', report_at: new Date()}]}
   ctrl = undefined
 
   beforeEach module('js.darg.app.reports') 
@@ -54,11 +54,15 @@ describe 'Unit: Testing Reports Controller', ->
       expect($scope.securities.length).toEqual 1
 
   describe 'add_captable_report should POST proper request', ->
-
     it 'should put the response inside last_captable_report', ->
       $httpBackend.expectPOST('/services/rest/report').respond(
-        201, {report_type: 'captableZ', order_by: 'share_percent'})
+        201, {report_type: 'captableZ', order_by: 'share_percent', 
+        report_at: new Date()})
       $scope.add_captable_report()
       $httpBackend.flush()
       expect($scope.last_captable_report.report_type).toEqual 'captableZ'
       expect($scope.last_captable_report.order_by.value).toEqual 'share_percent'
+
+  describe 'ordering options', ->
+    it 'should have 14 options', ->
+      expect($scope.captable_orderings.length).toEqual 14
