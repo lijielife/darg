@@ -116,6 +116,47 @@ class CompanyTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
                                               security=self.security, count=2,
                                               option_plan=optionplan)
 
+    @mock.patch('shareholder.models.cache')
+    def test_get_active_shareholders(self, cache_mock):
+        """ return qs of active shareholders """
+        cache_mock.get.return_value = None
+        cache_key = 'company-{}-None-None-active-shareholders'.format(
+            self.company.pk)
+
+        shs = self.company.get_active_shareholders()
+        self.assertEqual(
+            list(shs.order_by('number')),
+            list(self.company.shareholder_set.all().order_by('number')))
+        self.assertEqual(len(shs), 2)
+        cache_mock.set.assert_called_with(cache_key, shs, 86400)
+
+        # cache hit
+        cache_mock.reset_mock()
+        cache_mock.get.return_value = self.company.shareholder_set.all()
+        shs = self.company.get_active_shareholders()
+        self.assertEqual(list(shs.reverse()),
+                         list(self.company.shareholder_set.all()))
+        self.assertEqual(len(shs), 2)
+        cache_mock.get.assert_called_with(cache_key)
+
+        # kwargs used
+        cache_mock.reset_mock()
+        cache_mock.get.return_value = self.company.shareholder_set.all()
+        shs = self.company.get_active_shareholders(date=timezone.now().date(),
+                                                   security=self.security)
+        self.assertEqual(list(shs.reverse()),
+                         list(self.company.shareholder_set.all()))
+        self.assertEqual(len(shs), 2)
+
+        # kwargs used, ancient date
+        cache_mock.reset_mock()
+        cache_mock.get.return_value = self.company.shareholder_set.all()
+        oneyearago = timezone.now().date() - relativedelta(years=1)
+        shs = self.company.get_active_shareholders(date=oneyearago,
+                                                   security=self.security)
+        self.assertEqual(list(shs.reverse()),
+                         list(self.company.shareholder_set.all()))
+
     def test_get_new_certificate_id(self):
         """
         get fresh unused cert id

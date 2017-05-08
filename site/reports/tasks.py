@@ -29,6 +29,7 @@ def _get_captable_pdf_context(company, ordering, date):
     isolated code to make for better testing
     """
     option_ordering = ordering.replace('share', 'options')
+
     context = {
             'pagesize': 'A4',
             'company': company,
@@ -38,10 +39,9 @@ def _get_captable_pdf_context(company, ordering, date):
             'provisioned_capital': company.get_provisioned_capital(),
             'securities_with_track_numbers': company.security_set.filter(
                 track_numbers=True),
-            'active_shareholders': _order_queryset(
-                company.get_active_shareholders(date=date), ordering),
-            'active_option_holders': _order_queryset(
-                company.get_active_option_holders(date=date), option_ordering),
+            'ordering': ordering,
+            'option_ordering': option_ordering,
+            'report_date': date,
         }
     return context
 
@@ -270,11 +270,18 @@ def render_captable_csv(company_id, report_id, user_id=None, ordering=None,
 
     # removed share percent due to heavy sql impact. killed perf for higher
     # shareholder count
-    queryset = company.get_active_shareholders(date=report.report_at)
-    queryset = _order_queryset(queryset, ordering)
-    for shareholder in queryset:
-        for security in company.security_set.all():
-            if shareholder.share_count(security=security):
+    for security in company.security_set.all():
+        # small header for each security
+        writer.writerow([])
+        writer.writerow([u"--- {} ---".format(unicode(security).upper())])
+        writer.writerow([])
+        # for each active shareholder
+        queryset = company.get_active_shareholders(date=report.report_at,
+                                                   security=security)
+        queryset = _order_queryset(queryset, ordering)
+        for shareholder in queryset:
+            if shareholder.share_count(security=security,
+                                       date=report.report_at):
                 row = _collect_csv_data(shareholder, security, report.report_at)
             else:
                 continue

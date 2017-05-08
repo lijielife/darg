@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import datetime
 from django.core import mail
 from django.test import TestCase
 from django.utils import timezone
@@ -8,7 +9,7 @@ from model_mommy import mommy
 
 from project.generators import (CompanyGenerator,
                                 ComplexShareholderConstellationGenerator,
-                                ReportGenerator)
+                                ReportGenerator, PositionGenerator)
 from reports.tasks import (_add_file_to_report, _get_captable_pdf_context,
                            _get_filename, _order_queryset, _parse_ordering,
                            _prepare_report, _send_notify, _summarize_report,
@@ -33,56 +34,10 @@ class TaskTestCase(TestCase):
         res = _get_captable_pdf_context(self.shs[0].company,
                                         ordering='-share_count',
                                         date=timezone.now().date())
-        self.assertEqual(len(res), 9)
-
-        # order by share percent
-        res = _get_captable_pdf_context(self.shs[0].company,
-                                        ordering='-share_percent',
-                                        date=timezone.now().date())
-        self.assertEqual(len(res), 9)
-        for idx, sh in enumerate(res['active_shareholders']):
-            if idx == 0:
-                continue
-            self.assertLessEqual(
-                float(sh.share_percent()),
-                float(res['active_shareholders'][idx-1].share_percent()))
-
-        # order by share_count
-        res = _get_captable_pdf_context(self.shs[0].company,
-                                        ordering='-share_count',
-                                        date=timezone.now().date())
-        self.assertEqual(len(res), 9)
-        for idx, sh in enumerate(res['active_shareholders']):
-            if idx == 0:
-                continue
-            self.assertLessEqual(
-                int(sh.share_count(security=self.sec)),
-                int(res['active_shareholders'][idx-1].share_count(
-                    security=self.sec)))
-
-        # order by number
-        res = _get_captable_pdf_context(self.shs[0].company,
-                                        ordering='-number',
-                                        date=timezone.now().date())
-        self.assertEqual(len(res), 9)
-        for idx, sh in enumerate(res['active_shareholders']):
-            if idx == 0:
-                continue
-            self.assertLessEqual(
-                sh.number,
-                res['active_shareholders'][idx-1].number)
-
-        # order by user last name
-        res = _get_captable_pdf_context(self.shs[0].company,
-                                        ordering='-user__last_name',
-                                        date=timezone.now().date())
-        self.assertEqual(len(res), 9)
-        for idx, sh in enumerate(res['active_shareholders']):
-            if idx == 0:
-                continue
-            self.assertLessEqual(
-                sh.user.last_name,
-                res['active_shareholders'][idx-1].user.last_name.lower())
+        self.assertEqual(len(res), 10)
+        self.assertIsNotNone(res.get('ordering'))
+        self.assertIsNotNone(res.get('option_ordering'))
+        self.assertTrue(isinstance(res.get('report_date'), datetime.date))
 
     def test_parse_ordering(self):
         """ convert ordering param from FE to ORM ready ordering """
@@ -216,12 +171,20 @@ class TaskTestCase(TestCase):
 
     def test_render_captable_csv(self):
         report = ReportGenerator().generate()
+        PositionGenerator().generate(company=report.company, seller=None)
         render_captable_csv(report.company.pk, report.pk,
                             user_id=report.user.pk, ordering=None,
                             notify=True, track_downloads=False)
         report.refresh_from_db()
 
         self.assertIsNotNone(report.file)
+        contents = report.file.read()
+        rows = contents.split('\r\n')
+        self.assertEqual(len(rows), 6)
+        self.assertIn(
+            u'--- {}'.format(unicode(
+                report.company.security_set.first()).upper()),
+            rows[2].decode('utf-8'))
 
     def test_render_captable_pdf(self):
         report = ReportGenerator().generate()

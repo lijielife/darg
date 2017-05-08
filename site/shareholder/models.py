@@ -236,17 +236,24 @@ class Company(AddressModelMixin, models.Model):
         validator = ShareRegisterValidator(self)
         return validator.is_valid()
 
-    def get_active_shareholders(self, date=None):
+    def get_active_shareholders(self, date=None, security=None):
         """ returns list of all active shareholders. this is a very expensive
         must use heavy caching"""
-        cache_key = 'company-{}-active-shareholders'.format(self.pk)
+        cache_key = 'company-{}-{}-{}-active-shareholders'.format(
+            self.pk, date, slugify(security))
         cached = cache.get(cache_key)
         if cached:
             return cached
 
+        kwargs = {}
+        if date:
+            kwargs.update({'date': date})
+        if security:
+            kwargs.update({'security': security})
+
         shareholder_list = []
         for shareholder in self.shareholder_set.all().order_by('number'):
-            if shareholder.share_count(date=date) > 0:
+            if shareholder.share_count(**kwargs) > 0:
                 shareholder_list.append(shareholder.pk)
 
         result = Shareholder.objects.filter(
@@ -258,18 +265,30 @@ class Company(AddressModelMixin, models.Model):
         cache.set(cache_key, result, 60*60*24)
         return result
 
-    def get_active_option_holders(self, date=None):
+    def get_active_option_holders(self, date=None, security=None):
         """ returns list of all active shareholders """
         oh_list = []
         # get all users
-        sh_ids = self.optionplan_set.all().filter(
-            optiontransaction__isnull=False
-            ).values_list(
+        kwargs = dict(optiontransaction__isnull=False)
+        if security:
+            kwargs.update({'security': security})
+        if date:
+            kwargs.update({'optiontransaction__bought_at': date})
+        sh_ids = self.optionplan_set.all().filter(**kwargs).values_list(
             'optiontransaction__buyer__id', flat=True).distinct()
+
+        kwargs = {}
+        if security:
+            kwargs.update({'optionplan__security': security})
+        if date:
+            kwargs.update({'bought_at': date})
+
         for sh_id in sh_ids:
             sh = Shareholder.objects.get(id=sh_id)
-            bought_options = sh.option_buyer.aggregate(Sum('count'))
-            sold_options = sh.option_seller.aggregate(Sum('count'))
+            bought_options = sh.option_buyer.filter(**kwargs).aggregate(
+                Sum('count'))
+            sold_options = sh.option_seller.filter(**kwargs).aggregate(
+                Sum('count'))
             if (
                 (bought_options['count__sum'] or 0) -
                 (sold_options['count__sum'] or 0) > 0
@@ -854,7 +873,7 @@ class Shareholder(TagMixin, models.Model):
     is_management = models.BooleanField(
         _('user is management/board member of company'), default=False)
     order_cache = JSONField(_('cache data for fast sorting here'),
-                                   default=dict, blank=True, null=True)
+                            default=dict, blank=True, null=True)
 
     def __unicode__(self):
         return u'{} {} (#{})'.format(
@@ -1458,6 +1477,9 @@ class Security(models.Model):
     track_numbers = models.BooleanField(
         _('App needs to track IDs of shares. WARNING: update initial '
           'transaction with segments on enabling.'), default=False)
+
+    class Meta:
+        ordering = ['face_value']
 
     def __unicode__(self):
         if self.face_value:
