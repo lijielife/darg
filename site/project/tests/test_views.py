@@ -565,7 +565,8 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
         is_loggedin = self.client.login(username=user.username,
                                         password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(is_loggedin)
-        with self.assertLessNumQueries(53):
+        # was 53
+        with self.assertLessNumQueries(78):
             response = self.client.get(
                 reverse('option_pdf', kwargs={"option_id": ot.pk}))
 
@@ -594,7 +595,8 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
         is_loggedin = self.client.login(username=user.username,
                                         password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(is_loggedin)
-        with self.assertLessNumQueries(55):
+        # was 55
+        with self.assertLessNumQueries(79):
             response = self.client.get(
                 reverse('position_option_pdf', kwargs={"option_id": pos.pk}))
 

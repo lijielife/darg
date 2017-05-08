@@ -272,7 +272,8 @@ class OptionTransactionSerializerTestCase(TestCase):
                 data=self.new_data, context={'request': self.request})
         serializer.is_valid()
         obj = serializer.create(serializer.validated_data)
-        signal_mock.apply_async.assert_called_with([obj.pk])
+        calls = (mock.call(obj.buyer.pk))
+        signal_mock.apply_async.has_calls(calls)
 
     def test_fields(self):
         """
@@ -422,7 +423,8 @@ class PositionSerializerTestCase(TestCase):
                                         context={'request': self.request})
         serializer.is_valid()
         obj = serializer.create(serializer.validated_data)
-        signal_mock.apply_async.assert_called_with([obj.pk])
+        calls = (mock.call(obj.buyer.pk))
+        signal_mock.apply_async.has_calls(calls)
 
     def test_get_certificate_invalidation_position_url(self):
         """
