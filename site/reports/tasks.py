@@ -5,6 +5,7 @@ import datetime
 import logging
 import StringIO
 import time
+import operator
 
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
@@ -125,7 +126,7 @@ def _order_queryset(queryset, ordering):
         funcname = ordering[1:]
         reverse = True
 
-    # handle empyyt QS
+    # handle empyt QS
     if not queryset:
         return queryset.model.objects.none()
 
@@ -138,9 +139,10 @@ def _order_queryset(queryset, ordering):
                     unsorted_results, key=lambda t:
                         unicode(getattr(t, funcname)() or 0), reverse=reverse)
             else:
+                _to_dotted(funcname)
                 return natsorted(
                     unsorted_results, key=lambda t:
-                        getattr(t, funcname), reverse=reverse)
+                        operator.attrgetter(funcname)(t), reverse=reverse)
 
         except TypeError:  # identify https://goo.gl/bDreXS
             logger.exception('ordering {} must be function of {} queryset '
@@ -175,6 +177,11 @@ def _send_notify(user, filename, subject, body, file_desc, url=None):
     msg.template_name = "DARG_FILE_DOWNLOAD"
     msg.global_merge_vars = {'FILE_DESC': file_desc, 'URL': url}
     msg.send()
+
+
+def _to_dotted(value):
+    """ replaces `__` with `.` """
+    return value.replace('__', '.')
 
 
 def _get_filename(report, company):

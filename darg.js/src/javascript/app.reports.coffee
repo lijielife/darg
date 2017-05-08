@@ -32,6 +32,12 @@ app.controller 'ReportsController', ['$scope', '$http', 'Shareholder', 'Report',
         {title: gettext('Shareholder Number (descending)'), value: 'number_desc'},
         {title: gettext('Share Percent Ownership'), value: 'share_percent'},
         {title: gettext('Share Percent Ownership (descending)'), value: 'share_percent_desc'},
+        {title: gettext('Email'), value: 'user__email'},
+        {title: gettext('Email desc'), value: '-user__email'},
+        {title: gettext('Capital based on face value'), value: 'cumulated_face_value'},
+        {title: gettext('Capital based on face value desc'), value: '-cumulated_face_value'},
+        {title: gettext('Postal Code'), value: 'user__userprofile__postal_code'},
+        {title: gettext('Postal Code desc'), value: '-user__user_profile__postal_code'},
     ]
     $scope.last_captable_report = new Report({order_by: $scope.captable_orderings[6], file_type:'PDF', report_type:'captable', report_at: new Date()})
 

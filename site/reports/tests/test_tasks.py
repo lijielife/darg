@@ -4,6 +4,7 @@ from django.core import mail
 from django.test import TestCase
 from django.utils import timezone
 from mock import patch
+from model_mommy import mommy
 
 from project.generators import (CompanyGenerator,
                                 ComplexShareholderConstellationGenerator,
@@ -99,15 +100,77 @@ class TaskTestCase(TestCase):
         self.assertEqual(list(_order_queryset(qs, '-pk')),
                          list(qs.order_by('-pk')))
 
+    def test_order_queryset_share_count(self):
+        """ order queryset by field or method """
+        qs = Shareholder.objects.all()
+        # desc share count
         res = _order_queryset(qs, '-share_count')
         for idx, r in enumerate(res):
             if idx > 0:
                 self.assertTrue(r.share_count() <= res[idx-1].share_count())
 
+        # asc share_count
         res = _order_queryset(qs, 'share_count')
         for idx, r in enumerate(res):
             if idx > 0:
                 self.assertTrue(r.share_count() >= res[idx-1].share_count())
+
+    def test_order_queryset_user__email(self):
+        company = CompanyGenerator().generate()
+        mommy.make(Shareholder, company=company, _quantity=10,
+                   _fill_optional=True)
+        qs = company.shareholder_set.all()
+        for idx, s in enumerate(qs):
+            s.user.email = u'{}@example.com'.format(idx)
+            s.user.save()
+
+        res = _order_queryset(qs, 'user__email')
+        for idx, r in enumerate(res):
+            if idx > 0:
+                self.assertNotEqual(r.user.email, '')
+                self.assertIn(u'@', r.user.email)
+                self.assertGreater(r.user.email, res[idx-1].user.email)
+
+        res = _order_queryset(qs, '-user__email')
+        for idx, r in enumerate(res):
+            if idx > 0:
+                self.assertLess(r.user.email, res[idx-1].user.email)
+
+    def test_order_queryset_cumulated_face_value(self):
+        qs = Shareholder.objects.all()
+        cs = qs.last()
+        for idx, s in enumerate(qs):
+            mommy.make('shareholder.Position', seller=cs, buyer=s, count=idx)
+
+        res = _order_queryset(qs, 'cumulated_face_value')
+        for idx, r in enumerate(res):
+            if idx > 0:
+                self.assertGreaterEqual(r.cumulated_face_value(),
+                                        res[idx-1].cumulated_face_value())
+
+        res = _order_queryset(qs, '-cumulated_face_value')
+        for idx, r in enumerate(res):
+            if idx > 0:
+                self.assertLessEqual(r.cumulated_face_value(),
+                                     res[idx-1].cumulated_face_value())
+
+    def test_order_queryset_postal_code(self):
+        qs = Shareholder.objects.all()
+        for idx, s in enumerate(qs):
+            s.user.userprofile.postal_code = u'{}'.format(idx)
+            s.user.userprofile.save()
+
+        res = _order_queryset(qs, 'user__userprofile__postal_code')
+        for idx, r in enumerate(res):
+            if idx > 0:
+                self.assertGreater(r.user.userprofile.postal_code,
+                                   res[idx-1].user.userprofile.postal_code)
+
+        res = _order_queryset(qs, '-user__userprofile__postal_code')
+        for idx, r in enumerate(res):
+            if idx > 0:
+                self.assertLess(r.user.userprofile.postal_code,
+                                res[idx-1].user.userprofile.postal_code)
 
     def test_add_file_to_report(self):
         """ attach file to report model """

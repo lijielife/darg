@@ -14,10 +14,10 @@ def update_order_cache(sender, instance, created, **kwargs):
     if sender == Shareholder:
         update_order_cache_task.apply_async([instance.pk])
     if sender == Position and instance.buyer:
-        update_order_cache_task.apply_async([instance.pk])
+        update_order_cache_task.apply_async([instance.buyer.pk])
     if sender == Position and instance.seller:
-        update_order_cache_task.apply_async([instance.pk])
+        update_order_cache_task.apply_async([instance.seller.pk])
     if sender == OptionTransaction and instance.buyer:
-        update_order_cache_task.apply_async([instance.pk])
+        update_order_cache_task.apply_async([instance.buyer.pk])
     if sender == OptionTransaction and instance.seller:
-        update_order_cache_task.apply_async([instance.pk])
+        update_order_cache_task.apply_async([instance.seller.pk])
