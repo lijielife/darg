@@ -1685,6 +1685,16 @@ class OptionPlan(models.Model):
     def __unicode__(self):
         return u"{}".format(self.title)
 
+    def can_view(self, user):
+        """
+        permission method to check if user is permitted to view obj
+        """
+        # user is an operator
+        if self.company.operator_set.filter(user=user).exists():
+            return True
+
+        return False
+
     def generate_pdf_file_preview(self):
         """ generates preview png in same place """
         from wand.image import Image
