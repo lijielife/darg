@@ -24,8 +24,8 @@ app.controller 'ReportsController', ['$scope', '$http', 'Shareholder', 'Report',
 
     # captable
     $scope.captable_orderings = [
-        {title: gettext('Last Name'), value: 'user__last_name'},
-        {title: gettext('Last Name (descending)'), value: 'user__last_name_desc'},
+        {title: gettext('Last Name'), value: 'get_full_name'},
+        {title: gettext('Last Name (descending)'), value: 'get_full_name_desc'},
         {title: gettext('Share Count'), value: 'share_count'},
         {title: gettext('Share Count (descending)'), value: 'share_count_desc'},
         {title: gettext('Shareholder Number'), value: 'number'},

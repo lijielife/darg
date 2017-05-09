@@ -45064,10 +45064,10 @@ return deCh;
       $scope.captable_orderings = [
         {
           title: gettext('Last Name'),
-          value: 'user__last_name'
+          value: 'get_full_name'
         }, {
           title: gettext('Last Name (descending)'),
-          value: 'user__last_name_desc'
+          value: 'get_full_name_desc'
         }, {
           title: gettext('Share Count'),
           value: 'share_count'

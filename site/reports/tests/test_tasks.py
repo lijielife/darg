@@ -127,6 +127,28 @@ class TaskTestCase(TestCase):
                 self.assertLess(r.user.userprofile.postal_code,
                                 res[idx-1].user.userprofile.postal_code)
 
+    def test_order_queryset_company_name(self):
+        """ sort for last_name also should sort company names """
+        qs = Shareholder.objects.all()
+        for idx, s in enumerate(qs):
+            s.user.userprofile.company_name = str(unichr(idx+97))
+            s.user.first_name = u''
+            s.user.last_name = u''
+            s.user.save()
+            s.user.userprofile.save()
+
+        res = _order_queryset(qs, 'get_full_name')
+        for idx, r in enumerate(res):
+            if idx > 0:
+                self.assertGreater(r.get_full_name(),
+                                   res[idx-1].get_full_name())
+
+        res = _order_queryset(qs, '-get_full_name')
+        for idx, r in enumerate(res):
+            if idx > 0:
+                self.assertLess(r.get_full_name(),
+                                res[idx-1].get_full_name())
+
     def test_add_file_to_report(self):
         """ attach file to report model """
         report = ReportGenerator().generate()
