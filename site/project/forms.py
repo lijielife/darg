@@ -5,11 +5,9 @@ import logging
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
-from rest_framework.authtoken.models import Token
 
 from registration.forms import (RegistrationFormTermsOfService,
                                 RegistrationFormUniqueEmail)
-from shareholder.models import UserProfile
 
 logger = logging.getLogger(__name__)
 
@@ -37,11 +35,9 @@ class RegistrationForm(RegistrationFormTermsOfService,
     def save(self, commit=True):
         user = super(RegistrationForm, self).save(commit=commit)
 
-        # add api token
-        Token.objects.create(user=user)
-
         # add user profile
-        profile = UserProfile.objects.create(user=user)
+        user.refresh_from_db()
+        profile = getattr(user, 'userprofile', None)
         profile.tnc_accepted = True
         profile.save()
 

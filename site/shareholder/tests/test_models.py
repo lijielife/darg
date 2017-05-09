@@ -23,8 +23,8 @@ from django.utils import timezone
 from django.utils.encoding import force_text
 from model_mommy import mommy
 
-from project.generators import (BankGenerator,
-                                CompanyGenerator, CompanyShareholderGenerator,
+from project.generators import (BankGenerator, CompanyGenerator,
+                                CompanyShareholderGenerator,
                                 ComplexOptionTransactionsWithSegmentsGenerator,
                                 ComplexPositionsWithSegmentsGenerator,
                                 ComplexShareholderConstellationGenerator,
@@ -1461,12 +1461,23 @@ class ShareholderStatementReportTestCase(StripeTestCaseMixin,
                 (today + relativedelta(year=today.year + 1))
             )
 
-            mommy.make(Shareholder, company=self.company, _quantity=3)
+            # one shareholder and noise (one corp sh, dispo sh, transfer sh) -
+            # none of them should get a statement
+            mommy.make(Shareholder, company=self.company, _quantity=4)
+            noise = mommy.make(Shareholder, company=self.company, _quantity=2)
+            noise[0].set_dispo_shareholder()
+            noise[1].set_transfer_shareholder()
 
             self.report.generate_statements(send_notify=False)
             mock_statment_create.assert_called()
             mock_email_notify.assert_not_called()
             mock_merge_pdfs.assert_called()
+            self.assertEqual(noise[0].user.shareholderstatement_set.count(), 0)
+            self.assertEqual(noise[1].user.shareholderstatement_set.count(), 0)
+            self.assertEqual(
+                self.company.get_company_shareholder().user
+                .shareholderstatement_set.count(),
+                0)
 
             company = Company.objects.get(pk=self.company.pk)
             self.assertEqual(

@@ -31,6 +31,7 @@ from django.utils.translation import ugettext as _
 from django_languages import fields as language_fields
 from djstripe.models import Customer as DjStripeCustomer
 from natsort import natsorted
+from rest_framework.authtoken.models import Token
 from sorl.thumbnail import get_thumbnail
 from tagging.models import Tag
 from tagging.registry import register
@@ -325,7 +326,8 @@ class Company(AddressModelMixin, models.Model):
         try:
             return self.shareholder_set.earliest('id')
         except Shareholder.DoesNotExist:
-            raise ValueError('Company Shareholder does not exist')
+            logger.warning('no company shareholder found')
+            raise ValueError('corp shareholder not found')
 
     def get_dispo_shareholder(self):
         """
@@ -1893,7 +1895,14 @@ class ShareholderStatementReport(models.Model):
         if not self.company.has_feature_enabled('shareholder_statements'):
             return
 
-        shareholders = self.company.shareholder_set.all()
+        corp_shareholders = [
+            self.company.get_company_shareholder(),
+            self.company.get_dispo_shareholder(),
+            self.company.get_transfer_shareholder()
+        ]
+        corp_shareholders = [sh.pk for sh in corp_shareholders if sh]
+        shareholders = self.company.shareholder_set.exclude(
+            pk__in=corp_shareholders)
         users = get_user_model().objects.filter(
             pk__in=shareholders.values_list('user_id', flat=True))
         for user in users:
@@ -2144,6 +2153,21 @@ register(Shareholder)
 
 
 # --------- SIGNALS ----------
+# must be inside a file which is imported by django on startup
+# @jirsch: use apps.py for signal registration!
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    """ create rest API access token and user profile obj on
+    User obj create """
+
+    if created:
+        Token.objects.create(user=instance)
+        profile = getattr(instance, 'userprofile',
+                          UserProfile.objects.create(user=instance))
+        if instance.first_name == settings.COMPANY_INITIAL_FIRST_NAME:
+            profile.legal_type = 'C'
+            profile.save()
+
 
 @receiver(post_save, sender=settings.DJSTRIPE_SUBSCRIBER_MODEL)
 def create_stripe_customer(sender, instance=None, created=False, **kwargs):
