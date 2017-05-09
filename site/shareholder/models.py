@@ -240,7 +240,8 @@ class Company(AddressModelMixin, models.Model):
         """ returns list of all active shareholders. this is a very expensive
         must use heavy caching"""
         cache_key = 'company-{}-{}-{}-active-shareholders'.format(
-            self.pk, slugify(date.isoformat()), slugify(security))
+            self.pk, slugify((date or timezone.now().date()).isoformat()),
+            slugify(security))
         cached = cache.get(cache_key)
         if cached:
             return cached
