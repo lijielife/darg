@@ -24,12 +24,11 @@ app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'C
     $scope.current_range = ''
 
     # search
-    $scope.search_params = {'query': null, 'ordering': null, 'ordering_reverse': null}
     $scope.ordering_options = [
         {'name': gettext('Email'), 'value': 'user__email'},
         {'name': gettext('Email desc'), 'value': '-user__email'},
-        {'name': gettext('Shareholder Number'), 'value': 'number'},
-        {'name': gettext('Shareholder Number desc'), 'value': '-number'},
+        {'name': gettext('Shareholder Number'), 'value': 'order_cache__number'},
+        {'name': gettext('Shareholder Number desc'), 'value': '-order_cache__number'},
         {'name': gettext('Last Name'), 'value': 'user__last_name,user__userprofile__company_name'},
         {'name': gettext('Last Name desc'), 'value': '-user__last_name,-user__userprofile__company_name'},
         {'name': gettext('Capital based on face value'), 'value': 'order_cache__cumulated_face_value'},
@@ -40,6 +39,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'C
         {'name': gettext('Share count desc'), 'value': '-order_cache__share_count'},
         # {'name': gettext('Clear'), 'value': null},
     ]
+    $scope.search_params = {'query': null, 'ordering': null, 'ordering_reverse': null}
 
     # pagination:
     $scope.optionholder_next = false

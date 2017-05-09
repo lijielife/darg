@@ -45461,11 +45461,6 @@ return deCh;
       $scope.total = 0;
       $scope.current = 0;
       $scope.current_range = '';
-      $scope.search_params = {
-        'query': null,
-        'ordering': null,
-        'ordering_reverse': null
-      };
       $scope.ordering_options = [
         {
           'name': gettext('Email'),
@@ -45475,10 +45470,10 @@ return deCh;
           'value': '-user__email'
         }, {
           'name': gettext('Shareholder Number'),
-          'value': 'number'
+          'value': 'order_cache__number'
         }, {
           'name': gettext('Shareholder Number desc'),
-          'value': '-number'
+          'value': '-order_cache__number'
         }, {
           'name': gettext('Last Name'),
           'value': 'user__last_name,user__userprofile__company_name'
@@ -45505,6 +45500,11 @@ return deCh;
           'value': '-order_cache__share_count'
         }
       ];
+      $scope.search_params = {
+        'query': null,
+        'ordering': null,
+        'ordering_reverse': null
+      };
       $scope.optionholder_next = false;
       $scope.optionholder_previous = false;
       $scope.optionholder_total = 0;

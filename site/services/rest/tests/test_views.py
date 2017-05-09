@@ -9,8 +9,10 @@ from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.test import RequestFactory, TestCase
-from django.utils.translation import ugettext as _
 from django.utils import timezone
+from django.utils.translation import ugettext as _
+from model_mommy import mommy
+from natsort import natsorted
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
@@ -2040,6 +2042,26 @@ class ShareholderViewSetTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         # must have pagination
         self.assertEqual(len(res.data['results']), 20)
 
+    def test_list_natural_ordering_number(self):
+        """
+        list ordered by number must have natural sort
+        """
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        numbers = ['1', '10', '2', '01', '11', '100', '0012', 'A01']
+        for n in numbers:
+            mommy.make(Shareholder, company=operator.company, number=n)
+
+        self.client.force_login(user)
+        self.add_subscription(operator.company)
+
+        res = self.client.get(
+            '/services/rest/shareholders?ordering=-order_cache__number')
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual([f['number'] for f in res.data['results']][:7],
+                         natsorted(numbers, reverse=True)[1:])
+
     def test_get_detail(self):
         """
         check shareholder detail
@@ -2393,5 +2415,3 @@ class UserViewSetTestCase(SubscriptionTestMixin, TestCase):
 
         self.assertEqual(self.view.get_queryset().count(), 1)
         self.assertIn(user, self.view.get_queryset())
-
-

@@ -25,6 +25,7 @@ from shareholder.import_backends import SwissBankImportBackend
 from shareholder.models import (Company, Shareholder, ShareholderStatement,
                                 ShareholderStatementReport)
 from utils.pdf import render_pdf
+from utils.formatters import make_numeric
 
 logger = logging.getLogger(__name__)
 
@@ -516,6 +517,8 @@ def update_order_cache_task(shareholder_pk):
         shareholder.user.userprofile.postal_code or 0)
     order_cache['cumulated_face_value'] = (
         float(shareholder.cumulated_face_value()))
+    # enable numerical sort via DB logic
+    order_cache['number'] = make_numeric(shareholder.number)
 
     # use `update()` to not trigger the signal itself again
     Shareholder.objects.filter(pk=shareholder.pk).update(
