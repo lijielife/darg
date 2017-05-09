@@ -34,7 +34,9 @@ class StatementTestMixin(object):
 
     def setUp(self):
         super(StatementTestMixin, self).setUp()
-        self.shareholder = ShareholderGenerator().generate()
+        self.company_shareholder = ShareholderGenerator().generate()
+        self.shareholder = ShareholderGenerator().generate(
+            company=self.company_shareholder.company)
         PositionGenerator().generate(
             buyer=self.shareholder, seller=None, count=100)
         self.company = self.shareholder.company

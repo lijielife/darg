@@ -319,7 +319,7 @@ class Company(AddressModelMixin, models.Model):
     def get_board_members(self):
         return self.signatures.split(',')
 
-    def get_company_shareholder(self):
+    def get_company_shareholder(self, fail_silently=False):
         """
         return company shareholder, raise ValueError if not existing
         """
@@ -327,7 +327,8 @@ class Company(AddressModelMixin, models.Model):
             return self.shareholder_set.earliest('id')
         except Shareholder.DoesNotExist:
             logger.warning('no company shareholder found')
-            raise ValueError('corp shareholder not found')
+            if not fail_silently:
+                raise ValueError('corp shareholder not found')
 
     def get_dispo_shareholder(self):
         """
@@ -1896,7 +1897,7 @@ class ShareholderStatementReport(models.Model):
             return
 
         corp_shareholders = [
-            self.company.get_company_shareholder(),
+            self.company.get_company_shareholder(fail_silently=True),
             self.company.get_dispo_shareholder(),
             self.company.get_transfer_shareholder()
         ]
