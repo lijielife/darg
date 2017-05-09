@@ -463,9 +463,7 @@ class OptionTransactionDetailFunctionalTestCase(StripeTestCaseMixin,
             self.assertIn(
                 reverse(
                     'optionplan',
-                    kwargs={
-                        'optionsplan_id': self.optiontransaction.option_plan.pk
-                    }),
+                    kwargs={'pk': self.optiontransaction.option_plan.pk}),
                 self.page.get_url('option-plan')
             )
 
@@ -832,7 +830,7 @@ class OptionsPlanFunctionalTestCase(SubscriptionTestMixin,
 
         try:
             path = reverse('optionplan',
-                           kwargs={'optionsplan_id': optionsplan.pk})
+                           kwargs={'pk': optionsplan.pk})
             app = page.OptionsPlanDetailPage(
                 self.selenium, self.live_server_url, operator.user, path)
 
