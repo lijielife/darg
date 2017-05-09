@@ -31,7 +31,6 @@ from django.utils.translation import ugettext as _
 from django_languages import fields as language_fields
 from djstripe.models import Customer as DjStripeCustomer
 from natsort import natsorted
-from rest_framework.authtoken.models import Token
 from sorl.thumbnail import get_thumbnail
 from tagging.models import Tag
 from tagging.registry import register
@@ -2145,20 +2144,6 @@ register(Shareholder)
 
 
 # --------- SIGNALS ----------
-# must be inside a file which is imported by django on startup
-# @jirsch: use apps.py for signal registration!
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_auth_token(sender, instance=None, created=False, **kwargs):
-    """ create rest API access token and user profile obj on
-    User obj create """
-
-    if created:
-        Token.objects.create(user=instance)
-        profile = UserProfile.objects.create(user=instance)
-        if instance.first_name == settings.COMPANY_INITIAL_FIRST_NAME:
-            profile.legal_type = 'C'
-            profile.save()
-
 
 @receiver(post_save, sender=settings.DJSTRIPE_SUBSCRIBER_MODEL)
 def create_stripe_customer(sender, instance=None, created=False, **kwargs):
