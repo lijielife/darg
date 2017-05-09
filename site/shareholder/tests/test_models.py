@@ -120,8 +120,8 @@ class CompanyTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
     def test_get_active_shareholders(self, cache_mock):
         """ return qs of active shareholders """
         cache_mock.get.return_value = None
-        cache_key = 'company-{}-None-none-active-shareholders'.format(
-            self.company.pk)
+        cache_key = 'company-{}-{}-none-active-shareholders'.format(
+            self.company.pk, timezone.now().date())
 
         shs = self.company.get_active_shareholders()
         self.assertEqual(
