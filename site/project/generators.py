@@ -448,6 +448,7 @@ class ComplexShareholderConstellationGenerator(object):
         # initial company shareholder
         try:
             cs = company.get_company_shareholder()
+            s1 = company.get_company_shareholder().buyer.first().security
         except ValueError:
             company_shareholder_created_at = kwargs.get(
                 'company_shareholder_created_at'
