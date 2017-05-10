@@ -364,7 +364,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
         """
         download of all certificates which are printed
         """
-        now = datetime.datetime.now()
+        now = timezone.now()
         positions, shs = ComplexOptionTransactionsGenerator().generate()  # noqa
         OptionTransaction.objects.filter(
             pk__in=[ot.pk for ot in positions]).update(printed_at=now)
@@ -373,7 +373,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
         company = operator.company
         self.add_subscription(company)
         pos = PositionGenerator().generate(company=company)
-        pos.printed_at = datetime.datetime.now()
+        pos.printed_at = timezone.now()
         pos.certificate_id = '88888'
         pos.save()
 
@@ -482,8 +482,8 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
         shs, sec = ComplexShareholderConstellationGenerator().generate()
 
         company = Company.objects.last()
-        from_date = datetime.datetime(2013, 1, 1)
-        to_date = datetime.datetime(2099, 1, 1)
+        from_date = timezone.make_aware(datetime.datetime(2013, 1, 1))
+        to_date = timezone.make_aware(datetime.datetime(2099, 1, 1))
         with self.assertLessNumQueries(38):
             res = _get_transactions(
                 from_date, to_date, sec, company)

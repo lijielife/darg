@@ -14,6 +14,7 @@ from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy as __
 from django.utils import translation
+from django.utils import timezone
 
 from project.generators import DEFAULT_TEST_DATA, OperatorGenerator
 from shareholder.models import Country  # OptionPlan, OptionTransaction
@@ -130,8 +131,8 @@ class SisWareImportBackend(BaseImportBackend):
             Position.objects.get_or_create(security=s, count=count,
                                            buyer=self.company_shareholder,
                                            defaults={
-                                               'bought_at': datetime.datetime(
-                                                   2013, 9, 21),
+                                               'bought_at': timezone.make_aware(datetime.datetime(
+                                                   2013, 9, 21)),
                                                'depot_type': '1',
                                                'registration_type': '1',
                                                'stock_book_id': '1913,001',
@@ -155,8 +156,8 @@ class SisWareImportBackend(BaseImportBackend):
                                            seller=self.company_shareholder,
                                            buyer=self.transfer_shareholder,
                                            defaults={
-                                               'bought_at': datetime.datetime(
-                                                   2013, 9, 21),
+                                               'bought_at': timezone.make_aware(datetime.datetime(
+                                                   2013, 9, 21)),
                                                'depot_type': '1',
                                                'registration_type': '1',
                                                'stock_book_id': '1913,001',
@@ -257,7 +258,7 @@ class SisWareImportBackend(BaseImportBackend):
             if count < 1:  # skip if there are none
                 continue
             self._get_or_create_position(
-                datetime.datetime.now().date().isoformat(),
+                timezone.now().date().isoformat(),
                 self.dispo_shareholder, count, '0,00', None, '2',
                 '', 'Gesellschaftsdepot', security
             )
@@ -353,7 +354,8 @@ class SisWareImportBackend(BaseImportBackend):
 #                 'title': _('Default OptionPlan for {}').format(security),
 #                 'count': 0,
 #                 'exercise_price': 1,
-#                 'board_approved_at': datetime.datetime(2013, 1, 1),
+#                 'board_approved_at':
+#                 timezone.make_aware(datetime.datetime(2013, 1, 1)),
 #             })
 #         seller = self.company.get_company_shareholder()
 #
