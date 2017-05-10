@@ -4,6 +4,7 @@ import unittest
 from decimal import Decimal
 
 import mock
+from model_mommy import random_gen
 from dateutil.parser import parse
 from django.core.urlresolvers import reverse
 from django.test import RequestFactory, TestCase, Client
@@ -698,6 +699,7 @@ class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin,
         self.request.session = self.session
         self.new_data = ShareholderSerializer(
             self.shareholder, context={'request': self.request}).data
+        self.new_data['user']['email'] = random_gen.gen_email()
         self.new_data.update(
             {'number': self.operator.company.get_new_shareholder_number()})
         self.new_data['user']['userprofile'].update(
@@ -801,9 +803,13 @@ class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin,
         sh = serializer.create(serializer.validated_data)
         signal_mock.apply_async.assert_called_with([sh.pk])
 
-    @unittest.skip('TODO: ShareholderSerializer.is_valid')
-    def test_is_valid(self):
-        pass
+    def test_is_valid_duplicate_email(self):
+        """ duplicate email must not be allowed """
+        self.new_data['user']['email'] = self.shareholder.user.email
+        with self.assertRaises(ValidationError):
+            serializer = ShareholderSerializer(
+                data=self.new_data, context={'request': self.request})
+            serializer.is_valid(raise_exception=True)
 
     @mock.patch('shareholder.signals.update_order_cache_task')
     def test_update(self, signal_mock):

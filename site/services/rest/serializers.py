@@ -477,8 +477,8 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
 
         res = super(ShareholderSerializer, self).is_valid(raise_exception)
 
-        # FIXME place validation code here...
-        # initial_data = self.initial_data
+        initial_data = self.initial_data
+        self._validate_email(initial_data.get('user', {}).get('email'))
 
         return res
 
@@ -547,6 +547,17 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
         change make it readable
         """
         return obj.get_mailing_type_display()
+
+    def _validate_email(self, value):
+        """ email cann only be used once or never """
+        # can stay empty
+        if not value:
+            return value
+
+        company = get_company_from_request(self.context.get('request'))
+        if company.shareholder_set.filter(user__email=value):
+            raise ValidationError(
+                {'email': [_('shareholder with this email already exists')]})
 
     def validate_number(self, value):
         """
