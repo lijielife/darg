@@ -5,6 +5,7 @@ import time
 
 import mock
 from django.conf import settings
+from django.core import mail
 from django.test import TestCase, override_settings
 from django.utils.timezone import now, timedelta
 from model_mommy import mommy, random_gen
@@ -100,6 +101,21 @@ class TasksTestCase(AddressTestMixin, FakeResponseMixin, StripeTestCaseMixin,
         mock_email_multi_send.return_value = 0
         send_statement_generation_operator_notify()
         mock_mail_admins.assert_called()
+
+    @override_settings(SHAREHOLDER_STATEMENT_OPERATOR_NOTIFY_DAYS=0)
+    def test_send_statement_generation_operator_template(self):
+        """ test template content """
+        company = CompanyGenerator().generate()
+        company.is_statement_sending_enabled = True
+        company.statement_sending_date = now().date()
+        company.save()
+        self.add_subscription(company)
+        OperatorGenerator().generate(company=company)
+        send_statement_generation_operator_notify()
+        # proper brand url
+        self.assertIn(
+            u'https://example.com/static/compiled/images/dasaktienregister.png',
+            mail.outbox[0].alternatives[0][0])
 
     @override_settings(SHAREHOLDER_STATEMENT_REPORT_OPERATOR_NOTIFY_DAYS=0)
     @mock.patch('shareholder.tasks.EmailMultiAlternatives.send',

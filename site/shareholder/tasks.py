@@ -37,7 +37,9 @@ def _context_email_defaults():
     version = getattr(settings, 'VERSION', False)
     return dict(
         domain=Site.objects.get_current().domain,
-        VERSION=version and 'v{}'.format(version) or ''
+        VERSION=version and 'v{}'.format(version) or '',
+        site=Site.objects.get_current(),
+        protocol=settings.DEFAULT_HTTP_PROTOCOL,
     )
 
 
