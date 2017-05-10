@@ -170,6 +170,7 @@ class CompanyAppConfig(AppConfig):
                 STATIC_URL=settings.STATIC_URL,
                 include_vat=settings.COMPANY_INVOICE_INCLUDE_VAT,
                 protocol=settings.DEFAULT_HTTP_PROTOCOL,
+                BASE_DIR=settings.BASE_DIR,
             )
 
             if context['include_vat']:
@@ -295,6 +296,7 @@ class CompanyAppConfig(AppConfig):
                 company=self.customer.subscriber,
                 site=Site.objects.get_current(),
                 STATIC_URL=settings.STATIC_URL,
+                BASE_DIR=settings.BASE_DIR,
                 include_vat=settings.COMPANY_INVOICE_INCLUDE_VAT,
                 protocol=settings.DEFAULT_HTTP_PROTOCOL,
             )

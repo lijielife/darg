@@ -309,6 +309,8 @@ class InvoiceTweakTestCase(StripeTestCaseMixin, TestCase):
         self.assertEqual(context.get('invoice'), self.invoice)
         self.assertIn('site', context)
         self.assertIn('STATIC_URL', context)
+        self.assertIn('BASE_DIR', context)
+        self.assertGreater(len(context['BASE_DIR']), 3)
         self.assertIn('invoice_items', context)
         self.assertEqual(len(context.get('invoice_items')), 0)
         self.assertIn('company', context)
