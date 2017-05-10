@@ -38,11 +38,15 @@ from utils.session import add_company_to_session
 class AddCompanySerializerTestCase(TestCase):
 
     def setUp(self):
-        self.serializer = AddCompanySerializer()
+        url = reverse('add_company')
+        self.request = RequestFactory().get(url)
+        self.request.user = UserGenerator().generate()
+        self.serializer = AddCompanySerializer(
+            context={'request': self.request})
 
     def test_create(self):
         validated_data = {
-            'user': UserGenerator().generate(),
+            'user': self.request.user,
             'share_count': 33,
             'founded_at': timezone.now().date(),
             'name': u'Mühleggbahn AG',
@@ -58,6 +62,8 @@ class AddCompanySerializerTestCase(TestCase):
         self.assertEqual(company.security_set.first().face_value,
                          validated_data['face_value'])
         self.assertEqual(company.shareholder_set.count(), 1)
+        # IMPORTANT: email where invoice is sent to
+        self.assertEqual(company.email, self.request.user.email)
         # check corp shareholder
         cs = company.get_company_shareholder()
         self.assertEqual(cs.user.email, u'')

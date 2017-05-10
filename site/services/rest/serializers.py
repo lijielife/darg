@@ -157,10 +157,14 @@ class AddCompanySerializer(serializers.Serializer):
         # handle creation operation as an atomic transaction to not create an
         # inconsistent database
         with transaction.atomic():
+            # for stripe payments company is the `subscriber`. it has to have an
+            # email address which is used for sending the invoice to. we are
+            # putting the email of the user which creates the company there
             company = Company.objects.create(
                 share_count=validated_data.get("share_count"),
                 name=validated_data.get("name"),
-                founded_at=validated_data.get('founded_at')
+                founded_at=validated_data.get('founded_at'),
+                email=self.context.get('request').user.email,
             )
             security = Security.objects.create(
                 title="C",

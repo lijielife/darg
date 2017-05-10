@@ -495,7 +495,8 @@ class AddCompanyView(APIView):
     ]
 
     def post(self, request, format=None):
-        serializer = AddCompanySerializer(data=request.data)
+        serializer = AddCompanySerializer(data=request.data,
+                                          context={'request': self.request})
         if serializer.is_valid() and request.user.is_authenticated():
             company = serializer.save(user=request.user)
             # once user added a company save it to the session to allow
