@@ -11,6 +11,7 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
 from django.utils.translation import ugettext as _
+from django.utils import timezone
 from rest_framework.test import APIClient
 
 from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
