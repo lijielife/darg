@@ -69,3 +69,5 @@ p.indent {
 .content table .row td {font-size: 14px; line-height: 16px; padding: 5px 5px;}
 /*.content table .row td.pull-right {text-align: right;}*/
 .content table .even td {background-color: #f9f9f9;}
+
+.content p {padding-top: 16px}
