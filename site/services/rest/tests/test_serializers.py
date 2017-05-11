@@ -813,7 +813,9 @@ class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin,
             serializer.is_valid(raise_exception=True)
 
         # update
-        self.new_data['user']['email'] = self.shareholder.user.email
+        shareholder = ShareholderGenerator().generate(
+            company=self.operator.company)
+        self.new_data['user']['email'] = shareholder.user.email
         with self.assertRaises(ValidationError):
             serializer = ShareholderSerializer(
                 instance=self.shareholder, data=self.new_data,
