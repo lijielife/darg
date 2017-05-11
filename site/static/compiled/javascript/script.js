@@ -44400,6 +44400,7 @@ return deCh;
         return $scope.newOptionTransaction = new OptionTransaction();
       };
       $scope.hide_form = function() {
+        $scope.errors = {};
         $scope.show_add_option_plan = false;
         $scope.show_add_option_transaction = false;
         $scope.newOptionPlan = new OptionPlan();
@@ -44986,6 +44987,7 @@ return deCh;
         return $scope.show_split = false;
       };
       $scope.hide_form = function() {
+        $scope.errors = {};
         $scope.show_add_position = false;
         $scope.show_add_capital = false;
         $scope.newPosition = new Position();
@@ -45858,6 +45860,7 @@ return deCh;
         return $scope.show_add_shareholder = true;
       };
       $scope.hide_form = function() {
+        $scope.errors = {};
         return $scope.show_add_shareholder = false;
       };
       $scope.goto_shareholder = function(shareholder_id) {

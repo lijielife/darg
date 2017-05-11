@@ -298,6 +298,7 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
         $scope.show_split = false
 
     $scope.hide_form = ->
+        $scope.errors = {}
         $scope.show_add_position = false
         $scope.show_add_capital = false
         $scope.newPosition = new Position()

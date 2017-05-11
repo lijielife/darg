@@ -344,6 +344,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'C
         $scope.show_add_shareholder = true
 
     $scope.hide_form = ->
+        $scope.errors = {}
         $scope.show_add_shareholder = false
 
     $scope.goto_shareholder = (shareholder_id) ->

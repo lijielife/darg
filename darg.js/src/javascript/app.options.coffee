@@ -274,6 +274,7 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
         $scope.newOptionTransaction = new OptionTransaction()
 
     $scope.hide_form = ->
+        $scope.errors = {}
         $scope.show_add_option_plan = false
         $scope.show_add_option_transaction = false
         $scope.newOptionPlan = new OptionPlan()
