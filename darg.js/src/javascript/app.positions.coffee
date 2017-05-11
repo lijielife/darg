@@ -296,9 +296,9 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
         $scope.show_add_position = false
         $scope.show_add_capital = false
         $scope.show_split = false
-        $scope.add_position_success = false
-        $scope.add_capital_success = false
-        $scope.add_split_success = false
+        $scope.position_added_success = false
+        $scope.capital_added_success = false
+        $scope.split_added_success = false
         $scope.newPosition = new Position()
         $scope.errors = {}
 

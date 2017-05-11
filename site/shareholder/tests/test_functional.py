@@ -708,6 +708,7 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                 .options_count()
             )
             app.click_save_transfer_option()
+            time.sleep(3)
 
             # wait for form to disappear
             app.close_modal('addOptionTransaction')
@@ -728,6 +729,7 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                 .options_count()
             )
             app.click_save_transfer_option()
+            time.sleep(3)
 
             # wait for form to disappear
             app.close_modal('addOptionTransaction')

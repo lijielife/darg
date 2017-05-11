@@ -217,18 +217,25 @@ class BasePage(object):
         el = self.wait_until_visible((By.ID, id))
         form = el.find_element_by_tag_name('form')
         field = form.find_element_by_class_name(cls)
-        field.click()
-        field.send_keys(shareholder.get_full_name()[:7])
+        for attempt in range(0, 3):
+            try:
+                field.click()
+                field.clear()
+                field.send_keys(shareholder.get_full_name()[:7])
 
-        # select typeahead result
-        self.wait_until_present(
-            (By.CSS_SELECTOR, "#{} form .dropdown-menu".format(id)))
-        self.wait_until_text_present(
-            (By.CSS_SELECTOR, '#{} form .dropdown-menu li a'.format(id)),
-            shareholder.get_full_name(), timeout=15)
-        self.wait_until_clickable(
-            (By.CSS_SELECTOR, '#{} form .dropdown-menu li a'.format(id))
-        ).click()
+                # select typeahead result
+                self.wait_until_present(
+                    (By.CSS_SELECTOR, "#{} form .dropdown-menu".format(id)))
+                self.wait_until_text_present(
+                    (By.CSS_SELECTOR, '#{} form .dropdown-menu li a'.format(id)),
+                    shareholder.get_full_name(), timeout=15)
+                self.wait_until_clickable(
+                    (By.CSS_SELECTOR, '#{} form .dropdown-menu li a'.format(id))
+                ).click()
+                break
+            except TimeoutException:
+                if attempt == 2:
+                    raise
 
     def get_form_errors(self):
         """
