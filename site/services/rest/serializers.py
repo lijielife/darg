@@ -554,10 +554,19 @@ class ShareholderSerializer(serializers.HyperlinkedModelSerializer):
         if not value:
             return value
 
+        error = ValidationError(
+            {'email': [_('shareholder with this email already exists')]})
+
+        # different on update/create
         company = get_company_from_request(self.context.get('request'))
-        if company.shareholder_set.filter(user__email=value):
-            raise ValidationError(
-                {'email': [_('shareholder with this email already exists')]})
+        if self.instance:
+            if company.shareholder_set.filter(
+                    user__email=value).exclude(pk=self.instance.pk).exists():
+                raise error
+            return
+
+        if company.shareholder_set.filter(user__email=value).exists():
+            raise error
 
     def validate_number(self, value):
         """
