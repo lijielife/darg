@@ -816,7 +816,8 @@ class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin,
         self.new_data['user']['email'] = self.shareholder.user.email
         with self.assertRaises(ValidationError):
             serializer = ShareholderSerializer(
-                instance=self.shareholder, data=self.new_data, context={'request': self.request})
+                instance=self.shareholder, data=self.new_data,
+                context={'request': self.request})
             serializer.is_valid(raise_exception=True)
 
     @mock.patch('shareholder.signals.update_order_cache_task')
