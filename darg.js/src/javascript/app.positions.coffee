@@ -37,6 +37,7 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
     $scope.search_params = {'query': null, 'ordering': null, 'ordering_reverse': null}
     $scope.ordering_options = false
 
+    # misc
     $scope.numberSegmentsAvailable = ''
     $scope.hasSecurityWithTrackNumbers = () ->
         s = $scope.securities.find((el) ->
@@ -203,6 +204,7 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
             $scope.show_add_capital = false
             $scope.newPosition = new Position()
             $scope.position_added_success = true
+            $scope.addPositionLoading = false
             $timeout ->
                 $scope.position_added_success = false
             , 5000
@@ -210,7 +212,6 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
             # Clear any errors
             $scope.errors = {}
             $window.ga('send', 'event', 'form-send', 'add-transaction')
-            $scope.addPositionLoading = false
         , (rejection) ->
             $scope.errors = rejection.data
             Raven.captureMessage('add position form error: ' + rejection.statusText, {

@@ -44316,6 +44316,7 @@ return deCh;
           $scope.newOptionPlan = new OptionPlan();
           $scope.show_add_option_plan = false;
           $scope.plan_added_success = true;
+          $scope.addPositionLoading = false;
           return $timeout(function() {
             return $scope.plan_added_success = false;
           }, 5000);
@@ -44352,12 +44353,14 @@ return deCh;
         if ($scope.newOptionTransaction.depot_type) {
           $scope.newOptionTransaction.depot_type = $scope.newOptionTransaction.depot_type.value;
         }
+        $scope.addPositionLoading = true;
         return $scope.newOptionTransaction.$save().then(function(result) {
           return $scope.load_all();
         }).then(function() {
           $scope.newOptionTransaction = new OptionTransaction();
           $scope.show_add_option_transaction = false;
           $scope.transaction_added_success = true;
+          $scope.addPositionLoading = false;
           return $timeout(function() {
             return $scope.transaction_added_success = false;
           }, 5000);
@@ -44876,13 +44879,13 @@ return deCh;
           $scope.show_add_capital = false;
           $scope.newPosition = new Position();
           $scope.position_added_success = true;
+          $scope.addPositionLoading = false;
           return $timeout(function() {
             return $scope.position_added_success = false;
           }, 5000);
         }).then(function() {
           $scope.errors = {};
-          $window.ga('send', 'event', 'form-send', 'add-transaction');
-          return $scope.addPositionLoading = false;
+          return $window.ga('send', 'event', 'form-send', 'add-transaction');
         }, function(rejection) {
           $scope.errors = rejection.data;
           Raven.captureMessage('add position form error: ' + rejection.statusText, {

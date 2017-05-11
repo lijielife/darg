@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load static %}
 
 {% trans "Please enter your Option data:" %}
 {% verbatim %}
@@ -47,7 +48,7 @@
       <input type="number" class="form-control" ng-model="newOptionTransaction.vesting_months" translate translate-attr-placeholder="Vesting Period (months)" min="0" ng-maxlength="5">
         <div class="optional-forms-box text-center"  ng-hide="show_optional_fields" ng-click="toggle_optional_fields();">
             <p>
-                Show optional forms &nbsp;<span class="el-icon-chevron-down"></span>
+            {% endverbatim %}{% trans "Show optional forms" %}{% verbatim %} &nbsp;<span class="el-icon-chevron-down"></span>
             </p>
         </div>
         <!-- optional fields -->
@@ -60,7 +61,7 @@
             <input type="text" class="form-control" ng-model="newOptionTransaction.certificate_id" translate translate-attr-placeholder="Certificate ID">
             <div class="optional-forms-box text-center" ng-click="toggle_optional_fields()">
                 <p>
-                    Hide optional forms &nbsp;<span class="el-icon-chevron-up"></span>
+                {% endverbatim %}{% trans "Hide optional forms" %}{% verbatim %}&nbsp;<span class="el-icon-chevron-up"></span>
                 </p>
             </div>
         </div>
@@ -68,7 +69,9 @@
     <!-- actions -->
     <div class="form-group custom-form-group">
       <button class="btn btn-default" data-dismiss="modal" ng-click="hide_form()">{% endverbatim %}{% trans "Cancel" %}{% verbatim %}</button>
-      <button class="btn btn-focus" ng-click="add_option_transaction()">{% endverbatim %}{% trans "Add Option" %}{% verbatim %}</button>
+      <button class="btn btn-focus" ng-click="add_option_transaction()">
+        <img src="{% endverbatim %}{% static "compiled/images/loading_spinner1_white.png" %}{% verbatim %}" class="loading no-style" ng-show="addPositionLoading">
+        {% endverbatim %}{% trans "Add Option" %}{% verbatim %}</button>
     </div>
   </form>
 </div>
