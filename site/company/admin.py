@@ -84,7 +84,7 @@ class InvoiceAdmin(admin.ModelAdmin):
     readonly_fields = ('created',)
     list_display = (
         "stripe_id",
-        "pdf_download_url",
+        "pdf",
         "paid",
         "closed",
         customer_email,
@@ -113,13 +113,13 @@ class InvoiceAdmin(admin.ModelAdmin):
     inlines = (InvoiceItemInline,)
     actions = (generate_pdf, generate_pdf_forced)
 
-    def pdf_download_url(self, obj):
+    def pdf(self, obj):
         if obj.has_invoice_pdf:
             return '<a href="{}"><img src="/static/compiled/images/pdf-icon.png" width="25px"/></a>'.format(
                 reverse('djstripe:invoice', kwargs={
                     'pk': obj.pk, 'company_id':
                     obj.customer.subscriber.pk}))
-    pdf_download_url.allow_tags = True
+    pdf.allow_tags = True
 
     # def get_urls(self):
     #
