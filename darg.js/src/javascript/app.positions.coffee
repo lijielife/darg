@@ -205,9 +205,6 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
             $scope.newPosition = new Position()
             $scope.position_added_success = true
             $scope.addPositionLoading = false
-            $timeout ->
-                $scope.position_added_success = false
-            , 5000
         .then ->
             # Clear any errors
             $scope.errors = {}
@@ -250,9 +247,6 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
         .then ->
             $scope.newSplit = new Split()
             $scope.split_added_success = true
-            $timeout ->
-                $scope.split_added_success = false
-            , 5000
         .then ->
             $scope.errors = {}
             $scope.show_split = false
@@ -301,8 +295,11 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
         $scope.errors = {}
         $scope.show_add_position = false
         $scope.show_add_capital = false
-        $scope.newPosition = new Position()
         $scope.show_split = false
+        $scope.add_position_success = false
+        $scope.add_capital_success = false
+        $scope.add_split_success = false
+        $scope.newPosition = new Position()
         $scope.errors = {}
 
     $scope.show_split_form = ->

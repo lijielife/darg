@@ -27,10 +27,16 @@
         </div>
         <div class="modal-body">
           {% include "_form_errors.html" %}
-          <p class="alert alert-success" ng-show="transaction_added_success">
-            {% trans "Transaction added" %}
-          </p>
-          <div id="add_option_transaction">
+          {% verbatim %}
+          <div class="alert alert-success alert-form" ng-show="transaction_added_success">
+            <div class="message">{% endverbatim %}{% trans "Option Transaction added successfully." %}{% verbatim %}</div>
+            <div class="actions">
+              <button class="btn btn-default cancel" data-dismiss="modal" ng-click="hide_form()">{% endverbatim %}{% trans "Close" %}{% verbatim %}</button>
+              <button class="btn btn-default" ng-click="transaction_added_success=false; show_add_option_transaction=true">{% endverbatim %}{% trans "Add more" %}{% verbatim %}</button>
+            </div>
+          </div>
+          {% endverbatim %}
+          <div id="add_option_transaction" ng-hide="transaction_added_success">
             {% include "_add_option_transaction_form.html" %}
           </div>
         </div>
@@ -48,10 +54,16 @@
         </div>
         <div class="modal-body">
           {% include "_form_errors.html" %}
-          <p class="alert alert-success" ng-show="plan_added_success">
-            {% trans "Plan added" %}
-          </p>
-          <div id="add_option_plan">
+          {% verbatim %}
+          <div class="alert alert-success alert-form" ng-show="plan_added_success">
+            <div class="message">{% endverbatim %}{% trans "Optionplan added successfully." %}{% verbatim %}</div>
+            <div class="actions">
+              <button class="btn btn-default cancel" data-dismiss="modal" ng-click="hide_form()">{% endverbatim %}{% trans "Close" %}{% verbatim %}</button>
+              <button class="btn btn-default" ng-click="plan_added_success=false; show_add_option_plan=true">{% endverbatim %}{% trans "Add more" %}{% verbatim %}</button>
+            </div>
+          </div>
+          {% endverbatim %}
+          <div id="add_option_plan" ng-hide="plan_added_success">
             {% include "_add_option_plan_form.html" %}
           </div>
         </div>

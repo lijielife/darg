@@ -44316,10 +44316,7 @@ return deCh;
           $scope.newOptionPlan = new OptionPlan();
           $scope.show_add_option_plan = false;
           $scope.plan_added_success = true;
-          $scope.addPositionLoading = false;
-          return $timeout(function() {
-            return $scope.plan_added_success = false;
-          }, 5000);
+          return $scope.addPositionLoading = false;
         }).then(function() {
           $scope.errors = {};
           return $window.ga('send', 'event', 'form-send', 'add-optionplan');
@@ -44360,10 +44357,7 @@ return deCh;
           $scope.newOptionTransaction = new OptionTransaction();
           $scope.show_add_option_transaction = false;
           $scope.transaction_added_success = true;
-          $scope.addPositionLoading = false;
-          return $timeout(function() {
-            return $scope.transaction_added_success = false;
-          }, 5000);
+          return $scope.addPositionLoading = false;
         }).then(function() {
           $scope.errors = {};
           return $window.ga('send', 'event', 'form-send', 'add-option-transaction');
@@ -44403,6 +44397,8 @@ return deCh;
         $scope.errors = {};
         $scope.show_add_option_plan = false;
         $scope.show_add_option_transaction = false;
+        $scope.plan_added_success = false;
+        $scope.transaction_added_success = false;
         $scope.newOptionPlan = new OptionPlan();
         return $scope.newOptionTransaction = new OptionTransaction();
       };
@@ -44880,10 +44876,7 @@ return deCh;
           $scope.show_add_capital = false;
           $scope.newPosition = new Position();
           $scope.position_added_success = true;
-          $scope.addPositionLoading = false;
-          return $timeout(function() {
-            return $scope.position_added_success = false;
-          }, 5000);
+          return $scope.addPositionLoading = false;
         }).then(function() {
           $scope.errors = {};
           return $window.ga('send', 'event', 'form-send', 'add-transaction');
@@ -44932,10 +44925,7 @@ return deCh;
           return $scope.positions = result.data;
         }).then(function() {
           $scope.newSplit = new Split();
-          $scope.split_added_success = true;
-          return $timeout(function() {
-            return $scope.split_added_success = false;
-          }, 5000);
+          return $scope.split_added_success = true;
         }).then(function() {
           $scope.errors = {};
           $scope.show_split = false;
@@ -44990,8 +44980,11 @@ return deCh;
         $scope.errors = {};
         $scope.show_add_position = false;
         $scope.show_add_capital = false;
-        $scope.newPosition = new Position();
         $scope.show_split = false;
+        $scope.add_position_success = false;
+        $scope.add_capital_success = false;
+        $scope.add_split_success = false;
+        $scope.newPosition = new Position();
         return $scope.errors = {};
       };
       $scope.show_split_form = function() {
@@ -45826,9 +45819,6 @@ return deCh;
           $scope.newShareholder = new Shareholder();
           $scope.shareholder_added_success = true;
           $scope.show_add_shareholder = false;
-          $timeout(function() {
-            return $scope.shareholder_added_success = false;
-          }, 30000);
           return $scope.hide_captable = false;
         }).then(function() {
           $scope.errors = null;
@@ -45860,6 +45850,8 @@ return deCh;
         return $scope.show_add_shareholder = true;
       };
       $scope.hide_form = function() {
+        $scope.shareholder_added_success = false;
+        $scope.show_add_shareholder = true;
         $scope.errors = {};
         return $scope.show_add_shareholder = false;
       };

@@ -190,9 +190,6 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
             $scope.show_add_option_plan = false
             $scope.plan_added_success = true
             $scope.addPositionLoading = false
-            $timeout ->
-                $scope.plan_added_success = false
-            , 5000
         .then ->
             # Clear any errors
             $scope.errors = {}
@@ -239,9 +236,6 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
             $scope.show_add_option_transaction = false
             $scope.transaction_added_success = true
             $scope.addPositionLoading = false
-            $timeout ->
-                $scope.transaction_added_success = false
-            , 5000
         .then ->
             # Clear any errors
             $scope.errors = {}
@@ -277,6 +271,8 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
         $scope.errors = {}
         $scope.show_add_option_plan = false
         $scope.show_add_option_transaction = false
+        $scope.plan_added_success = false
+        $scope.transaction_added_success = false
         $scope.newOptionPlan = new OptionPlan()
         $scope.newOptionTransaction = new OptionTransaction()
 

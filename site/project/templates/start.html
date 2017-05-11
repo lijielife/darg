@@ -57,9 +57,13 @@
                 {% include "_form_errors.html" %}
               {% verbatim %}
               <!-- add shareholder success -->
-              <p class="shareholder-added-success alert alert-success" ng-show="shareholder_added_success">
-                {% endverbatim %}{% trans "Shareholderr added. record share transfers here" %}{% verbatim %}
-              </p>
+              <div class="shareholder-added-success alert alert-success alert-form" ng-show="shareholder_added_success">
+                <div class="message">{% endverbatim %}{% trans "Shareholder added. record share transfers here" %}{% verbatim %}</div>
+                <div class="actions">
+                  <button class="btn btn-default cancel" data-dismiss="modal" ng-click="hide_form()">{% endverbatim %}{% trans "Close" %}{% verbatim %}</button>
+                  <button class="btn btn-default" ng-click="shareholder_added_success=false; show_add_shareholder=true">{% endverbatim %}{% trans "Add more" %}{% verbatim %}</button>
+                </div>
+              </div>
               <div id="add_shareholder" ng-hide="user.selected_company==null  || !show_add_shareholder">
                 {% endverbatim %}{% include "_add_shareholder_form.html" %}{% verbatim %}
               </div>

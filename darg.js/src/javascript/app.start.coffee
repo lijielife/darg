@@ -314,9 +314,6 @@ app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'C
             $scope.newShareholder = new Shareholder()
             $scope.shareholder_added_success = true
             $scope.show_add_shareholder = false
-            $timeout ->
-                $scope.shareholder_added_success = false
-            , 30000
             $scope.hide_captable = false
         .then ->
             # Clear any errors
@@ -344,6 +341,8 @@ app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'C
         $scope.show_add_shareholder = true
 
     $scope.hide_form = ->
+        $scope.shareholder_added_success = false
+        $scope.show_add_shareholder = true
         $scope.errors = {}
         $scope.show_add_shareholder = false
 
