@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-02 06:18+0000\n"
+"POT-Creation-Date: 2017-05-11 12:17+0000\n"
 "PO-Revision-Date: 2017-05-02 01:06+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,16 +19,16 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Translated-Using: django-rosetta 0.7.13\n"
 
-#: company/admin.py:67
+#: company/admin.py:68
 msgid "Called management command \"generate_invoice_pdf\" for {} object(s)"
 msgstr ""
 "Management command \"generate_invoice_pdf\" für {} Objekt(e) aufgerufen"
 
-#: company/admin.py:71
+#: company/admin.py:72
 msgid "Generate PDF"
 msgstr "PDF erstellen"
 
-#: company/admin.py:80
+#: company/admin.py:81
 msgid "Generate PDF (override existing)"
 msgstr "PDF generieren und überschreiben"
 
@@ -42,13 +42,13 @@ msgstr ""
 "Dem Unternehmen \"{}\" (ID {}) wurde eine Rechnung gestellt,  dieses hat "
 "aber keine Email-Adresse hinterlegt."
 
-#: company/apps.py:82 company/apps.py:202
+#: company/apps.py:82 company/apps.py:203
 msgid "Company \"{}\" (ID {}) was charged but has no postal address stored"
 msgstr ""
 "Dem Unternehmen \"{}\" (ID {}) wurde eine Rechnung gestellt,  dieses hat "
 "aber keine Post-Adresse hinterlegt."
 
-#: company/apps.py:229
+#: company/apps.py:230
 msgid "Invoice PDF for company \"{}\" (ID {}) could not be generated."
 msgstr ""
 "Rechnung als PDF für Unternehmen \"{}\" (ID {}) kann nicht erstellt werden."
@@ -256,11 +256,11 @@ msgstr "Anzahl"
 msgid "tracking security numbers for owners enabled. segments:"
 msgstr "Nummerierte Aktiensegmente:"
 
-#: company/templates/company.html:345
+#: company/templates/company.html:344
 msgid "Please contact us at our"
 msgstr "Bitte kontaktieren Sie uns unter"
 
-#: company/templates/company.html:347
+#: company/templates/company.html:346
 msgid ""
 "for getting more security types (common stock, preferred stock, numbered "
 "shares) added"
@@ -268,35 +268,35 @@ msgstr ""
 "um mehr Wertpapierarten (Vorzugsaktien, Stammaktien, Aktien mit "
 "verschiedenen Nennwerten, Nummerierte Aktien) zu erhalten."
 
-#: company/templates/company.html:353
+#: company/templates/company.html:352
 msgid "Administrators"
 msgstr "Administratoren"
 
-#: company/templates/company.html:354
+#: company/templates/company.html:353
 msgid "add operator"
 msgstr "Administrator hinzufügen"
 
-#: company/templates/company.html:382
+#: company/templates/company.html:381
 msgid "Option Plans"
 msgstr "Optionsplan"
 
-#: company/templates/company.html:388
+#: company/templates/company.html:387
 msgid "Options Plan Name"
 msgstr "Name des Optionsplanes"
 
-#: company/templates/company.html:391
+#: company/templates/company.html:390
 msgid "Edit Option Plan"
 msgstr "Optionsplan editieren"
 
-#: company/templates/company.html:402
+#: company/templates/company.html:401
 msgid "Administration"
 msgstr "Verwaltung"
 
-#: company/templates/company.html:406
+#: company/templates/company.html:405
 msgid "reset company"
 msgstr "Unternehmen zurücksetzen"
 
-#: company/templates/company.html:409
+#: company/templates/company.html:408
 msgid ""
 "the company, shareholders, transactions, options, and all other assigned "
 "data are deleted. the user can then create the company anew and start fresh"
@@ -465,7 +465,7 @@ msgstr "API Anfragen"
 msgid "German"
 msgstr "Deutsch"
 
-#: utils/import_backends.py:284
+#: utils/import_backends.py:285
 msgid "Disposhareholder"
 msgstr "Gesellschafter für Dispoaktien"
 

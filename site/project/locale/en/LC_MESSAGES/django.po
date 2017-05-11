@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-02 06:18+0000\n"
+"POT-Creation-Date: 2017-05-11 12:17+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Card"
 msgstr ""
 
-#: project/forms.py:23
+#: project/forms.py:27
 msgid ""
 "I have read and agree to the <a href=\"http://www1.das-aktienregister.ch/agb"
 "\" alt=\"Darg Terms of Service\" target=\"_blank\" class=\"link tos\">Terms "
@@ -36,88 +36,87 @@ msgstr ""
 msgid "modified at"
 msgstr ""
 
-#: project/settings/base.py:474
+#: project/settings/base.py:475
 msgid "Swiss franc"
 msgstr ""
 
-#: project/settings/base.py:478
+#: project/settings/base.py:479
 msgid "StartUp"
 msgstr ""
 
-#: project/settings/base.py:479
+#: project/settings/base.py:480
 msgid "Designed für StartUps und Neugründungen"
 msgstr ""
 
-#: project/settings/base.py:513
+#: project/settings/base.py:514
 msgid "Professional"
 msgstr ""
 
-#: project/settings/base.py:514
+#: project/settings/base.py:515
 msgid "Für etablierte Aktiengesellschaften und KMU"
 msgstr ""
 
-#: project/settings/base.py:544
+#: project/settings/base.py:545
 msgid "Enterprise"
 msgstr ""
 
-#: project/settings/base.py:546
+#: project/settings/base.py:547
 msgid "First-Class-Service für grosse Aktionärsgesellschaften"
 msgstr ""
 
-#: project/settings/base.py:584
+#: project/settings/base.py:585
 msgid "Shareholders"
 msgstr ""
 
-#: project/settings/base.py:585 project/templates/_menu.html:35
+#: project/settings/base.py:586 project/templates/_menu.html:35
 msgid "Positions"
 msgstr ""
 
-#: project/settings/base.py:586
-#: project/templates/active_shareholder_captable.pdf.html:143
+#: project/settings/base.py:587
 msgid "Options"
 msgstr ""
 
-#: project/settings/base.py:587
+#: project/settings/base.py:588
 msgid "Securities"
 msgstr ""
 
-#: project/settings/base.py:589
+#: project/settings/base.py:590
 msgid "Aktienausgabe, Aktienkauf, -verkauf, Kapitalerhöhung, Aktiensplit"
 msgstr ""
 
-#: project/settings/base.py:592
+#: project/settings/base.py:593
 msgid "GAFI Validierung"
 msgstr ""
 
-#: project/settings/base.py:593
+#: project/settings/base.py:594
 msgid "Revisionssicherheit"
 msgstr ""
 
-#: project/settings/base.py:595
+#: project/settings/base.py:596
 msgid "Depotauszug Email & Brief"
 msgstr ""
 
-#: project/settings/base.py:596
+#: project/settings/base.py:597
 msgid "Es entstehen weitere Kosten bei Briefversand pro versendetem Brief."
 msgstr ""
 
-#: project/settings/base.py:603
+#: project/settings/base.py:604
 msgid "Nummerierte Aktien"
 msgstr ""
 
-#: project/settings/base.py:604
+#: project/settings/base.py:605
 msgid "Email Support"
 msgstr ""
 
-#: project/settings/base.py:605
+#: project/settings/base.py:606
 msgid "Profi-Verwaltung Aktionäre"
 msgstr ""
 
-#: project/settings/base.py:606
+#: project/settings/base.py:607
 msgid "Premium-Support 24/7"
 msgstr ""
 
-#: project/settings/base.py:607
+#: project/settings/base.py:608
 msgid "Custom Export/Import"
 msgstr ""
 
@@ -135,15 +134,15 @@ msgid "On (date)"
 msgstr ""
 
 #: project/templates/_add_capital_form.html:30
-#: project/templates/_add_option_plan_form.html:29
+#: project/templates/_add_option_plan_form.html:30
 #: project/templates/_add_position_form.html:46
 #: project/templates/_split_shares_form.html:33
 msgid "Security"
 msgstr ""
 
 #: project/templates/_add_capital_form.html:36
-#: project/templates/_add_option_plan_form.html:37
-#: project/templates/_add_option_transaction_form.html:70
+#: project/templates/_add_option_plan_form.html:38
+#: project/templates/_add_option_transaction_form.html:71
 #: project/templates/_add_position_form.html:92
 #: project/templates/_add_shareholder_form.html:20
 #: project/templates/_split_shares_form.html:39
@@ -178,59 +177,65 @@ msgid ""
 "shares) added"
 msgstr ""
 
-#: project/templates/_add_option_plan_form.html:3
+#: project/templates/_add_option_plan_form.html:4
 msgid "Please enter your option plan data:"
 msgstr ""
 
-#: project/templates/_add_option_plan_form.html:8
+#: project/templates/_add_option_plan_form.html:9
 msgid "Board Approval Date"
 msgstr ""
 
-#: project/templates/_add_option_plan_form.html:38
+#: project/templates/_add_option_plan_form.html:41
 msgid "Add Option-Plan"
 msgstr ""
 
-#: project/templates/_add_option_plan_form.html:41
+#: project/templates/_add_option_plan_form.html:44
 msgid "Approved Option Plan PDF can be uploaded later in Plan's Edit Form"
 msgstr ""
 
-#: project/templates/_add_option_transaction_form.html:3
+#: project/templates/_add_option_transaction_form.html:4
 msgid "Please enter your Option data:"
 msgstr ""
 
-#: project/templates/_add_option_transaction_form.html:29
+#: project/templates/_add_option_transaction_form.html:30
 #: project/templates/_add_position_form.html:32
 msgid "Seller"
 msgstr ""
 
-#: project/templates/_add_option_transaction_form.html:37
+#: project/templates/_add_option_transaction_form.html:38
 #: project/templates/_add_position_form.html:40
 msgid "Buyer"
 msgstr ""
 
-#: project/templates/_add_option_transaction_form.html:43
+#: project/templates/_add_option_transaction_form.html:44
 msgid "Option Plan"
 msgstr ""
 
-#: project/templates/_add_option_transaction_form.html:55
+#: project/templates/_add_option_transaction_form.html:51
+#: project/templates/_add_position_form.html:54
+msgid "Show optional forms"
+msgstr ""
+
+#: project/templates/_add_option_transaction_form.html:56
 msgid "optional fields"
 msgstr ""
 
-#: project/templates/_add_option_transaction_form.html:57
+#: project/templates/_add_option_transaction_form.html:58
 #: project/templates/_add_position_form.html:61
 msgid "Depot Type"
 msgstr ""
 
-#: project/templates/_add_option_transaction_form.html:71
+#: project/templates/_add_option_transaction_form.html:64
+#: project/templates/_add_position_form.html:84
+msgid "Hide optional forms"
+msgstr ""
+
+#: project/templates/_add_option_transaction_form.html:74
 msgid "Add Option"
 msgstr ""
 
 #: project/templates/_add_position_form.html:3
 msgid "Please enter your position data:"
-msgstr ""
-
-#: project/templates/_add_position_form.html:54
-msgid "Show optional forms"
 msgstr ""
 
 #: project/templates/_add_position_form.html:59
@@ -244,10 +249,6 @@ msgstr ""
 
 #: project/templates/_add_position_form.html:72
 msgid "Financial Institute/Bank for certificate storage"
-msgstr ""
-
-#: project/templates/_add_position_form.html:84
-msgid "Hide optional forms"
 msgstr ""
 
 #: project/templates/_add_shareholder_form.html:3
@@ -365,80 +366,6 @@ msgstr ""
 msgid "No Results Found"
 msgstr ""
 
-#: project/templates/active_shareholder_captable.pdf.html:70
-msgid "Your Shareholders on"
-msgstr ""
-
-#: project/templates/active_shareholder_captable.pdf.html:70
-msgid "for company"
-msgstr ""
-
-#: project/templates/active_shareholder_captable.pdf.html:84
-#: project/templates/index.html:24
-msgid "Das Aktienregister"
-msgstr ""
-
-#: project/templates/active_shareholder_captable.pdf.html:84
-#: project/templates/certificate.pdf.html:94
-#: project/templates/option.pdf.html:80
-msgid "Page"
-msgstr ""
-
-#: project/templates/active_shareholder_captable.pdf.html:85
-#: project/templates/certificate.pdf.html:95
-#: project/templates/option.pdf.html:81
-msgid "of"
-msgstr ""
-
-#: project/templates/active_shareholder_captable.pdf.html:86
-#: project/templates/certificate.pdf.html:96
-#: project/templates/option.pdf.html:82
-msgid "Date generated"
-msgstr ""
-
-#: project/templates/active_shareholder_captable.pdf.html:91
-msgid "Total company capital"
-msgstr ""
-
-#: project/templates/active_shareholder_captable.pdf.html:93
-msgid "Provisioned Capital"
-msgstr ""
-
-#: project/templates/active_shareholder_captable.pdf.html:96
-msgid "Founding Date"
-msgstr ""
-
-#: project/templates/active_shareholder_captable.pdf.html:102
-#: project/templates/active_shareholder_captable.pdf.html:148
-#: project/templates/start.html:95
-msgid "Name"
-msgstr ""
-
-#: project/templates/active_shareholder_captable.pdf.html:103
-#: project/templates/active_shareholder_captable.pdf.html:149
-msgid "Email"
-msgstr ""
-
-#: project/templates/active_shareholder_captable.pdf.html:104
-#: project/templates/active_shareholder_captable.pdf.html:150
-#: project/templates/start.html:96
-msgid "Shareholder Number"
-msgstr ""
-
-#: project/templates/active_shareholder_captable.pdf.html:105
-#, python-format
-msgid "Shares (%%)"
-msgstr ""
-
-#: project/templates/active_shareholder_captable.pdf.html:108
-msgid "Aktiennummern"
-msgstr ""
-
-#: project/templates/active_shareholder_captable.pdf.html:151
-#, python-format
-msgid "Optionen (%%)"
-msgstr ""
-
 #: project/templates/base.html:9
 msgid "Das Aktienregister title content"
 msgstr ""
@@ -470,6 +397,21 @@ msgstr ""
 #: project/templates/certificate.pdf.html:94
 #: project/templates/option.pdf.html:80
 msgid "www.das-aktienregister.ch"
+msgstr ""
+
+#: project/templates/certificate.pdf.html:94
+#: project/templates/option.pdf.html:80
+msgid "Page"
+msgstr ""
+
+#: project/templates/certificate.pdf.html:95
+#: project/templates/option.pdf.html:81
+msgid "of"
+msgstr ""
+
+#: project/templates/certificate.pdf.html:96
+#: project/templates/option.pdf.html:82
+msgid "Date generated"
 msgstr ""
 
 #: project/templates/certificate.pdf.html:103
@@ -661,7 +603,7 @@ msgid ""
 "          "
 msgstr ""
 
-#: project/templates/djstripe/account.html:136
+#: project/templates/djstripe/account.html:136 project/templates/start.html:63
 msgid "Close"
 msgstr ""
 
@@ -964,11 +906,15 @@ msgstr ""
 msgid "Choose a Subscription for"
 msgstr ""
 
+#: project/templates/index.html:24
+msgid "Das Aktienregister"
+msgstr ""
+
 #: project/templates/index.html:32
 msgid "Gratis Aktienbuch-Muster"
 msgstr ""
 
-#: project/templates/index.html:36 project/tests/test_views.py:83
+#: project/templates/index.html:36 project/tests/test_views.py:84
 msgid "My Dashboard"
 msgstr ""
 
@@ -1275,39 +1221,51 @@ msgid "Your Shareholders for"
 msgstr ""
 
 #: project/templates/start.html:61
-msgid "Shareholderr added. record share transfers here"
+msgid "Shareholder added. record share transfers here"
 msgstr ""
 
-#: project/templates/start.html:75
+#: project/templates/start.html:64
+msgid "Add more"
+msgstr ""
+
+#: project/templates/start.html:79
 msgid "Need more advices? Read"
 msgstr ""
 
-#: project/templates/start.html:76
+#: project/templates/start.html:80
 msgid "share register quickstart guide"
 msgstr ""
 
-#: project/templates/start.html:77
+#: project/templates/start.html:81
 msgid "our quickstart tutorial!"
 msgstr ""
 
-#: project/templates/start.html:83
+#: project/templates/start.html:87
 msgid "Share Ownership"
 msgstr ""
 
-#: project/templates/start.html:97
+#: project/templates/start.html:99
+msgid "Name"
+msgstr ""
+
+#: project/templates/start.html:100
+msgid "Shareholder Number"
+msgstr ""
+
+#: project/templates/start.html:101
 #, python-format
 msgid "Shares (%%%%)"
 msgstr ""
 
-#: project/templates/start.html:101
+#: project/templates/start.html:105
 msgid "Gafi Validation failed"
 msgstr ""
 
-#: project/templates/start.html:121
+#: project/templates/start.html:125
 msgid "Option Holders"
 msgstr ""
 
-#: project/templates/start.html:122
+#: project/templates/start.html:126
 msgid "Option Holders note"
 msgstr ""
 
@@ -1498,21 +1456,21 @@ msgstr ""
 msgid "Weblog index"
 msgstr ""
 
-#: project/tests/test_views.py:141 project/views.py:201
+#: project/tests/test_views.py:142 project/views.py:218
 msgid ""
 "You have already an existing user account. Please login or reset your "
 "password."
 msgstr ""
 
-#: project/tests/test_views.py:341
+#: project/tests/test_views.py:339
 msgid "None"
 msgstr ""
 
-#: project/tests/test_views.py:450 project/views.py:36
+#: project/tests/test_views.py:450 project/views.py:49
 msgid "shareholder number"
 msgstr ""
 
-#: project/tests/test_views.py:495 project/views.py:93
+#: project/tests/test_views.py:494 project/views.py:106
 msgid "date"
 msgstr ""
 
@@ -1536,154 +1494,154 @@ msgstr ""
 msgid "You didn't press any keys. Good bye."
 msgstr ""
 
-#: project/views.py:36
+#: project/views.py:49
 msgid "last name"
 msgstr ""
 
-#: project/views.py:36
+#: project/views.py:49
 msgid "first name"
 msgstr ""
 
-#: project/views.py:37
+#: project/views.py:50
 msgid "email"
 msgstr ""
 
-#: project/views.py:38
+#: project/views.py:51
 msgid "language ISO"
 msgstr ""
 
-#: project/views.py:38
+#: project/views.py:51
 msgid "language full"
 msgstr ""
 
-#: project/views.py:38
+#: project/views.py:51
 msgid "street"
 msgstr ""
 
-#: project/views.py:38
+#: project/views.py:51
 msgid "street 2"
 msgstr ""
 
-#: project/views.py:39
+#: project/views.py:52
 msgid "c/o"
 msgstr ""
 
-#: project/views.py:39
+#: project/views.py:52
 msgid "city"
 msgstr ""
 
-#: project/views.py:39
+#: project/views.py:52
 msgid "zip"
 msgstr ""
 
-#: project/views.py:39
+#: project/views.py:52
 msgid "country"
 msgstr ""
 
-#: project/views.py:40
+#: project/views.py:53
 msgid "pobox"
 msgstr ""
 
-#: project/views.py:40
+#: project/views.py:53
 msgid "mailing type"
 msgstr ""
 
-#: project/views.py:40
+#: project/views.py:53
 msgid "nationality"
 msgstr ""
 
-#: project/views.py:93
+#: project/views.py:106
 msgid "buyer"
 msgstr ""
 
-#: project/views.py:93
+#: project/views.py:106
 msgid "seller"
 msgstr ""
 
-#: project/views.py:94 project/views.py:379
+#: project/views.py:107 project/views.py:396
 msgid "count"
 msgstr ""
 
-#: project/views.py:95
+#: project/views.py:108
 msgid "value"
 msgstr ""
 
-#: project/views.py:95 project/views.py:379
+#: project/views.py:108 project/views.py:396
 msgid "security"
 msgstr ""
 
-#: project/views.py:95
+#: project/views.py:108
 msgid "comment"
 msgstr ""
 
-#: project/views.py:95
+#: project/views.py:108
 msgid "depot type"
 msgstr ""
 
-#: project/views.py:96
+#: project/views.py:109
 msgid "stock book id"
 msgstr ""
 
-#: project/views.py:96
+#: project/views.py:109
 msgid "vesting period (options only"
 msgstr ""
 
-#: project/views.py:97
+#: project/views.py:110
 msgid "cert id (options only)"
 msgstr ""
 
-#: project/views.py:118 project/views.py:120
+#: project/views.py:131 project/views.py:133
 msgid "----------------------------------------"
 msgstr ""
 
-#: project/views.py:119
+#: project/views.py:132
 msgid "Transactions for options:"
 msgstr ""
 
-#: project/views.py:324 project/views.py:379
+#: project/views.py:341 project/views.py:396
 msgid "full name"
 msgstr ""
 
-#: project/views.py:324
+#: project/views.py:341
 msgid "share count"
 msgstr ""
 
-#: project/views.py:324
+#: project/views.py:341
 msgid "security name"
 msgstr ""
 
-#: project/views.py:325
+#: project/views.py:342
 msgid "certificate id"
 msgstr ""
 
-#: project/views.py:325
+#: project/views.py:342
 msgid "certificate printed at"
 msgstr ""
 
-#: project/views.py:326
+#: project/views.py:343
 msgid "security type"
 msgstr ""
 
-#: project/views.py:333
+#: project/views.py:350
 msgid "option"
 msgstr ""
 
-#: project/views.py:341 project/views.py:384
+#: project/views.py:358 project/views.py:401
 msgid "stock"
 msgstr ""
 
-#: project/views.py:380
+#: project/views.py:397
 msgid "is management member"
 msgstr ""
 
-#: project/views.py:381
+#: project/views.py:398
 msgid "vesting in months"
 msgstr ""
 
-#: project/views.py:381
+#: project/views.py:398
 msgid "asset type"
 msgstr ""
 
-#: project/views.py:389
+#: project/views.py:406
 msgid "certificate"
 msgstr ""

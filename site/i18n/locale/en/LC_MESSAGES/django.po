@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-02 06:18+0000\n"
+"POT-Creation-Date: 2017-05-11 12:17+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,15 +17,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: company/admin.py:67
+#: company/admin.py:68
 msgid "Called management command \"generate_invoice_pdf\" for {} object(s)"
 msgstr ""
 
-#: company/admin.py:71
+#: company/admin.py:72
 msgid "Generate PDF"
 msgstr ""
 
-#: company/admin.py:80
+#: company/admin.py:81
 msgid "Generate PDF (override existing)"
 msgstr ""
 
@@ -37,11 +37,11 @@ msgstr ""
 msgid "Company \"{}\" (ID {}) was charged but has no email address stored"
 msgstr ""
 
-#: company/apps.py:82 company/apps.py:202
+#: company/apps.py:82 company/apps.py:203
 msgid "Company \"{}\" (ID {}) was charged but has no postal address stored"
 msgstr ""
 
-#: company/apps.py:229
+#: company/apps.py:230
 msgid "Invoice PDF for company \"{}\" (ID {}) could not be generated."
 msgstr ""
 
@@ -235,45 +235,45 @@ msgstr ""
 msgid "tracking security numbers for owners enabled. segments:"
 msgstr ""
 
-#: company/templates/company.html:345
+#: company/templates/company.html:344
 msgid "Please contact us at our"
 msgstr ""
 
-#: company/templates/company.html:347
+#: company/templates/company.html:346
 msgid ""
 "for getting more security types (common stock, preferred stock, numbered "
 "shares) added"
 msgstr ""
 
-#: company/templates/company.html:353
+#: company/templates/company.html:352
 msgid "Administrators"
 msgstr ""
 
-#: company/templates/company.html:354
+#: company/templates/company.html:353
 msgid "add operator"
 msgstr ""
 
-#: company/templates/company.html:382
+#: company/templates/company.html:381
 msgid "Option Plans"
 msgstr ""
 
-#: company/templates/company.html:388
+#: company/templates/company.html:387
 msgid "Options Plan Name"
 msgstr ""
 
-#: company/templates/company.html:391
+#: company/templates/company.html:390
 msgid "Edit Option Plan"
 msgstr ""
 
-#: company/templates/company.html:402
+#: company/templates/company.html:401
 msgid "Administration"
 msgstr ""
 
-#: company/templates/company.html:406
+#: company/templates/company.html:405
 msgid "reset company"
 msgstr ""
 
-#: company/templates/company.html:409
+#: company/templates/company.html:408
 msgid ""
 "the company, shareholders, transactions, options, and all other assigned "
 "data are deleted. the user can then create the company anew and start fresh"
@@ -434,7 +434,7 @@ msgstr ""
 msgid "German"
 msgstr ""
 
-#: utils/import_backends.py:284
+#: utils/import_backends.py:285
 msgid "Disposhareholder"
 msgstr ""
 

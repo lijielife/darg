@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-02 06:18+0000\n"
+"POT-Creation-Date: 2017-05-11 12:17+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,6 +38,8 @@ msgid "Share Count (descending)"
 msgstr ""
 
 #: reports/models.py:30
+#: reports/templates/active_shareholder_captable.pdf.html:105
+#: reports/templates/active_shareholder_captable.pdf.html:156
 msgid "Shareholder Number"
 msgstr ""
 
@@ -69,144 +71,208 @@ msgstr ""
 msgid "report filter date"
 msgstr ""
 
-#: reports/tasks.py:94
+#: reports/tasks.py:95
 msgid "None"
 msgstr ""
 
-#: reports/tasks.py:217
+#: reports/tasks.py:224
 msgid "Your pdf captable file"
 msgstr ""
 
-#: reports/tasks.py:218 reports/tasks.py:284
+#: reports/tasks.py:225 reports/tasks.py:298
 msgid "Your file is attached to this email"
 msgstr ""
 
-#: reports/tasks.py:219
+#: reports/tasks.py:226
 msgid "PDF Captable/Active Shareholders"
 msgstr ""
 
-#: reports/tasks.py:244
+#: reports/tasks.py:251
 msgid "shareholder number"
 msgstr ""
 
-#: reports/tasks.py:244
+#: reports/tasks.py:251
 msgid "legal type"
 msgstr ""
 
-#: reports/tasks.py:244
+#: reports/tasks.py:251
 msgid "registration types"
 msgstr ""
 
-#: reports/tasks.py:245
+#: reports/tasks.py:252
 msgid "company_department"
 msgstr ""
 
-#: reports/tasks.py:245
+#: reports/tasks.py:252
 msgid "title"
 msgstr ""
 
-#: reports/tasks.py:245
+#: reports/tasks.py:252
 msgid "salutation"
 msgstr ""
 
-#: reports/tasks.py:245
+#: reports/tasks.py:252
 msgid "last name"
 msgstr ""
 
-#: reports/tasks.py:246
+#: reports/tasks.py:253
 msgid "first name"
 msgstr ""
 
-#: reports/tasks.py:246
+#: reports/tasks.py:253
 msgid "address"
 msgstr ""
 
-#: reports/tasks.py:246
+#: reports/tasks.py:253
 msgid "postal_code"
 msgstr ""
 
-#: reports/tasks.py:246
+#: reports/tasks.py:253
 msgid "city"
 msgstr ""
 
-#: reports/tasks.py:247
+#: reports/tasks.py:254
 msgid "birthday"
 msgstr ""
 
-#: reports/tasks.py:247
+#: reports/tasks.py:254
 msgid "mailing_type"
 msgstr ""
 
-#: reports/tasks.py:247
+#: reports/tasks.py:254
 msgid "nationality"
 msgstr ""
 
-#: reports/tasks.py:247
+#: reports/tasks.py:254
 msgid "security type"
 msgstr ""
 
-#: reports/tasks.py:248
+#: reports/tasks.py:255
 msgid "cusip"
 msgstr ""
 
-#: reports/tasks.py:248
+#: reports/tasks.py:255
 msgid "face_value"
 msgstr ""
 
-#: reports/tasks.py:248
+#: reports/tasks.py:255
 msgid "certificate_ids (issue date)"
 msgstr ""
 
-#: reports/tasks.py:249
+#: reports/tasks.py:256
 msgid "stock book id"
 msgstr ""
 
-#: reports/tasks.py:249
+#: reports/tasks.py:256
 msgid "depot_type"
 msgstr ""
 
-#: reports/tasks.py:250
+#: reports/tasks.py:257
 msgid "email"
 msgstr ""
 
-#: reports/tasks.py:250
+#: reports/tasks.py:257
 msgid "share count"
 msgstr ""
 
-#: reports/tasks.py:250
+#: reports/tasks.py:257
 msgid "share percent"
 msgstr ""
 
-#: reports/tasks.py:251
+#: reports/tasks.py:258
 msgid "votes percent"
 msgstr ""
 
-#: reports/tasks.py:252
+#: reports/tasks.py:259
 msgid "cumulated face value"
 msgstr ""
 
-#: reports/tasks.py:252
+#: reports/tasks.py:259
 msgid "is management"
 msgstr ""
 
-#: reports/tasks.py:253
+#: reports/tasks.py:260
 msgid "language ISO"
 msgstr ""
 
-#: reports/tasks.py:253
+#: reports/tasks.py:260
 msgid "language full"
 msgstr ""
 
-#: reports/tasks.py:257
+#: reports/tasks.py:264
 msgid "Share IDs"
 msgstr ""
 
-#: reports/tasks.py:283
+#: reports/tasks.py:297
 msgid "Your csv captable file"
 msgstr ""
 
-#: reports/tasks.py:285
+#: reports/tasks.py:299
 msgid "CSV Captable/Active Shareholders"
+msgstr ""
+
+#: reports/templates/active_shareholder_captable.pdf.html:71
+msgid "Your Shareholders on"
+msgstr ""
+
+#: reports/templates/active_shareholder_captable.pdf.html:71
+msgid "for company"
+msgstr ""
+
+#: reports/templates/active_shareholder_captable.pdf.html:85
+msgid "Das Aktienregister"
+msgstr ""
+
+#: reports/templates/active_shareholder_captable.pdf.html:85
+msgid "Page"
+msgstr ""
+
+#: reports/templates/active_shareholder_captable.pdf.html:86
+msgid "of"
+msgstr ""
+
+#: reports/templates/active_shareholder_captable.pdf.html:87
+msgid "Date generated"
+msgstr ""
+
+#: reports/templates/active_shareholder_captable.pdf.html:92
+msgid "Total company capital"
+msgstr ""
+
+#: reports/templates/active_shareholder_captable.pdf.html:94
+msgid "Provisioned Capital"
+msgstr ""
+
+#: reports/templates/active_shareholder_captable.pdf.html:97
+msgid "Founding Date"
+msgstr ""
+
+#: reports/templates/active_shareholder_captable.pdf.html:103
+#: reports/templates/active_shareholder_captable.pdf.html:154
+msgid "Name"
+msgstr ""
+
+#: reports/templates/active_shareholder_captable.pdf.html:104
+#: reports/templates/active_shareholder_captable.pdf.html:155
+msgid "Email"
+msgstr ""
+
+#: reports/templates/active_shareholder_captable.pdf.html:106
+#, python-format
+msgid "Shares (%%)"
+msgstr ""
+
+#: reports/templates/active_shareholder_captable.pdf.html:109
+msgid "Aktiennummern"
+msgstr ""
+
+#: reports/templates/active_shareholder_captable.pdf.html:149
+msgid "Options"
+msgstr ""
+
+#: reports/templates/active_shareholder_captable.pdf.html:157
+#, python-format
+msgid "Optionen (%%)"
 msgstr ""
 
 #: reports/templates/reports/_captable_form.html:8
@@ -245,17 +311,21 @@ msgstr ""
 msgid "Sort by:"
 msgstr ""
 
-#: reports/templates/reports/_captable_form.html:78
+#: reports/templates/reports/_captable_form.html:48
+msgid "Report as of date:"
+msgstr ""
+
+#: reports/templates/reports/_captable_form.html:79
 #: reports/templates/reports/index.html:24
 msgid "Download active Shareholders"
 msgstr ""
 
-#: reports/templates/reports/_captable_form.html:82
+#: reports/templates/reports/_captable_form.html:83
 msgid "File generated at "
 msgstr ""
 
-#: reports/templates/reports/_captable_form.html:85
-#: reports/templates/reports/_captable_form.html:92
+#: reports/templates/reports/_captable_form.html:86
+#: reports/templates/reports/_captable_form.html:93
 msgid "Generate fresh file"
 msgstr ""
 
