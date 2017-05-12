@@ -317,11 +317,11 @@ def prerender_reports():
                 # CSV
                 report = _prepare_report(company, report_type, ordering, 'CSV')
                 args = [company.pk, report.pk]
-                kwargs = {'order_by': report.order_by}
+                kwargs = {'ordering': report.order_by}
                 render_captable_csv.apply_async(args=args, kwargs=kwargs)
 
                 # PDF
                 report = _prepare_report(company, report_type, ordering, 'PDF')
                 args = [company.pk, report.pk]
-                kwargs = {'order_by': report.order_by}
+                kwargs = {'ordering': report.order_by}
                 render_captable_pdf.apply_async(args=args, kwargs=kwargs)

@@ -222,8 +222,8 @@ class TaskTestCase(TestCase):
     def test_prerender_reports(self, mock_pdf, mock_csv):
         """ render every night the reports for all corps """
         # valid corps
-        for x in range(0, 9):
-            ComplexShareholderConstellationGenerator().generate()
+        for x in range(0, 1):
+            shs, s1 = ComplexShareholderConstellationGenerator().generate()
 
         # corps not needing a report
         CompanyGenerator().generate()
@@ -231,5 +231,14 @@ class TaskTestCase(TestCase):
 
         prerender_reports()
 
-        self.assertEqual(mock_pdf.call_count, 80)
-        self.assertEqual(mock_csv.call_count, 80)
+        company = shs[0].company
+        pdf_report = company.report_set.filter(file_type='PDF').last()
+        csv_report = company.report_set.filter(file_type='CSV').last()
+        self.assertEqual(mock_pdf.call_count, 16)
+        mock_pdf.assert_called_with(
+            args=[company.pk, pdf_report.pk],
+            kwargs={'ordering': pdf_report.order_by})
+        self.assertEqual(mock_csv.call_count, 16)
+        mock_csv.assert_called_with(
+            args=[company.pk, csv_report.pk],
+            kwargs={'ordering': csv_report.order_by})
