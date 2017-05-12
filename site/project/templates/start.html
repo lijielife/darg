@@ -27,8 +27,8 @@
 
   <div id="shareholder_list" ng-show="user.selected_company && !loading">
 
+    {% endverbatim %}{% trans "Your Shareholders for" %}{% verbatim %}
     <h1 class="captable-heading">
-      {% endverbatim %}{% trans "Your Shareholders for" %}{% verbatim %}
       {{ company.name }}
       <img ng-src="{{ company.logo_url }}" alt="company logo" ng-show="company.logo_url"class="logo" style="width: 40px"/>
       <a href="{{ company.profile_url }}" class="el-icon-cogs-wrapper btn-inline">
