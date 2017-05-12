@@ -463,9 +463,7 @@ class OptionTransactionDetailFunctionalTestCase(StripeTestCaseMixin,
             self.assertIn(
                 reverse(
                     'optionplan',
-                    kwargs={
-                        'optionsplan_id': self.optiontransaction.option_plan.pk
-                    }),
+                    kwargs={'pk': self.optiontransaction.option_plan.pk}),
                 self.page.get_url('option-plan')
             )
 
@@ -710,6 +708,7 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                 .options_count()
             )
             app.click_save_transfer_option()
+            time.sleep(3)
 
             # wait for form to disappear
             app.close_modal('addOptionTransaction')
@@ -730,6 +729,7 @@ class OptionsFunctionalTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                 .options_count()
             )
             app.click_save_transfer_option()
+            time.sleep(3)
 
             # wait for form to disappear
             app.close_modal('addOptionTransaction')
@@ -832,7 +832,7 @@ class OptionsPlanFunctionalTestCase(SubscriptionTestMixin,
 
         try:
             path = reverse('optionplan',
-                           kwargs={'optionsplan_id': optionsplan.pk})
+                           kwargs={'pk': optionsplan.pk})
             app = page.OptionsPlanDetailPage(
                 self.selenium, self.live_server_url, operator.user, path)
 

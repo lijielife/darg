@@ -41,6 +41,7 @@ def _check_subscription(request):
             )
             return redirect(redirect_url)
 
+
 def _get_contacts(company):
 
     rows = []

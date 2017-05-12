@@ -14,6 +14,17 @@
     {% endif %}
   </p>
 </div>
+
+<!-- display toggle -->
+<div ng-hide="showFeatures" ng-click="showFeatures=!showFeatures">
+  {% trans "Show subscription details" %}&nbsp;<span class="el-icon-chevron-down"></span>
+</div>
+<div ng-show="showFeatures" ng-click="showFeatures=!showFeatures">
+  {% trans "Hide subscription details" %}&nbsp;<span class="el-icon-chevron-down"></span>
+</div>
+
+<!-- FEATURES -->
+<div ng-show="showFeatures">
 {% get_plan_features plan.plan as plan_features %}
 {% if plan_features.core %}
   <hr>
@@ -41,3 +52,6 @@
     </ul>
   </div>
 {% endif %}
+</div>
+
+

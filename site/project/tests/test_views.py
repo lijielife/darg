@@ -11,6 +11,7 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
 from django.utils.translation import ugettext as _
+from django.utils import timezone
 from rest_framework.test import APIClient
 
 from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
@@ -23,7 +24,7 @@ from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
 from project.tests.mixins import (MoreAssertsTestCaseMixin,
                                   SubscriptionTestMixin)
 from project.views import _get_contacts, _get_transactions
-from shareholder.models import (Company, OptionTransaction, Security,
+from shareholder.models import (Company, OptionTransaction,
                                 Shareholder, UserProfile)
 from utils.http import get_file_content_as_string
 
@@ -233,20 +234,21 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
             shareholder_list, key=lambda t: t.user.last_name.lower())
 
         # initial share creation
-        PositionGenerator().generate(
+        p = PositionGenerator().generate(
             seller=None,
             buyer=shareholder_list[0], count=1000, value=10)
+        security = p.security
         # single transaction
         PositionGenerator().generate(
             buyer=shareholder_list[1], count=10, value=10,
-            seller=shareholder_list[0])
+            seller=shareholder_list[0], security=security)
         # shareholder bought and sold
         PositionGenerator().generate(
             buyer=shareholder_list[2], count=20, value=20,
-            seller=shareholder_list[0])
+            seller=shareholder_list[0], security=security)
         PositionGenerator().generate(
             buyer=shareholder_list[0], count=20, value=20,
-            seller=shareholder_list[2])
+            seller=shareholder_list[2], security=security)
 
         # login and retest
         report = ReportGenerator().generate(company=company, file_type='CSV')
@@ -266,21 +268,18 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
         fileobj = StringIO.StringIO(content)
         reader = csv.reader(fileobj, delimiter=',')
         lines = list(reader)
-        for row in lines:
-            self.assertEqual(len(row), 28)
-        self.assertEqual(len(lines), 6)  # ensure we have the right data
+        self.assertEqual(len(lines[4]), 28)
+        # positions + per security header
+        self.assertEqual(len(lines), 6)
         # assert company itself
-        self.assertIn(shareholder_list[0].number,
-                      [f[0] for f in lines])
+        sh_numbers = [f[0] for f in lines if len(f) > 0]
+        self.assertIn(shareholder_list[0].number, sh_numbers)
         # assert share owner
-        self.assertIn(shareholder_list[1].number,
-                      [f[0] for f in lines])
+        self.assertIn(shareholder_list[1].number, sh_numbers)
         # assert shareholder witout position not in there
-        for line in lines:
-            self.assertNotEqual(line[0], shareholder_list[3].number)
+        self.assertNotIn(shareholder_list[3].number, sh_numbers)
         # assert shareholder which bought and sold again
-        for line in lines:
-            self.assertNotEqual(line[0], shareholder_list[2].number)
+        self.assertNotIn(shareholder_list[2].number, sh_numbers)
 
     def test_csv_download_number_segments(self):
         """ rest download of captable csv """
@@ -329,7 +328,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
         lines = content.split('\r\n')
         lines.pop()  # remove last element based on final '\r\n'
         for row in lines:
-            if row == lines[0]:  # skip first row
+            if row == lines[0] or ',' not in row:  # skip first row
                 continue
             self.assertEqual(row.count(','), 31)
             fields = row.split(',')
@@ -366,7 +365,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
         """
         download of all certificates which are printed
         """
-        now = datetime.datetime.now()
+        now = timezone.now()
         positions, shs = ComplexOptionTransactionsGenerator().generate()  # noqa
         OptionTransaction.objects.filter(
             pk__in=[ot.pk for ot in positions]).update(printed_at=now)
@@ -375,7 +374,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
         company = operator.company
         self.add_subscription(company)
         pos = PositionGenerator().generate(company=company)
-        pos.printed_at = datetime.datetime.now()
+        pos.printed_at = timezone.now()
         pos.certificate_id = '88888'
         pos.save()
 
@@ -481,15 +480,14 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
 
     def test_get_transactions(self):
         """ get csv list array of contacts data """
-        ComplexShareholderConstellationGenerator().generate()
+        shs, sec = ComplexShareholderConstellationGenerator().generate()
 
         company = Company.objects.last()
-        from_date = datetime.datetime(2013, 1, 1)
-        to_date = datetime.datetime(2099, 1, 1)
+        from_date = timezone.make_aware(datetime.datetime(2013, 1, 1))
+        to_date = timezone.make_aware(datetime.datetime(2099, 1, 1))
         with self.assertLessNumQueries(38):
             res = _get_transactions(
-                from_date, to_date, Security.objects.filter(
-                    company=company).first(), company)
+                from_date, to_date, sec, company)
         self.assertTrue(len(res) > 1)
         self.assertEqual(len(res[0]), 11)
         self.assertEqual(len(res[1]), 9)  # no nationality
@@ -565,7 +563,8 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
         is_loggedin = self.client.login(username=user.username,
                                         password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(is_loggedin)
-        with self.assertLessNumQueries(53):
+        # was 53
+        with self.assertLessNumQueries(78):
             response = self.client.get(
                 reverse('option_pdf', kwargs={"option_id": ot.pk}))
 
@@ -594,7 +593,8 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
         is_loggedin = self.client.login(username=user.username,
                                         password=DEFAULT_TEST_DATA['password'])
         self.assertTrue(is_loggedin)
-        with self.assertLessNumQueries(55):
+        # was 55
+        with self.assertLessNumQueries(79):
             response = self.client.get(
                 reverse('position_option_pdf', kwargs={"option_id": pos.pk}))
 

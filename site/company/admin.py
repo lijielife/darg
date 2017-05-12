@@ -9,6 +9,7 @@ from django.core.management import call_command
 # from django.shortcuts import render_to_response
 # from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse
 
 from djstripe.admin import (Charge, send_charge_receipt, Plan, Invoice,
                             customer_email, customer_has_card,
@@ -83,6 +84,7 @@ class InvoiceAdmin(admin.ModelAdmin):
     readonly_fields = ('created',)
     list_display = (
         "stripe_id",
+        "pdf",
         "paid",
         "closed",
         customer_email,
@@ -91,7 +93,7 @@ class InvoiceAdmin(admin.ModelAdmin):
         "period_end",
         "subtotal",
         "total",
-        "created"
+        "created",
     )
     search_fields = (
         "stripe_id",
@@ -110,6 +112,14 @@ class InvoiceAdmin(admin.ModelAdmin):
     )
     inlines = (InvoiceItemInline,)
     actions = (generate_pdf, generate_pdf_forced)
+
+    def pdf(self, obj):
+        if obj.has_invoice_pdf:
+            return '<a href="{}"><img src="/static/compiled/images/pdf-icon.png" width="25px"/></a>'.format(
+                reverse('djstripe:invoice', kwargs={
+                    'pk': obj.pk, 'company_id':
+                    obj.customer.subscriber.pk}))
+    pdf.allow_tags = True
 
     # def get_urls(self):
     #

@@ -2833,6 +2833,15 @@ html, body {
 .core .container strong {
   font-weight: bold;
 }
+.core .container .alert-form {
+  height: 10em;
+  text-align: center;
+  padding: 4em 0px 9em;
+  line-height: 1.5em;
+}
+.core .container .alert-form div {
+  margin-bottom: 1em;
+}
 .core .container .context-help {
   border: 1px solid #337ab7;
   border-radius: 50%;
@@ -3134,6 +3143,10 @@ nav.navbar .dropdown-toggle {
 .tos #id_tos {
   width: initial;
   float: left;
+}
+
+select.form-control {
+  border-radius: 4px !important;
 }
 
 .form .form-control {

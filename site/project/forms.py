@@ -1,11 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import logging
 
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 
 from registration.forms import (RegistrationFormTermsOfService,
                                 RegistrationFormUniqueEmail)
+
+
+logger = logging.getLogger(__name__)
 
 
 class RegistrationForm(RegistrationFormTermsOfService,
@@ -17,6 +22,7 @@ class RegistrationForm(RegistrationFormTermsOfService,
         """
         create form obj
         """
+
         res = super(RegistrationForm, self).__init__(*args, **kwargs)
         # add url to ToS string in form
         self.fields.get('tos').label = mark_safe(_(
@@ -27,3 +33,19 @@ class RegistrationForm(RegistrationFormTermsOfService,
             '</a>'
         ))
         return res
+
+    def save(self, commit=True):
+        user = super(RegistrationForm, self).save(commit=commit)
+
+        # add user profile
+        user.refresh_from_db()
+        profile = getattr(user, 'userprofile', None)
+        profile.tnc_accepted = True
+        profile.save()
+
+        # user legal type detection
+        if user.first_name == settings.COMPANY_INITIAL_FIRST_NAME:
+            profile.legal_type = 'C'
+            profile.save()
+
+        return user

@@ -128,3 +128,8 @@ def deflate_segments(segments):
         advance = segment
 
     return deflated_segments
+
+
+def make_numeric(text):
+    import re
+    return re.sub("[^0-9]", "", text)

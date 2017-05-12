@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import json
-import os
 import logging
+import os
 
 import requests
 from django.conf import settings
@@ -12,19 +12,20 @@ from django.core.mail import (EmailMessage, EmailMultiAlternatives,
                               mail_admins, send_mail)
 from django.core.urlresolvers import reverse
 from django.template import Context, loader
+from django.utils import timezone
 from django.utils.formats import date_format
 from django.utils.text import slugify
 from django.utils.timezone import datetime, now, timedelta
 from django.utils.translation import activate as activate_lang
 from django.utils.translation import ugettext as _
-from django.utils import timezone
 
 from pingen.api import Pingen
 from project.celery import app
 from shareholder.import_backends import SwissBankImportBackend
+from shareholder.models import (Company, Shareholder, ShareholderStatement,
+                                ShareholderStatementReport)
 from utils.pdf import render_pdf
-
-from .models import Company, ShareholderStatement, ShareholderStatementReport
+from utils.formatters import make_numeric
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +37,9 @@ def _context_email_defaults():
     version = getattr(settings, 'VERSION', False)
     return dict(
         domain=Site.objects.get_current().domain,
-        VERSION=version and 'v{}'.format(version) or ''
+        VERSION=version and 'v{}'.format(version) or '',
+        site=Site.objects.get_current(),
+        protocol=settings.DEFAULT_HTTP_PROTOCOL,
     )
 
 
@@ -497,3 +500,34 @@ def update_banks_from_six():
     regularly update swiss banks database with data from six
     """
     SwissBankImportBackend().update()
+
+
+@app.task
+def update_order_cache_task(shareholder_pk):
+    """ update cache in model for some shareholder values for faster sorting and
+    display """
+    try:
+        shareholder = Shareholder.objects.get(pk=shareholder_pk)
+    except Shareholder.DoesNotExist:
+        logger.warning('shareholder order_cache update failed. Shareholder not'
+                       'found', extra={'shareholder_pk': shareholder_pk})
+        return
+
+    order_cache = shareholder.order_cache
+    order_cache['share_count'] = shareholder.share_count()
+    order_cache['postal_code'] = (
+        shareholder.user.userprofile.postal_code or 0)
+    order_cache['cumulated_face_value'] = (
+        float(shareholder.cumulated_face_value()))
+    # enable numerical sort via DB logic
+    order_cache['number'] = make_numeric(shareholder.number)
+
+    # use `update()` to not trigger the signal itself again
+    Shareholder.objects.filter(pk=shareholder.pk).update(
+        order_cache=order_cache)
+
+
+@app.task
+def update_order_cache_for_all_shareholders():
+    for sh in Shareholder.objects.all():
+        update_order_cache_task.apply_async([sh.pk])

@@ -5,6 +5,7 @@ import datetime
 from django.conf import settings
 from django.contrib.auth.signals import user_logged_in
 from django.core.mail import mail_admins
+from registration.signals import user_registered
 
 
 def notify_admin_on_signin(sender, request, user, **kwargs):
@@ -28,5 +29,13 @@ def set_company_in_session(sender, user, request, **kwargs):
         operator.last_active_at = datetime.datetime.now()
 
 
+def add_ip_to_userprofile(sender, user, request, **kwargs):
+    from utils.session import get_ip_from_request
+    profile = user.userprofile
+    profile.ip = get_ip_from_request(request)
+    profile.save()
+
+
 user_logged_in.connect(set_company_in_session)
 user_logged_in.connect(notify_admin_on_signin)
+user_registered.connect(add_ip_to_userprofile)

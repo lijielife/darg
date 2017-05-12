@@ -189,9 +189,7 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
             $scope.newOptionPlan = new OptionPlan()
             $scope.show_add_option_plan = false
             $scope.plan_added_success = true
-            $timeout ->
-                $scope.plan_added_success = false
-            , 5000
+            $scope.addPositionLoading = false
         .then ->
             # Clear any errors
             $scope.errors = {}
@@ -229,6 +227,7 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
             $scope.newOptionTransaction.depot_type = $scope.newOptionTransaction.depot_type.value
 
         # now save:
+        $scope.addPositionLoading = true
         $scope.newOptionTransaction.$save().then (result) ->
             $scope.load_all()
         .then ->
@@ -236,9 +235,7 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
             $scope.newOptionTransaction = new OptionTransaction()
             $scope.show_add_option_transaction = false
             $scope.transaction_added_success = true
-            $timeout ->
-                $scope.transaction_added_success = false
-            , 5000
+            $scope.addPositionLoading = false
         .then ->
             # Clear any errors
             $scope.errors = {}
@@ -271,8 +268,11 @@ app.controller 'OptionsController', ['$scope', '$http', '$window', '$filter', 'O
         $scope.newOptionTransaction = new OptionTransaction()
 
     $scope.hide_form = ->
+        $scope.errors = {}
         $scope.show_add_option_plan = false
         $scope.show_add_option_transaction = false
+        $scope.plan_added_success = false
+        $scope.transaction_added_success = false
         $scope.newOptionPlan = new OptionPlan()
         $scope.newOptionTransaction = new OptionTransaction()
 

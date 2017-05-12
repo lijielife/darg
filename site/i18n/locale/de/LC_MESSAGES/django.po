@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-02 06:18+0000\n"
-"PO-Revision-Date: 2017-05-02 01:06+0000\n"
+"POT-Creation-Date: 2017-05-12 08:13+0000\n"
+"PO-Revision-Date: 2017-05-12 08:15+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -19,16 +19,15 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Translated-Using: django-rosetta 0.7.13\n"
 
-#: company/admin.py:67
+#: company/admin.py:68
 msgid "Called management command \"generate_invoice_pdf\" for {} object(s)"
-msgstr ""
-"Management command \"generate_invoice_pdf\" für {} Objekt(e) aufgerufen"
+msgstr "Management command \"generate_invoice_pdf\" für {} Objekt(e) aufgerufen"
 
-#: company/admin.py:71
+#: company/admin.py:72
 msgid "Generate PDF"
 msgstr "PDF erstellen"
 
-#: company/admin.py:80
+#: company/admin.py:81
 msgid "Generate PDF (override existing)"
 msgstr "PDF generieren und überschreiben"
 
@@ -42,13 +41,13 @@ msgstr ""
 "Dem Unternehmen \"{}\" (ID {}) wurde eine Rechnung gestellt,  dieses hat "
 "aber keine Email-Adresse hinterlegt."
 
-#: company/apps.py:82 company/apps.py:202
+#: company/apps.py:82 company/apps.py:203
 msgid "Company \"{}\" (ID {}) was charged but has no postal address stored"
 msgstr ""
 "Dem Unternehmen \"{}\" (ID {}) wurde eine Rechnung gestellt,  dieses hat "
 "aber keine Post-Adresse hinterlegt."
 
-#: company/apps.py:229
+#: company/apps.py:230
 msgid "Invoice PDF for company \"{}\" (ID {}) could not be generated."
 msgstr ""
 "Rechnung als PDF für Unternehmen \"{}\" (ID {}) kann nicht erstellt werden."
@@ -116,80 +115,100 @@ msgid "Company Share Count"
 msgstr "Anzahl der Aktien des Unternehmens"
 
 #: company/templates/company.html:77
+msgid ""
+"The date when the company was registered with public authorities. Date "
+"format is dd.mm.YY without leading zero for the day"
+msgstr ""
+"Das Datum an welchem das Unternehmen gegründet wurde. I.d.R. das Datum der "
+"Eintragung im öffentlichen Register. Das Format ist dd.mm.YY (Bsp. 1.03.12 "
+"für den ersten März 2012). Keine führende Null bei Tagen."
+
+#: company/templates/company.html:78
 msgid "Company founding date"
 msgstr "Gründungsdatum des Unternehmens"
 
-#: company/templates/company.html:101
+#: company/templates/company.html:102
 msgid "Provisioned Capital (Liberiertes Kapital)"
 msgstr "Liberiertes/eingelegtes Kapital"
 
-#: company/templates/company.html:114
+#: company/templates/company.html:115
 msgid "CHF for one vote based on face value of securities"
 msgstr "Anzahl CHF für ein Stimmrecht (Basis Nennwert der Aktien)"
 
-#: company/templates/company.html:128
+#: company/templates/company.html:129
 msgid "Company Headquarter Country"
 msgstr "Land des Unternehmenssitzes"
 
-#: company/templates/company.html:141
+#: company/templates/company.html:142
 msgid "Is statement sending enabled"
 msgstr "Versand der Depotauszüge ist aktiviert"
 
-#: company/templates/company.html:154
+#: company/templates/company.html:156
+msgid ""
+"The date when depot statements are to be sent to the shareholders. Date "
+"format is dd.mm.YY without leading zero for the day. After the statements "
+"have been sent, this date is increased to the next years same day and month."
+msgstr ""
+"Das Datum an welchen die Kontoauszüge versendet werden sollen (initial per "
+"Email). Das Format ist dd.mm.YY (Bsp. 1.03.12 für den ersten März 2012). "
+"Keine führende Null bei Tagen. Nachdem die Auszüge versendet wurden, wird "
+"dieses Datum automatisch auf denselben Tag im kommenden Jahr aktualisiert."
+
+#: company/templates/company.html:157
 msgid "Statement sending date"
 msgstr "Versanddatum für Depotauszug"
 
-#: company/templates/company.html:180
+#: company/templates/company.html:184
 msgid "This value is calculated every 24hrs."
 msgstr "Dieser Wert wird alle 24 Stunden neu berechnet."
 
-#: company/templates/company.html:181
+#: company/templates/company.html:185
 msgid "Total count of current shareholders"
 msgstr "Gesamtzahl aktueller Gesellschafter"
 
-#: company/templates/company.html:193
+#: company/templates/company.html:197
 msgid "total count of shares of dispo shareholder"
 msgstr "Anzahl Dispoaktien (Aktien welche nicht registriert sind)"
 
-#: company/templates/company.html:201
+#: company/templates/company.html:205
 msgid "total capital of shares of dispo shareholder"
 msgstr "Kapital in Dispoaktien"
 
-#: company/templates/company.html:202
+#: company/templates/company.html:206
 msgid "based on face value of all shares assigned to dispo shareholder"
 msgstr ""
 "Basierend auf dem Nennwert aller Aktien, welche dem Dispo-Aktionär "
 "zugewiesen sind"
 
-#: company/templates/company.html:215
+#: company/templates/company.html:219
 msgid "total count of shares of management/vr"
 msgstr "Aktien gehalten vom Management/VR"
 
-#: company/templates/company.html:223
+#: company/templates/company.html:227
 msgid "total capital of shares of management/vf"
 msgstr "Kapital gehalten vom Management/VR"
 
-#: company/templates/company.html:224
+#: company/templates/company.html:228
 msgid "based on face value of all shares assigned to management/vr"
 msgstr ""
 "Basierend auf dem Nennwert aller Aktien, welche aktuell vom Management/VR "
 "gehalten werden."
 
-#: company/templates/company.html:236
+#: company/templates/company.html:240
 msgid "total capital of the company. math: all shares existing * face value"
 msgstr ""
 "Gesamtkapital des Unternehmens. Mathematisch: alle existierenden Aktion "
 "multipliziert mit dem Nennwert ebendieser."
 
-#: company/templates/company.html:239
+#: company/templates/company.html:243
 msgid "Provisioned Capital"
 msgstr "Liberiertes/eingelegtes Kapital"
 
-#: company/templates/company.html:249
+#: company/templates/company.html:253
 msgid "Provisioned Share Count"
 msgstr "Anzahl der Aktien des Unternehmens"
 
-#: company/templates/company.html:260
+#: company/templates/company.html:264
 msgid ""
 "number of shares which are given to shareholders. or overall share count "
 "minus dispo shareholder and minus company shareholder"
@@ -197,70 +216,70 @@ msgstr ""
 "Anzahl Aktien, welche an Aktionäre ausgegeben sind. Oder Gesamtaktienzahl "
 "minus Dispo-Aktionär und Aktien, welche vom Unternehmen gehalten werden."
 
-#: company/templates/company.html:261
+#: company/templates/company.html:265
 msgid "Share Count Floating"
 msgstr "Anzahl ausgegebener Aktien"
 
-#: company/templates/company.html:271
+#: company/templates/company.html:275
 msgid ""
-"total votes count based on existing shares. math: overall share count * face "
-"value"
+"total votes count based on existing shares. math: overall share count * face"
+" value"
 msgstr "Anzahl Stimmrechte basierend auf existierenden Aktien"
 
-#: company/templates/company.html:272
+#: company/templates/company.html:276
 msgid "Total votes count based on shares existing"
 msgstr "Anzahl Stimmrechte basierend auf existierenden Aktien"
 
-#: company/templates/company.html:281
+#: company/templates/company.html:285
 msgid ""
 "total votes count effective. excludes unregistered/dispo shares and shares "
 "in company ownership"
 msgstr ""
-"Stimmrechte effektiv. Schliesst Dispoaktien/unregistrierte Aktien und Aktien "
-"im Unternehmensbesitz aus."
+"Stimmrechte effektiv. Schliesst Dispoaktien/unregistrierte Aktien und Aktien"
+" im Unternehmensbesitz aus."
 
-#: company/templates/company.html:282
+#: company/templates/company.html:286
 msgid "Total votes count based on shares floating"
 msgstr "Anzahl Stimmrechte basierend auf ausgegebenen Aktien"
 
-#: company/templates/company.html:287
+#: company/templates/company.html:291
 msgid "Does include shares used for options. Without options it would be"
 msgstr "Beinhaltet Aktien geblockt für Optionen. Ohne diese Aktien wären dies"
 
-#: company/templates/company.html:294
+#: company/templates/company.html:298
 msgid "Total option count based on shares dedicated to options"
 msgstr ""
 "Gesamtzahl Optionen basierend auf Aktien, welche für Optionen geblockt sind"
 
-#: company/templates/company.html:303
+#: company/templates/company.html:307
 msgid "Total option count based on shares dedicated to options floating"
 msgstr "Anzahl Optionen basierend ausgegebenen Optionen "
 
-#: company/templates/company.html:316
+#: company/templates/company.html:320
 msgid "Securities"
 msgstr "Aktienart"
 
-#: company/templates/company.html:319
+#: company/templates/company.html:323
 msgid "security"
 msgstr "Aktienart"
 
-#: company/templates/company.html:320
+#: company/templates/company.html:324
 msgid "cusip"
 msgstr "Valor/WKN"
 
-#: company/templates/company.html:321
+#: company/templates/company.html:325
 msgid "count"
 msgstr "Anzahl"
 
-#: company/templates/company.html:331 company/tests/test_views.py:78
+#: company/templates/company.html:335 company/tests/test_views.py:78
 msgid "tracking security numbers for owners enabled. segments:"
 msgstr "Nummerierte Aktiensegmente:"
 
-#: company/templates/company.html:345
+#: company/templates/company.html:348
 msgid "Please contact us at our"
 msgstr "Bitte kontaktieren Sie uns unter"
 
-#: company/templates/company.html:347
+#: company/templates/company.html:350
 msgid ""
 "for getting more security types (common stock, preferred stock, numbered "
 "shares) added"
@@ -268,35 +287,35 @@ msgstr ""
 "um mehr Wertpapierarten (Vorzugsaktien, Stammaktien, Aktien mit "
 "verschiedenen Nennwerten, Nummerierte Aktien) zu erhalten."
 
-#: company/templates/company.html:353
+#: company/templates/company.html:356
 msgid "Administrators"
 msgstr "Administratoren"
 
-#: company/templates/company.html:354
+#: company/templates/company.html:357
 msgid "add operator"
 msgstr "Administrator hinzufügen"
 
-#: company/templates/company.html:382
+#: company/templates/company.html:385
 msgid "Option Plans"
 msgstr "Optionsplan"
 
-#: company/templates/company.html:388
+#: company/templates/company.html:391
 msgid "Options Plan Name"
 msgstr "Name des Optionsplanes"
 
-#: company/templates/company.html:391
+#: company/templates/company.html:394
 msgid "Edit Option Plan"
 msgstr "Optionsplan editieren"
 
-#: company/templates/company.html:402
+#: company/templates/company.html:405
 msgid "Administration"
 msgstr "Verwaltung"
 
-#: company/templates/company.html:406
+#: company/templates/company.html:409
 msgid "reset company"
 msgstr "Unternehmen zurücksetzen"
 
-#: company/templates/company.html:409
+#: company/templates/company.html:412
 msgid ""
 "the company, shareholders, transactions, options, and all other assigned "
 "data are deleted. the user can then create the company anew and start fresh"
@@ -363,7 +382,8 @@ msgstr "Unternehmen muss eine Instanz von {} sein."
 msgid ""
 "Too many shareholders are registered ({count}). (max: {max_shareholders})"
 msgstr ""
-"Zu viele Gesellschafter sind eingetragen ({count}). (max: {max_shareholders})"
+"Zu viele Gesellschafter sind eingetragen ({count}). (max: "
+"{max_shareholders})"
 
 #: company/validators/features.py:58
 #, python-brace-format
@@ -383,7 +403,8 @@ msgstr "Sie sind bereits bei diesem Abonnement eingetragen."
 #: company/views.py:221
 msgid "You must already be subscribed to a plan before you can change it."
 msgstr ""
-"Sie müssen bereits ein Paket abonniert haben, bevor Sie dieses ändern können."
+"Sie müssen bereits ein Paket abonniert haben, bevor Sie dieses ändern "
+"können."
 
 #: company/views.py:364
 msgid "Could not find requested filed."
@@ -465,7 +486,7 @@ msgstr "API Anfragen"
 msgid "German"
 msgstr "Deutsch"
 
-#: utils/import_backends.py:284
+#: utils/import_backends.py:285
 msgid "Disposhareholder"
 msgstr "Gesellschafter für Dispoaktien"
 
@@ -524,11 +545,11 @@ msgstr "Weitere Aktienart (1 x 0.20)"
 #~ msgstr "Downloads für"
 
 #~ msgid ""
-#~ "Use CSV for Excel like Downloads. Follow this <a href='https://goo.gl/"
-#~ "aQ2gVx'>guide for instructions</a>."
+#~ "Use CSV for Excel like Downloads. Follow this <a "
+#~ "href='https://goo.gl/aQ2gVx'>guide for instructions</a>."
 #~ msgstr ""
-#~ "Verwenden Sie CSV für Excel-Downloads. Folgen Sie  <a href='https://goo."
-#~ "gl/aQ2gVx'>diesen Guide für das Öffnen in Excel</a>."
+#~ "Verwenden Sie CSV für Excel-Downloads. Folgen Sie  <a "
+#~ "href='https://goo.gl/aQ2gVx'>diesen Guide für das Öffnen in Excel</a>."
 
 #~ msgid "Download active Shareholders as"
 #~ msgstr "Aktive Gesellschafter"
@@ -556,8 +577,9 @@ msgstr "Weitere Aktienart (1 x 0.20)"
 #~ "transaction or option transaction"
 #~ msgstr ""
 #~ "Keine Urkunden/Zertifikate bisher gedruckt. Bitte drucken Sie vorher "
-#~ "mindestens eine Urkunde über die Detailansicht einer <a href=\"/positions/"
-#~ "\">Transaktion</a> oder <a href=\"/options/\">Optionstransaktion</a>."
+#~ "mindestens eine Urkunde über die Detailansicht einer <a "
+#~ "href=\"/positions/\">Transaktion</a> oder <a "
+#~ "href=\"/options/\">Optionstransaktion</a>."
 
 #~ msgid "Vested Shares"
 #~ msgstr "Aktien mit Sperrfristen"
@@ -567,8 +589,9 @@ msgstr "Weitere Aktienart (1 x 0.20)"
 #~ "option transaction"
 #~ msgstr ""
 #~ "Keine Positionen mit Sperrfristen vorhanden. Bitte legen Sie vorher "
-#~ "mindestens eine Position mit Sperrfrist unter <a href=\"/positions/"
-#~ "\">Transaktion</a> oder <a href=\"/options/\">Optionstransaktion</a> an."
+#~ "mindestens eine Position mit Sperrfrist unter <a "
+#~ "href=\"/positions/\">Transaktion</a> oder <a "
+#~ "href=\"/options/\">Optionstransaktion</a> an."
 
 #~ msgid "Depot Statement per Shareholder"
 #~ msgstr "Depotauszug pro Gesellschafter"
@@ -584,9 +607,9 @@ msgstr "Weitere Aktienart (1 x 0.20)"
 #~ "Effizienz fuer kleine AGs, vollumfaengliches Aktienregister fuer "
 #~ "Publikumsgesellschaften"
 #~ msgstr ""
-#~ "Willkommen bei Das-Aktienregister.ch - Die besten Aktienbuch Vorlagen/"
-#~ "Muster (Excel) herunterladen oder effizient Aktienbuch online führen & "
-#~ "PDF herunterladen."
+#~ "Willkommen bei Das-Aktienregister.ch - Die besten Aktienbuch Vorlagen/Muster"
+#~ " (Excel) herunterladen oder effizient Aktienbuch online führen & PDF "
+#~ "herunterladen."
 
 #~ msgid "The Share Register, 2016"
 #~ msgstr "Das Aktienregister, 2016"
@@ -673,49 +696,40 @@ msgstr "Weitere Aktienart (1 x 0.20)"
 #~ "The password reset link was invalid, possibly because it has already been "
 #~ "used.  Please request a new password reset."
 #~ msgstr ""
-#~ "Der Link zum Passwort-zurücksetzen ist nicht gültig. Wahrscheinlich wurde "
-#~ "er bereits benutzt. Bitte fragen Sie diesen erneut an."
+#~ "Der Link zum Passwort-zurücksetzen ist nicht gültig. Wahrscheinlich wurde er"
+#~ " bereits benutzt. Bitte fragen Sie diesen erneut an."
 
 #~ msgid "Password reset"
 #~ msgstr "Passwort zurücksetzen"
 
 #~ msgid ""
 #~ "\n"
-#~ "    We have sent you an email with a link to reset your password.  Please "
-#~ "check\n"
+#~ "    We have sent you an email with a link to reset your password.  Please check\n"
 #~ "    your email and click the link to continue.\n"
 #~ "    "
 #~ msgstr ""
 #~ "\n"
-#~ "Wir haben Ihnen eine Email mit einem Link zum Zurücksetzen Ihres "
-#~ "Passwortes gesendet. Bitte öffnen Sie Ihre Email und klicken Sie diesen "
-#~ "Link."
+#~ "Wir haben Ihnen eine Email mit einem Link zum Zurücksetzen Ihres Passwortes gesendet. Bitte öffnen Sie Ihre Email und klicken Sie diesen Link."
 
 #~ msgid "Greetings"
 #~ msgstr "Mit besten Grüssen"
 
 #~ msgid ""
 #~ "\n"
-#~ "You are receiving this email because you (or someone pretending to be "
-#~ "you)\n"
-#~ "requested that your password be reset on the %(domain)s site.  If you do "
-#~ "not\n"
+#~ "You are receiving this email because you (or someone pretending to be you)\n"
+#~ "requested that your password be reset on the %(domain)s site.  If you do not\n"
 #~ "wish to reset your password, please ignore this message.\n"
 #~ msgstr ""
 #~ "\n"
-#~ "Sie erhalten diese Email da Sie (oder jemand der vorgibt Sie zu sein) das "
-#~ "Zurücksetzen des Passworts auf der Seite %(domain)s angefragt haben. "
-#~ "Falls Sie dies nicht waren, ignorieren Sie bitte diese Email.\n"
+#~ "Sie erhalten diese Email da Sie (oder jemand der vorgibt Sie zu sein) das Zurücksetzen des Passworts auf der Seite %(domain)s angefragt haben. Falls Sie dies nicht waren, ignorieren Sie bitte diese Email.\n"
 
 #~ msgid ""
 #~ "\n"
-#~ "To reset your password, please click the following link, or copy and "
-#~ "paste it\n"
+#~ "To reset your password, please click the following link, or copy and paste it\n"
 #~ "into your web browser:\n"
 #~ msgstr ""
 #~ "\n"
-#~ "Um ihr Passwort zurückzusetzen, klicken Sie bitte den folgenden Link oder "
-#~ "kopieren Sie diesen in die Adress-Leiste Ihres Browsers:\n"
+#~ "Um ihr Passwort zurückzusetzen, klicken Sie bitte den folgenden Link oder kopieren Sie diesen in die Adress-Leiste Ihres Browsers:\n"
 
 #~ msgid "Your username, in case you've forgotten:"
 #~ msgstr "Ihr Nutzername, falls Sie Ihn vergessen haben:"
@@ -728,14 +742,11 @@ msgstr "Weitere Aktienart (1 x 0.20)"
 
 #~ msgid ""
 #~ "\n"
-#~ "    Forgot your password?  Enter your email in the form below and we'll "
-#~ "send you instructions for creating a new one.\n"
+#~ "    Forgot your password?  Enter your email in the form below and we'll send you instructions for creating a new one.\n"
 #~ "    "
 #~ msgstr ""
 #~ "\n"
-#~ "Sie haben Ihr Passwort vergessen? Geben Sie Ihre Email in das Formular "
-#~ "unten ein. Wir senden Ihnen genauere Instruktionen für die Erstellung "
-#~ "eines neuen zu."
+#~ "Sie haben Ihr Passwort vergessen? Geben Sie Ihre Email in das Formular unten ein. Wir senden Ihnen genauere Instruktionen für die Erstellung eines neuen zu."
 
 #~ msgid "Registration Complete"
 #~ msgstr "Registrierung vollständig"
@@ -748,8 +759,7 @@ msgstr "Weitere Aktienart (1 x 0.20)"
 
 #~ msgid "Register Here"
 #~ msgstr ""
-#~ "Starten Sie jetzt Ihr Online-Aktienbuch und beeindrucken Sie Ihre "
-#~ "Aktionäre!"
+#~ "Starten Sie jetzt Ihr Online-Aktienbuch und beeindrucken Sie Ihre Aktionäre!"
 
 #~ msgid "Sign up now"
 #~ msgstr "Jetzt registrieren"
@@ -768,19 +778,16 @@ msgstr "Weitere Aktienart (1 x 0.20)"
 
 #~ msgid ""
 #~ "Backup tokens can be used when your primary and backup\n"
-#~ "      phone numbers aren't available. The backup tokens below can be "
-#~ "used\n"
-#~ "      for login verification. If you've used up all your backup tokens, "
-#~ "you\n"
-#~ "      can generate a new set of backup tokens. Only the backup tokens "
-#~ "shown\n"
+#~ "      phone numbers aren't available. The backup tokens below can be used\n"
+#~ "      for login verification. If you've used up all your backup tokens, you\n"
+#~ "      can generate a new set of backup tokens. Only the backup tokens shown\n"
 #~ "      below will be valid."
 #~ msgstr ""
 #~ "Backup-Token können verwendet werden wenn sowohl die erste und zweite "
 #~ "registrierte Telefonnummer nicht zur Verfügung stehen. Diese Token können "
-#~ "verwendet werden, um sich anzumelden. Wenn Sie alle Token verwendet "
-#~ "haben, können Sie entsprechend neue generieren. Nur die unten angezeigten "
-#~ "Token sind valide."
+#~ "verwendet werden, um sich anzumelden. Wenn Sie alle Token verwendet haben, "
+#~ "können Sie entsprechend neue generieren. Nur die unten angezeigten Token "
+#~ "sind valide."
 
 #~ msgid "Print these tokens and keep them somewhere safe."
 #~ msgstr "Drucken Sie diese Token aus und verwahren Sie diese sicher."
@@ -794,11 +801,10 @@ msgstr "Weitere Aktienart (1 x 0.20)"
 #~ msgid "Enter your credentials."
 #~ msgstr "Bitte geben Sie Ihre Zugangsdaten ein"
 
-#~ msgid ""
-#~ "We are calling your phone right now, please enter the digits you hear."
+#~ msgid "We are calling your phone right now, please enter the digits you hear."
 #~ msgstr ""
-#~ "Wir rufen Sie gerade an. Bitte geben Sie die Zahlenkombination ein, "
-#~ "welche Ihnen am Telefon angesagt wird."
+#~ "Wir rufen Sie gerade an. Bitte geben Sie die Zahlenkombination ein, welche "
+#~ "Ihnen am Telefon angesagt wird."
 
 #~ msgid ""
 #~ "We sent you a text message, please enter the tokens we\n"
@@ -816,8 +822,7 @@ msgstr "Weitere Aktienart (1 x 0.20)"
 
 #~ msgid ""
 #~ "Use this form for entering backup tokens for logging in.\n"
-#~ "      These tokens have been generated for you to print and keep safe. "
-#~ "Please\n"
+#~ "      These tokens have been generated for you to print and keep safe. Please\n"
 #~ "      enter one of these backup tokens to login to your account."
 #~ msgstr ""
 #~ "Verwenden Sie dieses Formular um Backup-Token für das Login einzugeben. "

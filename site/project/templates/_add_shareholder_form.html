@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load static %}
 
 {% trans "Please enter your shareholder data:" %}
 {% verbatim %}
@@ -18,7 +19,10 @@
     </div>
     <div class="form-group custom-form-group">
       <button class="btn btn-default" data-dismiss="modal" ng-click="hide_form()">{% endverbatim %}{% trans "Cancel" %}{% verbatim %}</button>
-      <button class="btn btn-focus" ng-click="add_shareholder()">{% endverbatim %}{% trans "Add Shareholder" %}{% verbatim %}</button>
+      <button class="btn btn-focus" ng-click="add_shareholder()">
+        <img src="{% endverbatim %}{% static "compiled/images/loading_spinner1_white.png" %}{% verbatim %}" class="loading no-style" ng-show="addShareholderLoading">
+        {% endverbatim %}{% trans "Add Shareholder" %}{% verbatim %}
+      </button>
     </div>
   </form>
 </div>

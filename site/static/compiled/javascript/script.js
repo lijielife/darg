@@ -44316,9 +44316,7 @@ return deCh;
           $scope.newOptionPlan = new OptionPlan();
           $scope.show_add_option_plan = false;
           $scope.plan_added_success = true;
-          return $timeout(function() {
-            return $scope.plan_added_success = false;
-          }, 5000);
+          return $scope.addPositionLoading = false;
         }).then(function() {
           $scope.errors = {};
           return $window.ga('send', 'event', 'form-send', 'add-optionplan');
@@ -44352,15 +44350,14 @@ return deCh;
         if ($scope.newOptionTransaction.depot_type) {
           $scope.newOptionTransaction.depot_type = $scope.newOptionTransaction.depot_type.value;
         }
+        $scope.addPositionLoading = true;
         return $scope.newOptionTransaction.$save().then(function(result) {
           return $scope.load_all();
         }).then(function() {
           $scope.newOptionTransaction = new OptionTransaction();
           $scope.show_add_option_transaction = false;
           $scope.transaction_added_success = true;
-          return $timeout(function() {
-            return $scope.transaction_added_success = false;
-          }, 5000);
+          return $scope.addPositionLoading = false;
         }).then(function() {
           $scope.errors = {};
           return $window.ga('send', 'event', 'form-send', 'add-option-transaction');
@@ -44397,8 +44394,11 @@ return deCh;
         return $scope.newOptionTransaction = new OptionTransaction();
       };
       $scope.hide_form = function() {
+        $scope.errors = {};
         $scope.show_add_option_plan = false;
         $scope.show_add_option_transaction = false;
+        $scope.plan_added_success = false;
+        $scope.transaction_added_success = false;
         $scope.newOptionPlan = new OptionPlan();
         return $scope.newOptionTransaction = new OptionTransaction();
       };
@@ -44876,13 +44876,10 @@ return deCh;
           $scope.show_add_capital = false;
           $scope.newPosition = new Position();
           $scope.position_added_success = true;
-          return $timeout(function() {
-            return $scope.position_added_success = false;
-          }, 5000);
+          return $scope.addPositionLoading = false;
         }).then(function() {
           $scope.errors = {};
-          $window.ga('send', 'event', 'form-send', 'add-transaction');
-          return $scope.addPositionLoading = false;
+          return $window.ga('send', 'event', 'form-send', 'add-transaction');
         }, function(rejection) {
           $scope.errors = rejection.data;
           Raven.captureMessage('add position form error: ' + rejection.statusText, {
@@ -44928,10 +44925,7 @@ return deCh;
           return $scope.positions = result.data;
         }).then(function() {
           $scope.newSplit = new Split();
-          $scope.split_added_success = true;
-          return $timeout(function() {
-            return $scope.split_added_success = false;
-          }, 5000);
+          return $scope.split_added_success = true;
         }).then(function() {
           $scope.errors = {};
           $scope.show_split = false;
@@ -44983,10 +44977,14 @@ return deCh;
         return $scope.show_split = false;
       };
       $scope.hide_form = function() {
+        $scope.errors = {};
         $scope.show_add_position = false;
         $scope.show_add_capital = false;
-        $scope.newPosition = new Position();
         $scope.show_split = false;
+        $scope.position_added_success = false;
+        $scope.capital_added_success = false;
+        $scope.split_added_success = false;
+        $scope.newPosition = new Position();
         return $scope.errors = {};
       };
       $scope.show_split_form = function() {
@@ -45064,10 +45062,10 @@ return deCh;
       $scope.captable_orderings = [
         {
           title: gettext('Last Name'),
-          value: 'user__last_name'
+          value: 'get_full_name'
         }, {
           title: gettext('Last Name (descending)'),
-          value: 'user__last_name_desc'
+          value: 'get_full_name_desc'
         }, {
           title: gettext('Share Count'),
           value: 'share_count'
@@ -45086,6 +45084,24 @@ return deCh;
         }, {
           title: gettext('Share Percent Ownership (descending)'),
           value: 'share_percent_desc'
+        }, {
+          title: gettext('Email'),
+          value: 'user__email'
+        }, {
+          title: gettext('Email desc'),
+          value: '-user__email'
+        }, {
+          title: gettext('Capital based on face value'),
+          value: 'cumulated_face_value'
+        }, {
+          title: gettext('Capital based on face value desc'),
+          value: '-cumulated_face_value'
+        }, {
+          title: gettext('Postal Code'),
+          value: 'user__userprofile__postal_code'
+        }, {
+          title: gettext('Postal Code desc'),
+          value: '-user__user_profile__postal_code'
         }
       ];
       $scope.last_captable_report = new Report({
@@ -45437,29 +45453,58 @@ return deCh;
       $scope.user = [];
       $scope.total_shares = 0;
       $scope.loading = true;
+      $scope.addShareholderLoading = false;
+      $scope.addCompanyLoading = false;
       $scope.shareholder_added_success = false;
       $scope.next = false;
       $scope.previous = false;
       $scope.total = 0;
       $scope.current = 0;
       $scope.current_range = '';
-      $scope.search_params = {
-        'query': null,
-        'ordering': null,
-        'ordering_reverse': null
-      };
       $scope.ordering_options = [
         {
           'name': gettext('Email'),
           'value': 'user__email'
         }, {
+          'name': gettext('Email desc'),
+          'value': '-user__email'
+        }, {
           'name': gettext('Shareholder Number'),
-          'value': 'number'
+          'value': 'order_cache__number'
+        }, {
+          'name': gettext('Shareholder Number desc'),
+          'value': '-order_cache__number'
         }, {
           'name': gettext('Last Name'),
           'value': 'user__last_name,user__userprofile__company_name'
+        }, {
+          'name': gettext('Last Name desc'),
+          'value': '-user__last_name,-user__userprofile__company_name'
+        }, {
+          'name': gettext('Capital based on face value'),
+          'value': 'order_cache__cumulated_face_value'
+        }, {
+          'name': gettext('Capital based on face value desc'),
+          'value': '-order_cache__cumulated_face_value'
+        }, {
+          'name': gettext('Postal Code'),
+          'value': 'order_cache__postal_code'
+        }, {
+          'name': gettext('Postal Code desc'),
+          'value': '-order_cache__postal_code'
+        }, {
+          'name': gettext('Share count'),
+          'value': 'order_cache__share_count'
+        }, {
+          'name': gettext('Share count desc'),
+          'value': '-order_cache__share_count'
         }
       ];
+      $scope.search_params = {
+        'query': null,
+        'ordering': null,
+        'ordering_reverse': null
+      };
       $scope.optionholder_next = false;
       $scope.optionholder_previous = false;
       $scope.optionholder_total = 0;
@@ -45742,6 +45787,7 @@ return deCh;
         $scope.errors = null;
         founded_at = $scope.newCompany.founded_at;
         $scope.newCompany.founded_at.setHours(founded_at.getHours() - founded_at.getTimezoneOffset() / 60);
+        $scope.addCompanyLoading = true;
         return $scope.newCompany.$save().then(function(result) {
           $scope.load_user();
           $scope.load_all_shareholders();
@@ -45750,7 +45796,8 @@ return deCh;
         }).then(function() {
           $scope.newCompany = new Company();
           $window.ga('send', 'event', 'form-send', 'add-company');
-          return $scope.hide_captable = true;
+          $scope.hide_captable = true;
+          return $scope.addCompanyLoading = false;
         }).then(function() {
           var url;
           $scope.errors = null;
@@ -45758,7 +45805,7 @@ return deCh;
           return $window.location.href = url;
         }, function(rejection) {
           $scope.errors = rejection.data;
-          return Raven.captureMessage('add corp form error', {
+          Raven.captureMessage('add corp form error', {
             level: 'warning',
             extra: {
               rejection: rejection,
@@ -45766,25 +45813,26 @@ return deCh;
               status: rejection.status
             }
           });
+          return $scope.addCompanyLoading = false;
         });
       };
       $scope.add_shareholder = function() {
         $scope.errors = null;
+        $scope.addShareholderLoading = true;
         return $scope.newShareholder.$save().then(function(result) {
           return $scope.shareholders.push(result);
         }).then(function() {
           $scope.newShareholder = new Shareholder();
           $scope.shareholder_added_success = true;
           $scope.show_add_shareholder = false;
-          $timeout(function() {
-            return $scope.shareholder_added_success = false;
-          }, 30000);
           return $scope.hide_captable = false;
         }).then(function() {
           $scope.errors = null;
+          $scope.addShareholderLoading = false;
           return $window.ga('send', 'event', 'form-send', 'add-shareholder');
         }, function(rejection) {
           $scope.errors = rejection.data;
+          $scope.addShareholderLoading = false;
           return Raven.captureMessage('add shareholder form error: ' + rejection.statusText, {
             level: 'warning',
             extra: {
@@ -45810,6 +45858,9 @@ return deCh;
         return $scope.show_add_shareholder = true;
       };
       $scope.hide_form = function() {
+        $scope.shareholder_added_success = false;
+        $scope.show_add_shareholder = true;
+        $scope.errors = {};
         return $scope.show_add_shareholder = false;
       };
       $scope.goto_shareholder = function(shareholder_id) {

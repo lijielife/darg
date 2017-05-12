@@ -9,8 +9,10 @@ from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.test import RequestFactory, TestCase
-from django.utils.translation import ugettext as _
 from django.utils import timezone
+from django.utils.translation import ugettext as _
+from model_mommy import mommy
+from natsort import natsorted
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
@@ -397,9 +399,10 @@ class OperatorTestCase(SubscriptionTestMixin, TestCase):
         self.assertFalse(Operator.objects.filter(pk=operator2.pk).exists())
 
 
-class OptionTransactionTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
-                                APITestCase):
-    def test_delete_option_transaction(self):
+class OptionTransactionViewSetTestCase(StripeTestCaseMixin,
+                                       SubscriptionTestMixin, APITestCase):
+    @mock.patch('services.rest.views.update_order_cache_task')
+    def test_delete(self, signal_mock):
         """
         operator deletes position
         """
@@ -417,6 +420,7 @@ class OptionTransactionTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
 
         # no company subscription (feature not enabled)
         self.assertEqual(res.status_code, 403)
+        signal_mock.assert_not_called()
 
         # add company subscription
         self.add_subscription(operator.company)
@@ -427,8 +431,11 @@ class OptionTransactionTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         self.assertEqual(res.status_code, 204)
         self.assertFalse(
             OptionTransaction.objects.filter(id=optiontransaction.pk).exists())
+        signal_mock.apply_async.assert_has_calls(
+            [mock.call([optiontransaction.buyer.pk])],
+            any_order=True)
 
-    def test_delete_optiontransaction_shareholder(self):
+    def test_delete_optiontransaction_by_shareholder(self):
         """
         shareholder cannot delete positions
         """
@@ -673,11 +680,40 @@ class OptionTransactionTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         self.assertEqual(res.data, {'number': 790})
 
 
-class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
-                       SubscriptionTestMixin, TestCase):
+class OptionPlanViewSetTestCase(SubscriptionTestMixin, APITestCase):
 
     def setUp(self):
-        super(PositionTestCase, self).setUp()
+        super(OptionPlanViewSetTestCase, self).setUp()
+
+        self.factory = RequestFactory()
+        self.view = OptionPlanViewSet()
+
+    def test_get_queryset(self):
+        self.view.request = self.factory.get('/')
+        operator = OperatorGenerator().generate()
+        self.client.force_authenticate(operator.user)
+        add_company_to_session(self.client.session, operator.company)
+        self.view.request.session = self.client.session
+
+        self.view.get_company_pks = mock.Mock(return_value=[])
+        self.assertEqual(self.view.get_queryset().count(), 0)
+
+        self.view.get_company_pks.return_value = [operator.company.pk]
+        self.assertEqual(self.view.get_queryset().count(), 0)
+
+        OptionPlanGenerator().generate(company=operator.company)
+        self.assertEqual(self.view.get_queryset().count(), 1)
+
+    @unittest.skip('TODO: OptionPlanViewSet.upload')
+    def test_upload(self):
+        pass
+
+
+class PositionViewSetTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
+                              SubscriptionTestMixin, TestCase):
+
+    def setUp(self):
+        super(PositionViewSetTestCase, self).setUp()
 
         self.client = APIClient()
 
@@ -1139,8 +1175,8 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
         # call with perf check
         # was 55, increased to 95
         # with self.assertLessNumQueries(60):
-        # NOTE: increased queries due to subscription check
-        with self.assertLessNumQueries(65):
+        # NOTE: increased queries due to subscription check. was 78
+        with self.assertLessNumQueries(140):
             response = self.client.post(
                 u'/services/rest/position',
                 data,
@@ -1190,37 +1226,46 @@ class PositionTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
         self.assertEqual(res.status_code, 200)
         self.assertFalse(Position.objects.get(id=position.id).is_draft)
 
-    def test_delete_position(self):
+    @mock.patch('services.rest.views.update_order_cache_task')
+    def test_delete_position(self, signal_mock):
         """
-        operator deletes position
+        operator deletes position, must fire signal
         """
         operator = OperatorGenerator().generate()
         user = operator.user
         position = PositionGenerator().generate(company=operator.company)
 
         # unauth'd
+        signal_mock.apply_async.reset_mock()
         res = self.client.delete(
             '/services/rest/position/{}'.format(position.pk))
 
         self.assertEqual(res.status_code, 401)
+        signal_mock.apply_async.assert_not_called()
 
         # auth'd
         self.client.force_login(user)
+        signal_mock.apply_async.reset_mock()
         res = self.client.delete(
             '/services/rest/position/{}'.format(position.pk))
 
         # company has not subscription (feature not enabled)
         self.assertEqual(res.status_code, 403)
+        signal_mock.apply_async.assert_not_called()
 
         # add company subscription
         add_company_to_session(self.client.session, operator.company)
         self.add_subscription(operator.company)
+        signal_mock.apply_async.reset_mock()
 
         res = self.client.delete(
             '/services/rest/position/{}'.format(position.pk))
 
         self.assertEqual(res.status_code, 204)
         self.assertFalse(Position.objects.filter(id=position.pk).exists())
+        signal_mock.apply_async.assert_has_calls(
+            [mock.call([position.buyer.pk]), mock.call([position.seller.pk])],
+            any_order=True)
 
     def test_delete_position_shareholder(self):
         """
@@ -1552,6 +1597,16 @@ class ReportViewSetTestCase(SubscriptionTestMixin, APITestCase):
         """ create report with adding some automatic data """
         data = {'report_type': 'captable', 'file_type': 'PDF',
                 'order_by': 'share_count', 'report_at': '2017-05-02'}
+        serializer = ReportSerializer(
+            data=data)
+        serializer.is_valid()
+        report = self.view.perform_create(serializer)
+        self.assertIsNotNone(report.eta)
+        self.assertIsNone(report.downloaded_at)
+
+        # special method get_full_name
+        data = {'report_type': 'captable', 'file_type': 'PDF',
+                'order_by': 'get_full_name_desc', 'report_at': '2017-05-02'}
         serializer = ReportSerializer(
             data=data)
         serializer.is_valid()
@@ -1997,6 +2052,26 @@ class ShareholderViewSetTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         # must have pagination
         self.assertEqual(len(res.data['results']), 20)
 
+    def test_list_natural_ordering_number(self):
+        """
+        list ordered by number must have natural sort
+        """
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        numbers = ['1', '10', '2', '01', '11', '100', '0012', 'A01']
+        for n in numbers:
+            mommy.make(Shareholder, company=operator.company, number=n)
+
+        self.client.force_login(user)
+        self.add_subscription(operator.company)
+
+        res = self.client.get(
+            '/services/rest/shareholders?ordering=-order_cache__number')
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual([f['number'] for f in res.data['results']][:7],
+                         natsorted(numbers, reverse=True)[1:])
+
     def test_get_detail(self):
         """
         check shareholder detail
@@ -2240,6 +2315,50 @@ class ShareholderViewSetTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         self.assertEqual(len(res.data['results']), 1)
         self.assertIn(query, res.data['results'][0]['full_name'])
 
+    def test_order_by_order_cache(self):
+        """ order results by value in `order_cache` field of shareholder model
+        """
+        positions, shs = ComplexPositionsWithSegmentsGenerator().generate()
+        operator = OperatorGenerator().generate(company=shs[0].company)
+        self.add_subscription(operator.company)
+        for idx, sh in enumerate(shs):
+            sh.order_cache['share_count'] = sh.share_count()
+            sh.save()
+
+        # ASC
+        self.client.force_login(operator.user)
+        response = self.client.get(
+            '/services/rest/shareholders?ordering=order_cache__share_count')
+
+        for idx, dataset in enumerate(response.data['results']):
+            if idx == 0:
+                continue
+            self.assertGreater(
+                dataset['share_count'],
+                response.data['results'][idx-1]['share_count'])
+
+        # DESC
+        response = self.client.get(
+            '/services/rest/shareholders?ordering=-order_cache__share_count')
+
+        for idx, dataset in enumerate(response.data['results']):
+            if idx == 0:
+                continue
+            self.assertLess(
+                dataset['share_count'],
+                response.data['results'][idx-1]['share_count'])
+
+        # bad param
+        response = self.client.get(
+            '/services/rest/shareholders?ordering=-order_cache__share_countX')
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(
+            '/services/rest/shareholders?ordering=-order_cache__')
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(
+            '/services/rest/shareholders?ordering=-order_cache')
+        self.assertEqual(response.status_code, 200)
+
 
 class SecurityTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                        APITestCase):
@@ -2306,32 +2425,3 @@ class UserViewSetTestCase(SubscriptionTestMixin, TestCase):
 
         self.assertEqual(self.view.get_queryset().count(), 1)
         self.assertIn(user, self.view.get_queryset())
-
-
-class OptionPlanViewSetTestCase(SubscriptionTestMixin, APITestCase):
-
-    def setUp(self):
-        super(OptionPlanViewSetTestCase, self).setUp()
-
-        self.factory = RequestFactory()
-        self.view = OptionPlanViewSet()
-
-    def test_get_queryset(self):
-        self.view.request = self.factory.get('/')
-        operator = OperatorGenerator().generate()
-        self.client.force_authenticate(operator.user)
-        add_company_to_session(self.client.session, operator.company)
-        self.view.request.session = self.client.session
-
-        self.view.get_company_pks = mock.Mock(return_value=[])
-        self.assertEqual(self.view.get_queryset().count(), 0)
-
-        self.view.get_company_pks.return_value = [operator.company.pk]
-        self.assertEqual(self.view.get_queryset().count(), 0)
-
-        OptionPlanGenerator().generate(company=operator.company)
-        self.assertEqual(self.view.get_queryset().count(), 1)
-
-    @unittest.skip('TODO: OptionPlanViewSet.upload')
-    def test_upload(self):
-        pass

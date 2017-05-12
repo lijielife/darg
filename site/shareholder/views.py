@@ -22,16 +22,22 @@ from .mixins import (AuthTokenSingleViewMixin,
                      ShareholderStatementReportViewMixin)
 
 
-@login_required
-def positions(request):
-    template = loader.get_template('positions.html')
-    return HttpResponse(template.render(request=request))
+class PositionsView(OperatorPermissionRequiredMixin, ListView):
+    model = Position
+    template = 'positions.html'
+
+    def get_queryset(self):
+        """ used only via rest api """
+        return self.model.objects.none()
 
 
-@login_required
-def options(request):
-    template = loader.get_template('options.html')
-    return HttpResponse(template.render(request=request))
+class OptionTransactionsView(OperatorPermissionRequiredMixin, ListView):
+    model = OptionTransaction
+    template = 'options.html'
+
+    def get_queryset(self):
+        """ used only via rest api """
+        return self.model.objects.none()
 
 
 class OptionTransactionView(OperatorPermissionRequiredMixin, DetailView):
@@ -92,12 +98,18 @@ class ShareholderView(OperatorPermissionRequiredMixin, DetailView):
         return context
 
 
-@login_required
-def optionsplan(request, optionsplan_id):
-    template = loader.get_template('optionsplan.html')
-    optionsplan = get_object_or_404(OptionPlan, id=int(optionsplan_id))
-    context = {"optionplan": optionsplan, 'request': request}
-    return HttpResponse(template.render(context=context, request=request))
+class OptionPlanView(OperatorPermissionRequiredMixin, DetailView):
+    model = OptionPlan
+    template = 'optionsplan.html'
+
+    def get_queryset(self):
+        company = get_company_from_request(self.request)
+        return OptionPlan.objects.filter(company=company)
+
+    def get_context_data(self, **kwargs):
+        context = super(OptionPlanView, self).get_context_data(**kwargs)
+        context.update({'request': self.request})
+        return context
 
 
 @login_required

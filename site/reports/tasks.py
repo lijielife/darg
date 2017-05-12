@@ -5,10 +5,12 @@ import datetime
 import logging
 import StringIO
 import time
+import operator
 
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.core.mail import EmailMessage
+from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from natsort import natsorted
@@ -28,6 +30,7 @@ def _get_captable_pdf_context(company, ordering, date):
     isolated code to make for better testing
     """
     option_ordering = ordering.replace('share', 'options')
+
     context = {
             'pagesize': 'A4',
             'company': company,
@@ -37,10 +40,9 @@ def _get_captable_pdf_context(company, ordering, date):
             'provisioned_capital': company.get_provisioned_capital(),
             'securities_with_track_numbers': company.security_set.filter(
                 track_numbers=True),
-            'active_shareholders': _order_queryset(
-                company.get_active_shareholders(date=date), ordering),
-            'active_option_holders': _order_queryset(
-                company.get_active_option_holders(date=date), option_ordering),
+            'ordering': ordering,
+            'option_ordering': option_ordering,
+            'report_date': date,
         }
     return context
 
@@ -125,7 +127,7 @@ def _order_queryset(queryset, ordering):
         funcname = ordering[1:]
         reverse = True
 
-    # handle empyyt QS
+    # handle empyt QS
     if not queryset:
         return queryset.model.objects.none()
 
@@ -138,9 +140,10 @@ def _order_queryset(queryset, ordering):
                     unsorted_results, key=lambda t:
                         unicode(getattr(t, funcname)() or 0), reverse=reverse)
             else:
+                _to_dotted(funcname)
                 return natsorted(
                     unsorted_results, key=lambda t:
-                        getattr(t, funcname), reverse=reverse)
+                        operator.attrgetter(funcname)(t), reverse=reverse)
 
         except TypeError:  # identify https://goo.gl/bDreXS
             logger.exception('ordering {} must be function of {} queryset '
@@ -177,10 +180,15 @@ def _send_notify(user, filename, subject, body, file_desc, url=None):
     msg.send()
 
 
+def _to_dotted(value):
+    """ replaces `__` with `.` """
+    return value.replace('__', '.')
+
+
 def _get_filename(report, company):
     return u'{}_{}_{}_{}.{}'.format(
         time.strftime("%Y-%m-%d"), report.report_type, report.order_by,
-        company.name, report.file_type.lower())
+        slugify(company.name), report.file_type.lower())
 
 
 def _prepare_report(company, report_type, ordering, file_type):
@@ -263,11 +271,18 @@ def render_captable_csv(company_id, report_id, user_id=None, ordering=None,
 
     # removed share percent due to heavy sql impact. killed perf for higher
     # shareholder count
-    queryset = company.get_active_shareholders(date=report.report_at)
-    queryset = _order_queryset(queryset, ordering)
-    for shareholder in queryset:
-        for security in company.security_set.all():
-            if shareholder.share_count(security=security):
+    for security in company.security_set.all():
+        # small header for each security
+        writer.writerow([])
+        writer.writerow([u"--- {} ---".format(unicode(security).upper())])
+        writer.writerow([])
+        # for each active shareholder
+        queryset = company.get_active_shareholders(date=report.report_at,
+                                                   security=security)
+        queryset = _order_queryset(queryset, ordering)
+        for shareholder in queryset:
+            if shareholder.share_count(security=security,
+                                       date=report.report_at):
                 row = _collect_csv_data(shareholder, security, report.report_at)
             else:
                 continue
@@ -303,11 +318,11 @@ def prerender_reports():
                 # CSV
                 report = _prepare_report(company, report_type, ordering, 'CSV')
                 args = [company.pk, report.pk]
-                kwargs = {'order_by': report.order_by}
+                kwargs = {'ordering': report.order_by}
                 render_captable_csv.apply_async(args=args, kwargs=kwargs)
 
                 # PDF
                 report = _prepare_report(company, report_type, ordering, 'PDF')
                 args = [company.pk, report.pk]
-                kwargs = {'order_by': report.order_by}
+                kwargs = {'ordering': report.order_by}
                 render_captable_pdf.apply_async(args=args, kwargs=kwargs)

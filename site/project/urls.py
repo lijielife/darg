@@ -31,9 +31,9 @@ from services.rest.views import (AddCompanyView, AddShareSplit,
                                  ReportViewSet, SecurityViewSet,
                                  ShareholderViewSet, UserViewSet)
 from shareholder.views import (OptionTransactionView, PositionView,
-                               ShareholderView, options, optionsplan,
+                               ShareholderView, OptionTransactionsView, OptionPlanView,
                                optionsplan_download_img,
-                               optionsplan_download_pdf, positions)
+                               optionsplan_download_pdf, PositionsView)
 from shareholder import views as shareholder_views
 
 # API routes
@@ -65,7 +65,7 @@ urlpatterns = [
     url(r'^$', project_views.index, name='index'),  # landing page
     url(r'^start/$', project_views.start, name='start'),  # user home
 
-    url(r'^positions/$', positions, name='positions'),
+    url(r'^positions/$', PositionsView.as_view(), name='positions'),
     url(r'^positions/(?P<pk>[0-9]+)/$',
         PositionView.as_view(), name='position'),
     url(r'^positions/(?P<option_id>[0-9]+)/download/pdf$',
@@ -88,14 +88,14 @@ urlpatterns = [
         project_views.printed_certificates_csv,
         name='printed_certificates_csv'),
 
-    url(r'^options/$', options, name='options'),
+    url(r'^options/$', OptionTransactionsView.as_view(), name='options'),
     url(r'^options/(?P<pk>[0-9]+)/$',
         OptionTransactionView.as_view(), name='optiontransaction'),
     url(r'^options/(?P<option_id>[0-9]+)/download/pdf$',
         project_views.option_pdf, name='option_pdf'),
 
-    url(r'^optionsplan/(?P<optionsplan_id>[0-9]+)/$',
-        optionsplan, name='optionplan'),
+    url(r'^optionsplan/(?P<pk>[0-9]+)/$',
+        OptionPlanView.as_view(), name='optionplan'),
     url(r'^optionsplan/(?P<optionsplan_id>[0-9]+)/download/pdf/$',
         optionsplan_download_pdf,
         name='optionplan_download_pdf'),

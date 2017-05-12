@@ -236,17 +236,25 @@ class Company(AddressModelMixin, models.Model):
         validator = ShareRegisterValidator(self)
         return validator.is_valid()
 
-    def get_active_shareholders(self, date=None):
+    def get_active_shareholders(self, date=None, security=None):
         """ returns list of all active shareholders. this is a very expensive
         must use heavy caching"""
-        cache_key = 'company-{}-active-shareholders'.format(self.pk)
+        cache_key = 'company-{}-{}-{}-active-shareholders'.format(
+            self.pk, slugify((date or timezone.now().date()).isoformat()),
+            slugify(security))
         cached = cache.get(cache_key)
         if cached:
             return cached
 
+        kwargs = {}
+        if date:
+            kwargs.update({'date': date})
+        if security:
+            kwargs.update({'security': security})
+
         shareholder_list = []
         for shareholder in self.shareholder_set.all().order_by('number'):
-            if shareholder.share_count(date=date) > 0:
+            if shareholder.share_count(**kwargs) > 0:
                 shareholder_list.append(shareholder.pk)
 
         result = Shareholder.objects.filter(
@@ -258,18 +266,30 @@ class Company(AddressModelMixin, models.Model):
         cache.set(cache_key, result, 60*60*24)
         return result
 
-    def get_active_option_holders(self, date=None):
+    def get_active_option_holders(self, date=None, security=None):
         """ returns list of all active shareholders """
         oh_list = []
         # get all users
-        sh_ids = self.optionplan_set.all().filter(
-            optiontransaction__isnull=False
-            ).values_list(
+        kwargs = dict(optiontransaction__isnull=False)
+        if security:
+            kwargs.update({'security': security})
+        if date:
+            kwargs.update({'optiontransaction__bought_at': date})
+        sh_ids = self.optionplan_set.all().filter(**kwargs).values_list(
             'optiontransaction__buyer__id', flat=True).distinct()
+
+        kwargs = {}
+        if security:
+            kwargs.update({'optionplan__security': security})
+        if date:
+            kwargs.update({'bought_at': date})
+
         for sh_id in sh_ids:
             sh = Shareholder.objects.get(id=sh_id)
-            bought_options = sh.option_buyer.aggregate(Sum('count'))
-            sold_options = sh.option_seller.aggregate(Sum('count'))
+            bought_options = sh.option_buyer.filter(**kwargs).aggregate(
+                Sum('count'))
+            sold_options = sh.option_seller.filter(**kwargs).aggregate(
+                Sum('count'))
             if (
                 (bought_options['count__sum'] or 0) -
                 (sold_options['count__sum'] or 0) > 0
@@ -299,14 +319,16 @@ class Company(AddressModelMixin, models.Model):
     def get_board_members(self):
         return self.signatures.split(',')
 
-    def get_company_shareholder(self):
+    def get_company_shareholder(self, fail_silently=False):
         """
         return company shareholder, raise ValueError if not existing
         """
         try:
             return self.shareholder_set.earliest('id')
         except Shareholder.DoesNotExist:
-            raise ValueError('Company Shareholder does not exist')
+            logger.warning('no company shareholder found')
+            if not fail_silently:
+                raise ValueError('corp shareholder not found')
 
     def get_dispo_shareholder(self):
         """
@@ -853,6 +875,8 @@ class Shareholder(TagMixin, models.Model):
         choices=MAILING_TYPES, blank=True, null=True)
     is_management = models.BooleanField(
         _('user is management/board member of company'), default=False)
+    order_cache = JSONField(_('cache data for fast sorting here'),
+                            default=dict, blank=True, null=True)
 
     def __unicode__(self):
         return u'{} {} (#{})'.format(
@@ -1457,6 +1481,9 @@ class Security(models.Model):
         _('App needs to track IDs of shares. WARNING: update initial '
           'transaction with segments on enabling.'), default=False)
 
+    class Meta:
+        ordering = ['face_value']
+
     def __unicode__(self):
         if self.face_value:
             return _(u"{} ({} CHF)").format(
@@ -1660,6 +1687,16 @@ class OptionPlan(models.Model):
     def __unicode__(self):
         return u"{}".format(self.title)
 
+    def can_view(self, user):
+        """
+        permission method to check if user is permitted to view obj
+        """
+        # user is an operator
+        if self.company.operator_set.filter(user=user).exists():
+            return True
+
+        return False
+
     def generate_pdf_file_preview(self):
         """ generates preview png in same place """
         from wand.image import Image
@@ -1859,7 +1896,14 @@ class ShareholderStatementReport(models.Model):
         if not self.company.has_feature_enabled('shareholder_statements'):
             return
 
-        shareholders = self.company.shareholder_set.all()
+        corp_shareholders = [
+            self.company.get_company_shareholder(fail_silently=True),
+            self.company.get_dispo_shareholder(),
+            self.company.get_transfer_shareholder()
+        ]
+        corp_shareholders = [sh.pk for sh in corp_shareholders if sh]
+        shareholders = self.company.shareholder_set.exclude(
+            pk__in=corp_shareholders)
         users = get_user_model().objects.filter(
             pk__in=shareholders.values_list('user_id', flat=True))
         for user in users:
@@ -2119,7 +2163,8 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 
     if created:
         Token.objects.create(user=instance)
-        profile = UserProfile.objects.create(user=instance)
+        profile = getattr(instance, 'userprofile',
+                          UserProfile.objects.create(user=instance))
         if instance.first_name == settings.COMPANY_INITIAL_FIRST_NAME:
             profile.legal_type = 'C'
             profile.save()

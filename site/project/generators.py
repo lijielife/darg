@@ -339,7 +339,7 @@ class OptionTransactionGenerator(object):
 
         buyer = kwargs.get('buyer') or ShareholderGenerator().generate(
             company=company)
-        seller = kwargs.get('seller')
+        seller = kwargs.get('seller', ShareholderGenerator().generate())
         count = kwargs.get('count') or 3
         kwargs.get('value') or 2
         bought_at = kwargs.get('bought_at') or datetime.datetime.now().date()
@@ -448,6 +448,7 @@ class ComplexShareholderConstellationGenerator(object):
         # initial company shareholder
         try:
             cs = company.get_company_shareholder()
+            s1 = company.get_company_shareholder().buyer.first().security
         except ValueError:
             company_shareholder_created_at = kwargs.get(
                 'company_shareholder_created_at'

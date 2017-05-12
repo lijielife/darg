@@ -14,6 +14,8 @@ app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'C
     $scope.user = []
     $scope.total_shares = 0
     $scope.loading = true
+    $scope.addShareholderLoading = false
+    $scope.addCompanyLoading = false
     $scope.shareholder_added_success = false
 
     # pagination:
@@ -24,13 +26,22 @@ app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'C
     $scope.current_range = ''
 
     # search
-    $scope.search_params = {'query': null, 'ordering': null, 'ordering_reverse': null}
     $scope.ordering_options = [
         {'name': gettext('Email'), 'value': 'user__email'},
-        {'name': gettext('Shareholder Number'), 'value': 'number'},
+        {'name': gettext('Email desc'), 'value': '-user__email'},
+        {'name': gettext('Shareholder Number'), 'value': 'order_cache__number'},
+        {'name': gettext('Shareholder Number desc'), 'value': '-order_cache__number'},
         {'name': gettext('Last Name'), 'value': 'user__last_name,user__userprofile__company_name'},
+        {'name': gettext('Last Name desc'), 'value': '-user__last_name,-user__userprofile__company_name'},
+        {'name': gettext('Capital based on face value'), 'value': 'order_cache__cumulated_face_value'},
+        {'name': gettext('Capital based on face value desc'), 'value': '-order_cache__cumulated_face_value'},
+        {'name': gettext('Postal Code'), 'value': 'order_cache__postal_code'},
+        {'name': gettext('Postal Code desc'), 'value': '-order_cache__postal_code'},
+        {'name': gettext('Share count'), 'value': 'order_cache__share_count'},
+        {'name': gettext('Share count desc'), 'value': '-order_cache__share_count'},
         # {'name': gettext('Clear'), 'value': null},
     ]
+    $scope.search_params = {'query': null, 'ordering': null, 'ordering_reverse': null}
 
     # pagination:
     $scope.optionholder_next = false
@@ -269,6 +280,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'C
         $scope.errors = null
         founded_at = $scope.newCompany.founded_at
         $scope.newCompany.founded_at.setHours(founded_at.getHours() - founded_at.getTimezoneOffset() / 60)
+        $scope.addCompanyLoading = true
         $scope.newCompany.$save().then (result) ->
             # update user and company
             $scope.load_user()
@@ -282,6 +294,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'C
             # on company create hide captable in next step so the user is not
             # confused. reenable on first shareholder add
             $scope.hide_captable = true
+            $scope.addCompanyLoading = false
         .then ->
             # Clear any errors
             $scope.errors = null
@@ -295,9 +308,11 @@ app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'C
                 level: 'warning',
                 extra: { rejection: rejection, config: rejection.config, status: rejection.status },
             })
+            $scope.addCompanyLoading = false
 
     $scope.add_shareholder = ->
         $scope.errors = null
+        $scope.addShareholderLoading = true
         $scope.newShareholder.$save().then (result) ->
             $scope.shareholders.push result
         .then ->
@@ -305,16 +320,15 @@ app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'C
             $scope.newShareholder = new Shareholder()
             $scope.shareholder_added_success = true
             $scope.show_add_shareholder = false
-            $timeout ->
-                $scope.shareholder_added_success = false
-            , 30000
             $scope.hide_captable = false
         .then ->
             # Clear any errors
             $scope.errors = null
+            $scope.addShareholderLoading = false
             $window.ga('send', 'event', 'form-send', 'add-shareholder')
         , (rejection) ->
             $scope.errors = rejection.data
+            $scope.addShareholderLoading = false
             Raven.captureMessage('add shareholder form error: ' + rejection.statusText, {
                 level: 'warning',
                 extra: { rejection: rejection },
@@ -335,6 +349,9 @@ app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'C
         $scope.show_add_shareholder = true
 
     $scope.hide_form = ->
+        $scope.shareholder_added_success = false
+        $scope.show_add_shareholder = true
+        $scope.errors = {}
         $scope.show_add_shareholder = false
 
     $scope.goto_shareholder = (shareholder_id) ->

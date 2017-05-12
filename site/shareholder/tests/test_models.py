@@ -23,8 +23,8 @@ from django.utils import timezone
 from django.utils.encoding import force_text
 from model_mommy import mommy
 
-from project.generators import (BankGenerator,
-                                CompanyGenerator, CompanyShareholderGenerator,
+from project.generators import (BankGenerator, CompanyGenerator,
+                                CompanyShareholderGenerator,
                                 ComplexOptionTransactionsWithSegmentsGenerator,
                                 ComplexPositionsWithSegmentsGenerator,
                                 ComplexShareholderConstellationGenerator,
@@ -115,6 +115,47 @@ class CompanyTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
                                               buyer=self.shareholder2,
                                               security=self.security, count=2,
                                               option_plan=optionplan)
+
+    @mock.patch('shareholder.models.cache')
+    def test_get_active_shareholders(self, cache_mock):
+        """ return qs of active shareholders """
+        cache_mock.get.return_value = None
+        cache_key = 'company-{}-{}-none-active-shareholders'.format(
+            self.company.pk, timezone.now().date())
+
+        shs = self.company.get_active_shareholders()
+        self.assertEqual(
+            list(shs.order_by('number')),
+            list(self.company.shareholder_set.all().order_by('number')))
+        self.assertEqual(len(shs), 2)
+        cache_mock.set.assert_called_with(cache_key, shs, 86400)
+
+        # cache hit
+        cache_mock.reset_mock()
+        cache_mock.get.return_value = self.company.shareholder_set.all()
+        shs = self.company.get_active_shareholders()
+        self.assertEqual(list(shs.reverse()),
+                         list(self.company.shareholder_set.all()))
+        self.assertEqual(len(shs), 2)
+        cache_mock.get.assert_called_with(cache_key)
+
+        # kwargs used
+        cache_mock.reset_mock()
+        cache_mock.get.return_value = self.company.shareholder_set.all()
+        shs = self.company.get_active_shareholders(date=timezone.now().date(),
+                                                   security=self.security)
+        self.assertEqual(list(shs.reverse()),
+                         list(self.company.shareholder_set.all()))
+        self.assertEqual(len(shs), 2)
+
+        # kwargs used, ancient date
+        cache_mock.reset_mock()
+        cache_mock.get.return_value = self.company.shareholder_set.all()
+        oneyearago = timezone.now().date() - relativedelta(years=1)
+        shs = self.company.get_active_shareholders(date=oneyearago,
+                                                   security=self.security)
+        self.assertEqual(list(shs.reverse()),
+                         list(self.company.shareholder_set.all()))
 
     def test_get_new_certificate_id(self):
         """
@@ -1420,12 +1461,23 @@ class ShareholderStatementReportTestCase(StripeTestCaseMixin,
                 (today + relativedelta(year=today.year + 1))
             )
 
-            mommy.make(Shareholder, company=self.company, _quantity=3)
+            # one shareholder and noise (one corp sh, dispo sh, transfer sh) -
+            # none of them should get a statement
+            mommy.make(Shareholder, company=self.company, _quantity=4)
+            noise = mommy.make(Shareholder, company=self.company, _quantity=2)
+            noise[0].set_dispo_shareholder()
+            noise[1].set_transfer_shareholder()
 
             self.report.generate_statements(send_notify=False)
             mock_statment_create.assert_called()
             mock_email_notify.assert_not_called()
             mock_merge_pdfs.assert_called()
+            self.assertEqual(noise[0].user.shareholderstatement_set.count(), 0)
+            self.assertEqual(noise[1].user.shareholderstatement_set.count(), 0)
+            self.assertEqual(
+                self.company.get_company_shareholder().user
+                .shareholderstatement_set.count(),
+                0)
 
             company = Company.objects.get(pk=self.company.pk)
             self.assertEqual(

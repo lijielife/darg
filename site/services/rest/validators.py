@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework.exceptions import ValidationError
 
 
-class DependedFieldsValidator:
+class DependentFieldsValidator:
 
     message = _(
         'The fields {field_names} must be empty together or contain values.')

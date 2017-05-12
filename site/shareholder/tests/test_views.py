@@ -24,6 +24,7 @@ class BaseViewTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
         self.shareholder1 = ShareholderGenerator().generate()
         self.company = self.shareholder1.company
         self.operator = OperatorGenerator().generate(company=self.company)
+        self.operator2 = OperatorGenerator().generate()
         self.shareholder2 = ShareholderGenerator().generate()
         self.position1 = PositionGenerator().generate(buyer=self.shareholder1)
         self.position2 = PositionGenerator().generate(buyer=self.shareholder2)
@@ -31,6 +32,7 @@ class BaseViewTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
             buyer=self.shareholder1)
         self.optiontransaction2 = OptionTransactionGenerator().generate(
             buyer=self.shareholder2)
+        self.optionplan = self.optiontransaction1.option_plan
 
         self.statement_report = mommy.make(
             ShareholderStatementReport, company=self.shareholder1.company)
@@ -141,6 +143,63 @@ class OptionTransactionViewTestCase(BaseViewTestCase):
                               kwargs={'pk': self.optiontransaction2.pk}))
         self.assertEqual(res.status_code, 302)  # redirect to login
         self.assertIn('login', res.url)
+
+
+class PositionsViewTestCase(BaseViewTestCase):
+
+    def test_view(self):
+        """
+        test shareholder detail view
+        """
+        self.url = reverse('positions')
+        res = self.client.get(self.url)
+        self.assertEqual(res.status_code, 302)
+
+        self.client.force_login(self.operator.user)
+        res = self.client.get(self.url)
+        self.assertEqual(res.status_code, 200)
+
+        self.client.force_login(self.operator2.user)
+        res = self.client.get(self.url)
+        self.assertEqual(res.status_code, 302)
+
+
+class OptionTransactionsViewTestCase(BaseViewTestCase):
+
+    def test_view(self):
+        """
+        test shareholder detail view
+        """
+        self.url = reverse('options')
+        res = self.client.get(self.url)
+        self.assertEqual(res.status_code, 302)
+
+        self.client.force_login(self.operator.user)
+        res = self.client.get(self.url)
+        self.assertEqual(res.status_code, 200)
+
+        self.client.force_login(self.operator2.user)
+        res = self.client.get(self.url)
+        self.assertEqual(res.status_code, 302)
+
+
+class OptionPlanViewTestCase(BaseViewTestCase):
+
+    def test_view(self):
+        """
+        test shareholder detail view
+        """
+        self.url = reverse('optionplan', kwargs={'pk': self.optionplan.pk})
+        res = self.client.get(self.url)
+        self.assertEqual(res.status_code, 302)
+
+        self.client.force_login(self.operator.user)
+        res = self.client.get(self.url)
+        self.assertEqual(res.status_code, 200)
+
+        self.client.force_login(self.operator2.user)
+        res = self.client.get(self.url)
+        self.assertEqual(res.status_code, 302)
 
 
 # ----- STATEMENT VIEW TESTS

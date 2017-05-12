@@ -14,5 +14,13 @@ class OperatorPermissionRequiredMixin(PermissionRequiredMixin):
             return False
 
         user = self.request.user
-        obj = self.get_object()
-        return obj.can_view(user)
+        if hasattr(self, 'get_object'):
+            obj = self.get_object()
+            return obj.can_view(user)
+        else:
+            can_view = True
+            for obj in self.get_queryset():
+                if not obj.can_view(user):
+                    can_view = False
+
+            return can_view

@@ -36,7 +36,8 @@ def get_env_variable(var_name, fail_on_error=True):
 
 VERSION = '0.5.14'
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+BASE_DIR = os.path.abspath(os.path.dirname(
+    os.path.dirname(os.path.dirname(__file__))))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/

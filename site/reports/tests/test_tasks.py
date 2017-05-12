@@ -1,13 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import datetime
 from django.core import mail
 from django.test import TestCase
+from django.template.defaultfilters import slugify
 from django.utils import timezone
 from mock import patch
+from model_mommy import mommy
 
 from project.generators import (CompanyGenerator,
                                 ComplexShareholderConstellationGenerator,
-                                ReportGenerator)
+                                ReportGenerator, PositionGenerator)
 from reports.tasks import (_add_file_to_report, _get_captable_pdf_context,
                            _get_filename, _order_queryset, _parse_ordering,
                            _prepare_report, _send_notify, _summarize_report,
@@ -32,56 +35,10 @@ class TaskTestCase(TestCase):
         res = _get_captable_pdf_context(self.shs[0].company,
                                         ordering='-share_count',
                                         date=timezone.now().date())
-        self.assertEqual(len(res), 9)
-
-        # order by share percent
-        res = _get_captable_pdf_context(self.shs[0].company,
-                                        ordering='-share_percent',
-                                        date=timezone.now().date())
-        self.assertEqual(len(res), 9)
-        for idx, sh in enumerate(res['active_shareholders']):
-            if idx == 0:
-                continue
-            self.assertLessEqual(
-                float(sh.share_percent()),
-                float(res['active_shareholders'][idx-1].share_percent()))
-
-        # order by share_count
-        res = _get_captable_pdf_context(self.shs[0].company,
-                                        ordering='-share_count',
-                                        date=timezone.now().date())
-        self.assertEqual(len(res), 9)
-        for idx, sh in enumerate(res['active_shareholders']):
-            if idx == 0:
-                continue
-            self.assertLessEqual(
-                int(sh.share_count(security=self.sec)),
-                int(res['active_shareholders'][idx-1].share_count(
-                    security=self.sec)))
-
-        # order by number
-        res = _get_captable_pdf_context(self.shs[0].company,
-                                        ordering='-number',
-                                        date=timezone.now().date())
-        self.assertEqual(len(res), 9)
-        for idx, sh in enumerate(res['active_shareholders']):
-            if idx == 0:
-                continue
-            self.assertLessEqual(
-                sh.number,
-                res['active_shareholders'][idx-1].number)
-
-        # order by user last name
-        res = _get_captable_pdf_context(self.shs[0].company,
-                                        ordering='-user__last_name',
-                                        date=timezone.now().date())
-        self.assertEqual(len(res), 9)
-        for idx, sh in enumerate(res['active_shareholders']):
-            if idx == 0:
-                continue
-            self.assertLessEqual(
-                sh.user.last_name,
-                res['active_shareholders'][idx-1].user.last_name.lower())
+        self.assertEqual(len(res), 10)
+        self.assertIsNotNone(res.get('ordering'))
+        self.assertIsNotNone(res.get('option_ordering'))
+        self.assertTrue(isinstance(res.get('report_date'), datetime.date))
 
     def test_parse_ordering(self):
         """ convert ordering param from FE to ORM ready ordering """
@@ -99,20 +56,105 @@ class TaskTestCase(TestCase):
         self.assertEqual(list(_order_queryset(qs, '-pk')),
                          list(qs.order_by('-pk')))
 
+    def test_order_queryset_share_count(self):
+        """ order queryset by field or method """
+        qs = Shareholder.objects.all()
+        # desc share count
         res = _order_queryset(qs, '-share_count')
         for idx, r in enumerate(res):
             if idx > 0:
                 self.assertTrue(r.share_count() <= res[idx-1].share_count())
 
+        # asc share_count
         res = _order_queryset(qs, 'share_count')
         for idx, r in enumerate(res):
             if idx > 0:
                 self.assertTrue(r.share_count() >= res[idx-1].share_count())
 
+    def test_order_queryset_user__email(self):
+        company = CompanyGenerator().generate()
+        mommy.make(Shareholder, company=company, _quantity=10,
+                   _fill_optional=True)
+        qs = company.shareholder_set.all()
+        for idx, s in enumerate(qs):
+            s.user.email = u'{}@example.com'.format(idx)
+            s.user.save()
+
+        res = _order_queryset(qs, 'user__email')
+        for idx, r in enumerate(res):
+            if idx > 0:
+                self.assertNotEqual(r.user.email, '')
+                self.assertIn(u'@', r.user.email)
+                self.assertGreater(r.user.email, res[idx-1].user.email)
+
+        res = _order_queryset(qs, '-user__email')
+        for idx, r in enumerate(res):
+            if idx > 0:
+                self.assertLess(r.user.email, res[idx-1].user.email)
+
+    def test_order_queryset_cumulated_face_value(self):
+        qs = Shareholder.objects.all()
+        cs = qs.last()
+        for idx, s in enumerate(qs):
+            mommy.make('shareholder.Position', seller=cs, buyer=s, count=idx)
+
+        res = _order_queryset(qs, 'cumulated_face_value')
+        for idx, r in enumerate(res):
+            if idx > 0:
+                self.assertGreaterEqual(r.cumulated_face_value(),
+                                        res[idx-1].cumulated_face_value())
+
+        res = _order_queryset(qs, '-cumulated_face_value')
+        for idx, r in enumerate(res):
+            if idx > 0:
+                self.assertLessEqual(r.cumulated_face_value(),
+                                     res[idx-1].cumulated_face_value())
+
+    def test_order_queryset_postal_code(self):
+        qs = Shareholder.objects.all()
+        for idx, s in enumerate(qs):
+            s.user.userprofile.postal_code = u'{}'.format(idx)
+            s.user.userprofile.save()
+
+        res = _order_queryset(qs, 'user__userprofile__postal_code')
+        for idx, r in enumerate(res):
+            if idx > 0:
+                self.assertGreater(r.user.userprofile.postal_code,
+                                   res[idx-1].user.userprofile.postal_code)
+
+        res = _order_queryset(qs, '-user__userprofile__postal_code')
+        for idx, r in enumerate(res):
+            if idx > 0:
+                self.assertLess(r.user.userprofile.postal_code,
+                                res[idx-1].user.userprofile.postal_code)
+
+    def test_order_queryset_company_name(self):
+        """ sort for last_name also should sort company names """
+        qs = Shareholder.objects.all()
+        for idx, s in enumerate(qs):
+            s.user.userprofile.company_name = str(unichr(idx+97))
+            s.user.first_name = u''
+            s.user.last_name = u''
+            s.user.save()
+            s.user.userprofile.save()
+
+        res = _order_queryset(qs, 'get_full_name')
+        for idx, r in enumerate(res):
+            if idx > 0:
+                self.assertGreater(r.get_full_name(),
+                                   res[idx-1].get_full_name())
+
+        res = _order_queryset(qs, '-get_full_name')
+        for idx, r in enumerate(res):
+            if idx > 0:
+                self.assertLess(r.get_full_name(),
+                                res[idx-1].get_full_name())
+
     def test_add_file_to_report(self):
         """ attach file to report model """
         report = ReportGenerator().generate()
-        _add_file_to_report('somefilename.xls', report, 'some file content')
+        _add_file_to_report(
+          u'somefilename.xls', report, 'some file content')
         report.refresh_from_db()
         with open(report.file.path) as f:
             self.assertEqual(f.read(), 'some file content')
@@ -140,7 +182,7 @@ class TaskTestCase(TestCase):
         report = ReportGenerator().generate()
         filename = _get_filename(report, report.company)
         self.assertEqual(filename.count('_'), 3)
-        self.assertIn(report.company.name, filename)
+        self.assertIn(slugify(report.company.name), filename)
         self.assertTrue(filename.endswith('pdf'))
 
     def test_prepare_report(self):
@@ -153,12 +195,20 @@ class TaskTestCase(TestCase):
 
     def test_render_captable_csv(self):
         report = ReportGenerator().generate()
+        PositionGenerator().generate(company=report.company, seller=None)
         render_captable_csv(report.company.pk, report.pk,
                             user_id=report.user.pk, ordering=None,
                             notify=True, track_downloads=False)
         report.refresh_from_db()
 
         self.assertIsNotNone(report.file)
+        contents = report.file.read()
+        rows = contents.split('\r\n')
+        self.assertEqual(len(rows), 6)
+        self.assertIn(
+            u'--- {}'.format(unicode(
+                report.company.security_set.first()).upper()),
+            rows[2].decode('utf-8'))
 
     def test_render_captable_pdf(self):
         report = ReportGenerator().generate()
@@ -174,8 +224,8 @@ class TaskTestCase(TestCase):
     def test_prerender_reports(self, mock_pdf, mock_csv):
         """ render every night the reports for all corps """
         # valid corps
-        for x in range(0, 9):
-            ComplexShareholderConstellationGenerator().generate()
+        for x in range(0, 1):
+            shs, s1 = ComplexShareholderConstellationGenerator().generate()
 
         # corps not needing a report
         CompanyGenerator().generate()
@@ -183,5 +233,14 @@ class TaskTestCase(TestCase):
 
         prerender_reports()
 
-        self.assertEqual(mock_pdf.call_count, 80)
-        self.assertEqual(mock_csv.call_count, 80)
+        company = shs[0].company
+        pdf_report = company.report_set.filter(file_type='PDF').last()
+        csv_report = company.report_set.filter(file_type='CSV').last()
+        self.assertEqual(mock_pdf.call_count, 16)
+        mock_pdf.assert_called_with(
+            args=[company.pk, pdf_report.pk],
+            kwargs={'ordering': pdf_report.order_by})
+        self.assertEqual(mock_csv.call_count, 16)
+        mock_csv.assert_called_with(
+            args=[company.pk, csv_report.pk],
+            kwargs={'ordering': csv_report.order_by})

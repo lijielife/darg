@@ -37,6 +37,7 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
     $scope.search_params = {'query': null, 'ordering': null, 'ordering_reverse': null}
     $scope.ordering_options = false
 
+    # misc
     $scope.numberSegmentsAvailable = ''
     $scope.hasSecurityWithTrackNumbers = () ->
         s = $scope.securities.find((el) ->
@@ -203,14 +204,11 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
             $scope.show_add_capital = false
             $scope.newPosition = new Position()
             $scope.position_added_success = true
-            $timeout ->
-                $scope.position_added_success = false
-            , 5000
+            $scope.addPositionLoading = false
         .then ->
             # Clear any errors
             $scope.errors = {}
             $window.ga('send', 'event', 'form-send', 'add-transaction')
-            $scope.addPositionLoading = false
         , (rejection) ->
             $scope.errors = rejection.data
             Raven.captureMessage('add position form error: ' + rejection.statusText, {
@@ -249,9 +247,6 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
         .then ->
             $scope.newSplit = new Split()
             $scope.split_added_success = true
-            $timeout ->
-                $scope.split_added_success = false
-            , 5000
         .then ->
             $scope.errors = {}
             $scope.show_split = false
@@ -297,10 +292,14 @@ app.controller 'PositionsController', ['$scope', '$http', '$window', 'Position',
         $scope.show_split = false
 
     $scope.hide_form = ->
+        $scope.errors = {}
         $scope.show_add_position = false
         $scope.show_add_capital = false
-        $scope.newPosition = new Position()
         $scope.show_split = false
+        $scope.position_added_success = false
+        $scope.capital_added_success = false
+        $scope.split_added_success = false
+        $scope.newPosition = new Position()
         $scope.errors = {}
 
     $scope.show_split_form = ->

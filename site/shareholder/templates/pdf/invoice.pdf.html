@@ -13,12 +13,12 @@
       @font-face {
         font-family: 'Muli';
         /*src: url(https://fonts.googleapis.com/css?family=Muli:400);*/
-        src: "file://{{ MEDIA_ROOT }}/../../static/compiled/fonts/Muli-Regular.ttf";
+        src: "file://{{ BASE_DIR}}/static/compiled/fonts/Muli-Regular.ttf";
       }
       @font-face {
         font-family: 'Muli-Light';
         /*src: url(https://fonts.googleapis.com/css?family=Muli:300);*/
-        src: "file://{{ MEDIA_ROOT }}/../../static/compiled/fonts/Muli-Light.ttf";
+        src: "file://{{ BASE_DIR }}/static/compiled/fonts/Muli-Light.ttf";
       }
 
     </style>
@@ -75,11 +75,9 @@
               <br /><br />
               {{ site.domain }}<br />
               {% if from_email %}{{ from_email }}<br />{% endif %}
-              {% trans "Your customer number:" %} {{ company.pk }}<br />
+              {% trans "Your customer number:" %} {{ company.pk }}<br /><br />
+              {{ invoice.date|date:"DATE_FORMAT" }}
             </td>
-          </tr>
-          <tr>
-            <td colspan="2" class="pull-right">{{ invoice.date|date:"DATE_FORMAT" }}</td>
           </tr>
         </table>
       </div>
@@ -102,7 +100,9 @@
             <tr class="row {% cycle 'odd' 'even' %}">
               <td class="item wide" colspan="2">
                 {% ifequal item.line_type 'subscription' %}
-                  {% trans "Subscription" %} {{ invoice.customer.current_subscription.plan_display }}
+                  {% trans "Subscription" %} 
+                  {{ invoice.customer.current_subscription.plan_display }}
+                  ({{ item.period_start|date:"DATE_FORMAT" }} - {{ item.period_end|date:"DATE_FORMAT" }})
                 {% else %}
                   {{ item.description }}
                 {% endifequal %}
@@ -125,7 +125,17 @@
             <td class="amount center">{{ invoice.total|floatformat:2 }}</td>
           </tr>
         </table>
-      </div>
+
+        <p class="tax-disclaimer">
+          {% blocktrans %} Bei der o.g. Leistung handelt es sich um eine sonstige Leistung im Sinne §3 Abs. 9 UStG, für die der Leistungsempfänger die Steuer schuldet (§13b UStG). Wir bitten Sie den Gesamtbetrag nach Erhalt der Rechnung an KKD Kommunikation GmbH über die unten angegebene Kontoverbindung zu begleichen.<br/><br/>
+Vielen Dank für Ihren Auftrag. {% endblocktrans %}
+        </p>
+
+        <p class="signature">
+          {% blocktrans %} Mit freundlichen Grüßen!<br/><br/>Jirka Schäfer {% endblocktrans %}
+        </p>
+
+      </div><!-- end invoice content -->
 
   </body>
 </html>

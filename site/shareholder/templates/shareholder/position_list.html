@@ -27,17 +27,23 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="hide_form()"><span aria-hidden="true">&times;</span></button>
           <h4 class="modal-title" id="addPositionLabel">{% trans "Transfer Shares" %}</h4>
         </div>
         <div class="modal-body">
           {% include "_form_errors.html" %}
 
           <!-- add position success -->
-          <p class="alert alert-success" ng-show="position_added_success">
-            {% trans "Position added" %}
-          </p>
-          <div id="add_position">
+          {% verbatim %}
+          <div class="alert alert-success alert-form" ng-show="position_added_success">
+            <div class="message">{% endverbatim %}{% trans "Position added successfully." %}{% verbatim %}</div>
+            <div class="actions">
+              <button class="btn btn-default cancel" data-dismiss="modal" ng-click="hide_form()">{% endverbatim %}{% trans "Close" %}{% verbatim %}</button>
+              <button class="btn btn-default" ng-click="position_added_success=false; show_add_position=true">{% endverbatim %}{% trans "Add more" %}{% verbatim %}</button>
+            </div>
+          </div>
+          {% endverbatim %}
+          <div id="add_position" ng-hide="position_added_success">
             {% include "_add_position_form.html" %}
           </div>
         </div>
@@ -50,16 +56,22 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="hide_form()"><span aria-hidden="true">&times;</span></button>
           <h4 class="modal-title" id="capitalFormLabel">{% trans "Increase Capital" %}</h4>
         </div>
         <div class="modal-body">
           {% include "_form_errors.html" %}
           <!-- add position success -->
-          <p class="alert alert-success" ng-show="position_added_success">
-            {% trans "Position added" %}
-          </p>
-          <div id="add_capital">
+          {% verbatim %}
+          <div class="alert alert-success alert-form" ng-show="position_added_success">
+            <div class="message">{% endverbatim %}{% trans "Capital increase added successfully." %}{% verbatim %}</div>
+            <div class="actions">
+              <button class="btn btn-default cancel" data-dismiss="modal" ng-click="hide_form()">{% endverbatim %}{% trans "Close" %}{% verbatim %}</button>
+              <button class="btn btn-default" ng-click="position_added_success=false; show_add_capital=true">{% endverbatim %}{% trans "Add more" %}{% verbatim %}</button>
+            </div>
+          </div>
+          {% endverbatim %}
+          <div id="add_capital" ng-hide="position_added_success">
             {% include "_add_capital_form.html" %}
           </div>
         </div>
@@ -72,16 +84,22 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="hide_form()"><span aria-hidden="true">&times;</span></button>
           <h4 class="modal-title" id="splitSharesLabel">{% trans "Split Shares" %}</h4>
         </div>
         <div class="modal-body">
           {% include "_form_errors.html" %}
           <!-- add position success -->
-          <p class="alert alert-success" ng-show="split_added_success">
-            {% trans "Split shares added" %}
-          </p>
-          <div id="split-shares">
+          {% verbatim %}
+          <div class="alert alert-success alert-form" ng-show="split_added_success">
+            <div class="message">{% endverbatim %}{% trans "Share split added successfully." %}{% verbatim %}</div>
+            <div class="actions">
+              <button class="btn btn-default cancel" data-dismiss="modal" ng-click="hide_form()">{% endverbatim %}{% trans "Close" %}{% verbatim %}</button>
+              <button class="btn btn-default" ng-click="split_added_success=false; show_split=true">{% endverbatim %}{% trans "Add more" %}{% verbatim %}</button>
+            </div>
+          </div>
+          {% endverbatim %}
+          <div id="split-shares" ng-hide="split_added_success">
             {% include "_split_shares_form.html" %}
           </div>
         </div>

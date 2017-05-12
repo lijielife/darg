@@ -177,6 +177,14 @@ html, body
     font-weight: bold
 
   // --- GLOBAL CLASSES
+  // on form success hide form and show large success message
+  .alert-form
+    height: 10em
+    text-align: center
+    padding: 4em 0px 9em
+    line-height: 1.5em
+    div
+      margin-bottom: 1em
   // (?) context help icon to trigger popover()
   .context-help
     border: 1px solid $color-blue
@@ -444,6 +452,10 @@ nav.navbar
   #id_tos
     width: initial
     float: left
+
+// list view filter/order options have no wrapping form
+select.form-control
+  border-radius: 4px !important
 
 .form
   .form-control
