@@ -74,7 +74,8 @@
     </div>
     <div class="tr th founding-date">
       <div class="td">
-        {% trans "Company founding date" %}:
+        {% trans "The date when the company was registered with public authorities. Date format is dd.mm.YY without leading zero for the day" as msg %}
+        {% trans "Company founding date" %} {% context_help msg %}: 
       </div>
       <div class="td date-field">
         {% verbatim %}
@@ -151,7 +152,10 @@
 
     <div class="tr th statement-send-date"
         ng-show="company.is_statement_sending_enabled && company.subscription_features.indexOf('shareholder_statements') > -1">
-      <div class="td">{% trans "Statement sending date" %}:</div>
+      <div class="td">
+        {% trans "The date when depot statements are to be sent to the shareholders. Date format is dd.mm.YY without leading zero for the day. After the statements have been sent, this date is increased to the next years same day and month." as msg %}
+        {% trans "Statement sending date" %} {% context_help msg %}:
+      </div>
       <div class="td date-field">
         {% verbatim %}
         <span editable-bsdate="company.statement_sending_date"
