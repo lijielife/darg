@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-12 07:24+0000\n"
-"PO-Revision-Date: 2017-05-12 07:26+0000\n"
+"PO-Revision-Date: 2017-05-12 07:30+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -524,16 +524,14 @@ msgid "Shareholder"
 msgstr "Aktionär"
 
 #: project/templates/djstripe/_plan.html:20
-#, fuzzy
 #| msgid "Subscriptions"
 msgid "Show subscription details"
-msgstr "Pakete & Preise"
+msgstr "Details anzeigen"
 
 #: project/templates/djstripe/_plan.html:23
-#, fuzzy
 #| msgid "Subscriptions"
 msgid "Hide subscription details"
-msgstr "Pakete & Preise"
+msgstr "Details ausblenden"
 
 #: project/templates/djstripe/account.html:15
 msgid "Account Information for"
