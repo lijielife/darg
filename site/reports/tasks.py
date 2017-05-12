@@ -10,6 +10,7 @@ import operator
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.core.mail import EmailMessage
+from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from natsort import natsorted
@@ -187,7 +188,7 @@ def _to_dotted(value):
 def _get_filename(report, company):
     return u'{}_{}_{}_{}.{}'.format(
         time.strftime("%Y-%m-%d"), report.report_type, report.order_by,
-        company.name, report.file_type.lower())
+        slugify(company.name), report.file_type.lower())
 
 
 def _prepare_report(company, report_type, ordering, file_type):

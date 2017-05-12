@@ -3,6 +3,7 @@
 import datetime
 from django.core import mail
 from django.test import TestCase
+from django.template.defaultfilters import slugify
 from django.utils import timezone
 from mock import patch
 from model_mommy import mommy
@@ -152,7 +153,8 @@ class TaskTestCase(TestCase):
     def test_add_file_to_report(self):
         """ attach file to report model """
         report = ReportGenerator().generate()
-        _add_file_to_report('somefilename.xls', report, 'some file content')
+        _add_file_to_report(
+          u'somefilename.xls', report, 'some file content')
         report.refresh_from_db()
         with open(report.file.path) as f:
             self.assertEqual(f.read(), 'some file content')
@@ -180,7 +182,7 @@ class TaskTestCase(TestCase):
         report = ReportGenerator().generate()
         filename = _get_filename(report, report.company)
         self.assertEqual(filename.count('_'), 3)
-        self.assertIn(report.company.name, filename)
+        self.assertIn(slugify(report.company.name), filename)
         self.assertTrue(filename.endswith('pdf'))
 
     def test_prepare_report(self):
