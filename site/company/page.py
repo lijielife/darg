@@ -152,5 +152,5 @@ class CompanyPage(BasePage):
         """
         bday = self.driver.find_element_by_xpath(
             '//div[contains(@class, "founding-date")]'
-            '/div[contains(@class, "td")]/span')
+            '/div[contains(@class, "td")]/span[contains(@class, "editable")]')
         return bday.text
