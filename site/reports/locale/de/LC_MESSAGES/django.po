@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-11 12:17+0000\n"
+"POT-Creation-Date: 2017-05-12 07:24+0000\n"
 "PO-Revision-Date: 2017-05-11 12:22+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -73,148 +73,147 @@ msgstr "Dauer der Dateierstellung in Sekunden"
 msgid "report filter date"
 msgstr "Berichtsdatum"
 
-#: reports/tasks.py:95
+#: reports/tasks.py:96
 msgid "None"
 msgstr "Keine"
 
-#: reports/tasks.py:224
+#: reports/tasks.py:225
 msgid "Your pdf captable file"
 msgstr "Ihre Aktionärsübersicht als PDF"
 
-#: reports/tasks.py:225 reports/tasks.py:298
+#: reports/tasks.py:226 reports/tasks.py:299
 msgid "Your file is attached to this email"
 msgstr "Ihre Datei ist diese Email angehängt."
 
-#: reports/tasks.py:226
+#: reports/tasks.py:227
 msgid "PDF Captable/Active Shareholders"
 msgstr "Aktive Gesellschafter"
 
-#: reports/tasks.py:251
+#: reports/tasks.py:252
 msgid "shareholder number"
 msgstr "Aktionärsnummer"
 
-#: reports/tasks.py:251
+#: reports/tasks.py:252
 msgid "legal type"
 msgstr "Aktionärsart"
 
-#: reports/tasks.py:251
+#: reports/tasks.py:252
 msgid "registration types"
 msgstr "Eintragungsart"
 
-#: reports/tasks.py:252
+#: reports/tasks.py:253
 msgid "company_department"
 msgstr "Abteilung im Unternehmen"
 
-#: reports/tasks.py:252
+#: reports/tasks.py:253
 msgid "title"
 msgstr "Titel"
 
-#: reports/tasks.py:252
+#: reports/tasks.py:253
 msgid "salutation"
 msgstr "Anrede"
 
-#: reports/tasks.py:252
+#: reports/tasks.py:253
 msgid "last name"
 msgstr "Nachname"
 
-#: reports/tasks.py:253
+#: reports/tasks.py:254
 msgid "first name"
 msgstr "Vorname"
 
-#: reports/tasks.py:253
+#: reports/tasks.py:254
 msgid "address"
 msgstr "Adresse"
 
-#: reports/tasks.py:253
+#: reports/tasks.py:254
 msgid "postal_code"
 msgstr "PLZ"
 
-#: reports/tasks.py:253
+#: reports/tasks.py:254
 msgid "city"
 msgstr "Stadt"
 
-#: reports/tasks.py:254
+#: reports/tasks.py:255
 msgid "birthday"
 msgstr "Geburtstag"
 
-#: reports/tasks.py:254
+#: reports/tasks.py:255
 msgid "mailing_type"
 msgstr "Versandart"
 
-#: reports/tasks.py:254
+#: reports/tasks.py:255
 msgid "nationality"
 msgstr "Nationalität"
 
-#: reports/tasks.py:254
+#: reports/tasks.py:255
 msgid "security type"
 msgstr "Wertpapier"
 
-#: reports/tasks.py:255
+#: reports/tasks.py:256
 msgid "cusip"
 msgstr "WKN/Valor"
 
-#: reports/tasks.py:255
+#: reports/tasks.py:256
 msgid "face_value"
 msgstr "Nennwert"
 
-#: reports/tasks.py:255
+#: reports/tasks.py:256
 msgid "certificate_ids (issue date)"
 msgstr "ZertifikatsIDs"
 
-#: reports/tasks.py:256
+#: reports/tasks.py:257
 msgid "stock book id"
 msgstr "Skontro"
 
-#: reports/tasks.py:256
+#: reports/tasks.py:257
 msgid "depot_type"
 msgstr "Depotart"
 
-#: reports/tasks.py:257
+#: reports/tasks.py:258
 msgid "email"
 msgstr "Email"
 
-#: reports/tasks.py:257
+#: reports/tasks.py:258
 msgid "share count"
 msgstr "Aktienzahl"
 
-#: reports/tasks.py:257
+#: reports/tasks.py:258
 msgid "share percent"
 msgstr "Aktienanteil in Prozent"
 
-#: reports/tasks.py:258
+#: reports/tasks.py:259
 msgid "votes percent"
 msgstr "Stimmrechte in Prozent"
 
-#: reports/tasks.py:259
+#: reports/tasks.py:260
 msgid "cumulated face value"
 msgstr "Gesamtkapital (Basis: Nennwert)"
 
-#: reports/tasks.py:259
+#: reports/tasks.py:260
 msgid "is management"
 msgstr "Mitglied VR/Management"
 
-#: reports/tasks.py:260
+#: reports/tasks.py:261
 msgid "language ISO"
 msgstr "Sprache ISO-Code"
 
-#: reports/tasks.py:260
+#: reports/tasks.py:261
 msgid "language full"
 msgstr "Sprache"
 
-#: reports/tasks.py:264
+#: reports/tasks.py:265
 msgid "Share IDs"
 msgstr "Aktiennummern"
 
-#: reports/tasks.py:297
+#: reports/tasks.py:298
 msgid "Your csv captable file"
 msgstr "Ihre Aktionärsübersicht"
 
-#: reports/tasks.py:299
+#: reports/tasks.py:300
 msgid "CSV Captable/Active Shareholders"
 msgstr "Aktive Gesellschafter"
 
 #: reports/templates/active_shareholder_captable.pdf.html:71
-#| msgid "Active Shareholders"
 msgid "Your Shareholders on"
 msgstr "Aktive Gesellschafter"
 
@@ -235,7 +234,6 @@ msgid "of"
 msgstr "von"
 
 #: reports/templates/active_shareholder_captable.pdf.html:87
-#| msgid "File generated at "
 msgid "Date generated"
 msgstr "Erstelldatum"
 
@@ -253,19 +251,16 @@ msgstr "Gründungsdatum"
 
 #: reports/templates/active_shareholder_captable.pdf.html:103
 #: reports/templates/active_shareholder_captable.pdf.html:154
-#| msgid "Last Name"
 msgid "Name"
 msgstr "Nachname"
 
 #: reports/templates/active_shareholder_captable.pdf.html:104
 #: reports/templates/active_shareholder_captable.pdf.html:155
-#| msgid "email"
 msgid "Email"
 msgstr "Email"
 
 #: reports/templates/active_shareholder_captable.pdf.html:106
 #, python-format
-#| msgid "Share IDs"
 msgid "Shares (%%)"
 msgstr "Aktien (%%)"
 
@@ -319,7 +314,6 @@ msgid "Sort by:"
 msgstr "Sortieren nach:"
 
 #: reports/templates/reports/_captable_form.html:48
-#| msgid "report filter date"
 msgid "Report as of date:"
 msgstr "Berichtsdatum"
 
@@ -371,8 +365,8 @@ msgstr "Berichte und Downloads für"
 
 #: reports/templates/reports/index.html:19
 msgid ""
-"Use CSV for Excel like Downloads. Follow this <a "
-"href='https://goo.gl/aQ2gVx'>guide for instructions</a>."
+"Use CSV for Excel like Downloads. Follow this <a href='https://goo.gl/"
+"aQ2gVx'>guide for instructions</a>."
 msgstr ""
 "Verwenden Sie CSV für Downloads für MS Excel. Folgen Sie dieser <a "
 "href='https://goo.gl/aQ2gVx'>Anleitung zum Import</a>."

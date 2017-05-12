@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-11 12:17+0000\n"
-"PO-Revision-Date: 2017-05-11 12:17+0000\n"
+"POT-Creation-Date: 2017-05-12 07:24+0000\n"
+"PO-Revision-Date: 2017-05-12 07:26+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -152,7 +152,7 @@ msgstr "Aktienart"
 #: project/templates/_add_option_plan_form.html:38
 #: project/templates/_add_option_transaction_form.html:71
 #: project/templates/_add_position_form.html:92
-#: project/templates/_add_shareholder_form.html:20
+#: project/templates/_add_shareholder_form.html:21
 #: project/templates/_split_shares_form.html:39
 #: project/templates/djstripe/change_card.html:55
 msgid "Cancel"
@@ -163,25 +163,25 @@ msgstr "Schliessen"
 msgid "Add Position"
 msgstr "Position hinzufügen"
 
-#: project/templates/_add_company_form.html:3
+#: project/templates/_add_company_form.html:4
 msgid "Welcome"
 msgstr "Willkommen"
 
-#: project/templates/_add_company_form.html:5
+#: project/templates/_add_company_form.html:6
 msgid "Please enter your company name:"
 msgstr ""
 "<strong>Unternehmen anlegen:</strong><br/> Geben Sie ihren Firmennamen, das "
 "Gründungsdatum, die Anzahl und den Nennwert der Aktien bei Gründung ein:"
 
-#: project/templates/_add_company_form.html:33
+#: project/templates/_add_company_form.html:36
 msgid "Add Company"
 msgstr "Unternehmen hinzufügen"
 
-#: project/templates/_add_company_form.html:39
+#: project/templates/_add_company_form.html:43
 msgid "Please contact us at our"
 msgstr "Bitte kontaktieren Sie unseren"
 
-#: project/templates/_add_company_form.html:41
+#: project/templates/_add_company_form.html:45
 msgid ""
 "for getting more security types (common stock, preferred stock, numbered "
 "shares) added"
@@ -257,7 +257,7 @@ msgid "Optional fields"
 msgstr "Optionale Daten"
 
 #: project/templates/_add_position_form.html:66
-#: project/templates/_add_shareholder_form.html:14
+#: project/templates/_add_shareholder_form.html:15
 msgid "generate"
 msgstr "Generieren"
 
@@ -265,11 +265,11 @@ msgstr "Generieren"
 msgid "Financial Institute/Bank for certificate storage"
 msgstr "Finanzinstitut/Bank der Zertifikatsverwahrung"
 
-#: project/templates/_add_shareholder_form.html:3
+#: project/templates/_add_shareholder_form.html:4
 msgid "Please enter your shareholder data:"
 msgstr "Bitte geben Sie die Aktionärsdaten ein:"
 
-#: project/templates/_add_shareholder_form.html:21
+#: project/templates/_add_shareholder_form.html:24
 #: project/templates/start.html:44 project/templates/start.html:53
 msgid "Add Shareholder"
 msgstr "Aktionär hinzufügen"
@@ -523,6 +523,18 @@ msgstr "per"
 msgid "Shareholder"
 msgstr "Aktionär"
 
+#: project/templates/djstripe/_plan.html:20
+#, fuzzy
+#| msgid "Subscriptions"
+msgid "Show subscription details"
+msgstr "Pakete & Preise"
+
+#: project/templates/djstripe/_plan.html:23
+#, fuzzy
+#| msgid "Subscriptions"
+msgid "Hide subscription details"
+msgstr "Pakete & Preise"
+
 #: project/templates/djstripe/account.html:15
 msgid "Account Information for"
 msgstr "Kontoinformation für"
@@ -764,12 +776,12 @@ msgid "Expiration (MM/YYYY)"
 msgstr "Ablaufdatum (MM/JJJJ)"
 
 #: project/templates/djstripe/confirm_form.html:11
-msgid "Confirm your Subscription for"
-msgstr "Bestätigen Sie das Abonnement für"
+msgid "Final subscription confirmation for"
+msgstr "Finale Bestätigung für"
 
 #: project/templates/djstripe/confirm_form.html:58
-msgid "Confirm subscription"
-msgstr "Abonnement bestätigen"
+msgid "Confirm and enter payment data"
+msgstr "Bestätigen und Kreditkarte eingeben"
 
 #: project/templates/djstripe/email/receipt_body.html:9
 #, python-format
@@ -1321,7 +1333,6 @@ msgid "Your Shareholders for"
 msgstr "Ihre Aktionärsliste für"
 
 #: project/templates/start.html:61
-#| msgid "Shareholderr added. record share transfers here"
 msgid "Shareholder added. record share transfers here"
 msgstr ""
 "Aktionär hinzugefügt. Verwenden Sie <a href=\"/positions/\" title=\"Aktien "
@@ -1329,7 +1340,6 @@ msgstr ""
 "einzutragen."
 
 #: project/templates/start.html:64
-#| msgid "Add Card"
 msgid "Add more"
 msgstr "Weitere hinzufügen"
 
@@ -1770,6 +1780,12 @@ msgstr "Wertpapierart"
 #: project/views.py:406
 msgid "certificate"
 msgstr "Zertifikat/Urkunde"
+
+#~ msgid "Confirm your Subscription for"
+#~ msgstr "Bestätigen Sie das Abonnement für"
+
+#~ msgid "Confirm subscription"
+#~ msgstr "Abonnement bestätigen"
 
 #~ msgid "Your Shareholders on"
 #~ msgstr "Ihre Aktionärsliste vom "
