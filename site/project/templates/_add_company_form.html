@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load static %}
 
 <h1>{% trans "Welcome" %} {{ request.user }}!</h1>
 
@@ -30,7 +31,10 @@
       <input type="number" class="form-control" ng-model="newCompany.face_value" translate translate-attr-placeholder="Face Value of shares" step=".01">
     </div>
     <div class="form-group">
-      <button class="btn btn-submit btn-add-company" ng-click="add_company()">{% endverbatim %}{% trans "Add Company" %}{% verbatim %}</button>
+      <button class="btn btn-submit btn-add-company" ng-click="add_company()">
+        <img src="{% endverbatim %}{% static "compiled/images/loading_spinner1_white.png" %}{% verbatim %}" class="loading no-style" ng-show="addCompanyLoading">
+        {% endverbatim %}{% trans "Add Company" %}{% verbatim %}
+      </button>
     </div>
   </form>
 </div>

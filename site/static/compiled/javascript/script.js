@@ -45453,6 +45453,8 @@ return deCh;
       $scope.user = [];
       $scope.total_shares = 0;
       $scope.loading = true;
+      $scope.addShareholderLoading = false;
+      $scope.addCompanyLoading = false;
       $scope.shareholder_added_success = false;
       $scope.next = false;
       $scope.previous = false;
@@ -45785,6 +45787,7 @@ return deCh;
         $scope.errors = null;
         founded_at = $scope.newCompany.founded_at;
         $scope.newCompany.founded_at.setHours(founded_at.getHours() - founded_at.getTimezoneOffset() / 60);
+        $scope.addCompanyLoading = true;
         return $scope.newCompany.$save().then(function(result) {
           $scope.load_user();
           $scope.load_all_shareholders();
@@ -45793,7 +45796,8 @@ return deCh;
         }).then(function() {
           $scope.newCompany = new Company();
           $window.ga('send', 'event', 'form-send', 'add-company');
-          return $scope.hide_captable = true;
+          $scope.hide_captable = true;
+          return $scope.addCompanyLoading = false;
         }).then(function() {
           var url;
           $scope.errors = null;
@@ -45801,7 +45805,7 @@ return deCh;
           return $window.location.href = url;
         }, function(rejection) {
           $scope.errors = rejection.data;
-          return Raven.captureMessage('add corp form error', {
+          Raven.captureMessage('add corp form error', {
             level: 'warning',
             extra: {
               rejection: rejection,
@@ -45809,10 +45813,12 @@ return deCh;
               status: rejection.status
             }
           });
+          return $scope.addCompanyLoading = false;
         });
       };
       $scope.add_shareholder = function() {
         $scope.errors = null;
+        $scope.addShareholderLoading = true;
         return $scope.newShareholder.$save().then(function(result) {
           return $scope.shareholders.push(result);
         }).then(function() {
@@ -45822,9 +45828,11 @@ return deCh;
           return $scope.hide_captable = false;
         }).then(function() {
           $scope.errors = null;
+          $scope.addShareholderLoading = false;
           return $window.ga('send', 'event', 'form-send', 'add-shareholder');
         }, function(rejection) {
           $scope.errors = rejection.data;
+          $scope.addShareholderLoading = false;
           return Raven.captureMessage('add shareholder form error: ' + rejection.statusText, {
             level: 'warning',
             extra: {

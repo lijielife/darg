@@ -14,6 +14,8 @@ app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'C
     $scope.user = []
     $scope.total_shares = 0
     $scope.loading = true
+    $scope.addShareholderLoading = false
+    $scope.addCompanyLoading = false
     $scope.shareholder_added_success = false
 
     # pagination:
@@ -278,6 +280,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'C
         $scope.errors = null
         founded_at = $scope.newCompany.founded_at
         $scope.newCompany.founded_at.setHours(founded_at.getHours() - founded_at.getTimezoneOffset() / 60)
+        $scope.addCompanyLoading = true
         $scope.newCompany.$save().then (result) ->
             # update user and company
             $scope.load_user()
@@ -291,6 +294,7 @@ app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'C
             # on company create hide captable in next step so the user is not
             # confused. reenable on first shareholder add
             $scope.hide_captable = true
+            $scope.addCompanyLoading = false
         .then ->
             # Clear any errors
             $scope.errors = null
@@ -304,9 +308,11 @@ app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'C
                 level: 'warning',
                 extra: { rejection: rejection, config: rejection.config, status: rejection.status },
             })
+            $scope.addCompanyLoading = false
 
     $scope.add_shareholder = ->
         $scope.errors = null
+        $scope.addShareholderLoading = true
         $scope.newShareholder.$save().then (result) ->
             $scope.shareholders.push result
         .then ->
@@ -318,9 +324,11 @@ app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'C
         .then ->
             # Clear any errors
             $scope.errors = null
+            $scope.addShareholderLoading = false
             $window.ga('send', 'event', 'form-send', 'add-shareholder')
         , (rejection) ->
             $scope.errors = rejection.data
+            $scope.addShareholderLoading = false
             Raven.captureMessage('add shareholder form error: ' + rejection.statusText, {
                 level: 'warning',
                 extra: { rejection: rejection },
