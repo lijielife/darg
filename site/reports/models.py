@@ -25,6 +25,8 @@ REPORT_TYPES = (
 ORDERING_TYPES = (
     ('user__last_name', _('Last Name')),
     ('user__last_name_desc', _('Last Name (descending)')),
+    ('get_full_name', _('Last Name')),
+    ('get_full_name_desc', _('Last Name (descending)')),
     ('share_count', _('Share Count')),
     ('share_count_desc', _('Share Count (descending)')),
     ('number', _('Shareholder Number')),
