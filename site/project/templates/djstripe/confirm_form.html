@@ -8,7 +8,7 @@
 {% block content %}
 {{ block.super }}
 
-<h2>{% trans "Confirm your Subscription for" %} {{ customer.subscriber }}</h2>
+<h1>{% trans "Final subscription confirmation for" %} {{ customer.subscriber }}</h1>
 
 {% if error %}
   <div class="alert alert-error">{{ error }}</div>
@@ -55,7 +55,7 @@
                   {% if plan_unsubscribable %}disabled="disabled"{% endif %}>
             {# TODO: check for card #}
             <!-- disable this when clicked -->
-            {% trans "Confirm subscription" %}
+            {% trans "Confirm and enter payment data" %}
           </button>
         </div>
       </div>

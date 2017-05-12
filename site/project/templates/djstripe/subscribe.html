@@ -6,7 +6,7 @@
 {% block content %}
 {{ block.super }}
 
-<h2>{% trans "Choose a Subscription for" %} {{ customer.subscriber }}</h2>
+<h1>{% trans "Choose a Subscription for" %} {{ customer.subscriber }}</h1>
 
 {% if error %}
   <div class="alert alert-error">{{ error }}</div>
