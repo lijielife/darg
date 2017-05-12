@@ -9,6 +9,7 @@ from django.utils.safestring import mark_safe
 from registration.forms import (RegistrationFormTermsOfService,
                                 RegistrationFormUniqueEmail)
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -21,6 +22,7 @@ class RegistrationForm(RegistrationFormTermsOfService,
         """
         create form obj
         """
+
         res = super(RegistrationForm, self).__init__(*args, **kwargs)
         # add url to ToS string in form
         self.fields.get('tos').label = mark_safe(_(
