@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-12 08:13+0000\n"
-"PO-Revision-Date: 2017-05-11 12:22+0000\n"
+"POT-Creation-Date: 2017-05-12 10:21+0000\n"
+"PO-Revision-Date: 2017-05-12 10:22+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -23,53 +23,53 @@ msgstr ""
 msgid "Active Shareholders"
 msgstr "Aktive Gesellschafter"
 
-#: reports/models.py:26
+#: reports/models.py:26 reports/models.py:28
 msgid "Last Name"
 msgstr "Nachname"
 
-#: reports/models.py:27
+#: reports/models.py:27 reports/models.py:29
 msgid "Last Name (descending)"
 msgstr "Nachname (absteigend)"
 
-#: reports/models.py:28
+#: reports/models.py:30
 msgid "Share Count"
 msgstr "Anzahl Aktien"
 
-#: reports/models.py:29
+#: reports/models.py:31
 msgid "Share Count (descending)"
 msgstr "Anzahl Aktien (absteigend)"
 
-#: reports/models.py:30
+#: reports/models.py:32
 #: reports/templates/active_shareholder_captable.pdf.html:105
 #: reports/templates/active_shareholder_captable.pdf.html:156
 msgid "Shareholder Number"
 msgstr "Aktionärsnummer"
 
-#: reports/models.py:31
+#: reports/models.py:33
 msgid "Shareholder Number (descending)"
 msgstr "Aktionärsnummer (absteigend)"
 
-#: reports/models.py:32
+#: reports/models.py:34
 msgid "Share Percent Ownership"
 msgstr "Prozent Aktienanteil"
 
-#: reports/models.py:33
+#: reports/models.py:35
 msgid "Share Percent Ownership (descending)"
 msgstr "Prozent Aktienanteil(absteigend)"
 
-#: reports/models.py:55
+#: reports/models.py:57
 msgid "Estimated rendering completion time"
 msgstr "Geschätzte Dauer für die Erstellung des Berichts"
 
-#: reports/models.py:56
+#: reports/models.py:58
 msgid "file creation datetime"
 msgstr "Dauer zur Erstellung der Datei"
 
-#: reports/models.py:59
+#: reports/models.py:61
 msgid "time it took to generate the file in seconds"
 msgstr "Dauer der Dateierstellung in Sekunden"
 
-#: reports/models.py:61
+#: reports/models.py:63
 msgid "report filter date"
 msgstr "Berichtsdatum"
 
@@ -360,13 +360,14 @@ msgid "brand name"
 msgstr "www.das-aktienregister.ch"
 
 #: reports/templates/reports/index.html:16
-msgid "Reports and Downloads for "
-msgstr "Berichte und Downloads für"
+#| msgid "Reports and Downloads for "
+msgid "Reports and Downloads"
+msgstr "Berichte und Downloads"
 
 #: reports/templates/reports/index.html:19
 msgid ""
-"Use CSV for Excel like Downloads. Follow this <a href='https://goo.gl/"
-"aQ2gVx'>guide for instructions</a>."
+"Use CSV for Excel like Downloads. Follow this <a "
+"href='https://goo.gl/aQ2gVx'>guide for instructions</a>."
 msgstr ""
 "Verwenden Sie CSV für Downloads für MS Excel. Folgen Sie dieser <a "
 "href='https://goo.gl/aQ2gVx'>Anleitung zum Import</a>."

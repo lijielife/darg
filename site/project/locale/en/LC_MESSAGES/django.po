@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-12 08:13+0000\n"
+"POT-Creation-Date: 2017-05-12 10:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Card"
 msgstr ""
 
-#: project/forms.py:27
+#: project/forms.py:29
 msgid ""
 "I have read and agree to the <a href=\"http://www1.das-aktienregister.ch/agb"
 "\" alt=\"Darg Terms of Service\" target=\"_blank\" class=\"link tos\">Terms "
@@ -36,87 +36,87 @@ msgstr ""
 msgid "modified at"
 msgstr ""
 
-#: project/settings/base.py:475
+#: project/settings/base.py:479
 msgid "Swiss franc"
 msgstr ""
 
-#: project/settings/base.py:479
+#: project/settings/base.py:483
 msgid "StartUp"
 msgstr ""
 
-#: project/settings/base.py:480
+#: project/settings/base.py:484
 msgid "Designed für StartUps und Neugründungen"
 msgstr ""
 
-#: project/settings/base.py:514
+#: project/settings/base.py:518
 msgid "Professional"
 msgstr ""
 
-#: project/settings/base.py:515
+#: project/settings/base.py:519
 msgid "Für etablierte Aktiengesellschaften und KMU"
 msgstr ""
 
-#: project/settings/base.py:545
+#: project/settings/base.py:549
 msgid "Enterprise"
 msgstr ""
 
-#: project/settings/base.py:547
+#: project/settings/base.py:551
 msgid "First-Class-Service für grosse Aktionärsgesellschaften"
 msgstr ""
 
-#: project/settings/base.py:585
+#: project/settings/base.py:589
 msgid "Shareholders"
 msgstr ""
 
-#: project/settings/base.py:586 project/templates/_menu.html:35
+#: project/settings/base.py:590 project/templates/_menu.html:35
 msgid "Positions"
 msgstr ""
 
-#: project/settings/base.py:587
+#: project/settings/base.py:591
 msgid "Options"
 msgstr ""
 
-#: project/settings/base.py:588
+#: project/settings/base.py:592
 msgid "Securities"
 msgstr ""
 
-#: project/settings/base.py:590
+#: project/settings/base.py:594
 msgid "Aktienausgabe, Aktienkauf, -verkauf, Kapitalerhöhung, Aktiensplit"
 msgstr ""
 
-#: project/settings/base.py:593
+#: project/settings/base.py:597
 msgid "GAFI Validierung"
 msgstr ""
 
-#: project/settings/base.py:594
+#: project/settings/base.py:598
 msgid "Revisionssicherheit"
 msgstr ""
 
-#: project/settings/base.py:596
+#: project/settings/base.py:600
 msgid "Depotauszug Email & Brief"
 msgstr ""
 
-#: project/settings/base.py:597
+#: project/settings/base.py:601
 msgid "Es entstehen weitere Kosten bei Briefversand pro versendetem Brief."
 msgstr ""
 
-#: project/settings/base.py:604
+#: project/settings/base.py:608
 msgid "Nummerierte Aktien"
 msgstr ""
 
-#: project/settings/base.py:605
+#: project/settings/base.py:609
 msgid "Email Support"
 msgstr ""
 
-#: project/settings/base.py:606
+#: project/settings/base.py:610
 msgid "Profi-Verwaltung Aktionäre"
 msgstr ""
 
-#: project/settings/base.py:607
+#: project/settings/base.py:611
 msgid "Premium-Support 24/7"
 msgstr ""
 
-#: project/settings/base.py:608
+#: project/settings/base.py:612
 msgid "Custom Export/Import"
 msgstr ""
 
@@ -1224,7 +1224,7 @@ msgstr ""
 msgid "Captable"
 msgstr ""
 
-#: project/templates/start.html:31
+#: project/templates/start.html:30
 msgid "Your Shareholders for"
 msgstr ""
 
