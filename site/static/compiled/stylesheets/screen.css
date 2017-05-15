@@ -3274,8 +3274,9 @@ select.form-control {
 .intro footer {
   padding: 2em 0 2em;
 }
-.intro footer li {
+.intro footer .container li {
   display: inline;
+  padding-top: initial;
 }
 .intro blockquote {
   background-color: transparent;
