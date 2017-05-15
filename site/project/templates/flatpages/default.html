@@ -29,10 +29,6 @@
   {% block scripts %}
   
   <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
-  <!--
-  all above CONFLICT WITH MAILCHIMPs DOJO 
-  -->
-  <script src="{% static "compiled/contrib/bootstrap/dist/js/bootstrap.min.js" %}"></script>
-  
+  <script src="{% static "compiled/javascript/script.js" %}?v={{VERSION}}"></script>
 
   {% endblock %}
