@@ -74,7 +74,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   margin-top: 2.5em;
   clear: both;
 }
-#flatpage p img {
+#flatpage p img.image-list {
   display: inline;
   margin: 0.5em;
   height: 10em;
