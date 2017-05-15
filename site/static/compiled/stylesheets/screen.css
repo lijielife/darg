@@ -70,16 +70,16 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 #flatpage h1 {
   text-align: center;
 }
-#flatpage p {
+#flatpage p, #flatpage li {
   margin-top: 2.5em;
   clear: both;
 }
-#flatpage p img {
+#flatpage p img, #flatpage li img {
   width: 500px;
   border: 1px solid #aaa;
   padding: 30px;
 }
-#flatpage p img .image-list {
+#flatpage p img.image-list, #flatpage li img.image-list {
   display: inline;
   margin: 0.5em;
   height: 10em;
