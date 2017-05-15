@@ -219,15 +219,15 @@ html, body
   span.note
     display: inline
 
-  .footer
-    +zen-new-row()
-    +zen-grid-item(6,1)
-    height: 3em
-    margin-top: 4em
-    padding-left: 0em
-  .form-align-center
-    margin: 0 auto
-    max-width: 250px
+  //.footer
+  //  +zen-new-row()
+  //  +zen-grid-item(6,1)
+  //  height: 3em
+  //  margin-top: 4em
+  //  padding-left: 0em
+  //.form-align-center
+  //  margin: 0 auto
+  //  max-width: 250px
 
   .hidden:
     display: none
@@ -559,11 +559,11 @@ select.form-control
     border-color: $color-blue
   footer
     padding: 2em 0 2em
-    font-size: 50%
+    // font-size: 50%
     li
       display: inline
-    .btn-inline
-      color: $color-white !important
+  //   .btn-inline
+  //     color: $color-white !important
   blockquote
     background-color: transparent
     p
@@ -648,6 +648,10 @@ select.form-control
     .currency
       font-size: 0.8em
       padding-top: 6px
+  footer
+    padding: 5em 0 5em
+    background-color: $color-white
+    color: $color-black
 
 //override bootstrap styles
 .form-group
