@@ -83,6 +83,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   display: inline;
   margin: 0.5em;
   height: 10em;
+  width: initial;
   border: 1px solid #aaa;
 }
 #flatpage .tagline {
