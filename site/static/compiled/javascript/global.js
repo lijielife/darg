@@ -5,4 +5,4 @@ function trackClick(name) {
 };
 
 // init bootstrap popover outside of angular env
-$('[data-toggle="popover"]').popover();
+$('[data-toggle="popover"]').popover({html:true});
