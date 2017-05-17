@@ -138,46 +138,6 @@
       </div>
     </div>
 
-    <div class="tr th" ng-show="company.subscription_features.indexOf('shareholder_statements') > -1">
-      <div class="td">{% trans "Is statement sending enabled" %}</div>
-      <div class="td">
-        {% verbatim %}
-        <span editable-checkbox="company.is_statement_sending_enabled" onaftersave="edit_company()">
-          <span class="el-icon-check{{ company.is_statement_sending_enabled ? '' : '-empty' }}"></span>
-          <span class="el-icon-pencil"></span>
-        </span>
-        {% endverbatim %}
-      </div>
-    </div>
-
-    <div class="tr th statement-send-date"
-        ng-show="company.is_statement_sending_enabled && company.subscription_features.indexOf('shareholder_statements') > -1">
-      <div class="td">
-        {% trans "The date when depot statements are to be sent to the shareholders. Date format is dd.mm.YY without leading zero for the day. After the statements have been sent, this date is increased to the next years same day and month." as msg %}
-        {% trans "Statement sending date" %} {% context_help msg %}:
-      </div>
-      <div class="td date-field">
-        {% verbatim %}
-        <span editable-bsdate="company.statement_sending_date"
-              edit-disabled="{{ company.is_statement_sending_enabled==false }}"
-              onaftersave="edit_company()"
-              e-showWeeks=false
-              e-is-open="datepicker1.opened"
-              e-ng-click="open_datepicker1()"
-              e-datepicker-options="datepicker1.options"
-              e-show-button-bar="true"
-              e-close-text="Schliessen"
-              e-clear-text="Leeren"
-              e-current-text="Heute"
-              e-datepicker-popup="{{datepicker1.format}}"
-              >
-            {{ (company.statement_sending_date|date:"dd.MM.yy") || 'nicht angegeben' }}
-            <span class="el-icon-pencil"></span>
-        </span>
-        {% endverbatim %}
-      </div>
-    </div>
-
     {% cache 86400 active-shareholder company %}
     <div class="tr th">
       <div class="td">
@@ -315,6 +275,70 @@
   
 
   </div><!-- table end -->
+
+  <!-- DEPOT STATEMENTS -->
+  <h2>{% trans "Depot Statements" %}</h2>
+  <p>{% trans "depot statement intro. link to docu" %}</p>
+  <div class="table table-striped">
+    <div class="tr th" ng-show="company.subscription_features.indexOf('shareholder_statements') > -1">
+      <div class="td">
+        {% trans "send depot statement with tax declaration each year to shareholders via email. link to docu" as msg %}
+        {% trans "Is statement sending enabled" %}  {% context_help msg %}
+      </div>
+      <div class="td">
+        {% verbatim %}
+        <span editable-checkbox="company.is_statement_sending_enabled" onaftersave="edit_company()">
+          <span class="el-icon-check{{ company.is_statement_sending_enabled ? '' : '-empty' }}"></span>
+          <span class="el-icon-pencil"></span>
+        </span>
+        {% endverbatim %}
+      </div>
+    </div>
+
+    <div class="tr th" ng-show="company.subscription_features.indexOf('shareholder_statements') > -1">
+      <div class="td">
+        {% trans "send depot statement with tax declaration each year to shareholders via snail mail for those which don't have email or did not open the email. link to docu" as msg %}
+        {% trans "Is statement sending via letter enabled" %} {% context_help msg %}
+      </div>
+      <div class="td">
+        {% verbatim %}
+        <span editable-checkbox="company.send_shareholder_statement_via_letter_enabled" onaftersave="edit_company()">
+          <span class="el-icon-check{{ company.send_shareholder_statement_via_letter_enabled ? '' : '-empty' }}"></span>
+          <span class="el-icon-pencil"></span>
+        </span>
+        {% endverbatim %}
+      </div>
+    </div>
+
+    <div class="tr th statement-send-date"
+        ng-show="company.is_statement_sending_enabled && company.subscription_features.indexOf('shareholder_statements') > -1">
+      <div class="td">
+        {% trans "The date when depot statements are to be sent to the shareholders. Date format is dd.mm.YY without leading zero for the day. After the statements have been sent, this date is increased to the next years same day and month." as msg %}
+        {% trans "Statement sending date" %} {% context_help msg %}:
+      </div>
+      <div class="td date-field">
+        {% verbatim %}
+        <span editable-bsdate="company.statement_sending_date"
+              edit-disabled="{{ company.is_statement_sending_enabled==false }}"
+              onaftersave="edit_company()"
+              e-showWeeks=false
+              e-is-open="datepicker1.opened"
+              e-ng-click="open_datepicker1()"
+              e-datepicker-options="datepicker1.options"
+              e-show-button-bar="true"
+              e-close-text="Schliessen"
+              e-clear-text="Leeren"
+              e-current-text="Heute"
+              e-datepicker-popup="{{datepicker1.format}}"
+              >
+            {{ (company.statement_sending_date|date:"dd.MM.yy") || 'nicht angegeben' }}
+            <span class="el-icon-pencil"></span>
+        </span>
+        {% endverbatim %}
+      </div>
+    </div>
+  </div> <!-- end table -->
+
 
   <!-- SECURITIES -->
   <h2>{% trans "Securities" %}</h2>
