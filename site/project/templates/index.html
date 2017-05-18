@@ -77,7 +77,7 @@
     <div class="currency">{% trans "CHF/mtl." %}</div>
   </div>
   -->
-  <div class="benefits">
+  <div class="benefits bright">
     <div class="container">
 	  <h2>{{ company_count }} {% trans "Companies and" %} {{ shareholder_count }} {% trans "shareholders do trust www.das-aktienregister.ch because of:" %}</h2>
       <ul>
@@ -103,7 +103,35 @@
       </a>
     </div>
   </div>
-  <div class="summary">
+  <div class="dark certificates">
+    <div class="container">
+      <h2>{% trans "share certificates" %}</h2>
+      <ul>
+        <li>
+		  <div class="title">{% trans "Avoid having shares printed" %}</div>
+		  <div>{% trans "Description index page no share print" %}</div>
+		</li>
+        <li>
+            <div><img src="/media/f/842ccd95-93b3-4aea-a5ca-60a24f159ed0.png" alt="{% trans "handle share certificates" %}"></div>
+		</li>
+      </ul>
+    </div>
+  </div>
+  <div class="bright statements">
+    <div class="container">
+      <h2>{% trans "depot statements" %}</h2>
+      <ul>
+        <li>
+            <div class="thumb"><img src="/media/f/1a4f5a9a-23fd-4c27-a797-b888a385858d.png" alt="{% trans "automatic depot statement mailing" %}"/></div>
+		</li>
+        <li>
+		  <div class="title">{% trans "Fully automatic depot statement sending" %}</div>
+		  <div>{% trans "Description index page automatic depot sending" %}</div>
+		</li>
+      </ul>
+    </div>
+  </div>
+  <div class="summary dark">
     <div class="container">
       <blockquote>
         <p class="says">
@@ -114,7 +142,7 @@
     </div>
   </div>
   {% if latest_blog_entry %}
-  <div class="blog">
+  <div class="blog bright">
     <div class="container">
       <h2>{% trans "Do you know our Blog?" %}</h2>
       <blockquote>
@@ -127,7 +155,7 @@
     </div>
   </div>
   {% endif %}
-  <div class="newsletter" id="newsletter">
+  <div class="newsletter dark" id="newsletter">
     <div class="container">
       <h2>{% trans "Subscribe to our newsletter!" %}</h2>
       <p>{% trans "Stay up to date about our work and latest share register industry news" %}</p>
@@ -159,7 +187,7 @@
       <!--End mc_embed_signup-->
     </div>
   </div>
-  <footer>
+  <footer class="bright">
     <div class="container">
       <ul>
         {% for page in flatpages %}
