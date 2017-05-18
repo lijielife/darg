@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-17 07:56+0000\n"
+"POT-Creation-Date: 2017-05-18 07:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -231,87 +231,87 @@ msgstr ""
 msgid "Is statement sending enabled"
 msgstr ""
 
-#: company/templates/company.html:299
+#: company/templates/company.html:300
 msgid ""
 "send depot statement with tax declaration each year to shareholders via "
 "snail mail for those which don't have email or did not open the email. link "
 "to docu"
 msgstr ""
 
-#: company/templates/company.html:300
+#: company/templates/company.html:301
 msgid "Is statement sending via letter enabled"
 msgstr ""
 
-#: company/templates/company.html:315
+#: company/templates/company.html:316
 msgid ""
 "The date when depot statements are to be sent to the shareholders. Date "
 "format is dd.mm.YY without leading zero for the day. After the statements "
 "have been sent, this date is increased to the next years same day and month."
 msgstr ""
 
-#: company/templates/company.html:316
+#: company/templates/company.html:317
 msgid "Statement sending date"
 msgstr ""
 
-#: company/templates/company.html:343
+#: company/templates/company.html:344
 msgid "Securities"
 msgstr ""
 
-#: company/templates/company.html:346
+#: company/templates/company.html:347
 msgid "security"
 msgstr ""
 
-#: company/templates/company.html:347
+#: company/templates/company.html:348
 msgid "cusip"
 msgstr ""
 
-#: company/templates/company.html:348
+#: company/templates/company.html:349
 msgid "count"
 msgstr ""
 
-#: company/templates/company.html:358 company/tests/test_views.py:78
+#: company/templates/company.html:359 company/tests/test_views.py:78
 msgid "tracking security numbers for owners enabled. segments:"
 msgstr ""
 
-#: company/templates/company.html:371
+#: company/templates/company.html:372
 msgid "Please contact us at our"
 msgstr ""
 
-#: company/templates/company.html:373
+#: company/templates/company.html:374
 msgid ""
 "for getting more security types (common stock, preferred stock, numbered "
 "shares) added"
 msgstr ""
 
-#: company/templates/company.html:379
+#: company/templates/company.html:380
 msgid "Administrators"
 msgstr ""
 
-#: company/templates/company.html:380
+#: company/templates/company.html:381
 msgid "add operator"
 msgstr ""
 
-#: company/templates/company.html:408
+#: company/templates/company.html:409
 msgid "Option Plans"
 msgstr ""
 
-#: company/templates/company.html:414
+#: company/templates/company.html:415
 msgid "Options Plan Name"
 msgstr ""
 
-#: company/templates/company.html:417
+#: company/templates/company.html:418
 msgid "Edit Option Plan"
 msgstr ""
 
-#: company/templates/company.html:428
+#: company/templates/company.html:429
 msgid "Administration"
 msgstr ""
 
-#: company/templates/company.html:432
+#: company/templates/company.html:433
 msgid "reset company"
 msgstr ""
 
-#: company/templates/company.html:435
+#: company/templates/company.html:436
 msgid ""
 "the company, shareholders, transactions, options, and all other assigned "
 "data are deleted. the user can then create the company anew and start fresh"

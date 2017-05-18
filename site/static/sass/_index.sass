@@ -1,0 +1,141 @@
+// --- index page aka landing page
+// FIXME too much code here...
+.intro
+  background-size: cover
+  background-image: linear-gradient(90deg,$color-light-blue 0,$color-blue)
+  width: 100%
+  position: relative
+  color: $color-white
+  header.home
+    padding: 3em 0 3em
+    .container
+      a
+        margin: 0 0.5em 0 0.5em
+      .logo
+        text-align: left
+        font-size: 1.4em
+        display: table-row
+        .logo-text
+          display: table-cell
+          vertical-align: middle
+          height: 43.6px
+        .el-icon-leaf
+          top: 0.2em
+          position: relative
+          font-size: 0.7em
+          left: 0.1em
+      .menu
+        text-align: right
+        display: table-row /* Vertical align  */
+        li
+          vertical-align: middle
+          display: table-cell
+          margin: 0 10px
+          a
+            height: 34px
+            vertical-align: middle
+            display: table-cell
+      .btn-inline.btn-with-separator
+        position: relative
+        &:after
+          content: ""
+          display: block
+          width: 1px
+          height: 1em
+          position: absolute
+          right: -7px
+          top: 9px
+          background-color: $color-white
+      .btn-inline
+        border: none
+        color: $color-white
+        font-size: 1em
+        :hover
+          text-decoration: none
+
+  // --- generic elements
+  // white button
+  a.btn-white
+    padding: 6px 12px
+    box-shadow: 0 1px 1px rgba(0,0,0,.15)
+    color: $color-blue
+    border-color: $color-blue
+  // adjust blockquote
+  blockquote
+    background-color: transparent
+    p
+      color: $color-white
+    p.says
+      font-size: 2em
+      line-height: 1.5em
+      text-align: center
+      &:before
+        color: $color-white
+      &:after
+        color: $color-white
+
+  // --- SECTIONS
+  // generic bright/dark bg classes for index page
+  .section
+    padding: 3em 0 3em
+    text-align: center
+    // content blocks with header and body with two cols at desktop
+    ul > li
+      list-style: none
+      // font-size: 1.5em
+      display: inline-block
+      width: 48%
+      text-align: center
+      padding-bottom: 2em
+      .title
+        font-weight: bold
+  .bright
+    @extend .section
+    background-color: $color-white
+    color: $color-black
+  .dark
+    @extend .section
+    background-color: $color-blue
+    color: $color-white
+  .benefits
+    text-align: left
+    a.btn-focus
+      background-color: $color-blue
+      color: $color-white
+  .blog
+    a
+      background-color: $color-blue
+      color: $color-white
+    h2
+      font-size: 2em
+    blockquote .says
+      color: $color-black
+      font-size: 1.1em
+      &:before, &:after
+        color: $color-blue
+  .newsletter
+    #mc_embed_signup
+      margin-top: 1em
+      label
+        font-size: 1em
+      input
+        display: block
+        margin: 1em auto 0 auto
+        width: 30%
+  // footer as regular section
+  footer
+    .container li
+      display: inline
+      padding-top: initial
+    padding: 5em 0 5em
+  // global section conf including header image and menu
+  .container
+    margin-top: 0em !important
+    text-align: center
+    h1
+      font-size: 2.2em
+      font-weight: bold
+    h2
+      font-size: 1.5em
+    .main-screenshot
+      margin-top: 1em

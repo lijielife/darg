@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-17 07:56+0000\n"
+"POT-Creation-Date: 2017-05-18 07:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1021,46 +1021,78 @@ msgstr ""
 msgid "Try for free now"
 msgstr ""
 
-#: project/templates/index.html:110
+#: project/templates/index.html:108
+msgid "share certificates"
+msgstr ""
+
+#: project/templates/index.html:111
+msgid "Avoid having shares printed"
+msgstr ""
+
+#: project/templates/index.html:112
+msgid "Description index page no share print"
+msgstr ""
+
+#: project/templates/index.html:115
+msgid "handle share certificates"
+msgstr ""
+
+#: project/templates/index.html:122
+msgid "depot statements"
+msgstr ""
+
+#: project/templates/index.html:125
+msgid "automatic depot statement mailing"
+msgstr ""
+
+#: project/templates/index.html:128
+msgid "Fully automatic depot statement sending"
+msgstr ""
+
+#: project/templates/index.html:129
+msgid "Description index page automatic depot sending"
+msgstr ""
+
+#: project/templates/index.html:138
 msgid ""
 "Die Automatische Validierung verhindert Fehler und sichert maximale "
 "Gesetzeskonformitaet. Das Online-Aktienbuch macht die Pflege schnell und "
 "effizient, damit Zeit frei wird fuer die wirklichen Herausforderungen"
 msgstr ""
 
-#: project/templates/index.html:119
+#: project/templates/index.html:147
 msgid "Do you know our Blog?"
 msgstr ""
 
-#: project/templates/index.html:124 project/templates/index.html:125
+#: project/templates/index.html:152 project/templates/index.html:153
 msgid "Read our Blog"
 msgstr ""
 
-#: project/templates/index.html:132
+#: project/templates/index.html:160
 msgid "Subscribe to our newsletter!"
 msgstr ""
 
-#: project/templates/index.html:133
+#: project/templates/index.html:161
 msgid "Stay up to date about our work and latest share register industry news"
 msgstr ""
 
-#: project/templates/index.html:140
+#: project/templates/index.html:168
 msgid "Geben Sie Ihre Email-Adresse ein"
 msgstr ""
 
-#: project/templates/index.html:169 project/templates/index.html:170
+#: project/templates/index.html:197 project/templates/index.html:198
 msgid "Read our blog"
 msgstr ""
 
-#: project/templates/index.html:174 project/templates/index.html:175
+#: project/templates/index.html:202 project/templates/index.html:203
 msgid "Service Status"
 msgstr ""
 
-#: project/templates/index.html:179 project/templates/index.html:180
+#: project/templates/index.html:207 project/templates/index.html:208
 msgid "AGB"
 msgstr ""
 
-#: project/templates/index.html:184 project/templates/index.html:185
+#: project/templates/index.html:212 project/templates/index.html:213
 msgid "A service provided by KKD Komm. GmbH"
 msgstr ""
 
