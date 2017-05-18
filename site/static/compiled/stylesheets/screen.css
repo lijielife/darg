@@ -169,6 +169,9 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 .intro .section ul > li .title, .intro .bright ul > li .title, .intro .dark ul > li .title {
   font-weight: bold;
 }
+.intro .section img, .intro .bright img, .intro .dark img {
+  width: 6em;
+}
 .intro .bright {
   background-color: #fff;
   color: #666;
