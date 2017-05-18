@@ -3787,7 +3787,7 @@ div.address-data {
   body.core blockquote p.says {
     font-size: 1.4em;
   }
-  body.core .benefits ul > li {
+  body.core .benefits ul > li, body.core .dark ul > li, body.core .bright ul > li {
     font-size: 1.4em;
   }
 
@@ -4219,7 +4219,7 @@ div.address-data {
   body .intro blockquote p.says {
     font-size: 1.4em;
   }
-  body .intro .benefits ul > li {
+  body .intro .benefits ul > li, body .intro .dark ul > li, body .intro .bright ul > li {
     display: block;
     padding-bottom: 1em;
     width: 100%;
@@ -4404,7 +4404,7 @@ div.address-data {
   body.core .intro blockquote p.says {
     font-size: 1.2em;
   }
-  body.core .intro .benefits ul > li {
+  body.core .intro .benefits ul > li, body.core .intro .dark ul > li, body.core .intro .bright ul > li {
     font-size: 1.2em;
   }
   body.core #flatpage .pricing .box {
