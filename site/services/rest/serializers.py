@@ -824,9 +824,11 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
                 pk=self.initial_data.get('seller').get('pk'))
 
             # does the seller have enough shares to sell?
+            bought_at = (self.initial_data.get('bought_at') or
+                         timezone.now().date().isoformat())
             sellable_shares = seller.share_count_sellable(
                 security=security,
-                date=timeparse(self.initial_data.get('bought_at')))
+                date=timeparse(bought_at))
             if value > sellable_shares:
                 raise ValidationError(
                     _('seller does not have enough shares. max value is {}. '

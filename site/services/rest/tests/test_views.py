@@ -824,6 +824,100 @@ class PositionViewSetTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
         self.assertEqual(position.stock_book_id, "666")
         self.assertEqual(position.depot_type, "1")
 
+    def test_add_position_missing_bought_at(self):
+        """ must return proper error msg """
+        operator = OperatorGenerator().generate()
+        user = operator.user
+
+        buyer = ShareholderGenerator().generate(company=operator.company)
+        seller = ShareholderGenerator().generate(company=operator.company)
+        securities = TwoInitialSecuritiesGenerator().generate(
+            company=operator.company)
+        PositionGenerator().generate(
+            seller=None, security=securities[1], buyer=seller)
+
+        self.client.force_login(user)
+        add_company_to_session(self.client.session, operator.company)
+        self.add_subscription(operator.company)
+
+        data = {
+            "buyer": {
+                "pk": buyer.pk,
+                "user": {
+                    "first_name": buyer.user.first_name,
+                    "last_name": buyer.user.last_name,
+                    "email": buyer.user.email,
+                    "operator_set": [],
+                    "userprofile": None,
+                },
+                "number": buyer.number,
+                "company": {
+                    "pk": operator.company.pk,
+                    "name": operator.company.name,
+                    "share_count": operator.company.share_count,
+                    "country": "",
+                    "url": "http://codingmachine:9000/services/rest/"
+                           "company/{}".format(operator.company.pk),
+                    "shareholder_count": 2
+                },
+                "share_percent": "99.90",
+                "share_count": 100002,
+                "share_value": 1000020,
+                "validate_gafi": {
+                    "is_valid": True,
+                    "errors": []
+                }
+            },
+            "security": {
+                "pk": securities[1].pk,
+                "readable_title": "Preferred Stock",
+                "title": "P",
+                "count": 3,
+                "face_value": 100
+            },
+            "count": 1,
+            "value": 1,
+            "seller": {
+                "pk": seller.pk,
+                "user": {
+                    "first_name": seller.user.first_name,
+                    "last_name": seller.user.last_name,
+                    "email": seller.user.email,
+                    "operator_set": [],
+                    "userprofile": None
+                },
+                "number": seller.number,
+                "company": {
+                    "pk": 5,
+                    "name": "LieblingzWaldCompany AG",
+                    "share_count": 100100,
+                    "country": "",
+                    "url": "http://codingmachine:9000/services/rest/company/5",
+                    "shareholder_count": 2
+                },
+                "share_percent": "99.90",
+                "share_count": 100002,
+                "share_value": 1000020,
+                "validate_gafi": {
+                    "is_valid": True,
+                    "errors": []
+                }
+            },
+            "comment": "sdfg",
+            "stock_book_id": "666",
+            "depot_type": "1"
+        }
+
+        response = self.client.post(
+            '/services/rest/position',
+            data,
+            **{'HTTP_AUTHORIZATION': 'Token {}'.format(
+                user.auth_token.key), 'format': 'json'})
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data,
+                         {'bought_at': [u'Dieses Feld ist erforderlich.']})
+
     def test_add_position_with_certificate_id(self):
         """ test that we can add a position """
 
