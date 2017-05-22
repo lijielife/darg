@@ -165,6 +165,11 @@ class SisWareImportBackend(BaseImportBackend):
                                                'value': s.face_value,
                                            })
 
+        # create dispo shareholder here... so it gets one of the first three IDs
+        # of this company (for later sorting and disply)
+        self.dispo_shareholder = self._get_or_create_dispo_shareholder()
+        self.dispo_shareholder.set_dispo_shareholder()
+
         # and a matching operator? take the first one we find inside db
         self.operator = self.company.operator_set.first()
         if not self.operator:
@@ -225,8 +230,6 @@ class SisWareImportBackend(BaseImportBackend):
         """
         # first before summarizing
         # create dispo shares (non registered shares placeholder)
-        self.dispo_shareholder = self._get_or_create_dispo_shareholder()
-        self.dispo_shareholder.set_dispo_shareholder()
         self._get_or_create_dispo_shares()
 
         # update security.count value

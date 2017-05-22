@@ -213,7 +213,7 @@ class SisWareImportBackendTestCase(ImportTestCaseMixin, TestCase):
         self.backend._init_import(self.company.pk)
         self.assertEqual(self.company.security_set.count(), 3)
         # corp sh and transfer shareholder
-        self.assertEqual(self.company.shareholder_set.count(), 2)
+        self.assertEqual(self.company.shareholder_set.count(), 3)
         self.assertEqual(self.company.operator_set.count(), 1)
 
     def test_match_depot_type(self):
