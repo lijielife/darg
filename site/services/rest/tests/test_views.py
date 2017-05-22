@@ -1270,7 +1270,7 @@ class PositionViewSetTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
         # was 55, increased to 95
         # with self.assertLessNumQueries(60):
         # NOTE: increased queries due to subscription check. was 78
-        with self.assertLessNumQueries(140):
+        with self.assertLessNumQueries(156):
             response = self.client.post(
                 u'/services/rest/position',
                 data,
