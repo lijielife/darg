@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-22 19:10+0000\n"
-"PO-Revision-Date: 2017-05-22 10:25+0000\n"
+"POT-Creation-Date: 2017-05-22 19:40+0000\n"
+"PO-Revision-Date: 2017-05-22 19:41+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -51,7 +51,7 @@ msgstr "Kontoauszüge"
 msgid "Preview"
 msgstr "Vorschau"
 
-#: shareholder/admin.py:222 shareholder/models.py:2085
+#: shareholder/admin.py:222 shareholder/models.py:2089
 msgid "shareholder statements"
 msgstr "Depotauszüge"
 
@@ -99,11 +99,11 @@ msgstr "Brief versendet?"
 msgid "User"
 msgstr "Nutzer"
 
-#: shareholder/admin.py:283 shareholder/models.py:1779
+#: shareholder/admin.py:283 shareholder/models.py:1783
 msgid "company"
 msgstr "Unternehmen"
 
-#: shareholder/admin.py:287 shareholder/models.py:1780
+#: shareholder/admin.py:287 shareholder/models.py:1784
 msgid "report date"
 msgstr "Berichtsdatum"
 
@@ -234,23 +234,31 @@ msgstr ""
 "Komma-separierte Liste von VR Mitgliedern, welche die Zertifikate "
 "unterzeichnen"
 
-#: shareholder/models.py:168
+#: shareholder/models.py:169
+msgid ""
+"string with comma separated names for support contact printed inside "
+"statement"
+msgstr ""
+"Zeichenkette mit Namen der Support-Verantwortlichen. Getrennt durch Komma, "
+"verwendet im Depotauszug und anderen PDF Dokumenten."
+
+#: shareholder/models.py:172
 msgid "Email"
 msgstr "Email"
 
-#: shareholder/models.py:171
+#: shareholder/models.py:175
 msgid "Is statement sending enabled"
 msgstr "Versand der Kontoauszüge aktiviert?"
 
-#: shareholder/models.py:172
+#: shareholder/models.py:176
 msgid "statement sending date"
 msgstr "Datum für Versand der Kontoauszüge"
 
-#: shareholder/models.py:175
+#: shareholder/models.py:179
 msgid "Is sending the shareholder statement via snail mail enabled"
 msgstr "Das Senden der Depotauszüge per Brief/Post ist aktiviert"
 
-#: shareholder/models.py:182
+#: shareholder/models.py:186
 #: shareholder/templates/pdf/_statement_preview.pdf.html:14
 #: shareholder/templates/pdf/_statement_preview.pdf.html:15
 #: shareholder/templates/pdf/_statement_preview.pdf.html:16
@@ -260,268 +268,265 @@ msgstr "Das Senden der Depotauszüge per Brief/Post ist aktiviert"
 msgid "Company"
 msgstr "Unternehmen"
 
-#: shareholder/models.py:183
+#: shareholder/models.py:187
 msgid "Companies"
 msgstr "Unternehmen"
 
-#: shareholder/models.py:192
+#: shareholder/models.py:196
 msgid "Your list of partials for the share split for company '{}'"
 msgstr "Ihre Liste gespaltener Aktienanrechte für das Unternehmen '{}'"
 
-#: shareholder/models.py:195
+#: shareholder/models.py:199
 msgid ""
 "Dear Operator,\n"
 "\n"
-"Your share split has been successful. Please find the list of partial shares "
-"below:\n"
+"Your share split has been successful. Please find the list of partial shares below:\n"
 "\n"
 msgstr ""
 "Lieber Operator,\n"
 "\n"
-"Der Aktiensplit war erfolgreich. Sie finden die Daten zu den teilweisen "
-"Aktienanrechten wie folgt:\n"
+"Der Aktiensplit war erfolgreich. Sie finden die Daten zu den teilweisen Aktienanrechten wie folgt:\n"
 "\n"
 
-#: shareholder/models.py:203
+#: shareholder/models.py:207
 msgid "{}{}({}): {} shares\n"
 msgstr "{} {} ({}): {} shares\n"
 
-#: shareholder/models.py:210
+#: shareholder/models.py:214
 msgid "--- No partial shares during split --- \n"
 msgstr "--- Keine partiellen Splitbeträge ---\n"
 
-#: shareholder/models.py:213
+#: shareholder/models.py:217
 msgid ""
 "\n"
-"These shareholders are eligible to either sell their partial shares or get "
-"compensated.\n"
+"These shareholders are eligible to either sell their partial shares or get compensated.\n"
 "\n"
 "Please handle them accordingly and update the share register.\n"
 "\n"
 "Your Share Register Team"
 msgstr ""
 "\n"
-"Diese Gesellschafter sind berechtigt Ihre Anrechte zu verschenken, verkaufen "
-"oder eine entsprechende Kompensation für die Nichtverwendung zu erhalten.\n"
+"Diese Gesellschafter sind berechtigt Ihre Anrechte zu verschenken, verkaufen oder eine entsprechende Kompensation für die Nichtverwendung zu erhalten.\n"
 "\n"
-"Bitte handhaben Sie diese Anteile entsprechend und tragen Sie die "
-"durchgeführten Transaktionen nach.\n"
+"Bitte handhaben Sie diese Anteile entsprechend und tragen Sie die durchgeführten Transaktionen nach.\n"
 "\n"
 "Mit besten Grüßen\n"
 "\n"
 "Das Aktienregister-Team"
 
-#: shareholder/models.py:642
+#: shareholder/models.py:646
 msgid "Share split of {} on {} with ratio {}:{}. Return of old shares."
-msgstr "Aktiensplit von {} für {} mit Verhältnis {}:{}. Rückgabe alter Aktien."
+msgstr ""
+"Aktiensplit von {} für {} mit Verhältnis {}:{}. Rückgabe alter Aktien."
 
-#: shareholder/models.py:664
+#: shareholder/models.py:668
 msgid "Share split of {} on {} with ratio {}:{}. Provisioning of new shares."
 msgstr "Aktiensplit von {} für {} mit Verhältnis {}:{}. Ausgabe neuer Aktien."
 
-#: shareholder/models.py:806
+#: shareholder/models.py:810
 msgid "Human Being"
 msgstr "Natürliche Person"
 
-#: shareholder/models.py:807 shareholder/tests/test_functional.py:182
+#: shareholder/models.py:811 shareholder/tests/test_functional.py:182
 msgid "Corporate"
 msgstr "Juristische Person"
 
-#: shareholder/models.py:823
+#: shareholder/models.py:827
 msgid "legal type of the user"
 msgstr "Rechtsfähigkeit / Aktionärsart"
 
-#: shareholder/models.py:828
+#: shareholder/models.py:832
 msgid "when did the user register with the share register 1st time."
 msgstr "Datum der Ersteintragung ins Register"
 
-#: shareholder/models.py:846
+#: shareholder/models.py:850
 msgid "user with legal type company must have company name set"
 msgstr "Eine Juristische Person muss den Unternehmensnamen angegeben haben."
 
-#: shareholder/models.py:850
+#: shareholder/models.py:854
 msgid "user company must have legal type set to company"
 msgstr "Bitte ändern Sie die Aktionärsart in Juristische Person"
 
-#: shareholder/models.py:874
+#: shareholder/models.py:878
 msgid "how should the shareholder be approached by the corp"
 msgstr "Wie soll der Aktionär durch die Gesellschaft kontaktiert werden?"
 
-#: shareholder/models.py:877
+#: shareholder/models.py:881
 msgid "user is management/board member of company"
 msgstr "Gesellschafter ist Mitglied des VR/Managements"
 
-#: shareholder/models.py:878
+#: shareholder/models.py:882
 msgid "cache data for fast sorting here"
 msgstr "gecachte Daten für schnelleres Sortieren"
 
-#: shareholder/models.py:1359
+#: shareholder/models.py:1363
 msgid "Missing all data required for #GAFI."
 msgstr "Alle Daten für GAFI-FATF fehlen."
 
-#: shareholder/models.py:1370
+#: shareholder/models.py:1374
 msgid "Shareholder first name or last name missing."
 msgstr "Vorname, Nachname des Gesellschafters fehlen."
 
-#: shareholder/models.py:1377
+#: shareholder/models.py:1381
 msgid "Company name or last name missing."
 msgstr "Name des Unternehmens nicht vorhanden."
 
-#: shareholder/models.py:1381
+#: shareholder/models.py:1385
 msgid "Shareholder birthday missing."
 msgstr "Geburstag ist nicht angegeben."
 
-#: shareholder/models.py:1385
+#: shareholder/models.py:1389
 msgid "Shareholder origin/country missing."
 msgstr "Land des Aktionärs fehlt."
 
-#: shareholder/models.py:1394
+#: shareholder/models.py:1398
 msgid "Shareholder address or address details missing."
 msgstr "Adresse oder Adressdetails des Aktionärs fehlt."
 
-#: shareholder/models.py:1449
+#: shareholder/models.py:1453
 msgid "Preferred Stock"
 msgstr "Vorzugsaktien"
 
-#: shareholder/models.py:1450
+#: shareholder/models.py:1454
 msgid "Common Stock"
 msgstr "Stammaktien"
 
-#: shareholder/models.py:1451
+#: shareholder/models.py:1455
 msgid "Registered Shares"
 msgstr "Namensaktien"
 
-#: shareholder/models.py:1452
+#: shareholder/models.py:1456
 msgid "Registered share with restricted transferability"
 msgstr "Vinkulierte Namensaktien"
 
-#: shareholder/models.py:1459
+#: shareholder/models.py:1463
 msgid "Nominal value of this asset"
 msgstr "Nominalwert"
 
-#: shareholder/models.py:1465 shareholder/models.py:1557
-#: shareholder/models.py:1674 shareholder/models.py:1732
+#: shareholder/models.py:1469 shareholder/models.py:1561
+#: shareholder/models.py:1678 shareholder/models.py:1736
 msgid "JSON list of segments of ids for securities. can be 1, 2, 3, 4-10"
 msgstr "JSON Liste der IDs der Wertpapiere. Kann [1,2,3, u'5-9'] sein."
 
-#: shareholder/models.py:1468
+#: shareholder/models.py:1472
 msgid "public security id aka Valor, WKN, CUSIP: http://bit.ly/2ieXwuK"
 msgstr ""
 "Öffentliche Wertpapiernummer aka Valor, WKN, CUSIP: http://bit.ly/2ieXwuK"
 
-#: shareholder/models.py:1473
+#: shareholder/models.py:1477
 msgid ""
 "App needs to track IDs of shares. WARNING: update initial transaction with "
 "segments on enabling."
 msgstr ""
-"Aktiennummern sollen verfolgt werden. WARNUNG: bei Aktivierung aktualisieren "
-"sie bitte auch alle vorhandenen Transaktionen für dieses Wertpapier!"
+"Aktiennummern sollen verfolgt werden. WARNUNG: bei Aktivierung aktualisieren"
+" sie bitte auch alle vorhandenen Transaktionen für dieses Wertpapier!"
 
-#: shareholder/models.py:1481
+#: shareholder/models.py:1485
 msgid "{} ({} CHF)"
 msgstr "{} ({} CHF)"
 
-#: shareholder/models.py:1546
+#: shareholder/models.py:1550
 msgid "Share Count transfered or created"
 msgstr "transferierte oder erstellte Aktienanzahl"
 
-#: shareholder/models.py:1550
+#: shareholder/models.py:1554
 msgid "Nominal value or payed price for the transaction"
 msgstr "Nominalwert (bei Kapitalerhöhung) oder Kaufpreis"
 
-#: shareholder/models.py:1554
+#: shareholder/models.py:1558
 msgid "Position is part of a split transaction"
 msgstr "Transaktion ist Teil eines Aktiensplits"
 
-#: shareholder/models.py:1560 shareholder/models.py:1735
+#: shareholder/models.py:1564 shareholder/models.py:1739
 msgid "Securities are purchase type (for myself, etc.)"
 msgstr "Wertpapiererwerb für ..."
 
-#: shareholder/models.py:1563 shareholder/models.py:1738
+#: shareholder/models.py:1567 shareholder/models.py:1742
 msgid "aka Skontro (read http://bit.ly/2iJquEl)"
 msgstr "aka Skontro (read http://bit.ly/2iJquEl)"
 
-#: shareholder/models.py:1566 shareholder/models.py:1741
+#: shareholder/models.py:1570 shareholder/models.py:1745
 msgid "What kind of depot is this position stored within"
 msgstr "In welcher Depotart wird das Wertpapier gespeichert."
 
-#: shareholder/models.py:1571
+#: shareholder/models.py:1575
 msgid ""
-"assigned position represents the change back to company depot from cert depot"
+"assigned position represents the change back to company depot from cert "
+"depot"
 msgstr ""
 "Zugewiesene Transaktion repräsentiert den Wechsel von Zertifikatsdepot zu "
 "Gesellschaftsdepot."
 
-#: shareholder/models.py:1604
+#: shareholder/models.py:1608
 msgid "Capital Increase"
 msgstr "Kapitalerhöhung oder Gründung"
 
-#: shareholder/models.py:1606
+#: shareholder/models.py:1610
 msgid "Part of Split"
 msgstr "Teil einer Splittransaktion"
 
-#: shareholder/models.py:1609
+#: shareholder/models.py:1613
 msgid "Share issue"
 msgstr "Aktienausgabe"
 
-#: shareholder/models.py:1611
+#: shareholder/models.py:1615
 msgid "share issue into cert depot"
 msgstr "Aktienausgabe  ins Zertifikatsdepot"
 
-#: shareholder/models.py:1614
+#: shareholder/models.py:1618
 msgid "move stock to certificate depot"
 msgstr "Übertragung der Aktien ins Zertifikatsdepot"
 
-#: shareholder/models.py:1616
+#: shareholder/models.py:1620
 msgid "stock returns from certificate depot"
 msgstr "Aktienübertragung aus dem Zertifikatsdepot"
 
-#: shareholder/models.py:1617
+#: shareholder/models.py:1621
 msgid "Regular Ownership change"
 msgstr "Regulärer Eigentümerwechsel"
 
-#: shareholder/models.py:1638
+#: shareholder/models.py:1642
 msgid "Certificate Invalidation for position {}"
 msgstr "Zertifikat für Transaktion {} invalidieren"
 
-#: shareholder/models.py:1668
+#: shareholder/models.py:1672
 msgid "Number of shares approved"
 msgstr "Anzahl der genehmigten Aktien"
 
-#: shareholder/models.py:1793 shareholder/models.py:2054
+#: shareholder/models.py:1797 shareholder/models.py:2058
 msgid "shareholder statement report"
 msgstr "Bericht Depotauszüge"
 
-#: shareholder/models.py:1794
+#: shareholder/models.py:1798
 msgid "shareholder statement reports"
 msgstr "Berichte Depotauszüge"
 
-#: shareholder/models.py:2061
+#: shareholder/models.py:2065
 msgid "email sent at"
 msgstr "Email gesendet am"
 
-#: shareholder/models.py:2063
+#: shareholder/models.py:2067
 msgid "email opened at"
 msgstr "Email geöffnet am"
 
-#: shareholder/models.py:2065
+#: shareholder/models.py:2069
 msgid "PDF downloaded at"
 msgstr "PDF heruntergeladen am"
 
-#: shareholder/models.py:2067
+#: shareholder/models.py:2071
 msgid "letter sent at"
 msgstr "Brief versendet am"
 
-#: shareholder/models.py:2071
+#: shareholder/models.py:2075
 msgid "remote email id"
 msgstr "Remote Email ID"
 
-#: shareholder/models.py:2074
+#: shareholder/models.py:2078
 #, python-brace-format
 msgid "Prefix id with provider, e.g. mandrill{sep}[EMAIL_ID]"
 msgstr "Prefix ID mit Provider, z.B.  mandrill{sep}[EMAIL_ID]"
 
-#: shareholder/models.py:2084
+#: shareholder/models.py:2088
 msgid "shareholder statement"
 msgstr "Depotauszüge"
 
@@ -532,8 +537,8 @@ msgstr "Das Unternehmen hat keine Administratoren"
 #: shareholder/tasks.py:72 shareholder/tasks.py:186
 msgid "Company {} (ID: {}) has no active operator(s) with an email address!"
 msgstr ""
-"Unternehmen {} (ID: {}) hat keine aktiven Administratoren mit einer gültigen "
-"Email-Adresse!"
+"Unternehmen {} (ID: {}) hat keine aktiven Administratoren mit einer gültigen"
+" Email-Adresse!"
 
 #: shareholder/tasks.py:108
 #, python-brace-format
@@ -546,15 +551,13 @@ msgstr "Benachrichtigung der Administratoren zu Kontoauszügen fehlgeschlagen"
 
 #: shareholder/tasks.py:155
 msgid ""
-"The notification for company operators about an upcoming statement "
-"generation could not be sent:\n"
+"The notification for company operators about an upcoming statement generation could not be sent:\n"
 "\n"
 "{}\n"
 "\n"
 "The company is: {} (ID: {})"
 msgstr ""
-"Die Benachrichtigung an Administratoren bzgl. eines anstehenden Versandes "
-"von Depotauszügen konnte nicht versendet werden:\n"
+"Die Benachrichtigung an Administratoren bzgl. eines anstehenden Versandes von Depotauszügen konnte nicht versendet werden:\n"
 "\n"
 "{}\n"
 "\n"
@@ -575,15 +578,13 @@ msgstr "Benachrichtigung der Administratoren zu Kontoauszügen fehlgeschlagen"
 
 #: shareholder/tasks.py:258
 msgid ""
-"The notification for company operators about a report for shareholder "
-"statements could not be sent:\n"
+"The notification for company operators about a report for shareholder statements could not be sent:\n"
 "\n"
 "{}\n"
 "\n"
 "The company is: {} (ID: {})"
 msgstr ""
-"Die Benachrichtigung and die Administratoren des Unternehmens konnten nicht "
-"versendet werden:\n"
+"Die Benachrichtigung and die Administratoren des Unternehmens konnten nicht versendet werden:\n"
 "\n"
 "{}\n"
 "\n"
@@ -596,21 +597,17 @@ msgstr "Der Nutzer hat keine Email-Adresse"
 #: shareholder/tasks.py:315
 #, python-brace-format
 msgid ""
-"The following users, who is a shareholder of {company} is missing an email "
-"address.\n"
+"The following users, who is a shareholder of {company} is missing an email address.\n"
 "\n"
 "{user} (ID: {user_id})\n"
 "\n"
-"We can not send him the shareholder statement until a valid email address is "
-"provided."
+"We can not send him the shareholder statement until a valid email address is provided."
 msgstr ""
-"Die folgenden Aktionäre, welche Gesellschafter des Unternehmens {company} "
-"sind, haben keine Email hinterlegt.\n"
+"Die folgenden Aktionäre, welche Gesellschafter des Unternehmens {company} sind, haben keine Email hinterlegt.\n"
 "\n"
 "{user} (ID: {user_id})\n"
 "\n"
-"Wir können diesem Nutzer keinen Kontoauszug senden, solange keine valide "
-"Email-Adresse vorhanden ist."
+"Wir können diesem Nutzer keinen Kontoauszug senden, solange keine valide Email-Adresse vorhanden ist."
 
 #: shareholder/tasks.py:332
 msgid "A statement is missing the PDF file"
@@ -629,8 +626,7 @@ msgstr ""
 "\n"
 "{statement} (ID: {statement_id})\n"
 "\n"
-"Wir können diesem keine Kontoauszüge senden, solange keine valide Datei "
-"vorhanden ist."
+"Wir können diesem keine Kontoauszüge senden, solange keine valide Datei vorhanden ist."
 
 #: shareholder/tasks.py:377
 #, python-brace-format
@@ -691,16 +687,14 @@ msgid ""
 "\n"
 "  <p>\n"
 "    Dear %(user_name)s,<br />\n"
-"    an automatically generated depot statement is ready for download!<br /"
-"><br />\n"
+"    an automatically generated depot statement is ready for download!<br /><br />\n"
 "    You can download the file <a href=\"%(download_url)s\">here</a>.\n"
 "  </p>\n"
 msgstr ""
 "\n"
 "<p>\n"
 "Sehr geehrte(r) %(user_name)s,<br />\n"
-"Der automatisch erstellte Depotauszug steht zum Download bereit!<br /><br /"
-">\n"
+"Der automatisch erstellte Depotauszug steht zum Download bereit!<br /><br />\n"
 "Sie können das PDF <a href=\"%(download_url)s\">hier herunterladen</a>.\n"
 "</p>\n"
 
@@ -715,8 +709,7 @@ msgid ""
 msgstr ""
 "\n"
 "Falls Sie den Kontoauszug nicht innerhalb der nächsten \n"
-"%(letter_sent_offset)s Tage herunterladen, werden wir Ihnen diesen als Brief "
-"zusenden."
+"%(letter_sent_offset)s Tage herunterladen, werden wir Ihnen diesen als Brief zusenden."
 
 #: shareholder/templates/email/statement.txt:6
 #, python-format
@@ -739,8 +732,7 @@ msgstr ""
 "\n"
 "Sehr geehrte(r) %(user_name)s,\n"
 "\n"
-"der automatisch erstellte Depotauszug steht Ihnen ab sofort zum Download zur "
-"Verfügung!\n"
+"der automatisch erstellte Depotauszug steht Ihnen ab sofort zum Download zur Verfügung!\n"
 "\n"
 "Sie können diesen jetzt hier herunterladen: %(download_url)s\n"
 
@@ -752,8 +744,7 @@ msgid ""
 "days, a physical letter with the statement will be sent to you.\n"
 msgstr ""
 "\n"
-"Falls Sie den Depotauszug nicht innerhalb der nächsten "
-"%(letter_sent_offset)s\n"
+"Falls Sie den Depotauszug nicht innerhalb der nächsten %(letter_sent_offset)s\n"
 "Tage herunterladen, versenden wir diesen per Post an Sie.\n"
 
 #: shareholder/templates/email/statement_operator_notify.html:6
@@ -761,8 +752,7 @@ msgstr ""
 msgid ""
 "\n"
 "  <p>\n"
-"    The following company is about to get depot statements generated "
-"automatically:\n"
+"    The following company is about to get depot statements generated automatically:\n"
 "    <br /><br />\n"
 "    <strong>%(company_name)s</strong>\n"
 "    <br /><br />\n"
@@ -774,13 +764,11 @@ msgid ""
 "  </p>\n"
 "  <p>\n"
 "    If you want to change the date or disable statement generation all\n"
-"    together, you may visit the <a href=\"%(company_url)s\">company page</"
-"a>.\n"
+"    together, you may visit the <a href=\"%(company_url)s\">company page</a>.\n"
 "  </p>\n"
 msgstr ""
 "\n"
-"<p>Für das folgende Unternehmen werden demnächst automatisch die "
-"Depotauszüge erstellt:\n"
+"<p>Für das folgende Unternehmen werden demnächst automatisch die Depotauszüge erstellt:\n"
 "<br /><br />\n"
 "<strong>%(company_name)s</strong>\n"
 "<br /><br />\n"
@@ -791,17 +779,14 @@ msgstr ""
 "Sie finden im Anhang eine vollständige Voransicht eines Depotauszuges.\n"
 "</p>\n"
 "<p>\n"
-"Falls Sie das Datum ändern oder den Versand deaktivieren wollen, können Sie "
-"dies unter den <a href=\"%(company_url)s\">Unternehmenseinstellungen</a> "
-"veranlassen.\n"
+"Falls Sie das Datum ändern oder den Versand deaktivieren wollen, können Sie dies unter den <a href=\"%(company_url)s\">Unternehmenseinstellungen</a> veranlassen.\n"
 "</p>\n"
 
 #: shareholder/templates/email/statement_operator_notify.txt:6
 #, python-format
 msgid ""
 "\n"
-"The following company is about to get depot statements generated "
-"automatically:\n"
+"The following company is about to get depot statements generated automatically:\n"
 "\n"
 "%(company_name)s\n"
 "\n"
@@ -811,13 +796,11 @@ msgid ""
 "\n"
 "Attached you'll find a preview of a statement.\n"
 "\n"
-"If you want to change the date or disable statement generation all "
-"together,\n"
+"If you want to change the date or disable statement generation all together,\n"
 "you may visit the company page: %(company_url)s\n"
 msgstr ""
 "\n"
-"Für das folgende Unternehmen werden demnächst automatisch die Depotauszüge "
-"erstellt:\n"
+"Für das folgende Unternehmen werden demnächst automatisch die Depotauszüge erstellt:\n"
 "\n"
 "%(company_name)s\n"
 "\n"
@@ -827,8 +810,7 @@ msgstr ""
 "\n"
 "Sie finden im Anhang eine vollständige Voransicht eines Depotauszuges\n"
 "\n"
-"Falls Sie das Datum ändern oder den Versand deaktivieren wollen, können Sie "
-"dies unter den %(company_url)s veranlassen.\n"
+"Falls Sie das Datum ändern oder den Versand deaktivieren wollen, können Sie dies unter den %(company_url)s veranlassen.\n"
 
 #: shareholder/templates/email/statement_report_operator_notify.html:6
 #: shareholder/templates/email/statement_report_operator_notify.txt:6
@@ -884,7 +866,8 @@ msgstr "als Brief versendet"
 #: shareholder/templates/email/statement_report_operator_notify.html:24
 #: shareholder/templates/email/statement_report_operator_notify.txt:21
 msgid ""
-"The following users could not be sent a letter because an address was missing"
+"The following users could not be sent a letter because an address was "
+"missing"
 msgstr ""
 "Den folgenden Nutzern konnte wegen fehlender Adresse kein Brief gesendet "
 "werden"
@@ -932,7 +915,7 @@ msgid "Your contact person(s):"
 msgstr "Ihr Ansprechpartner"
 
 #: shareholder/templates/pdf/_statement_preview.pdf.html:24
-#: shareholder/templates/pdf/statement.pdf.html:94
+#: shareholder/templates/pdf/statement.pdf.html:92
 msgid "Your shareholder number:"
 msgstr "Ihre Aktionärsnummer"
 
@@ -946,8 +929,8 @@ msgstr "Aktionärsnummer"
 
 #: shareholder/templates/pdf/_statement_preview.pdf.html:36
 #: shareholder/templates/pdf/_statement_preview.pdf.html:138
-#: shareholder/templates/pdf/statement.pdf.html:105
-#: shareholder/templates/pdf/statement.pdf.html:201
+#: shareholder/templates/pdf/statement.pdf.html:103
+#: shareholder/templates/pdf/statement.pdf.html:199
 msgid "Depot statement for"
 msgstr "Kontoauszug für"
 
@@ -961,28 +944,28 @@ msgstr "Aktionär"
 
 #: shareholder/templates/pdf/_statement_preview.pdf.html:41
 #: shareholder/templates/pdf/_statement_preview.pdf.html:143
-#: shareholder/templates/pdf/statement.pdf.html:109
-#: shareholder/templates/pdf/statement.pdf.html:205
+#: shareholder/templates/pdf/statement.pdf.html:107
+#: shareholder/templates/pdf/statement.pdf.html:203
 msgid "Herewith company"
 msgstr "Das Unternehmen"
 
 #: shareholder/templates/pdf/_statement_preview.pdf.html:61
 #: shareholder/templates/pdf/_statement_preview.pdf.html:163
-#: shareholder/templates/pdf/statement.pdf.html:111
-#: shareholder/templates/pdf/statement.pdf.html:207
+#: shareholder/templates/pdf/statement.pdf.html:109
+#: shareholder/templates/pdf/statement.pdf.html:205
 msgid "confirms that"
 msgstr "bestätigt, dass"
 
 #: shareholder/templates/pdf/_statement_preview.pdf.html:71
 #: shareholder/templates/pdf/_statement_preview.pdf.html:173
-#: shareholder/templates/pdf/statement.pdf.html:113
-#: shareholder/templates/pdf/statement.pdf.html:209
+#: shareholder/templates/pdf/statement.pdf.html:111
+#: shareholder/templates/pdf/statement.pdf.html:207
 msgid "is the record holder of the following investment(s)"
 msgstr "Eigentümer der folgenden Position(en) ist"
 
 #: shareholder/templates/pdf/_statement_preview.pdf.html:76
 #: shareholder/templates/pdf/_statement_preview.pdf.html:176
-#: shareholder/templates/pdf/statement.pdf.html:213
+#: shareholder/templates/pdf/statement.pdf.html:211
 msgid "Assets"
 msgstr "Wertpapiere"
 
@@ -990,10 +973,10 @@ msgstr "Wertpapiere"
 #: shareholder/templates/pdf/_statement_preview.pdf.html:101
 #: shareholder/templates/pdf/_statement_preview.pdf.html:179
 #: shareholder/templates/pdf/_statement_preview.pdf.html:201
-#: shareholder/templates/pdf/statement.pdf.html:120
-#: shareholder/templates/pdf/statement.pdf.html:154
-#: shareholder/templates/pdf/statement.pdf.html:216
-#: shareholder/templates/pdf/statement.pdf.html:249
+#: shareholder/templates/pdf/statement.pdf.html:118
+#: shareholder/templates/pdf/statement.pdf.html:152
+#: shareholder/templates/pdf/statement.pdf.html:214
+#: shareholder/templates/pdf/statement.pdf.html:247
 msgid "Type"
 msgstr "Typ"
 
@@ -1001,10 +984,10 @@ msgstr "Typ"
 #: shareholder/templates/pdf/_statement_preview.pdf.html:102
 #: shareholder/templates/pdf/_statement_preview.pdf.html:180
 #: shareholder/templates/pdf/_statement_preview.pdf.html:202
-#: shareholder/templates/pdf/statement.pdf.html:121
-#: shareholder/templates/pdf/statement.pdf.html:155
-#: shareholder/templates/pdf/statement.pdf.html:217
-#: shareholder/templates/pdf/statement.pdf.html:250
+#: shareholder/templates/pdf/statement.pdf.html:119
+#: shareholder/templates/pdf/statement.pdf.html:153
+#: shareholder/templates/pdf/statement.pdf.html:215
+#: shareholder/templates/pdf/statement.pdf.html:248
 msgid "Record Date"
 msgstr "Datum"
 
@@ -1012,17 +995,17 @@ msgstr "Datum"
 #: shareholder/templates/pdf/_statement_preview.pdf.html:103
 #: shareholder/templates/pdf/_statement_preview.pdf.html:181
 #: shareholder/templates/pdf/_statement_preview.pdf.html:203
-#: shareholder/templates/pdf/statement.pdf.html:122
-#: shareholder/templates/pdf/statement.pdf.html:156
-#: shareholder/templates/pdf/statement.pdf.html:218
-#: shareholder/templates/pdf/statement.pdf.html:251
+#: shareholder/templates/pdf/statement.pdf.html:120
+#: shareholder/templates/pdf/statement.pdf.html:154
+#: shareholder/templates/pdf/statement.pdf.html:216
+#: shareholder/templates/pdf/statement.pdf.html:249
 msgid "Quantity"
 msgstr "Anzahl"
 
 #: shareholder/templates/pdf/_statement_preview.pdf.html:82
 #: shareholder/templates/pdf/_statement_preview.pdf.html:182
-#: shareholder/templates/pdf/statement.pdf.html:123
-#: shareholder/templates/pdf/statement.pdf.html:219
+#: shareholder/templates/pdf/statement.pdf.html:121
+#: shareholder/templates/pdf/statement.pdf.html:217
 msgid "Nominal Value"
 msgstr "Nennwert"
 
@@ -1056,16 +1039,16 @@ msgstr "Wertpapierwert"
 
 #: shareholder/templates/pdf/_statement_preview.pdf.html:98
 #: shareholder/templates/pdf/_statement_preview.pdf.html:198
-#: shareholder/templates/pdf/statement.pdf.html:151
-#: shareholder/templates/pdf/statement.pdf.html:246
+#: shareholder/templates/pdf/statement.pdf.html:149
+#: shareholder/templates/pdf/statement.pdf.html:244
 #: shareholder/templates/shareholder/optiontransaction_list.html:13
 msgid "Options"
 msgstr "Optionen"
 
 #: shareholder/templates/pdf/_statement_preview.pdf.html:104
 #: shareholder/templates/pdf/_statement_preview.pdf.html:204
-#: shareholder/templates/pdf/statement.pdf.html:157
-#: shareholder/templates/pdf/statement.pdf.html:252
+#: shareholder/templates/pdf/statement.pdf.html:155
+#: shareholder/templates/pdf/statement.pdf.html:250
 msgid "Strike Price"
 msgstr "Ausübungspreis"
 
@@ -1101,16 +1084,12 @@ msgstr "Wert"
 #, python-format
 msgid ""
 "\n"
-"    According to the company's valuation based on the traded shares with the "
-"last 12 months, your\n"
-"holdings currently value: %(share_value)s in shares and %(options_value)s in "
-"options.\n"
+"    According to the company's valuation based on the traded shares with the last 12 months, your\n"
+"holdings currently value: %(share_value)s in shares and %(options_value)s in options.\n"
 "    "
 msgstr ""
 "\n"
-"Basierend auf der Unternehmensbewertung auf Basis der gehandelten Aktien der "
-"letzten 12 Monate, sind Ihre Aktien aktuell %(share_value)s in Aktien und "
-"%(options_value)s in Optionen wert."
+"Basierend auf der Unternehmensbewertung auf Basis der gehandelten Aktien der letzten 12 Monate, sind Ihre Aktien aktuell %(share_value)s in Aktien und %(options_value)s in Optionen wert."
 
 #: shareholder/templates/pdf/_statement_preview.pdf.html:129
 #: shareholder/templates/pdf/_statement_preview.pdf.html:226
@@ -1125,7 +1104,7 @@ msgid "Operator company"
 msgstr "Unternehmen"
 
 #: shareholder/templates/pdf/_statement_preview.pdf.html:222
-#: shareholder/templates/pdf/statement.pdf.html:349
+#: shareholder/templates/pdf/statement.pdf.html:347
 msgid "This document is to be used for tax authority."
 msgstr "Dieses Dokument ist für steuerliche Zwecke bestimmt."
 
@@ -1216,8 +1195,7 @@ msgid ""
 "is as owner of the certificate with all legal and statuary rights "
 "shareholder of our company."
 msgstr ""
-"ist als Eigentümer dieses Zertifikates mit allen gesetzlichen und "
-"statutarischen Rechten und Pflichten an\n"
+"ist als Eigentümer dieses Zertifikates mit allen gesetzlichen und statutarischen Rechten und Pflichten an\n"
 "unserer Gesellschaft beteiligt."
 
 #: shareholder/templates/pdf/certificate.pdf.html:151
@@ -1271,16 +1249,10 @@ msgstr "Gesamt"
 
 #: shareholder/templates/pdf/invoice.pdf.html:130
 msgid ""
-" Bei der o.g. Leistung handelt es sich um eine sonstige Leistung im Sinne §3 "
-"Abs. 9 UStG, für die der Leistungsempfänger die Steuer schuldet (§13b UStG). "
-"Wir bitten Sie den Gesamtbetrag nach Erhalt der Rechnung an KKD "
-"Kommunikation GmbH über die unten angegebene Kontoverbindung zu begleichen."
-"<br/><br/>\n"
+" Bei der o.g. Leistung handelt es sich um eine sonstige Leistung im Sinne §3 Abs. 9 UStG, für die der Leistungsempfänger die Steuer schuldet (§13b UStG). Wir bitten Sie den Gesamtbetrag nach Erhalt der Rechnung an KKD Kommunikation GmbH über die unten angegebene Kontoverbindung zu begleichen.<br/><br/>\n"
 "Vielen Dank für Ihren Auftrag. "
 msgstr ""
-"Bei der o.g. Leistung handelt es sich um eine sonstige Leistung im Sinne §3 "
-"Abs. 9 UStG, für die der Leistungsempfänger die Steuer schuldet (§13b UStG). "
-"<br/><br/>\n"
+"Bei der o.g. Leistung handelt es sich um eine sonstige Leistung im Sinne §3 Abs. 9 UStG, für die der Leistungsempfänger die Steuer schuldet (§13b UStG). <br/><br/>\n"
 "Der Betrag dankend erhalten.<br/><br/>\n"
 "Vielen Dank für Ihren Auftrag."
 
@@ -1288,34 +1260,30 @@ msgstr ""
 msgid " Mit freundlichen Grüßen!<br/><br/>Jirka Schäfer "
 msgstr "Mit freundlichen Grüßen!<br/><br/>Jirka Schäfer"
 
-#: shareholder/templates/pdf/statement.pdf.html:124
-#: shareholder/templates/pdf/statement.pdf.html:220
+#: shareholder/templates/pdf/statement.pdf.html:122
+#: shareholder/templates/pdf/statement.pdf.html:218
 msgid "Cumulated Capital based on face value"
 msgstr "Kapital"
 
-#: shareholder/templates/pdf/statement.pdf.html:130
-#: shareholder/templates/pdf/statement.pdf.html:226
+#: shareholder/templates/pdf/statement.pdf.html:128
+#: shareholder/templates/pdf/statement.pdf.html:224
 #: shareholder/templates/shareholder/optionplan_detail.html:68
 #: shareholder/templates/shareholder/position_detail.html:56
 msgid "Valor"
 msgstr "Valor/WKN"
 
-#: shareholder/templates/pdf/statement.pdf.html:182
+#: shareholder/templates/pdf/statement.pdf.html:180
 #, python-format
 msgid ""
 "\n"
-"          According to the company's valuation based on the traded shares "
-"with the last 12 months, your\n"
-"holdings currently value: %(share_value)s in shares and %(options_value)s in "
-"options.\n"
+"          According to the company's valuation based on the traded shares with the last 12 months, your\n"
+"holdings currently value: %(share_value)s in shares and %(options_value)s in options.\n"
 "          "
 msgstr ""
 "\n"
-"Entsprechend der Unternehmensbewertung auf Basis des Nennwertes sind Ihre "
-"Positionen aktuell CHF %(share_value)s in Aktien und CHF %(options_value)s "
-"in Optionen wert."
+"Entsprechend der Unternehmensbewertung auf Basis des Nennwertes sind Ihre Positionen aktuell CHF %(share_value)s in Aktien und CHF %(options_value)s in Optionen wert."
 
-#: shareholder/templates/pdf/statement.pdf.html:276
+#: shareholder/templates/pdf/statement.pdf.html:274
 msgid ""
 "is as of today a member of the management/vr of this company. he holds the "
 "following positions with vesting and adjusted tax value according to swiss "
@@ -1323,64 +1291,64 @@ msgid ""
 msgstr ""
 "ist zu diesem Zeitpunkt Mitglied des Managements/Verwaltungsrates dieses "
 "Unternehmens und besitzt die folgenden Positionen mit diskontiertem "
-"Verkehrswert gemäss Schweizer Steuergesetze. Mehr Details unter https://goo."
-"gl/U6ufgL ."
+"Verkehrswert gemäss Schweizer Steuergesetze. Mehr Details unter "
+"https://goo.gl/U6ufgL ."
 
-#: shareholder/templates/pdf/statement.pdf.html:281
+#: shareholder/templates/pdf/statement.pdf.html:279
 msgid "vested shares"
 msgstr "Aktien mit Sperrfrist"
 
-#: shareholder/templates/pdf/statement.pdf.html:284
-#: shareholder/templates/pdf/statement.pdf.html:311
+#: shareholder/templates/pdf/statement.pdf.html:282
+#: shareholder/templates/pdf/statement.pdf.html:309
 msgid "bought at"
 msgstr "Gekauft am"
 
-#: shareholder/templates/pdf/statement.pdf.html:285
-#: shareholder/templates/pdf/statement.pdf.html:312
+#: shareholder/templates/pdf/statement.pdf.html:283
+#: shareholder/templates/pdf/statement.pdf.html:310
 msgid "count"
 msgstr "Anzahl"
 
-#: shareholder/templates/pdf/statement.pdf.html:286
-#: shareholder/templates/pdf/statement.pdf.html:313
+#: shareholder/templates/pdf/statement.pdf.html:284
+#: shareholder/templates/pdf/statement.pdf.html:311
 #: shareholder/templates/shareholder/shareholder_detail.html:269
 #: shareholder/templates/shareholder/shareholder_detail.html:286
 msgid "security"
 msgstr "Wertpapier"
 
-#: shareholder/templates/pdf/statement.pdf.html:287
-#: shareholder/templates/pdf/statement.pdf.html:314
+#: shareholder/templates/pdf/statement.pdf.html:285
+#: shareholder/templates/pdf/statement.pdf.html:312
 msgid "vesting months"
 msgstr "Sperrfrist (Monate)"
 
-#: shareholder/templates/pdf/statement.pdf.html:288
-#: shareholder/templates/pdf/statement.pdf.html:315
+#: shareholder/templates/pdf/statement.pdf.html:286
+#: shareholder/templates/pdf/statement.pdf.html:313
 msgid "vesting expiration date"
 msgstr "Sperrfrist endet am"
 
-#: shareholder/templates/pdf/statement.pdf.html:289
-#: shareholder/templates/pdf/statement.pdf.html:316
+#: shareholder/templates/pdf/statement.pdf.html:287
+#: shareholder/templates/pdf/statement.pdf.html:314
 #, python-format
 msgid "discounted tax ratio(%%)"
 msgstr "Diskontierter Verkehrswert (%%)"
 
-#: shareholder/templates/pdf/statement.pdf.html:290
-#: shareholder/templates/pdf/statement.pdf.html:317
+#: shareholder/templates/pdf/statement.pdf.html:288
+#: shareholder/templates/pdf/statement.pdf.html:315
 msgid "discounted tax value"
 msgstr "Diskontierter Verkehrswert"
 
-#: shareholder/templates/pdf/statement.pdf.html:308
+#: shareholder/templates/pdf/statement.pdf.html:306
 msgid "vested options"
 msgstr "Optionen mit Sperrfrist"
 
-#: shareholder/templates/pdf/statement.pdf.html:335
+#: shareholder/templates/pdf/statement.pdf.html:333
 msgid ""
-"There are not positions and no options with applied vesting at this point of "
-"time."
+"There are not positions and no options with applied vesting at this point of"
+" time."
 msgstr ""
 "Es sind keine Aktien oder Optionen mit Sperrfristen zu diesem Zeitpunkt "
 "registriert."
 
-#: shareholder/templates/pdf/statement.pdf.html:341
+#: shareholder/templates/pdf/statement.pdf.html:339
 msgid "Total amount of discounted tax value is:"
 msgstr "Diskontierter Verkehrswert aller Wertpapiere:"
 
@@ -1668,10 +1636,10 @@ msgid ""
 "foundation transfer shares from company to..."
 msgstr ""
 "Verwenden Sie \"Transaktionen\" um Ausgabe/Verkauf/Kauf von Aktien eines "
-"jeden Gesellschafters aufzuzeichnen. Für die Unternehmensgründung übertragen "
-"Sie Aktien vom Unternehmen an die Aktionäre am Gründungsdatum. Siehe auch <a "
-"href=\"/aktienbuch/quickstart/\" title=\"Quickstart Aktienbuch\" target="
-"\"_blank\">Erste Schritte.</a>"
+"jeden Gesellschafters aufzuzeichnen. Für die Unternehmensgründung übertragen"
+" Sie Aktien vom Unternehmen an die Aktionäre am Gründungsdatum. Siehe auch "
+"<a href=\"/aktienbuch/quickstart/\" title=\"Quickstart Aktienbuch\" "
+"target=\"_blank\">Erste Schritte.</a>"
 
 #: shareholder/templates/shareholder/position_list.html:20
 #: shareholder/templates/shareholder/position_list.html:31
@@ -1746,10 +1714,10 @@ msgstr ""
 msgid ""
 "This is the transfer shareholder, which does not exist in the real world. "
 "but is meant to hold all shares when transfering from an existing share "
-"register when there is no history provided. right after import finishing the "
-"transfer shareholder should not have any shares anymore but is supposed to "
-"server as selling party in each first transaction for existing shareholders. "
-"<strong>DO NOT EDIT ITS DATA.</strong>"
+"register when there is no history provided. right after import finishing the"
+" transfer shareholder should not have any shares anymore but is supposed to "
+"server as selling party in each first transaction for existing shareholders."
+" <strong>DO NOT EDIT ITS DATA.</strong>"
 msgstr ""
 "Dies ist ein virtueller Transfer-Aktionär (AK Übertrag). Dieser dient als "
 "Hilfe beim Import von einem anderen Aktienregister, wenn dieses keine "
@@ -2005,16 +1973,15 @@ msgstr ""
 "Transaktionen: {}"
 
 #: shareholder/validators.py:79
-msgid ""
-"Company share count \"{}\" does not match security count from positions "
-"\"{}\""
+msgid "Company share count \"{}\" does not match security count from positions \"{}\""
 msgstr ""
 "Aktienzahl des Unternehmens \"{}\" ist nicht identisch mit der Anzahl der "
 "Aktion in den Transaktionen \"{}\""
 
 #: shareholder/validators.py:94
 msgid "Address of some shareholders is not reachable via postal mail: {}"
-msgstr "Die Adresse einiger Gesellschafter ist postalisch nicht erreichbar: {}"
+msgstr ""
+"Die Adresse einiger Gesellschafter ist postalisch nicht erreichbar: {}"
 
 #: shareholder/validators.py:112
 msgid "Initial position for security {} is invalid"
@@ -2066,21 +2033,21 @@ msgstr "Kein %(verbose_name)s mit dieser Suchanfrage gefunden"
 #~ msgstr "Stimmrechte gesamt"
 
 #~ msgid ""
-#~ "total votes count effective. excludes unregistered/dispo shares and "
-#~ "shares in company ownership"
+#~ "total votes count effective. excludes unregistered/dispo shares and shares "
+#~ "in company ownership"
 #~ msgstr ""
 #~ "Gesamtzahl Stimmrechte oder auch Stimmrechte effektiv. Beinhaltet nicht "
-#~ "Stimmrechte von nicht registrierten Aktien/Dispoaktion und ebenfalls "
-#~ "nicht enthalten sind Stimmrechte von Aktien, welche im Eigentum der "
-#~ "Gesellschaft liegen."
+#~ "Stimmrechte von nicht registrierten Aktien/Dispoaktion und ebenfalls nicht "
+#~ "enthalten sind Stimmrechte von Aktien, welche im Eigentum der Gesellschaft "
+#~ "liegen."
 
 #~ msgid "Total votes count based on shares floating"
 #~ msgstr "Stimmrechte effektiv basierend auf ausgegebenen Aktien"
 
 #~ msgid "Does include shares used for options. Without options it would be"
 #~ msgstr ""
-#~ "Beinhaltet Aktien welche für Optionen/Urkunden verwendet wurden. Rechnet "
-#~ "man diese heraus ergibt dies"
+#~ "Beinhaltet Aktien welche für Optionen/Urkunden verwendet wurden. Rechnet man"
+#~ " diese heraus ergibt dies"
 
 #~ msgid "Total option count based on shares dedicated to options"
 #~ msgstr "Aktien reserviert für Optionen"
