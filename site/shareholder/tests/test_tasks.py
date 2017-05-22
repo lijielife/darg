@@ -182,6 +182,7 @@ class TasksTestCase(AddressTestMixin, FakeResponseMixin, StripeTestCaseMixin,
         self.assertFalse(send_statement_email(0))
 
         statement = mommy.make(ShareholderStatement, pdf_file='example.pdf')
+        mommy.make('shareholder.Shareholder', user=statement.user)
 
         # no user email
         self.assertFalse(statement.user.email)
