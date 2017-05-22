@@ -87,9 +87,7 @@
               {{ shareholder.company.get_company_shareholder.user.userprofile.country.name }}
               <br /><br />
               {% trans "Your contact person(s):" %}:<br />
-              {% for operator in shareholder.company.get_operators %}
-                {{ operator.user.get_full_name }}{% if not forloop.last %}, {% endif %}
-              {% endfor %}
+              {{ shareholder.company.support_contact }}
               <br /><br />
               {% trans "Your shareholder number:" %}:
               {{ shareholder.number }}

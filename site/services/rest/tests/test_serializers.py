@@ -119,6 +119,7 @@ class CompanySerializerTestCase(TestCase):
         serializer = CompanySerializer(instance=self.instance,
                                        context={'request': self.request})
         self.assertIn('signatures', serializer.data.keys())
+        self.assertIn('support_contact', serializer.data.keys())
 
     def test_get_profile_url(self):
         url = self.serializer.get_profile_url(self.instance)

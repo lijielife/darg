@@ -165,6 +165,10 @@ class Company(AddressModelMixin, models.Model):
         _('comma separated list of board members permitted to sign in the name '
           'of the company'),
         max_length=255, blank=True)
+    support_contact = models.CharField(
+        _('string with comma separated names for support contact printed '
+          'inside statement'),
+        max_length=255, blank=True)
     email = models.EmailField(_('Email'), blank=True)  # required by djstripe
 
     is_statement_sending_enabled = models.BooleanField(
