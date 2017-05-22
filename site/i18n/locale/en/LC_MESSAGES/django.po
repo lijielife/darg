@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-22 08:06+0000\n"
+"POT-Creation-Date: 2017-05-22 08:42+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -93,33 +93,33 @@ msgstr ""
 msgid "Upload success"
 msgstr ""
 
-#: company/templates/company.html:49
-msgid "Data"
+#: company/templates/company.html:50
+msgid "Compeny settings"
 msgstr ""
 
-#: company/templates/company.html:52
+#: company/templates/company.html:53
 msgid "Company Name"
 msgstr ""
 
-#: company/templates/company.html:64
+#: company/templates/company.html:65
 msgid "Company Share Count"
 msgstr ""
 
-#: company/templates/company.html:77
+#: company/templates/company.html:78
 msgid ""
 "The date when the company was registered with public authorities. Date "
 "format is dd.mm.YY without leading zero for the day"
 msgstr ""
 
-#: company/templates/company.html:78
+#: company/templates/company.html:79
 msgid "Company founding date"
 msgstr ""
 
-#: company/templates/company.html:102
+#: company/templates/company.html:103
 msgid "Provisioned Capital (Liberiertes Kapital)"
 msgstr ""
 
-#: company/templates/company.html:115
+#: company/templates/company.html:116
 msgid "CHF for one vote based on face value of securities"
 msgstr ""
 
@@ -127,191 +127,205 @@ msgstr ""
 msgid "Company Headquarter Country"
 msgstr ""
 
-#: company/templates/company.html:144
-msgid "This value is calculated every 24hrs."
+#: company/templates/company.html:142
+msgid ""
+"Enter names of VR members to appear inside share certificate PDF signature. "
+"Separate names with comma"
 msgstr ""
 
-#: company/templates/company.html:145
-msgid "Total count of current shareholders"
+#: company/templates/company.html:143
+msgid "Certificate Signatures"
 msgstr ""
 
 #: company/templates/company.html:157
+msgid "Company KPIs"
+msgstr ""
+
+#: company/templates/company.html:163
+msgid "This value is calculated every 24hrs."
+msgstr ""
+
+#: company/templates/company.html:164
+msgid "Total count of current shareholders"
+msgstr ""
+
+#: company/templates/company.html:176
 msgid "total count of shares of dispo shareholder"
 msgstr ""
 
-#: company/templates/company.html:165
+#: company/templates/company.html:184
 msgid "total capital of shares of dispo shareholder"
 msgstr ""
 
-#: company/templates/company.html:166
+#: company/templates/company.html:185
 msgid "based on face value of all shares assigned to dispo shareholder"
 msgstr ""
 
-#: company/templates/company.html:179
+#: company/templates/company.html:198
 msgid "total count of shares of management/vr"
 msgstr ""
 
-#: company/templates/company.html:187
+#: company/templates/company.html:206
 msgid "total capital of shares of management/vf"
 msgstr ""
 
-#: company/templates/company.html:188
+#: company/templates/company.html:207
 msgid "based on face value of all shares assigned to management/vr"
 msgstr ""
 
-#: company/templates/company.html:200
+#: company/templates/company.html:218
 msgid "total capital of the company. math: all shares existing * face value"
 msgstr ""
 
-#: company/templates/company.html:203
+#: company/templates/company.html:221
 msgid "Provisioned Capital"
 msgstr ""
 
-#: company/templates/company.html:213
+#: company/templates/company.html:231
 msgid "Provisioned Share Count"
 msgstr ""
 
-#: company/templates/company.html:224
+#: company/templates/company.html:242
 msgid ""
 "number of shares which are given to shareholders. or overall share count "
 "minus dispo shareholder and minus company shareholder"
 msgstr ""
 
-#: company/templates/company.html:225
+#: company/templates/company.html:243
 msgid "Share Count Floating"
 msgstr ""
 
-#: company/templates/company.html:235
+#: company/templates/company.html:253
 msgid ""
 "total votes count based on existing shares. math: overall share count * face "
 "value"
 msgstr ""
 
-#: company/templates/company.html:236
+#: company/templates/company.html:254
 msgid "Total votes count based on shares existing"
 msgstr ""
 
-#: company/templates/company.html:245
+#: company/templates/company.html:263
 msgid ""
 "total votes count effective. excludes unregistered/dispo shares and shares "
 "in company ownership"
 msgstr ""
 
-#: company/templates/company.html:246
+#: company/templates/company.html:264
 msgid "Total votes count based on shares floating"
 msgstr ""
 
-#: company/templates/company.html:251
+#: company/templates/company.html:269
 msgid "Does include shares used for options. Without options it would be"
 msgstr ""
 
-#: company/templates/company.html:258
+#: company/templates/company.html:276
 msgid "Total option count based on shares dedicated to options"
 msgstr ""
 
-#: company/templates/company.html:267
+#: company/templates/company.html:285
 msgid "Total option count based on shares dedicated to options floating"
 msgstr ""
 
-#: company/templates/company.html:280
+#: company/templates/company.html:297
 msgid "Depot Statements"
 msgstr ""
 
-#: company/templates/company.html:281
+#: company/templates/company.html:298
 msgid "depot statement intro. link to docu"
 msgstr ""
 
-#: company/templates/company.html:285
+#: company/templates/company.html:302
 msgid ""
 "send depot statement with tax declaration each year to shareholders via "
 "email. link to docu"
 msgstr ""
 
-#: company/templates/company.html:286
+#: company/templates/company.html:303
 msgid "Is statement sending enabled"
 msgstr ""
 
-#: company/templates/company.html:300
+#: company/templates/company.html:317
 msgid ""
 "send depot statement with tax declaration each year to shareholders via "
 "snail mail for those which don't have email or did not open the email. link "
 "to docu"
 msgstr ""
 
-#: company/templates/company.html:301
+#: company/templates/company.html:318
 msgid "Is statement sending via letter enabled"
 msgstr ""
 
-#: company/templates/company.html:316
+#: company/templates/company.html:333
 msgid ""
 "The date when depot statements are to be sent to the shareholders. Date "
 "format is dd.mm.YY without leading zero for the day. After the statements "
 "have been sent, this date is increased to the next years same day and month."
 msgstr ""
 
-#: company/templates/company.html:317
+#: company/templates/company.html:334
 msgid "Statement sending date"
 msgstr ""
 
-#: company/templates/company.html:344
+#: company/templates/company.html:361
 msgid "Securities"
 msgstr ""
 
-#: company/templates/company.html:347
+#: company/templates/company.html:364
 msgid "security"
 msgstr ""
 
-#: company/templates/company.html:348
+#: company/templates/company.html:365
 msgid "cusip"
 msgstr ""
 
-#: company/templates/company.html:349
+#: company/templates/company.html:366
 msgid "count"
 msgstr ""
 
-#: company/templates/company.html:359 company/tests/test_views.py:78
+#: company/templates/company.html:376 company/tests/test_views.py:78
 msgid "tracking security numbers for owners enabled. segments:"
 msgstr ""
 
-#: company/templates/company.html:372
+#: company/templates/company.html:389
 msgid "Please contact us at our"
 msgstr ""
 
-#: company/templates/company.html:374
+#: company/templates/company.html:391
 msgid ""
 "for getting more security types (common stock, preferred stock, numbered "
 "shares) added"
 msgstr ""
 
-#: company/templates/company.html:380
+#: company/templates/company.html:397
 msgid "Administrators"
 msgstr ""
 
-#: company/templates/company.html:381
+#: company/templates/company.html:398
 msgid "add operator"
 msgstr ""
 
-#: company/templates/company.html:409
+#: company/templates/company.html:426
 msgid "Option Plans"
 msgstr ""
 
-#: company/templates/company.html:415
+#: company/templates/company.html:432
 msgid "Options Plan Name"
 msgstr ""
 
-#: company/templates/company.html:418
+#: company/templates/company.html:435
 msgid "Edit Option Plan"
 msgstr ""
 
-#: company/templates/company.html:429
+#: company/templates/company.html:446
 msgid "Administration"
 msgstr ""
 
-#: company/templates/company.html:433
+#: company/templates/company.html:450
 msgid "reset company"
 msgstr ""
 
-#: company/templates/company.html:436
+#: company/templates/company.html:453
 msgid ""
 "the company, shareholders, transactions, options, and all other assigned "
 "data are deleted. the user can then create the company anew and start fresh"

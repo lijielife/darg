@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-22 08:06+0000\n"
+"POT-Creation-Date: 2017-05-22 08:42+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,21 +31,21 @@ msgstr ""
 msgid "Feature not supported."
 msgstr ""
 
-#: services/rest/serializers.py:279
+#: services/rest/serializers.py:280
 msgid ""
 "User not yet registered with this application. Please ask the user to "
 "register first."
 msgstr ""
 
-#: services/rest/serializers.py:286
+#: services/rest/serializers.py:287
 msgid "You cannot edit this company"
 msgstr ""
 
-#: services/rest/serializers.py:291
+#: services/rest/serializers.py:292
 msgid "You were added as administrator for {}"
 msgstr ""
 
-#: services/rest/serializers.py:292
+#: services/rest/serializers.py:293
 msgid ""
 "Dear,\n"
 "\n"
@@ -57,90 +57,90 @@ msgid ""
 "Your Das-Aktienregister Team"
 msgstr ""
 
-#: services/rest/serializers.py:420
+#: services/rest/serializers.py:421
 msgid "First Name missing"
 msgstr ""
 
-#: services/rest/serializers.py:423
+#: services/rest/serializers.py:424
 msgid "Last Name missing"
 msgstr ""
 
-#: services/rest/serializers.py:429
+#: services/rest/serializers.py:430
 msgid "Shareholder Number must be unique"
 msgstr ""
 
-#: services/rest/serializers.py:501
+#: services/rest/serializers.py:502
 msgid "This email is already taken by another user/shareholder."
 msgstr ""
 
-#: services/rest/serializers.py:560
+#: services/rest/serializers.py:561
 msgid "shareholder with this email already exists"
 msgstr ""
 
-#: services/rest/serializers.py:592 services/rest/tests/test_views.py:1920
+#: services/rest/serializers.py:593 services/rest/tests/test_views.py:1920
 msgid "Number must be unique for this company"
 msgstr ""
 
-#: services/rest/serializers.py:807 services/rest/serializers.py:1251
+#: services/rest/serializers.py:808 services/rest/serializers.py:1252
 msgid "Certificate ID {} is already used in transaction or option transaction"
 msgstr ""
 
-#: services/rest/serializers.py:816 services/rest/serializers.py:1260
+#: services/rest/serializers.py:817 services/rest/serializers.py:1261
 msgid "count {} must be greater then 0"
 msgstr ""
 
-#: services/rest/serializers.py:834
+#: services/rest/serializers.py:835
 msgid ""
 "seller does not have enough shares. max value is {}. shares can be blocked "
 "by cert depot or vesting."
 msgstr ""
 
-#: services/rest/serializers.py:847
+#: services/rest/serializers.py:848
 msgid "Depot bank is mandatory if depot type is certificate depot"
 msgstr ""
 
-#: services/rest/serializers.py:879 services/rest/serializers.py:1107
+#: services/rest/serializers.py:880 services/rest/serializers.py:1108
 msgid "Invalid security numbers segments."
 msgstr ""
 
-#: services/rest/serializers.py:885 services/rest/serializers.py:1120
+#: services/rest/serializers.py:886 services/rest/serializers.py:1121
 msgid "Segments \"{}\" must be owned by seller \"{}\". Available are {}"
 msgstr ""
 
-#: services/rest/serializers.py:898 services/rest/serializers.py:1047
-#: services/rest/serializers.py:1132
+#: services/rest/serializers.py:899 services/rest/serializers.py:1048
+#: services/rest/serializers.py:1133
 msgid "Number of shares in segments ({}) does not match count {}"
 msgstr ""
 
-#: services/rest/serializers.py:915
+#: services/rest/serializers.py:916
 msgid ""
 "Segment {} is blocked for options and cannot be transfered to a shareholder."
 msgstr ""
 
-#: services/rest/serializers.py:944
+#: services/rest/serializers.py:945
 msgid "Not a pdf file."
 msgstr ""
 
-#: services/rest/serializers.py:1024
+#: services/rest/serializers.py:1025
 msgid "Invalid or empty security numbers segments."
 msgstr ""
 
-#: services/rest/serializers.py:1035
+#: services/rest/serializers.py:1036
 msgid ""
 "Segments \"{}\" must be owned by company shareholder \"{}\". Available are {}"
 msgstr ""
 
-#: services/rest/serializers.py:1144
+#: services/rest/serializers.py:1145
 msgid ""
 "Segment {} is not reserved for options inside a option plan and cannot be "
 "transfered to a option holder. Available are: {}"
 msgstr ""
 
-#: services/rest/serializers.py:1272
+#: services/rest/serializers.py:1273
 msgid "seller does not have enough options. max value is {}."
 msgstr ""
 
-#: services/rest/tests/test_serializers.py:910
+#: services/rest/tests/test_serializers.py:919
 msgid "Human Being"
 msgstr ""
 

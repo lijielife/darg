@@ -4,15 +4,16 @@ import unittest
 from decimal import Decimal
 
 import mock
-from model_mommy import random_gen
 from dateutil.parser import parse
 from django.core.urlresolvers import reverse
-from django.test import RequestFactory, TestCase, Client
+from django.test import Client, RequestFactory, TestCase
 from django.utils import timezone
 from django.utils.translation import ugettext as _
+from model_mommy import random_gen
 from rest_framework.exceptions import ValidationError
 
 from project.generators import (BankGenerator, CompanyGenerator,
+                                CompanyShareholderGenerator,
                                 ComplexPositionsWithSegmentsGenerator,
                                 ComplexShareholderConstellationGenerator,
                                 OperatorGenerator, OptionPlanGenerator,
@@ -107,9 +108,17 @@ class CompanySerializerTestCase(TestCase):
 
     def setUp(self):
         super(CompanySerializerTestCase, self).setUp()
-
-        self.serializer = CompanySerializer()
         self.instance = CompanyGenerator().generate()
+        CompanyShareholderGenerator().generate(company=self.instance)
+        url = reverse('company-detail', kwargs={'pk': self.instance.id})
+        self.request = RequestFactory().get(url)
+        self.serializer = CompanySerializer()
+
+    def test_fields(self):
+        """ test fields of serializer """
+        serializer = CompanySerializer(instance=self.instance,
+                                       context={'request': self.request})
+        self.assertIn('signatures', serializer.data.keys())
 
     def test_get_profile_url(self):
         url = self.serializer.get_profile_url(self.instance)

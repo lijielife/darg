@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-22 08:06+0000\n"
+"POT-Creation-Date: 2017-05-22 08:42+0000\n"
 "PO-Revision-Date: 2017-05-22 08:11+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -365,8 +365,8 @@ msgstr "Berichte und Downloads"
 
 #: reports/templates/reports/index.html:19
 msgid ""
-"Use CSV for Excel like Downloads. Follow this <a "
-"href='https://goo.gl/aQ2gVx'>guide for instructions</a>."
+"Use CSV for Excel like Downloads. Follow this <a href='https://goo.gl/"
+"aQ2gVx'>guide for instructions</a>."
 msgstr ""
 "Verwenden Sie CSV für Downloads für MS Excel. Folgen Sie dieser <a "
 "href='https://goo.gl/aQ2gVx'>Anleitung zum Import</a>."
@@ -393,9 +393,8 @@ msgid ""
 "no active shareholders. please use <a href=\"/positions/\">transactions</a> "
 "to assign shares to shareholders"
 msgstr ""
-"Keine aktiven Gesellschafter vorhanden. Verwenden Sie <a "
-"href=\"/positions/\">Transaktionen</a> um Aktien den Gesellschaftern "
-"zuzuweisen."
+"Keine aktiven Gesellschafter vorhanden. Verwenden Sie <a href=\"/positions/"
+"\">Transaktionen</a> um Aktien den Gesellschaftern zuzuweisen."
 
 #: reports/templates/reports/index.html:51
 msgid "Transactions per security in period"
@@ -467,7 +466,6 @@ msgid "pobox"
 msgstr "Postfach"
 
 #: reports/views.py:29
-#| msgid "mailing_type"
 msgid "mailing type"
 msgstr "Versandart"
 
@@ -480,17 +478,14 @@ msgid "seller"
 msgstr "Verkäufer"
 
 #: reports/views.py:83 reports/views.py:329
-#| msgid "share count"
 msgid "count"
 msgstr "Aktienzahl"
 
 #: reports/views.py:84
-#| msgid "face_value"
 msgid "value"
 msgstr "Nennwert"
 
 #: reports/views.py:84 reports/views.py:329
-#| msgid "Security"
 msgid "security"
 msgstr "Wertpapier"
 
@@ -499,7 +494,6 @@ msgid "comment"
 msgstr "Kommentar"
 
 #: reports/views.py:84
-#| msgid "depot_type"
 msgid "depot type"
 msgstr "Depotart"
 
@@ -516,7 +510,6 @@ msgid "----------------------------------------"
 msgstr "----------------------------------------"
 
 #: reports/views.py:108
-#| msgid "Transactions per security in period"
 msgid "Transactions for options:"
 msgstr "Transaktionen pro Wertpapier im Zeitraum"
 
@@ -525,17 +518,14 @@ msgid "Permission denied"
 msgstr "Zugriff verboten"
 
 #: reports/views.py:156
-#| msgid "Shareholder Number"
 msgid "Shareholder#"
 msgstr "Aktionärsnummer"
 
 #: reports/views.py:156
-#| msgid "Name"
 msgid "Full Name"
 msgstr "Nachname"
 
 #: reports/views.py:156
-#| msgid "address"
 msgid "Address"
 msgstr "Adresse"
 
@@ -544,32 +534,26 @@ msgid "capital"
 msgstr "Kapital"
 
 #: reports/views.py:157
-#| msgid "votes percent"
 msgid "vote count"
 msgstr "Stimmrechte"
 
 #: reports/views.py:274 reports/views.py:329
-#| msgid "last name"
 msgid "full name"
 msgstr "Name"
 
 #: reports/views.py:274
-#| msgid "security type"
 msgid "security name"
 msgstr "Wertpapier"
 
 #: reports/views.py:275
-#| msgid "certificate_ids (issue date)"
 msgid "certificate id"
 msgstr "ZertifikatsIDs"
 
 #: reports/views.py:275
-#| msgid "certificate_ids (issue date)"
 msgid "certificate printed at"
 msgstr "Zertifikat gedruckt am"
 
 #: reports/views.py:283
-#| msgid "Options"
 msgid "option"
 msgstr "Optionen"
 
@@ -578,7 +562,6 @@ msgid "stock"
 msgstr "Wertpapier"
 
 #: reports/views.py:330
-#| msgid "is management"
 msgid "is management member"
 msgstr "Mitglied VR/Management"
 
@@ -587,12 +570,10 @@ msgid "vesting in months"
 msgstr "Sperrfrist in Monaten"
 
 #: reports/views.py:331
-#| msgid "security type"
 msgid "asset type"
 msgstr "Wertpapierart"
 
 #: reports/views.py:339
-#| msgid "Printed Certificates"
 msgid "certificate"
 msgstr "Gedruckte Zertifikate"
 

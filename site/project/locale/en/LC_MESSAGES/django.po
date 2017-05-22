@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-22 08:06+0000\n"
+"POT-Creation-Date: 2017-05-22 08:42+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -392,93 +392,6 @@ msgstr ""
 
 #: project/templates/base_auth.html:28
 msgid "our blog"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:94
-#: project/templates/option.pdf.html:80
-msgid "www.das-aktienregister.ch"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:94
-#: project/templates/option.pdf.html:80
-msgid "Page"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:95
-#: project/templates/option.pdf.html:81
-msgid "of"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:96
-#: project/templates/option.pdf.html:82
-msgid "Date generated"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:103
-#: project/templates/option.pdf.html:89
-msgid "Total capital"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:105
-#: project/templates/option.pdf.html:91
-msgid "based on"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:109
-#: project/templates/option.pdf.html:95
-msgid "with face value of"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:113
-#: project/templates/option.pdf.html:99
-msgid "share certificate "
-msgstr ""
-
-#: project/templates/certificate.pdf.html:115
-#: project/templates/option.pdf.html:101
-msgid "Nr."
-msgstr ""
-
-#: project/templates/certificate.pdf.html:118
-#: project/templates/option.pdf.html:104
-msgid "representing"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:124
-#: project/templates/option.pdf.html:110
-msgid "with face value"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:127
-#: project/templates/option.pdf.html:113
-msgid "of each"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:127
-#: project/templates/option.pdf.html:113
-msgid "with total value of"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:129
-#: project/templates/option.pdf.html:115
-msgid "cusip"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:130
-#: project/templates/option.pdf.html:116
-msgid "ISIN"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:140
-#: project/templates/option.pdf.html:126
-msgid ""
-"is as owner of the certificate with all legal and statuary rights "
-"shareholder of our company."
-msgstr ""
-
-#: project/templates/certificate.pdf.html:151
-#: project/templates/option.pdf.html:137
-msgid " in the name of the supervisory board"
 msgstr ""
 
 #: project/templates/djstripe/_annotations.html:5

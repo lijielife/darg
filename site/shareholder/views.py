@@ -149,7 +149,7 @@ def option_pdf(request, option_id):
     company = option.option_plan.company
 
     response = render_to_pdf_response(
-        'option.pdf.html',
+        'pdf/option.pdf.html',
         {
             'pagesize': 'A4',
             'company': company,
@@ -194,7 +194,7 @@ def position_option_pdf(request, option_id):
     company = operator_qs.first().company
 
     response = render_to_pdf_response(
-        'certificate.pdf.html',
+        'pdf/certificate.pdf.html',
         {
             'pagesize': 'A4',
             'company': company,

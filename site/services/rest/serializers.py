@@ -125,7 +125,8 @@ class CompanySerializer(SubscriptionSerializerMixin,
                   'vote_count', 'vote_ratio', 'vote_count_floating',
                   'current_subscription', 'subscription_features',
                   'subscription_permissions',
-                  'send_shareholder_statement_via_letter_enabled'
+                  'send_shareholder_statement_via_letter_enabled',
+                  'signatures',
                   ) + Company.ADDRESS_FIELDS
 
     def get_profile_url(self, obj):
