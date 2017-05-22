@@ -1016,7 +1016,7 @@ class Shareholder(TagMixin, models.Model):
             else:
                 name += u"{}".format(self.user.userprofile.company_name)
 
-        return name
+        return name or self.user.email
 
     def get_number_segments_display(self):
         """
@@ -1427,14 +1427,6 @@ class Shareholder(TagMixin, models.Model):
         # how much percent of these eligible votes does the shareholder have?
         return (self.vote_count(date=date, security=security) /
                 float(total_votes_eligible))
-
-    def get_user_name(self):
-        """
-        returns full name of user if given, else email
-        """
-        return self.user.get_full_name() or self.user.email
-
-    user_name = property(get_user_name)
 
 
 class Operator(models.Model):
@@ -2000,7 +1992,7 @@ class ShareholderStatementReport(models.Model):
 
         pdf_dir = self._get_statement_pdf_path_for_user(user)
         pdf_filename = u'{}-{}-{}.pdf'.format(
-            slugify(user.get_full_name() or user.email),
+            slugify(user.shareholder_set.first().get_full_name()),
             slugify(self.company),
             self.report_date.strftime('%Y-%m-%d')
         )
@@ -2014,7 +2006,7 @@ class ShareholderStatementReport(models.Model):
                 company=self.company,
                 report_date=self.report_date,
                 user=user,
-                user_name=user.get_full_name() or user.email,
+                user_name=user.shareholder_set.first().get_full_name(),
                 shareholder_list=self.company.shareholder_set.filter(
                     user_id=user.pk),
                 site=Site.objects.get_current(),

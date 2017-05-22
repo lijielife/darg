@@ -349,7 +349,7 @@ def send_statement_email(statement_id):
     letter_sent_offset = getattr(
         settings, 'SHAREHOLDER_STATMENT_LETTER_OFFSET_DAYS', 7)
     context = dict(
-        user_name=obj.user.get_full_name() or obj.user.email,
+        user_name=obj.user.shareholder_set.first().get_full_name(),
         company_name=obj.report.company.name,
         shareholder_numbers=shareholders.values_list('number', flat=True),
         report_date=date_format(obj.report.report_date),
