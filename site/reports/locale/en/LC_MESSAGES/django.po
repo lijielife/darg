@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-18 07:32+0000\n"
+"POT-Creation-Date: 2017-05-22 08:06+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -71,7 +71,7 @@ msgstr ""
 msgid "report filter date"
 msgstr ""
 
-#: reports/tasks.py:96
+#: reports/tasks.py:96 reports/tests/test_views.py:261
 msgid "None"
 msgstr ""
 
@@ -87,7 +87,7 @@ msgstr ""
 msgid "PDF Captable/Active Shareholders"
 msgstr ""
 
-#: reports/tasks.py:252
+#: reports/tasks.py:252 reports/tests/test_views.py:369 reports/views.py:25
 msgid "shareholder number"
 msgstr ""
 
@@ -111,11 +111,11 @@ msgstr ""
 msgid "salutation"
 msgstr ""
 
-#: reports/tasks.py:253
+#: reports/tasks.py:253 reports/views.py:25
 msgid "last name"
 msgstr ""
 
-#: reports/tasks.py:254
+#: reports/tasks.py:254 reports/views.py:25
 msgid "first name"
 msgstr ""
 
@@ -127,7 +127,7 @@ msgstr ""
 msgid "postal_code"
 msgstr ""
 
-#: reports/tasks.py:254
+#: reports/tasks.py:254 reports/views.py:28
 msgid "city"
 msgstr ""
 
@@ -139,11 +139,11 @@ msgstr ""
 msgid "mailing_type"
 msgstr ""
 
-#: reports/tasks.py:255
+#: reports/tasks.py:255 reports/views.py:29
 msgid "nationality"
 msgstr ""
 
-#: reports/tasks.py:255
+#: reports/tasks.py:255 reports/views.py:276
 msgid "security type"
 msgstr ""
 
@@ -159,7 +159,7 @@ msgstr ""
 msgid "certificate_ids (issue date)"
 msgstr ""
 
-#: reports/tasks.py:257
+#: reports/tasks.py:257 reports/views.py:85
 msgid "stock book id"
 msgstr ""
 
@@ -167,11 +167,11 @@ msgstr ""
 msgid "depot_type"
 msgstr ""
 
-#: reports/tasks.py:258
+#: reports/tasks.py:258 reports/views.py:26
 msgid "email"
 msgstr ""
 
-#: reports/tasks.py:258
+#: reports/tasks.py:258 reports/views.py:157 reports/views.py:274
 msgid "share count"
 msgstr ""
 
@@ -191,11 +191,11 @@ msgstr ""
 msgid "is management"
 msgstr ""
 
-#: reports/tasks.py:261
+#: reports/tasks.py:261 reports/views.py:27
 msgid "language ISO"
 msgstr ""
 
-#: reports/tasks.py:261
+#: reports/tasks.py:261 reports/views.py:27
 msgid "language full"
 msgstr ""
 
@@ -372,42 +372,196 @@ msgid "Other Downloads"
 msgstr ""
 
 #: reports/templates/reports/index.html:37
+msgid "Assembly participation list"
+msgstr ""
+
+#: reports/templates/reports/index.html:39
+msgid "assembly participation csv"
+msgstr ""
+
+#: reports/templates/reports/index.html:43
+msgid "use this list for the entrance control to the company assembly"
+msgstr ""
+
+#: reports/templates/reports/index.html:46
+msgid ""
+"no active shareholders. please use <a href=\"/positions/\">transactions</a> "
+"to assign shares to shareholders"
+msgstr ""
+
+#: reports/templates/reports/index.html:51
 msgid "Transactions per security in period"
 msgstr ""
 
-#: reports/templates/reports/index.html:42
-#: reports/templates/reports/index.html:43
+#: reports/templates/reports/index.html:56
+#: reports/templates/reports/index.html:57
 msgid "Address data of all shareholders"
 msgstr ""
 
-#: reports/templates/reports/index.html:48
+#: reports/templates/reports/index.html:62
 msgid "Printed Certificates"
 msgstr ""
 
-#: reports/templates/reports/index.html:55
+#: reports/templates/reports/index.html:69
 msgid ""
 "No printed certificates are available. Please print a certificate via a "
 "transaction or option transaction"
 msgstr ""
 
-#: reports/templates/reports/index.html:60
+#: reports/templates/reports/index.html:74
 msgid "Vested Shares"
 msgstr ""
 
-#: reports/templates/reports/index.html:67
+#: reports/templates/reports/index.html:81
 msgid ""
 "no vested positions yet. please add vesting data to either transaction or "
 "option transaction"
 msgstr ""
 
-#: reports/templates/reports/index.html:72
+#: reports/templates/reports/index.html:86
 msgid "See all depot statements created for shareholders"
 msgstr ""
 
-#: reports/templates/reports/index.html:73
+#: reports/templates/reports/index.html:87
 msgid "Depot Statements Overview"
 msgstr ""
 
-#: reports/views.py:24
+#: reports/tests/test_views.py:415 reports/views.py:82
+msgid "date"
+msgstr ""
+
+#: reports/views.py:27
+msgid "street"
+msgstr ""
+
+#: reports/views.py:27
+msgid "street 2"
+msgstr ""
+
+#: reports/views.py:28
+msgid "c/o"
+msgstr ""
+
+#: reports/views.py:28
+msgid "zip"
+msgstr ""
+
+#: reports/views.py:28
+msgid "country"
+msgstr ""
+
+#: reports/views.py:29
+msgid "pobox"
+msgstr ""
+
+#: reports/views.py:29
+msgid "mailing type"
+msgstr ""
+
+#: reports/views.py:82
+msgid "buyer"
+msgstr ""
+
+#: reports/views.py:82
+msgid "seller"
+msgstr ""
+
+#: reports/views.py:83 reports/views.py:329
+msgid "count"
+msgstr ""
+
+#: reports/views.py:84
+msgid "value"
+msgstr ""
+
+#: reports/views.py:84 reports/views.py:329
+msgid "security"
+msgstr ""
+
+#: reports/views.py:84
+msgid "comment"
+msgstr ""
+
+#: reports/views.py:84
+msgid "depot type"
+msgstr ""
+
+#: reports/views.py:85
+msgid "vesting period (options only"
+msgstr ""
+
+#: reports/views.py:86
+msgid "cert id (options only)"
+msgstr ""
+
+#: reports/views.py:107 reports/views.py:109
+msgid "----------------------------------------"
+msgstr ""
+
+#: reports/views.py:108
+msgid "Transactions for options:"
+msgstr ""
+
+#: reports/views.py:147 reports/views.py:176
 msgid "Permission denied"
+msgstr ""
+
+#: reports/views.py:156
+msgid "Shareholder#"
+msgstr ""
+
+#: reports/views.py:156
+msgid "Full Name"
+msgstr ""
+
+#: reports/views.py:156
+msgid "Address"
+msgstr ""
+
+#: reports/views.py:157
+msgid "capital"
+msgstr ""
+
+#: reports/views.py:157
+msgid "vote count"
+msgstr ""
+
+#: reports/views.py:274 reports/views.py:329
+msgid "full name"
+msgstr ""
+
+#: reports/views.py:274
+msgid "security name"
+msgstr ""
+
+#: reports/views.py:275
+msgid "certificate id"
+msgstr ""
+
+#: reports/views.py:275
+msgid "certificate printed at"
+msgstr ""
+
+#: reports/views.py:283
+msgid "option"
+msgstr ""
+
+#: reports/views.py:291 reports/views.py:334
+msgid "stock"
+msgstr ""
+
+#: reports/views.py:330
+msgid "is management member"
+msgstr ""
+
+#: reports/views.py:331
+msgid "vesting in months"
+msgstr ""
+
+#: reports/views.py:331
+msgid "asset type"
+msgstr ""
+
+#: reports/views.py:339
+msgid "certificate"
 msgstr ""
