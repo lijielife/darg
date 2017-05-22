@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-22 10:05+0000\n"
+"POT-Creation-Date: 2017-05-22 19:10+0000\n"
 "PO-Revision-Date: 2017-05-22 08:45+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -536,7 +536,7 @@ msgstr "API Anfragen"
 msgid "German"
 msgstr "Deutsch"
 
-#: utils/import_backends.py:285
+#: utils/import_backends.py:288
 msgid "Disposhareholder"
 msgstr "Gesellschafter für Dispoaktien"
 

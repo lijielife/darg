@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-22 10:05+0000\n"
+"POT-Creation-Date: 2017-05-22 19:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1206,19 +1206,23 @@ msgid "Shareholder Number"
 msgstr ""
 
 #: project/templates/start.html:101
+msgid "CumFaceCap"
+msgstr ""
+
+#: project/templates/start.html:102
 #, python-format
 msgid "Shares (%%%%)"
 msgstr ""
 
-#: project/templates/start.html:105
+#: project/templates/start.html:106
 msgid "Gafi Validation failed"
 msgstr ""
 
-#: project/templates/start.html:125
+#: project/templates/start.html:127
 msgid "Option Holders"
 msgstr ""
 
-#: project/templates/start.html:126
+#: project/templates/start.html:128
 msgid "Option Holders note"
 msgstr ""
 

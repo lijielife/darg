@@ -374,6 +374,7 @@ class ShareholderListSerializer(serializers.HyperlinkedModelSerializer):
             # 'user',
             'share_percent',  # +2 queries/obj
             'share_count',  # +2 queries/obj
+            'cumulated_face_value',
             'validate_gafi',
             'is_company',
             'full_name',

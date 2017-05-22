@@ -732,7 +732,7 @@ class ShareholderSerializerTestCase(MoreAssertsTestCaseMixin,
         request.user = operator.user
 
         # make sure we don't issue more then one additional query per obj
-        with self.assertLessNumQueries(130):  # should be < 12
+        with self.assertLessNumQueries(155):  # should be < 12
             # queryset with prefetch to reduce db load
             qs = operator.company.shareholder_set.all() \
                 .select_related('company', 'user', 'user__userprofile',
