@@ -3,6 +3,13 @@
 
 import inspect
 
+# disable cache for CI
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache'
+    }
+}
+
 CREATE_STRIPE_CUSTOMER_FOR_SUBSCRIBER_ON_CREATE = False
 
 ALL_FEATURES = {}
