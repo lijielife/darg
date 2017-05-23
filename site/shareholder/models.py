@@ -1654,6 +1654,12 @@ class Position(DiscountedTaxByVestingModelMixin, CertificateMixin):
         else:
             raise ValueError('position already invalidated')
 
+    def _vesting_expires_at(self):
+        if self.vesting_months:
+            return self.bought_at + relativedelta(months=self.vesting_months)
+
+    vesting_expires_at = property(_vesting_expires_at)
+
 
 def get_option_plan_upload_path(instance, filename):
     return os.path.join(
