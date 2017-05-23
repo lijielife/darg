@@ -141,6 +141,8 @@ class PositionAdmin(VersionAdmin):
         'buyer__user__last_name', 'seller__user__last_name',
         'buyer__user__first_name', 'seller__user__first_name',
     ]
+    raw_id_fields = ('buyer', 'seller', 'depot_bank',
+                     'certificate_invalidation_position')
 
     def get_seller(self, obj):
         if obj.seller:
@@ -186,6 +188,7 @@ class SecurityAdmin(VersionAdmin):
 
 class OptionTransactionAdmin(VersionAdmin):
     list_display = ('bought_at', 'buyer', 'seller',)
+    raw_id_fields = ('buyer', 'seller')
 
 
 class OptionPlanAdmin(VersionAdmin):
