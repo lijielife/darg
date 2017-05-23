@@ -204,11 +204,8 @@ class TaskTestCase(TestCase):
         self.assertIsNotNone(report.file)
         contents = report.file.read()
         rows = contents.split('\r\n')
-        self.assertEqual(len(rows), 6)
-        self.assertIn(
-            u'--- {}'.format(unicode(
-                report.company.security_set.first()).upper()),
-            rows[2].decode('utf-8'))
+        del rows[-1]  # del empty last line
+        self.assertEqual(len(rows), 2)  # header + single sh with pos
 
     def test_render_captable_pdf(self):
         report = ReportGenerator().generate()
@@ -223,17 +220,13 @@ class TaskTestCase(TestCase):
     @patch('reports.tasks.render_captable_pdf.apply_async')
     def test_prerender_reports(self, mock_pdf, mock_csv):
         """ render every night the reports for all corps """
-        # valid corps
-        for x in range(0, 1):
-            shs, s1 = ComplexShareholderConstellationGenerator().generate()
-
-        # corps not needing a report
+        # corps not needing a report = noise
         CompanyGenerator().generate()
         ReportGenerator().generate()
 
         prerender_reports()
 
-        company = shs[0].company
+        company = self.shs[0].company
         pdf_report = company.report_set.filter(file_type='PDF').last()
         csv_report = company.report_set.filter(file_type='CSV').last()
         self.assertEqual(mock_pdf.call_count, 20)

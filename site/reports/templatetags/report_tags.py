@@ -9,8 +9,8 @@ register = template.Library()
 
 # shareholder assets
 @register.assignment_tag
-def get_active_shareholders(security, date, ordering):
-    qs = security.company.get_active_shareholders(date=date, security=security)
+def get_active_shareholders(company, date, ordering, security=None):
+    qs = company.get_active_shareholders(date=date, security=security)
     result = _order_queryset(qs, ordering)
     return result
 

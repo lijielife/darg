@@ -269,7 +269,8 @@ class Company(AddressModelMixin, models.Model):
 
         # result can be large. memcache has 1MB cache limit... see
         # https://goo.gl/CFDsi3 for more details
-        cache.set(cache_key, result.values_list('pk', flat=True), 60*60*24)
+        cache.set(cache_key, list(result.values_list('pk', flat=True)),
+                  60*60*24)
         return result
 
     def get_active_option_holders(self, date=None, security=None):
@@ -332,7 +333,6 @@ class Company(AddressModelMixin, models.Model):
         try:
             return self.shareholder_set.earliest('id')
         except Shareholder.DoesNotExist:
-            logger.warning('no company shareholder found')
             if not fail_silently:
                 raise ValueError('corp shareholder not found')
 

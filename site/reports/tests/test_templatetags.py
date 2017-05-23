@@ -20,7 +20,7 @@ class ReportTemplateTagTestCase(TestCase):
 
     def test_get_active_shareholders(self):
         """ return ordered list of active sharehholders for security on date """
-        res = get_active_shareholders(self.security, self.today, self.ordering)
+        res = get_active_shareholders(self.company, self.today, self.ordering)
         self.assertEqual(len(res), 11)
 
     def test_get_active_option_holders(self):

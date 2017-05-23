@@ -190,9 +190,9 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
         fileobj = StringIO.StringIO(content)
         reader = csv.reader(fileobj, delimiter=',')
         lines = list(reader)
-        self.assertEqual(len(lines[4]), 28)
-        # positions + per security header
-        self.assertEqual(len(lines), 6)
+        self.assertEqual(len(lines[2]), 28)  # header + one sh
+        # 2 shs + per security header
+        self.assertEqual(len(lines), 3)
         # assert company itself
         sh_numbers = [f[0] for f in lines if len(f) > 0]
         self.assertIn(shareholder_list[0].number, sh_numbers)
@@ -361,7 +361,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
         ComplexShareholderConstellationGenerator().generate()
 
         company = Company.objects.last()
-        with self.assertLessNumQueries(44):
+        with self.assertLessNumQueries(46):
             res = _get_contacts(company)
         self.assertTrue(len(res) > 1)
         self.assertEqual(len(res[0]), 15)

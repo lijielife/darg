@@ -47,7 +47,7 @@ def _get_captable_pdf_context(company, ordering, date):
     return context
 
 
-def _collect_csv_data(shareholder, security, date):
+def _collect_csv_data(shareholder, date):
     # hide "None" strings
     def to_string_or_empty(value):
         if value and isinstance(value, list):
@@ -56,50 +56,56 @@ def _collect_csv_data(shareholder, security, date):
             value = u" , ".join(value)
         return unicode(value or u'')
 
-    row = [
-        shareholder.number,
-        shareholder.user.userprofile.get_legal_type_display(),
-        list(set([s.get_registration_type_display() for s
-                  in shareholder.buyer.all()])),
-        shareholder.user.userprofile.company_department,
-        shareholder.user.userprofile.title,
-        shareholder.user.userprofile.salutation,
-        shareholder.user.last_name,
-        shareholder.user.first_name,
-        shareholder.user.userprofile.get_address(),
-        shareholder.user.userprofile.postal_code,
-        shareholder.user.userprofile.city,
-        shareholder.user.userprofile.birthday,
-        shareholder.get_mailing_type_display(),
-        shareholder.user.userprofile.nationality,
-        security,
-        security.cusip,
-        security.face_value,
-        shareholder.get_certificate_ids(security=security),
-        shareholder.get_stock_book_ids(security=security),
-        shareholder.get_depot_types(security=security),
-        shareholder.user.email,
-        shareholder.share_count(security=security, date=date),
-        shareholder.share_percent(security=security, date=date),
-        shareholder.vote_percent(security=security, date=date),
-        shareholder.cumulated_face_value(security=security, date=date),
-        shareholder.is_management,
-        shareholder.user.userprofile.language,
-        shareholder.user.userprofile.get_language_display(),
-    ]
-    # remove any kind of empty data and replace by empty string. make all utf8
-    row = [to_string_or_empty(val) for val in row]
+    rows = []
+    for security in shareholder.company.security_set.all():
+        if shareholder.share_count(date=date, security=security):
 
-    # handle track numbers
-    if security.track_numbers:
-        segments = human_readable_segments(
-            shareholder.current_segments(security)) or _('None')
-        text = "{}: {} ".format(
-            security.get_title_display(),
-            segments
-        )
-        row.append(text)
-    return row
+            row = [
+                shareholder.number,
+                shareholder.user.userprofile.get_legal_type_display(),
+                list(set([s.get_registration_type_display() for s
+                          in shareholder.buyer.all()])),
+                shareholder.user.userprofile.company_department,
+                shareholder.user.userprofile.title,
+                shareholder.user.userprofile.salutation,
+                shareholder.user.last_name,
+                shareholder.user.first_name,
+                shareholder.user.userprofile.get_address(),
+                shareholder.user.userprofile.postal_code,
+                shareholder.user.userprofile.city,
+                shareholder.user.userprofile.birthday,
+                shareholder.get_mailing_type_display(),
+                shareholder.user.userprofile.nationality,
+                security,
+                security.cusip,
+                security.face_value,
+                shareholder.get_certificate_ids(security=security),
+                shareholder.get_stock_book_ids(security=security),
+                shareholder.get_depot_types(security=security),
+                shareholder.user.email,
+                shareholder.share_count(security=security, date=date),
+                shareholder.share_percent(security=security, date=date),
+                shareholder.vote_percent(security=security, date=date),
+                shareholder.cumulated_face_value(security=security, date=date),
+                shareholder.is_management,
+                shareholder.user.userprofile.language,
+                shareholder.user.userprofile.get_language_display(),
+            ]
+            # remove any kind of empty data and replace by empty string. make
+            # all utf8
+            row = [to_string_or_empty(val) for val in row]
+
+            # handle track numbers
+            if security.track_numbers:
+                segments = human_readable_segments(
+                    shareholder.current_segments(security)) or _('None')
+                text = "{}: {} ".format(
+                    security.get_title_display(),
+                    segments
+                )
+                row.append(text)
+            rows.append(row)
+    return rows
 
 
 def _parse_ordering(ordering):
@@ -271,22 +277,16 @@ def render_captable_csv(company_id, report_id, user_id=None, ordering=None,
 
     # removed share percent due to heavy sql impact. killed perf for higher
     # shareholder count
-    for security in company.security_set.all():
-        # small header for each security
-        writer.writerow([])
-        writer.writerow([u"--- {} ---".format(unicode(security).upper())])
-        writer.writerow([])
-        # for each active shareholder
-        queryset = company.get_active_shareholders(date=report.report_at,
-                                                   security=security)
-        queryset = _order_queryset(queryset, ordering)
-        for shareholder in queryset:
-            if shareholder.share_count(security=security,
-                                       date=report.report_at):
-                row = _collect_csv_data(shareholder, security, report.report_at)
-            else:
-                continue
+    # for each active shareholder
+    queryset = company.get_active_shareholders(date=report.report_at)
+    queryset = _order_queryset(queryset, ordering)
+    for shareholder in queryset:
+        if shareholder.share_count(date=report.report_at):
+            rows = _collect_csv_data(shareholder, report.report_at)
+        else:
+            continue
 
+        for row in rows:
             writer.writerow([unicode(s).encode("utf-8") for s in row])
 
     # post process
