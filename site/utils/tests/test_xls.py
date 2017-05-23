@@ -15,7 +15,7 @@ class ExcelTestCase(TestCase):
 
         filename = 'example.xlsx'
         mommy.make('shareholder.Shareholder', _quantity=10)
-        header = [(_('ID'), _('shareholder number'), _('Company Name'))]
+        header = (_('ID'), _('shareholder number'), _('Company Name'))
         data = Shareholder.objects.all().values_list(
             'pk', 'number', 'company__name')
         save_to_excel_file(filename, list(data), header)
