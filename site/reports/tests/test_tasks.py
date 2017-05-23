@@ -239,7 +239,7 @@ class TaskTestCase(TestCase):
         company = self.shs[0].company
         pdf_report = company.report_set.filter(file_type='PDF').last()
         csv_report = company.report_set.filter(file_type='CSV').last()
-        self.assertEqual(mock_pdf.call_count, 20)
+        self.assertEqual(mock_pdf.call_count, 10)
         mock_pdf.assert_called_with(
             args=[company.pk, pdf_report.pk],
             kwargs={'ordering': pdf_report.order_by})
