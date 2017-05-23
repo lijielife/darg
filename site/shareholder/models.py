@@ -248,7 +248,7 @@ class Company(AddressModelMixin, models.Model):
             slugify(security))
         cached = cache.get(cache_key)
         if cached:
-            return cached
+            return Shareholder.objects.filter(pk__in=cached)
 
         kwargs = {}
         if date:
@@ -267,7 +267,9 @@ class Company(AddressModelMixin, models.Model):
             'user', 'user__userprofile', 'user__userprofile__country', 'company'
         ).order_by('number')
 
-        cache.set(cache_key, result, 60*60*24)
+        # result can be large. memcache has 1MB cache limit... see
+        # https://goo.gl/CFDsi3 for more details
+        cache.set(cache_key, result.values_list('pk', flat=True), 60*60*24)
         return result
 
     def get_active_option_holders(self, date=None, security=None):
