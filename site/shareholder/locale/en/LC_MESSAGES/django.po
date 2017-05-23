@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-22 19:40+0000\n"
+"POT-Creation-Date: 2017-05-23 10:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,7 +49,7 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: shareholder/admin.py:222 shareholder/models.py:2089
+#: shareholder/admin.py:222 shareholder/models.py:2093
 msgid "shareholder statements"
 msgstr ""
 
@@ -97,11 +97,11 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: shareholder/admin.py:283 shareholder/models.py:1783
+#: shareholder/admin.py:283 shareholder/models.py:1787
 msgid "company"
 msgstr ""
 
-#: shareholder/admin.py:287 shareholder/models.py:1784
+#: shareholder/admin.py:287 shareholder/models.py:1788
 msgid "report date"
 msgstr ""
 
@@ -298,212 +298,212 @@ msgid ""
 "Your Share Register Team"
 msgstr ""
 
-#: shareholder/models.py:646
+#: shareholder/models.py:648
 msgid "Share split of {} on {} with ratio {}:{}. Return of old shares."
 msgstr ""
 
-#: shareholder/models.py:668
+#: shareholder/models.py:670
 msgid "Share split of {} on {} with ratio {}:{}. Provisioning of new shares."
 msgstr ""
 
-#: shareholder/models.py:810
+#: shareholder/models.py:812
 msgid "Human Being"
 msgstr ""
 
-#: shareholder/models.py:811 shareholder/tests/test_functional.py:182
+#: shareholder/models.py:813 shareholder/tests/test_functional.py:182
 msgid "Corporate"
 msgstr ""
 
-#: shareholder/models.py:827
+#: shareholder/models.py:829
 msgid "legal type of the user"
 msgstr ""
 
-#: shareholder/models.py:832
+#: shareholder/models.py:834
 msgid "when did the user register with the share register 1st time."
 msgstr ""
 
-#: shareholder/models.py:850
+#: shareholder/models.py:852
 msgid "user with legal type company must have company name set"
 msgstr ""
 
-#: shareholder/models.py:854
+#: shareholder/models.py:856
 msgid "user company must have legal type set to company"
 msgstr ""
 
-#: shareholder/models.py:878
+#: shareholder/models.py:882
 msgid "how should the shareholder be approached by the corp"
 msgstr ""
 
-#: shareholder/models.py:881
+#: shareholder/models.py:885
 msgid "user is management/board member of company"
 msgstr ""
 
-#: shareholder/models.py:882
+#: shareholder/models.py:886
 msgid "cache data for fast sorting here"
 msgstr ""
 
-#: shareholder/models.py:1363
+#: shareholder/models.py:1367
 msgid "Missing all data required for #GAFI."
 msgstr ""
 
-#: shareholder/models.py:1374
+#: shareholder/models.py:1378
 msgid "Shareholder first name or last name missing."
 msgstr ""
 
-#: shareholder/models.py:1381
+#: shareholder/models.py:1385
 msgid "Company name or last name missing."
 msgstr ""
 
-#: shareholder/models.py:1385
+#: shareholder/models.py:1389
 msgid "Shareholder birthday missing."
 msgstr ""
 
-#: shareholder/models.py:1389
+#: shareholder/models.py:1393
 msgid "Shareholder origin/country missing."
 msgstr ""
 
-#: shareholder/models.py:1398
+#: shareholder/models.py:1402
 msgid "Shareholder address or address details missing."
 msgstr ""
 
-#: shareholder/models.py:1453
+#: shareholder/models.py:1457
 msgid "Preferred Stock"
 msgstr ""
 
-#: shareholder/models.py:1454
+#: shareholder/models.py:1458
 msgid "Common Stock"
 msgstr ""
 
-#: shareholder/models.py:1455
+#: shareholder/models.py:1459
 msgid "Registered Shares"
 msgstr ""
 
-#: shareholder/models.py:1456
+#: shareholder/models.py:1460
 msgid "Registered share with restricted transferability"
 msgstr ""
 
-#: shareholder/models.py:1463
+#: shareholder/models.py:1467
 msgid "Nominal value of this asset"
 msgstr ""
 
-#: shareholder/models.py:1469 shareholder/models.py:1561
-#: shareholder/models.py:1678 shareholder/models.py:1736
+#: shareholder/models.py:1473 shareholder/models.py:1565
+#: shareholder/models.py:1682 shareholder/models.py:1740
 msgid "JSON list of segments of ids for securities. can be 1, 2, 3, 4-10"
 msgstr ""
 
-#: shareholder/models.py:1472
+#: shareholder/models.py:1476
 msgid "public security id aka Valor, WKN, CUSIP: http://bit.ly/2ieXwuK"
 msgstr ""
 
-#: shareholder/models.py:1477
+#: shareholder/models.py:1481
 msgid ""
 "App needs to track IDs of shares. WARNING: update initial transaction with "
 "segments on enabling."
 msgstr ""
 
-#: shareholder/models.py:1485
+#: shareholder/models.py:1489
 msgid "{} ({} CHF)"
 msgstr ""
 
-#: shareholder/models.py:1550
+#: shareholder/models.py:1554
 msgid "Share Count transfered or created"
 msgstr ""
 
-#: shareholder/models.py:1554
+#: shareholder/models.py:1558
 msgid "Nominal value or payed price for the transaction"
 msgstr ""
 
-#: shareholder/models.py:1558
+#: shareholder/models.py:1562
 msgid "Position is part of a split transaction"
 msgstr ""
 
-#: shareholder/models.py:1564 shareholder/models.py:1739
+#: shareholder/models.py:1568 shareholder/models.py:1743
 msgid "Securities are purchase type (for myself, etc.)"
 msgstr ""
 
-#: shareholder/models.py:1567 shareholder/models.py:1742
+#: shareholder/models.py:1571 shareholder/models.py:1746
 msgid "aka Skontro (read http://bit.ly/2iJquEl)"
 msgstr ""
 
-#: shareholder/models.py:1570 shareholder/models.py:1745
+#: shareholder/models.py:1574 shareholder/models.py:1749
 msgid "What kind of depot is this position stored within"
 msgstr ""
 
-#: shareholder/models.py:1575
+#: shareholder/models.py:1579
 msgid ""
 "assigned position represents the change back to company depot from cert depot"
 msgstr ""
 
-#: shareholder/models.py:1608
+#: shareholder/models.py:1612
 msgid "Capital Increase"
 msgstr ""
 
-#: shareholder/models.py:1610
+#: shareholder/models.py:1614
 msgid "Part of Split"
 msgstr ""
 
-#: shareholder/models.py:1613
+#: shareholder/models.py:1617
 msgid "Share issue"
 msgstr ""
 
-#: shareholder/models.py:1615
+#: shareholder/models.py:1619
 msgid "share issue into cert depot"
 msgstr ""
 
-#: shareholder/models.py:1618
+#: shareholder/models.py:1622
 msgid "move stock to certificate depot"
 msgstr ""
 
-#: shareholder/models.py:1620
+#: shareholder/models.py:1624
 msgid "stock returns from certificate depot"
 msgstr ""
 
-#: shareholder/models.py:1621
+#: shareholder/models.py:1625
 msgid "Regular Ownership change"
 msgstr ""
 
-#: shareholder/models.py:1642
+#: shareholder/models.py:1646
 msgid "Certificate Invalidation for position {}"
 msgstr ""
 
-#: shareholder/models.py:1672
+#: shareholder/models.py:1676
 msgid "Number of shares approved"
 msgstr ""
 
-#: shareholder/models.py:1797 shareholder/models.py:2058
+#: shareholder/models.py:1801 shareholder/models.py:2062
 msgid "shareholder statement report"
 msgstr ""
 
-#: shareholder/models.py:1798
+#: shareholder/models.py:1802
 msgid "shareholder statement reports"
 msgstr ""
 
-#: shareholder/models.py:2065
+#: shareholder/models.py:2069
 msgid "email sent at"
 msgstr ""
 
-#: shareholder/models.py:2067
+#: shareholder/models.py:2071
 msgid "email opened at"
 msgstr ""
 
-#: shareholder/models.py:2069
+#: shareholder/models.py:2073
 msgid "PDF downloaded at"
 msgstr ""
 
-#: shareholder/models.py:2071
+#: shareholder/models.py:2075
 msgid "letter sent at"
 msgstr ""
 
-#: shareholder/models.py:2075
+#: shareholder/models.py:2079
 msgid "remote email id"
 msgstr ""
 
-#: shareholder/models.py:2078
+#: shareholder/models.py:2082
 #, python-brace-format
 msgid "Prefix id with provider, e.g. mandrill{sep}[EMAIL_ID]"
 msgstr ""
 
-#: shareholder/models.py:2088
+#: shareholder/models.py:2092
 msgid "shareholder statement"
 msgstr ""
 

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-22 19:40+0000\n"
-"PO-Revision-Date: 2017-05-22 19:42+0000\n"
+"POT-Creation-Date: 2017-05-23 10:51+0000\n"
+"PO-Revision-Date: 2017-05-23 10:51+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -106,7 +106,7 @@ msgstr "Hochladen erfolgreich"
 msgid "Compeny settings"
 msgstr "Einstellungen"
 
-#: company/templates/company.html:53
+#: company/templates/company.html:53 utils/tests/test_xls.py:18
 msgid "Company Name"
 msgstr "Name des Unternehmens"
 
@@ -153,9 +153,6 @@ msgid "Certificate Signatures"
 msgstr "Unterschriften zum Zertifikat (PDF)"
 
 #: company/templates/company.html:156
-#| msgid ""
-#| "Enter names of VR members to appear inside share certificate PDF signature. "
-#| "Separate names with comma"
 msgid ""
 "Enter names of company staff members for support of shareholder issues. Used"
 " in header of PDF documents such as statements or certificates. Separate "
@@ -573,6 +570,15 @@ msgstr "Aktionäre (1 x 0.10)"
 #: utils/tests/test_subscriptions.py:103
 msgid "Extra Securities (1 x 0.20)"
 msgstr "Weitere Aktienart (1 x 0.20)"
+
+#: utils/tests/test_xls.py:18
+msgid "ID"
+msgstr "ID"
+
+#: utils/tests/test_xls.py:18
+#| msgid "Disposhareholder"
+msgid "shareholder number"
+msgstr "Aktionärsnummer"
 
 #~ msgid "Data"
 #~ msgstr "Daten"

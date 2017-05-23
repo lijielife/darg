@@ -3,9 +3,11 @@
 import csv
 import datetime
 import logging
+import operator
+import os
 import StringIO
 import time
-import operator
+from copy import deepcopy
 
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
@@ -19,10 +21,27 @@ from project.celery import app
 from reports.models import ORDERING_TYPES, REPORT_TYPES, Report
 from shareholder.models import Company
 from utils.formatters import human_readable_segments
-from utils.pdf import render_to_pdf
 from utils.http import url_with_domain
+from utils.pdf import render_to_pdf
+from utils.xls import save_to_excel_file
 
 logger = logging.getLogger(__name__)
+
+
+# removed share percent due to heavy sql impact. killed perf for higher
+# shareholder count
+CSV_HEADER = [
+    _(u'shareholder number'), _('legal type'), _('registration types'),
+    _('company_department'), _('title'), _('salutation'), _(u'name'),
+    _('address'), _('postal_code'), _('city'),
+    _('birthday'), _('mailing_type'), _('nationality'), _('security type'),
+    _('cusip'), _('face_value'), _('certificate_ids (issue date)'),
+    _('stock book id'), _('depot_type'),
+    _(u'email'), _(u'share count'),  _(u'share percent'),
+    _('votes percent'),
+    _('cumulated face value'), _('is management'),
+    _(u'language ISO'), _('language full')
+]
 
 
 def _get_captable_pdf_context(company, ordering, date):
@@ -68,8 +87,7 @@ def _collect_csv_data(shareholder, date):
                 shareholder.user.userprofile.company_department,
                 shareholder.user.userprofile.title,
                 shareholder.user.userprofile.salutation,
-                shareholder.user.last_name,
-                shareholder.user.first_name,
+                shareholder.get_full_name(),
                 shareholder.user.userprofile.get_address(),
                 shareholder.user.userprofile.postal_code,
                 shareholder.user.userprofile.city,
@@ -160,9 +178,14 @@ def _order_queryset(queryset, ordering):
     return queryset.order_by(ordering)
 
 
-def _add_file_to_report(filename, report, content):
-    f = ContentFile(content)
-    report.file.save(filename, f)
+def _add_file_to_report(filename, report, content=None):
+    if content:
+        f = ContentFile(content)
+        report.file.save(filename, f)
+    else:
+        from django.core.files import File
+        f = open(filename)
+        report.file.save(filename, File(f))
     report.save()
 
 
@@ -192,6 +215,12 @@ def _to_dotted(value):
 
 
 def _get_filename(report, company):
+    # xls special extension handling
+    if report.file_type == 'XLS':
+        return u'{}_{}_{}_{}.{}x'.format(
+            time.strftime("%Y-%m-%d"), report.report_type, report.order_by,
+            slugify(company.name), report.file_type.lower())
+
     return u'{}_{}_{}_{}.{}'.format(
         time.strftime("%Y-%m-%d"), report.report_type, report.order_by,
         slugify(company.name), report.file_type.lower())
@@ -252,20 +281,8 @@ def render_captable_csv(company_id, report_id, user_id=None, ordering=None,
 
     csvfile = StringIO.StringIO()
     writer = csv.writer(csvfile)
-    # removed share percent due to heavy sql impact. killed perf for higher
-    # shareholder count
-    header = [
-        _(u'shareholder number'), _('legal type'), _('registration types'),
-        _('company_department'), _('title'), _('salutation'), _(u'last name'),
-        _(u'first name'), _('address'), _('postal_code'), _('city'),
-        _('birthday'), _('mailing_type'), _('nationality'), _('security type'),
-        _('cusip'), _('face_value'), _('certificate_ids (issue date)'),
-        _('stock book id'), _('depot_type'),
-        _(u'email'), _(u'share count'),  _(u'share percent'),
-        _('votes percent'),
-        _('cumulated face value'), _('is management'),
-        _(u'language ISO'), _('language full')]
 
+    header = deepcopy(CSV_HEADER)
     has_track_numbers = track_numbers_secs.exists()
     if has_track_numbers:
         header.append(_('Share IDs'))
@@ -303,6 +320,57 @@ def render_captable_csv(company_id, report_id, user_id=None, ordering=None,
     if not track_downloads:
         report.downloaded_at = timezone.now()
         report.save()
+
+
+@app.task
+def render_captable_xls(company_id, report_id, user_id=None, ordering=None,
+                        notify=False, track_downloads=False):
+    # prepare
+    if user_id:
+        user = User.objects.get(pk=user_id)
+    company = Company.objects.get(pk=company_id)
+    report = Report.objects.get(pk=report_id)
+    ordering = _parse_ordering(ordering)
+    filename = _get_filename(report, company)
+    track_numbers_secs = company.security_set.filter(track_numbers=True)
+
+    header = deepcopy(CSV_HEADER)
+    has_track_numbers = track_numbers_secs.exists()
+    if has_track_numbers:
+        header.append(_('Share IDs'))
+
+    def to_unicode(iterable):
+        return [unicode(s).encode("utf-8") for s in iterable]
+
+    # removed share percent due to heavy sql impact. killed perf for higher
+    # shareholder count
+    # for each active shareholder
+    queryset = company.get_active_shareholders(date=report.report_at)
+    queryset = _order_queryset(queryset, ordering)
+    rows = []
+    for shareholder in queryset:
+        if shareholder.share_count(date=report.report_at):
+            rows.extend(_collect_csv_data(shareholder, report.report_at))
+        else:
+            continue
+
+    save_to_excel_file(filename, rows, header)
+
+    # post process
+    _add_file_to_report(filename, report)
+    _summarize_report(report)
+
+    if notify and user_id:
+        _send_notify(user, filename, subject=_('Your xls captable file'),
+                     body=_('Your file is attached to this email'),
+                     file_desc=_('XLS Captable/Active Shareholders'),
+                     url=url_with_domain(report.get_absolute_url()))
+
+    if not track_downloads:
+        report.downloaded_at = timezone.now()
+        report.save()
+
+    os.remove(filename)  # del tmp file
 
 
 @app.task

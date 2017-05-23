@@ -30,6 +30,11 @@
       <div class="name">{% trans "CSV" %}</div>
     </button>
 
+    <button ng-click="last_captable_report.file_type='XLS'; get_captable_report()" class="btn btn-image xls" ng-class="{selected: last_captable_report.file_type=='XLS'}">
+      <div class="icon"></div>
+      <div class="name">{% trans "XLS" %}</div>
+    </button>
+
   </div>
 
   {% verbatim %}

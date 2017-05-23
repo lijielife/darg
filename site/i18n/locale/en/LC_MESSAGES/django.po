@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-22 19:40+0000\n"
+"POT-Creation-Date: 2017-05-23 10:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -97,7 +97,7 @@ msgstr ""
 msgid "Compeny settings"
 msgstr ""
 
-#: company/templates/company.html:53
+#: company/templates/company.html:53 utils/tests/test_xls.py:18
 msgid "Company Name"
 msgstr ""
 
@@ -517,4 +517,12 @@ msgstr ""
 
 #: utils/tests/test_subscriptions.py:103
 msgid "Extra Securities (1 x 0.20)"
+msgstr ""
+
+#: utils/tests/test_xls.py:18
+msgid "ID"
+msgstr ""
+
+#: utils/tests/test_xls.py:18
+msgid "shareholder number"
 msgstr ""

@@ -15,7 +15,7 @@ from reports.tasks import (_add_file_to_report, _get_captable_pdf_context,
                            _get_filename, _order_queryset, _parse_ordering,
                            _prepare_report, _send_notify, _summarize_report,
                            prerender_reports, render_captable_csv,
-                           render_captable_pdf)
+                           render_captable_pdf, render_captable_xls)
 from shareholder.models import Shareholder
 
 
@@ -210,6 +210,16 @@ class TaskTestCase(TestCase):
     def test_render_captable_pdf(self):
         report = ReportGenerator().generate()
         render_captable_pdf(report.company.pk, report.pk,
+                            user_id=report.user.pk, ordering=None,
+                            notify=True, track_downloads=False)
+        report.refresh_from_db()
+
+        self.assertIsNotNone(report.file)
+
+    def test_render_captable_xls(self):
+        report = ReportGenerator().generate(file_type='XLS')
+        PositionGenerator().generate(company=report.company, seller=None)
+        render_captable_xls(report.company.pk, report.pk,
                             user_id=report.user.pk, ordering=None,
                             notify=True, track_downloads=False)
         report.refresh_from_db()
