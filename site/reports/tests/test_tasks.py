@@ -243,7 +243,7 @@ class TaskTestCase(TestCase):
         mock_pdf.assert_called_with(
             args=[company.pk, pdf_report.pk],
             kwargs={'ordering': pdf_report.order_by})
-        self.assertEqual(mock_csv.call_count, 20)
+        self.assertEqual(mock_csv.call_count, 10)
         mock_csv.assert_called_with(
             args=[company.pk, csv_report.pk],
             kwargs={'ordering': csv_report.order_by})
