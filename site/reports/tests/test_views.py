@@ -252,13 +252,13 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
         for row in lines:
             if row == lines[0] or ',' not in row:  # skip first row
                 continue
-            self.assertEqual(row.count(','), 31)
+            self.assertEqual(row.count(','), 30)
             fields = row.split(',')
             s = Shareholder.objects.get(company=company, number=fields[0])
             text = s.current_segments(security)
             if text:
                 self.assertTrue(text in fields[8])
-            self.assertIn(_('None'), fields[31])
+            self.assertIn(_('None'), fields[30])
 
     def test_pdf_download_with_number_segments(self):
         """ test download of captable pdf """
