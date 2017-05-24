@@ -6,6 +6,7 @@ import logging
 import operator
 import os
 import StringIO
+import sys
 import time
 from copy import deepcopy
 
@@ -18,7 +19,8 @@ from django.utils.translation import ugettext as _
 from natsort import natsorted
 
 from project.celery import app
-from reports.models import ORDERING_TYPES, REPORT_TYPES, Report
+from reports.models import (ORDERING_TYPES, REPORT_FILE_TYPES, REPORT_TYPES,
+                            Report)
 from shareholder.models import Company
 from utils.formatters import human_readable_segments
 from utils.http import url_with_domain
@@ -383,14 +385,11 @@ def prerender_reports():
             continue
         for (report_type, rname) in REPORT_TYPES:
             for (ordering, oname) in ORDERING_TYPES:
-                # CSV
-                report = _prepare_report(company, report_type, ordering, 'CSV')
-                args = [company.pk, report.pk]
-                kwargs = {'ordering': report.order_by}
-                render_captable_csv.apply_async(args=args, kwargs=kwargs)
-
-                # PDF
-                report = _prepare_report(company, report_type, ordering, 'PDF')
-                args = [company.pk, report.pk]
-                kwargs = {'ordering': report.order_by}
-                render_captable_pdf.apply_async(args=args, kwargs=kwargs)
+                for file_type, fname in REPORT_FILE_TYPES:
+                    report = _prepare_report(
+                        company, report_type, ordering, fname)
+                    args = [company.pk, report.pk]
+                    kwargs = {'ordering': report.order_by}
+                    method_name = 'render_captable_{}'.format(fname.lower())
+                    method = getattr(sys.modules[__name__], method_name)
+                    method.apply_async(args=args, kwargs=kwargs)

@@ -228,7 +228,8 @@ class TaskTestCase(TestCase):
 
     @patch('reports.tasks.render_captable_csv.apply_async')
     @patch('reports.tasks.render_captable_pdf.apply_async')
-    def test_prerender_reports(self, mock_pdf, mock_csv):
+    @patch('reports.tasks.render_captable_xls.apply_async')
+    def test_prerender_reports(self, mock_xls, mock_pdf, mock_csv):
         """ render every night the reports for all corps """
         # corps not needing a report = noise
         CompanyGenerator().generate()
@@ -239,6 +240,7 @@ class TaskTestCase(TestCase):
         company = self.shs[0].company
         pdf_report = company.report_set.filter(file_type='PDF').last()
         csv_report = company.report_set.filter(file_type='CSV').last()
+        xls_report = company.report_set.filter(file_type='XLS').last()
         self.assertEqual(mock_pdf.call_count, 10)
         mock_pdf.assert_called_with(
             args=[company.pk, pdf_report.pk],
@@ -247,3 +249,7 @@ class TaskTestCase(TestCase):
         mock_csv.assert_called_with(
             args=[company.pk, csv_report.pk],
             kwargs={'ordering': csv_report.order_by})
+        self.assertEqual(mock_xls.call_count, 10)
+        mock_xls.assert_called_with(
+            args=[company.pk, xls_report.pk],
+            kwargs={'ordering': xls_report.order_by})
