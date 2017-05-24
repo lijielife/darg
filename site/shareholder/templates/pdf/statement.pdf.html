@@ -111,14 +111,14 @@
 
       <div class="shareholder content">
         <h1>
-          {% trans "Depot statement for" %} {{ shareholder.get_full_name }} ({{ shareholder.number }})
+          {% trans "Depot statement for" %} {{ shareholder.get_full_name }}
         </h1>
 
         <p>
           {% trans "Herewith company" %}
           <strong>{{ shareholder.company.name }}</strong>
           {% trans "confirms that" %}
-          <strong>{{ shareholder.get_full_name }} ({{ shareholder.number }})</strong>
+          <strong>{{ shareholder.get_full_name }}</strong>
           {% trans "is the record holder of the following investment(s)" %}:
         </p>
 
