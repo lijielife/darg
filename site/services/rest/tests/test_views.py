@@ -398,6 +398,21 @@ class OperatorTestCase(SubscriptionTestMixin, TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertFalse(Operator.objects.filter(pk=operator2.pk).exists())
 
+    def test_exclude_superusers(self):
+        """ userusers must not be shown """
+        operator = OperatorGenerator().generate()
+        operator2 = OperatorGenerator().generate(company=operator.company)
+        self.add_subscription(operator.company)
+        user = operator.user
+        user.is_superuser = True
+        user.save()
+
+        self.client.force_login(user)
+        response = self.client.get(reverse('operators-list'))
+        self.assertEqual(len(response.data['results']), 1)
+        self.assertEqual(response.data['results'][0]['user']['email'],
+                         operator2.user.email)
+
 
 class OptionTransactionViewSetTestCase(StripeTestCaseMixin,
                                        SubscriptionTestMixin, APITestCase):
