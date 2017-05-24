@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-18 07:32+0000\n"
-"PO-Revision-Date: 2017-05-17 08:24+0000\n"
+"POT-Creation-Date: 2017-05-24 20:33+0000\n"
+"PO-Revision-Date: 2017-05-23 10:51+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -103,19 +103,19 @@ msgstr "Logo des Unternehmens"
 msgid "Upload success"
 msgstr "Hochladen erfolgreich"
 
-#: company/templates/company.html:49
-msgid "Data"
-msgstr "Daten"
+#: company/templates/company.html:50
+msgid "Compeny settings"
+msgstr "Einstellungen"
 
-#: company/templates/company.html:52
+#: company/templates/company.html:53 utils/tests/test_xls.py:18
 msgid "Company Name"
 msgstr "Name des Unternehmens"
 
-#: company/templates/company.html:64
+#: company/templates/company.html:65
 msgid "Company Share Count"
 msgstr "Anzahl der Aktien des Unternehmens"
 
-#: company/templates/company.html:77
+#: company/templates/company.html:78
 msgid ""
 "The date when the company was registered with public authorities. Date "
 "format is dd.mm.YY without leading zero for the day"
@@ -124,15 +124,15 @@ msgstr ""
 "Eintragung im öffentlichen Register. Das Format ist dd.mm.YY (Bsp. 1.03.12 "
 "für den ersten März 2012). Keine führende Null bei Tagen."
 
-#: company/templates/company.html:78
+#: company/templates/company.html:79
 msgid "Company founding date"
 msgstr "Gründungsdatum des Unternehmens"
 
-#: company/templates/company.html:102
+#: company/templates/company.html:103
 msgid "Provisioned Capital (Liberiertes Kapital)"
 msgstr "Liberiertes/eingelegtes Kapital"
 
-#: company/templates/company.html:115
+#: company/templates/company.html:116
 msgid "CHF for one vote based on face value of securities"
 msgstr "Anzahl CHF für ein Stimmrecht (Basis Nennwert der Aktien)"
 
@@ -140,57 +140,88 @@ msgstr "Anzahl CHF für ein Stimmrecht (Basis Nennwert der Aktien)"
 msgid "Company Headquarter Country"
 msgstr "Land des Unternehmenssitzes"
 
-#: company/templates/company.html:144
+#: company/templates/company.html:142
+msgid ""
+"Enter names of VR members to appear inside share certificate PDF signature. "
+"Separate names with comma"
+msgstr ""
+"Geben Sie die Namen der VR-Mitglieder ein, welche im PDF Ausdruck des "
+"Zertifikates als Unterschrift erscheinen sollen. Trennen Sie mehrere Namen "
+"mit Komma."
+
+#: company/templates/company.html:143
+msgid "Certificate Signatures"
+msgstr "Unterschriften zum Zertifikat (PDF)"
+
+#: company/templates/company.html:156
+msgid ""
+"Enter names of company staff members for support of shareholder issues. Used "
+"in header of PDF documents such as statements or certificates. Separate "
+"names with comma."
+msgstr ""
+"Geben Sie die Namen der Ansprechpartner ein, welche im PDF Ausdruck des "
+"Depotauszuges und anderer Dokumente als Kontakt erscheinen sollen. Trennen "
+"Sie mehrere Namen mit Komma."
+
+#: company/templates/company.html:157
+msgid "Support contacts"
+msgstr "Ansprechpartner"
+
+#: company/templates/company.html:171
+msgid "Company KPIs"
+msgstr "Kennzahlen"
+
+#: company/templates/company.html:177
 msgid "This value is calculated every 24hrs."
 msgstr "Dieser Wert wird alle 24 Stunden neu berechnet."
 
-#: company/templates/company.html:145
+#: company/templates/company.html:178
 msgid "Total count of current shareholders"
 msgstr "Gesamtzahl aktueller Gesellschafter"
 
-#: company/templates/company.html:157
+#: company/templates/company.html:190
 msgid "total count of shares of dispo shareholder"
 msgstr "Anzahl Dispoaktien (Aktien welche nicht registriert sind)"
 
-#: company/templates/company.html:165
+#: company/templates/company.html:198
 msgid "total capital of shares of dispo shareholder"
 msgstr "Kapital in Dispoaktien"
 
-#: company/templates/company.html:166
+#: company/templates/company.html:199
 msgid "based on face value of all shares assigned to dispo shareholder"
 msgstr ""
 "Basierend auf dem Nennwert aller Aktien, welche dem Dispo-Aktionär "
 "zugewiesen sind"
 
-#: company/templates/company.html:179
+#: company/templates/company.html:212
 msgid "total count of shares of management/vr"
 msgstr "Aktien gehalten vom Management/VR"
 
-#: company/templates/company.html:187
+#: company/templates/company.html:220
 msgid "total capital of shares of management/vf"
 msgstr "Kapital gehalten vom Management/VR"
 
-#: company/templates/company.html:188
+#: company/templates/company.html:221
 msgid "based on face value of all shares assigned to management/vr"
 msgstr ""
 "Basierend auf dem Nennwert aller Aktien, welche aktuell vom Management/VR "
 "gehalten werden."
 
-#: company/templates/company.html:200
+#: company/templates/company.html:232
 msgid "total capital of the company. math: all shares existing * face value"
 msgstr ""
 "Gesamtkapital des Unternehmens. Mathematisch: alle existierenden Aktion "
 "multipliziert mit dem Nennwert ebendieser."
 
-#: company/templates/company.html:203
+#: company/templates/company.html:235
 msgid "Provisioned Capital"
 msgstr "Liberiertes/eingelegtes Kapital"
 
-#: company/templates/company.html:213
+#: company/templates/company.html:245
 msgid "Provisioned Share Count"
 msgstr "Anzahl der Aktien des Unternehmens"
 
-#: company/templates/company.html:224
+#: company/templates/company.html:256
 msgid ""
 "number of shares which are given to shareholders. or overall share count "
 "minus dispo shareholder and minus company shareholder"
@@ -198,21 +229,21 @@ msgstr ""
 "Anzahl Aktien, welche an Aktionäre ausgegeben sind. Oder Gesamtaktienzahl "
 "minus Dispo-Aktionär und Aktien, welche vom Unternehmen gehalten werden."
 
-#: company/templates/company.html:225
+#: company/templates/company.html:257
 msgid "Share Count Floating"
 msgstr "Anzahl ausgegebener Aktien"
 
-#: company/templates/company.html:235
+#: company/templates/company.html:267
 msgid ""
 "total votes count based on existing shares. math: overall share count * face "
 "value"
 msgstr "Anzahl Stimmrechte basierend auf existierenden Aktien"
 
-#: company/templates/company.html:236
+#: company/templates/company.html:268
 msgid "Total votes count based on shares existing"
 msgstr "Anzahl Stimmrechte basierend auf existierenden Aktien"
 
-#: company/templates/company.html:245
+#: company/templates/company.html:277
 msgid ""
 "total votes count effective. excludes unregistered/dispo shares and shares "
 "in company ownership"
@@ -220,28 +251,28 @@ msgstr ""
 "Stimmrechte effektiv. Schliesst Dispoaktien/unregistrierte Aktien und Aktien "
 "im Unternehmensbesitz aus."
 
-#: company/templates/company.html:246
+#: company/templates/company.html:278
 msgid "Total votes count based on shares floating"
 msgstr "Anzahl Stimmrechte basierend auf ausgegebenen Aktien"
 
-#: company/templates/company.html:251
+#: company/templates/company.html:283
 msgid "Does include shares used for options. Without options it would be"
 msgstr "Beinhaltet Aktien geblockt für Optionen. Ohne diese Aktien wären dies"
 
-#: company/templates/company.html:258
+#: company/templates/company.html:290
 msgid "Total option count based on shares dedicated to options"
 msgstr ""
 "Gesamtzahl Optionen basierend auf Aktien, welche für Optionen geblockt sind"
 
-#: company/templates/company.html:267
+#: company/templates/company.html:299
 msgid "Total option count based on shares dedicated to options floating"
 msgstr "Anzahl Optionen basierend ausgegebenen Optionen "
 
-#: company/templates/company.html:280
+#: company/templates/company.html:311
 msgid "Depot Statements"
 msgstr "Depotauszug pro Gesellschafter"
 
-#: company/templates/company.html:281
+#: company/templates/company.html:312
 msgid "depot statement intro. link to docu"
 msgstr ""
 "Jährlicher Versand der Depotauszüge per Email an alle aktiven "
@@ -250,17 +281,17 @@ msgstr ""
 "\"Dokumentation Depotversand\">Dokumentation Depotversand und "
 "Steuerbescheinigung</a>"
 
-#: company/templates/company.html:285
+#: company/templates/company.html:316
 msgid ""
 "send depot statement with tax declaration each year to shareholders via "
 "email. link to docu"
 msgstr "Versand der Depotauszüge an jeden Gesellschafter per Email."
 
-#: company/templates/company.html:286
+#: company/templates/company.html:317
 msgid "Is statement sending enabled"
 msgstr "Versand der Depotauszüge ist aktiviert"
 
-#: company/templates/company.html:300
+#: company/templates/company.html:331
 msgid ""
 "send depot statement with tax declaration each year to shareholders via "
 "snail mail for those which don't have email or did not open the email. link "
@@ -271,11 +302,11 @@ msgstr ""
 "geöffnet hat.\n"
 " <strong>Verursacht weitere Kosten für Druck, Versand und Umschlag.</strong>"
 
-#: company/templates/company.html:301
+#: company/templates/company.html:332
 msgid "Is statement sending via letter enabled"
 msgstr "Versand der Depotauszüge per Brief ist aktiviert"
 
-#: company/templates/company.html:316
+#: company/templates/company.html:347
 msgid ""
 "The date when depot statements are to be sent to the shareholders. Date "
 "format is dd.mm.YY without leading zero for the day. After the statements "
@@ -286,35 +317,35 @@ msgstr ""
 "Keine führende Null bei Tagen. Nachdem die Auszüge versendet wurden, wird "
 "dieses Datum automatisch auf denselben Tag im kommenden Jahr aktualisiert."
 
-#: company/templates/company.html:317
+#: company/templates/company.html:348
 msgid "Statement sending date"
 msgstr "Versanddatum für Depotauszug"
 
-#: company/templates/company.html:344
+#: company/templates/company.html:375
 msgid "Securities"
 msgstr "Aktienart"
 
-#: company/templates/company.html:347
+#: company/templates/company.html:378
 msgid "security"
 msgstr "Aktienart"
 
-#: company/templates/company.html:348
+#: company/templates/company.html:379
 msgid "cusip"
 msgstr "Valor/WKN"
 
-#: company/templates/company.html:349
+#: company/templates/company.html:380
 msgid "count"
 msgstr "Anzahl"
 
-#: company/templates/company.html:359 company/tests/test_views.py:78
+#: company/templates/company.html:390 company/tests/test_views.py:78
 msgid "tracking security numbers for owners enabled. segments:"
 msgstr "Nummerierte Aktiensegmente:"
 
-#: company/templates/company.html:372
+#: company/templates/company.html:403
 msgid "Please contact us at our"
 msgstr "Bitte kontaktieren Sie uns unter"
 
-#: company/templates/company.html:374
+#: company/templates/company.html:405
 msgid ""
 "for getting more security types (common stock, preferred stock, numbered "
 "shares) added"
@@ -322,35 +353,35 @@ msgstr ""
 "um mehr Wertpapierarten (Vorzugsaktien, Stammaktien, Aktien mit "
 "verschiedenen Nennwerten, Nummerierte Aktien) zu erhalten."
 
-#: company/templates/company.html:380
+#: company/templates/company.html:411
 msgid "Administrators"
 msgstr "Administratoren"
 
-#: company/templates/company.html:381
+#: company/templates/company.html:412
 msgid "add operator"
 msgstr "Administrator hinzufügen"
 
-#: company/templates/company.html:409
+#: company/templates/company.html:440
 msgid "Option Plans"
 msgstr "Optionsplan"
 
-#: company/templates/company.html:415
+#: company/templates/company.html:446
 msgid "Options Plan Name"
 msgstr "Name des Optionsplanes"
 
-#: company/templates/company.html:418
+#: company/templates/company.html:449
 msgid "Edit Option Plan"
 msgstr "Optionsplan editieren"
 
-#: company/templates/company.html:429
+#: company/templates/company.html:460
 msgid "Administration"
 msgstr "Verwaltung"
 
-#: company/templates/company.html:433
+#: company/templates/company.html:464
 msgid "reset company"
 msgstr "Unternehmen zurücksetzen"
 
-#: company/templates/company.html:436
+#: company/templates/company.html:467
 msgid ""
 "the company, shareholders, transactions, options, and all other assigned "
 "data are deleted. the user can then create the company anew and start fresh"
@@ -519,7 +550,19 @@ msgstr "API Anfragen"
 msgid "German"
 msgstr "Deutsch"
 
-#: utils/import_backends.py:285
+#: utils/import_backends.py:148 utils/import_backends.py:151
+msgid "TRANSFER-1"
+msgstr "TRANSFER-1"
+
+#: utils/import_backends.py:148
+msgid "TRANSFER"
+msgstr "AK"
+
+#: utils/import_backends.py:149
+msgid "SHAREHOLDER"
+msgstr "Übertrag"
+
+#: utils/import_backends.py:292
 msgid "Disposhareholder"
 msgstr "Gesellschafter für Dispoaktien"
 
@@ -541,14 +584,16 @@ msgstr "Aktionäre (1 x 0.10)"
 msgid "Extra Securities (1 x 0.20)"
 msgstr "Weitere Aktienart (1 x 0.20)"
 
-#~ msgid "TRANSFER-1"
-#~ msgstr "TRANSFER-1"
+#: utils/tests/test_xls.py:18
+msgid "ID"
+msgstr "ID"
 
-#~ msgid "TRANSFER"
-#~ msgstr "AK"
+#: utils/tests/test_xls.py:18
+msgid "shareholder number"
+msgstr "Aktionärsnummer"
 
-#~ msgid "SHAREHOLDER"
-#~ msgstr "Übertrag"
+#~ msgid "Data"
+#~ msgstr "Daten"
 
 #~ msgid "Total Vote Count"
 #~ msgstr "Stimmrechte gesamt"

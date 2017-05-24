@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-18 07:32+0000\n"
+"POT-Creation-Date: 2017-05-24 20:33+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -327,7 +327,7 @@ msgstr ""
 
 #: project/templates/_menu.html:111
 #: project/templates/two_factor/core/login.html:61
-#: project/tests/test_views.py:206
+#: project/tests/test_views.py:192
 msgid "Register"
 msgstr ""
 
@@ -392,93 +392,6 @@ msgstr ""
 
 #: project/templates/base_auth.html:28
 msgid "our blog"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:94
-#: project/templates/option.pdf.html:80
-msgid "www.das-aktienregister.ch"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:94
-#: project/templates/option.pdf.html:80
-msgid "Page"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:95
-#: project/templates/option.pdf.html:81
-msgid "of"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:96
-#: project/templates/option.pdf.html:82
-msgid "Date generated"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:103
-#: project/templates/option.pdf.html:89
-msgid "Total capital"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:105
-#: project/templates/option.pdf.html:91
-msgid "based on"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:109
-#: project/templates/option.pdf.html:95
-msgid "with face value of"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:113
-#: project/templates/option.pdf.html:99
-msgid "share certificate "
-msgstr ""
-
-#: project/templates/certificate.pdf.html:115
-#: project/templates/option.pdf.html:101
-msgid "Nr."
-msgstr ""
-
-#: project/templates/certificate.pdf.html:118
-#: project/templates/option.pdf.html:104
-msgid "representing"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:124
-#: project/templates/option.pdf.html:110
-msgid "with face value"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:127
-#: project/templates/option.pdf.html:113
-msgid "of each"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:127
-#: project/templates/option.pdf.html:113
-msgid "with total value of"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:129
-#: project/templates/option.pdf.html:115
-msgid "cusip"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:130
-#: project/templates/option.pdf.html:116
-msgid "ISIN"
-msgstr ""
-
-#: project/templates/certificate.pdf.html:140
-#: project/templates/option.pdf.html:126
-msgid ""
-"is as owner of the certificate with all legal and statuary rights "
-"shareholder of our company."
-msgstr ""
-
-#: project/templates/certificate.pdf.html:151
-#: project/templates/option.pdf.html:137
-msgid " in the name of the supervisory board"
 msgstr ""
 
 #: project/templates/djstripe/_annotations.html:5
@@ -922,7 +835,7 @@ msgstr ""
 msgid "Gratis Aktienbuch-Muster"
 msgstr ""
 
-#: project/templates/index.html:36 project/tests/test_views.py:84
+#: project/templates/index.html:36 project/tests/test_views.py:70
 msgid "My Dashboard"
 msgstr ""
 
@@ -1293,19 +1206,23 @@ msgid "Shareholder Number"
 msgstr ""
 
 #: project/templates/start.html:101
+msgid "CumFaceCap"
+msgstr ""
+
+#: project/templates/start.html:102
 #, python-format
 msgid "Shares (%%%%)"
 msgstr ""
 
-#: project/templates/start.html:105
+#: project/templates/start.html:106
 msgid "Gafi Validation failed"
 msgstr ""
 
-#: project/templates/start.html:125
+#: project/templates/start.html:127
 msgid "Option Holders"
 msgstr ""
 
-#: project/templates/start.html:126
+#: project/templates/start.html:128
 msgid "Option Holders note"
 msgstr ""
 
@@ -1496,22 +1413,10 @@ msgstr ""
 msgid "Weblog index"
 msgstr ""
 
-#: project/tests/test_views.py:142 project/views.py:218
+#: project/tests/test_views.py:128 project/views.py:93
 msgid ""
 "You have already an existing user account. Please login or reset your "
 "password."
-msgstr ""
-
-#: project/tests/test_views.py:339
-msgid "None"
-msgstr ""
-
-#: project/tests/test_views.py:450 project/views.py:49
-msgid "shareholder number"
-msgstr ""
-
-#: project/tests/test_views.py:494 project/views.py:106
-msgid "date"
 msgstr ""
 
 #. Translators: should be a language supported by Twilio,
@@ -1532,156 +1437,4 @@ msgstr ""
 #. see http://bit.ly/187I5cr
 #: project/tfa.py:19
 msgid "You didn't press any keys. Good bye."
-msgstr ""
-
-#: project/views.py:49
-msgid "last name"
-msgstr ""
-
-#: project/views.py:49
-msgid "first name"
-msgstr ""
-
-#: project/views.py:50
-msgid "email"
-msgstr ""
-
-#: project/views.py:51
-msgid "language ISO"
-msgstr ""
-
-#: project/views.py:51
-msgid "language full"
-msgstr ""
-
-#: project/views.py:51
-msgid "street"
-msgstr ""
-
-#: project/views.py:51
-msgid "street 2"
-msgstr ""
-
-#: project/views.py:52
-msgid "c/o"
-msgstr ""
-
-#: project/views.py:52
-msgid "city"
-msgstr ""
-
-#: project/views.py:52
-msgid "zip"
-msgstr ""
-
-#: project/views.py:52
-msgid "country"
-msgstr ""
-
-#: project/views.py:53
-msgid "pobox"
-msgstr ""
-
-#: project/views.py:53
-msgid "mailing type"
-msgstr ""
-
-#: project/views.py:53
-msgid "nationality"
-msgstr ""
-
-#: project/views.py:106
-msgid "buyer"
-msgstr ""
-
-#: project/views.py:106
-msgid "seller"
-msgstr ""
-
-#: project/views.py:107 project/views.py:396
-msgid "count"
-msgstr ""
-
-#: project/views.py:108
-msgid "value"
-msgstr ""
-
-#: project/views.py:108 project/views.py:396
-msgid "security"
-msgstr ""
-
-#: project/views.py:108
-msgid "comment"
-msgstr ""
-
-#: project/views.py:108
-msgid "depot type"
-msgstr ""
-
-#: project/views.py:109
-msgid "stock book id"
-msgstr ""
-
-#: project/views.py:109
-msgid "vesting period (options only"
-msgstr ""
-
-#: project/views.py:110
-msgid "cert id (options only)"
-msgstr ""
-
-#: project/views.py:131 project/views.py:133
-msgid "----------------------------------------"
-msgstr ""
-
-#: project/views.py:132
-msgid "Transactions for options:"
-msgstr ""
-
-#: project/views.py:341 project/views.py:396
-msgid "full name"
-msgstr ""
-
-#: project/views.py:341
-msgid "share count"
-msgstr ""
-
-#: project/views.py:341
-msgid "security name"
-msgstr ""
-
-#: project/views.py:342
-msgid "certificate id"
-msgstr ""
-
-#: project/views.py:342
-msgid "certificate printed at"
-msgstr ""
-
-#: project/views.py:343
-msgid "security type"
-msgstr ""
-
-#: project/views.py:350
-msgid "option"
-msgstr ""
-
-#: project/views.py:358 project/views.py:401
-msgid "stock"
-msgstr ""
-
-#: project/views.py:397
-msgid "is management member"
-msgstr ""
-
-#: project/views.py:398
-msgid "vesting in months"
-msgstr ""
-
-#: project/views.py:398
-msgid "asset type"
-msgstr ""
-
-#: project/views.py:406
-msgid "certificate"
 msgstr ""

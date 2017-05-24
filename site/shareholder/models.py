@@ -165,6 +165,10 @@ class Company(AddressModelMixin, models.Model):
         _('comma separated list of board members permitted to sign in the name '
           'of the company'),
         max_length=255, blank=True)
+    support_contact = models.CharField(
+        _('string with comma separated names for support contact printed '
+          'inside statement'),
+        max_length=255, blank=True)
     email = models.EmailField(_('Email'), blank=True)  # required by djstripe
 
     is_statement_sending_enabled = models.BooleanField(
@@ -244,7 +248,9 @@ class Company(AddressModelMixin, models.Model):
             slugify(security))
         cached = cache.get(cache_key)
         if cached:
-            return cached
+            return Shareholder.objects.filter(pk__in=cached).select_related(
+                'user', 'user__userprofile', 'user__userprofile__country',
+                'company').order_by('number')
 
         kwargs = {}
         if date:
@@ -263,7 +269,10 @@ class Company(AddressModelMixin, models.Model):
             'user', 'user__userprofile', 'user__userprofile__country', 'company'
         ).order_by('number')
 
-        cache.set(cache_key, result, 60*60*24)
+        # result can be large. memcache has 1MB cache limit... see
+        # https://goo.gl/CFDsi3 for more details
+        cache.set(cache_key, list(result.values_list('pk', flat=True)),
+                  60*60*24)
         return result
 
     def get_active_option_holders(self, date=None, security=None):
@@ -326,7 +335,6 @@ class Company(AddressModelMixin, models.Model):
         try:
             return self.shareholder_set.earliest('id')
         except Shareholder.DoesNotExist:
-            logger.warning('no company shareholder found')
             if not fail_silently:
                 raise ValueError('corp shareholder not found')
 
@@ -852,14 +860,16 @@ class UserProfile(AddressModelMixin, models.Model):
 
     def get_address(self):
         """ return string with full address """
-        fields = ['street', 'street2', 'pobox', 'postal_code', 'city']
+        fields = ['street', 'street2']
         fields = [field for field in fields if getattr(self, field, None)]
         parts = [getattr(self, field) for field in fields]
         address = u", ".join(parts)
         if self.c_o:
-            address += u"c/o: {}".format(self.c_o)
+            address += u", c/o: {}".format(self.c_o)
         if self.pobox:
-            address += u"POBOX: {}".format(self.pobox)
+            address += u", POBOX: {}".format(self.pobox)
+        if self.postal_code or self.city:
+            address += u", {} {}".format(self.postal_code, self.city)
         if self.country:
             address += u", {}".format(self.country.name)
         return address
@@ -1016,7 +1026,7 @@ class Shareholder(TagMixin, models.Model):
             else:
                 name += u"{}".format(self.user.userprofile.company_name)
 
-        return name
+        return name or self.user.email
 
     def get_number_segments_display(self):
         """
@@ -1252,7 +1262,6 @@ class Shareholder(TagMixin, models.Model):
         but where the vesting period is over. `without_vesting` gets
         share count for all pkgds which don't have a vesting at all
         """
-
         qs_bought = self.buyer.all()
         qs_sold = self.seller.all()
 
@@ -1427,14 +1436,6 @@ class Shareholder(TagMixin, models.Model):
         # how much percent of these eligible votes does the shareholder have?
         return (self.vote_count(date=date, security=security) /
                 float(total_votes_eligible))
-
-    def get_user_name(self):
-        """
-        returns full name of user if given, else email
-        """
-        return self.user.get_full_name() or self.user.email
-
-    user_name = property(get_user_name)
 
 
 class Operator(models.Model):
@@ -1653,6 +1654,12 @@ class Position(DiscountedTaxByVestingModelMixin, CertificateMixin):
             self.save()
         else:
             raise ValueError('position already invalidated')
+
+    def _vesting_expires_at(self):
+        if self.vesting_months:
+            return self.bought_at + relativedelta(months=self.vesting_months)
+
+    vesting_expires_at = property(_vesting_expires_at)
 
 
 def get_option_plan_upload_path(instance, filename):
@@ -2000,7 +2007,7 @@ class ShareholderStatementReport(models.Model):
 
         pdf_dir = self._get_statement_pdf_path_for_user(user)
         pdf_filename = u'{}-{}-{}.pdf'.format(
-            slugify(user.get_full_name() or user.email),
+            slugify(user.shareholder_set.first().get_full_name()),
             slugify(self.company),
             self.report_date.strftime('%Y-%m-%d')
         )
@@ -2014,7 +2021,7 @@ class ShareholderStatementReport(models.Model):
                 company=self.company,
                 report_date=self.report_date,
                 user=user,
-                user_name=user.get_full_name() or user.email,
+                user_name=user.shareholder_set.first().get_full_name(),
                 shareholder_list=self.company.shareholder_set.filter(
                     user_id=user.pk),
                 site=Site.objects.get_current(),

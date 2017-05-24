@@ -71,23 +71,34 @@
         <table>
           <tr>
             <td class="user">
-              {{ shareholder.user_name }}<br />
-              {{ shareholder.user.userprofile.street }}<br />
-              {{ shareholder.user.userprofile.postal_code }} {{ shareholder.user.userprofile.city }}<br />
+              {{ shareholder.get_full_name }}<br />
+              {% if shareholder.user.userprofile.c_o %}c/o {{ shareholder.user.userprofile.c_o }} <br />{% endif %}
+              {% if shareholder.user.userprofile.street %}{{ shareholder.user.userprofile.street }}<br />{% endif %}
+              {% if shareholder.user.userprofile.pobox %}PO Box: {{ shareholder.user.userprofile.pobox %}<br />{% endif %}
+              {% if shareholder.user.userprofile.city %}{{ shareholder.user.userprofile.postal_code }} {{ shareholder.user.userprofile.city }}<br />{% endif %}
               {% if shareholder.user.userprofile.province %}{{ shareholder.user.userprofile.province }}<br />{% endif %}
-              {{ shareholder.user.userprofile.country.name }}
+              {% if shareholder.user.userprofile.country.name %}{{ shareholder.user.userprofile.country.name }}{% endif %}
             </td>
             <td class="company">
               {{ shareholder.company.name }}<br />
-              {{ shareholder.company.street }}<br />
-              {{ shareholder.company.postal_code }} {{ shareholder.company.city }}<br />
-              {% if shareholder.company.province %}{{ shareholder.company.province }}<br />{% endif %}
-              {{ shareholder.company.country.name }}
-              <br /><br />
-              {% trans "Your contact person(s):" %}:<br />
-              {% for operator in shareholder.company.get_operators %}
-                {{ operator.user.get_full_name }}{% if not forloop.last %}, {% endif %}
-              {% endfor %}
+              {% if shareholder.company.get_company_shareholder.user.userprofile.street %}
+                {{ shareholder.company.get_company_shareholder.user.userprofile.street }}<br />
+              {% endif %}
+              {% if shareholder.company.get_company_shareholder.user.userprofile.city %}
+                {{ shareholder.company.get_company_shareholder.user.userprofile.postal_code }} 
+                {{ shareholder.company.get_company_shareholder.user.userprofile.city }}<br />
+              {% endif %}
+              {% if shareholder.company.get_company_shareholder.user.userprofile.province %}
+                {{ shareholder.company.get_company_shareholder.user.userprofile.province }}<br />
+              {% endif %}
+              {% if shareholder.company.get_company_shareholder.user.userprofile.country.name %}
+                {{ shareholder.company.get_company_shareholder.user.userprofile.country.name }}
+              {% endif %}
+              {% if shareholder.company.support_contact %}
+                <br /><br />
+                {% trans "Your contact person(s):" %}:<br />
+                {{ shareholder.company.support_contact }}
+              {% endif %}
               <br /><br />
               {% trans "Your shareholder number:" %}:
               {{ shareholder.number }}
@@ -100,53 +111,32 @@
 
       <div class="shareholder content">
         <h1>
-          {% trans "Depot statement for" %} {{ shareholder.user_name }} ({{ shareholder.number }})
+          {% trans "Depot statement for" %} {{ shareholder.get_full_name }}
         </h1>
 
-        <p>{% trans "Herewith company" %}</p>
-
-        <p class="indent">
-          {{ shareholder.company.name }}
-          {% if shareholder.company.has_address %}
-            {% if shareholder.company.street %}
-              {{ shareholder.company.street }}, 
-            {% endif %}
-            {% if shareholder.company.street or shareholder.company.city %}
-              {{ shareholder.company.postal_code }} {{ shareholder.company.city }}, 
-            {% endif %}
-            {% if shareholder.company.province %}
-              {{ shareholder.company.province }}, 
-            {% endif %}
-            {% if shareholder.company.country %}
-              {{ shareholder.company.country }}, 
-            {% endif %}
-          {% endif %}
-        </p>
-
-        <p>{% trans "confirms that" %}</p>
-
         <p>
-          <span class="indent">{{ shareholder.user_name }} ({{ shareholder.number }})</span>
-        </p>
-
-        <p>
+          {% trans "Herewith company" %}
+          <strong>{{ shareholder.company.name }}</strong>
+          {% trans "confirms that" %}
+          <strong>{{ shareholder.get_full_name }}</strong>
           {% trans "is the record holder of the following investment(s)" %}:
         </p>
 
         {% get_shareholder_assets shareholder report_date as asset_list %}
         {% if asset_list %}
-          <p>{% trans "Assets" %}</p>
           <table>
             <tr class="head">
-              <td>{% trans "Type" %}</td>
+              <td class="col1" width="300px">{% trans "Type" %}</td>
               <td>{% trans "Record Date" %}</td>
               <td class="pull-right">{% trans "Quantity" %}</td>
               <td class="pull-right">{% trans "Nominal Value" %}</td>
+              <td class="pull-right">{% trans "Cumulated Capital based on face value" %}</td>
             </tr>
             {% for asset in asset_list %}
               <tr class="row {% cycle 'odd' 'even' %}">
-                <td>
-                  {% if asset.name %}{{ asset.name }}{% else %}&nbsp;{% endif %}
+                <td class="col1">
+                  {% if asset.name %}{{ asset.name }}{% else %}&nbsp;{% endif %}<br/>
+                  {% if asset.cusip %}<i>{% trans "Valor" %}: {{ asset.cusip }}</i>{% endif %}
                 </td>
                 <td>
                   {% if asset.date %}{{ asset.date }}{% else %}&nbsp;{% endif %}
@@ -155,7 +145,10 @@
                   {% if asset.count %}{{ asset.count }}{% else %}&nbsp;{% endif %}
                 </td>
                 <td class="pull-right">
-                  {% if asset.value %}{{ asset.value|floatformat:2 }}{% else %}&nbsp;{% endif %}
+                  {% if asset.value %}{{ asset.value|floatformat:2 }} CHF {% else %}&nbsp;{% endif %}
+                </td>
+                <td class="pull-right">
+                  {% if asset.cumulated_face_value %}{{ asset.cumulated_face_value|floatformat:2 }} CHF {% else %}&nbsp;{% endif %}
                 </td>
               </tr>
             {% endfor %}
@@ -201,59 +194,45 @@ holdings currently value: {{share_value}} in shares and {{options_value}} in opt
           {% endblocktrans %}
         </p>
 
-        <br />
-        <p>{% trans "Zurich" %}, {{ report_date|date:"DATE_FORMAT" }}</p>
+        <p>
+          {% if company.get_company_shareholder.user.userprofile.city %} {{ company.get_company_shareholder.user.userprofile.city }}, {% endif %}
+          {{ report_date|date:"DATE_FORMAT" }}
+        </p>
         <p>
           {{ company.name }}
         </p>
 
         <div class="break"></div>
 
+
+        <!-- TAX DECLARATION -->
         <h1>
-          {% trans "Depot statement for" %} {{ shareholder.get_user_name }} ({{ shareholder.number }})
+          {% trans "Depot statement for" %} {{ shareholder.get_full_name }} ({{ shareholder.number }})
         </h1>
 
-        <p>{% trans "Herewith company" %}</p>
-
-        <p class="indent">
-          {{ shareholder.company.name }}
-          {% if shareholder.company.has_address %}
-            {% if shareholder.company.street %}
-              {{ shareholder.company.street }}, 
-            {% endif %}
-            {% if shareholder.company.street or shareholder.company.city %}
-              {{ shareholder.company.postal_code }} {{ shareholder.company.city }}, 
-            {% endif %}
-            {% if shareholder.company.province %}
-              {{ shareholder.company.province }}, 
-            {% endif %}
-            {% if shareholder.company.country %}
-              {{ shareholder.company.country }}, 
-            {% endif %}
-          {% endif %}
-        </p>
-
-        <p>{% trans "confirms that" %}</p>
-
         <p>
-          <span class="indent">{{ shareholder.get_user_name }} ({{ shareholder.number }})</span>
+          {% trans "Herewith company" %}
+          <strong>{{ shareholder.company.name }}</strong>
+          {% trans "confirms that" %}
+          <strong>{{ shareholder.get_full_name }} ({{ shareholder.number }})</strong>
+          {% trans "is the record holder of the following investment(s)" %}:
         </p>
-
-        <p>{% trans "is the record holder of the following investment(s)" %}:</p>
 
         {% if asset_list %}
           <p>{% trans "Assets" %}</p>
           <table>
             <tr class="head">
-              <td>{% trans "Type" %}</td>
+              <td  width="300px">{% trans "Type" %}</td>
               <td>{% trans "Record Date" %}</td>
               <td class="pull-right">{% trans "Quantity" %}</td>
               <td class="pull-right">{% trans "Nominal Value" %}</td>
+              <td class="pull-right">{% trans "Cumulated Capital based on face value" %}</td>
             </tr>
             {% for asset in asset_list %}
               <tr class="row {% cycle 'odd' 'even' %}">
                 <td>
                   {{ asset.name }}
+                  {% if asset.cusip %}<i>{% trans "Valor" %}: {{ asset.cusip }}</i>{% endif %}
                 </td>
                 <td>
                   {% if report_date %}{{ report_date|date:"DATE_FORMAT" }}{% else %}&nsp;{% endif %}
@@ -262,7 +241,10 @@ holdings currently value: {{share_value}} in shares and {{options_value}} in opt
                   {% if asset.count %}{{ asset.count }}{% else %}&nbsp;{% endif %}
                 </td>
                 <td class="pull-right">
-                  {% if asset.value %}{{ asset.value|floatformat:2 }}{% else %}&nbsp;{% endif %}
+                  {% if asset.value %}{{ asset.value|floatformat:2 }} CHF {% else %}&nbsp;{% endif %}
+                </td>
+                <td class="pull-right">
+                  {% if asset.cumulated_face_value %}{{ asset.cumulated_face_value|floatformat:2 }} CHF {% else %}&nbsp;{% endif %}
                 </td>
               </tr>
             {% endfor %}
@@ -311,20 +293,20 @@ holdings currently value: {{share_value}} in shares and {{options_value}} in opt
             <td>{% trans "bought at" %}</td>
             <td>{% trans "count" %}</td>
             <td>{% trans "security" %}</td>
-            <td class="pull-right">{% trans "vesting months" %}</td>
+            <td class="">{% trans "vesting months" %}</td>
             <td>{% trans "vesting expiration date" %}</td>
-            <td class="pull-right">{% trans "discounted tax ratio(%)" %}</td>
-            <td class="pull-right">{% trans "discounted tax value" %}</td>
+            <td class="">{% trans "discounted tax ratio(%)" %}</td>
+            <td class="">{% trans "discounted tax value" %}</td>
           </tr>
           {% for position in vested_positions %}
           <tr class="row {% cycle 'odd' 'even' %}">
             <td>{{ position.bought_at}}</td>
             <td>{{ position.count }}</td>
             <td>{{ position.security }}</td>
-            <td class="pull-right">{{ position.vesting_months }}</td>
+            <td class="">{{ position.vesting_months }}</td>
             <td>{{ position.vesting_expires_at }}</td>
-            <td class="pull-right">{% widthratio position.get_discounted_tax_ratio 1 100 %}%</td>
-            <td class="pull-right">{{ position.get_discounted_tax_value|floatformat:"2" }} CHF</td>
+            <td class="">{% widthratio position.get_discounted_tax_ratio 1 100 %}%</td>
+            <td class="">{{ position.get_discounted_tax_value|floatformat:"2" }} CHF</td>
           </tr>
           {% endfor %}
         </table>
@@ -345,11 +327,11 @@ holdings currently value: {{share_value}} in shares and {{options_value}} in opt
           </tr>
           {% for position in vested_option_positions %}
           <tr class="row {% cycle 'odd' 'even' %}">
-            <td>{{ position.bought_at}}</td>
+            <td>{{ position.bought_at|date:"SHORT_DATE_FORMAT"}}</td>
             <td>{{ position.count }}</td>
             <td>{{ position.option_plan.security }}</td>
             <td class="pull-right">{{ position.vesting_months }}</td>
-            <td>{{ position.vesting_expires_at }}</td>
+            <td>{{ position.vesting_expires_at|date:"SHORT_DATE_FORMAT" }}</td>
             <td class="pull-right">{% widthratio position.get_discounted_tax_ratio 1 100 %}%</td>
             <td class="pull-right">{{ position.get_discounted_tax_value|floatformat:"4" }} CHF</td>
           </tr>
@@ -373,12 +355,12 @@ holdings currently value: {{share_value}} in shares and {{options_value}} in opt
         {% endif %} {# end of discounted tax data for management#}
 
         <p>
-          <br />
           {% trans "This document is to be used for tax authority." %}
         </p>
-
-        <br />
-        <p>{% trans "Zurich" %}, {{ report_date|date:"DATE_FORMAT" }}</p>
+        <p>
+          {% if company.get_company_shareholder.user.userprofile.city %} {{ company.get_company_shareholder.user.userprofile.city }}, {% endif %}
+          {{ report_date|date:"DATE_FORMAT" }}
+        </p>
         <p>
             {{ company.name }}
         </p>

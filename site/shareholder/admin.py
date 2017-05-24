@@ -21,9 +21,9 @@ from shareholder.models import (Bank, Company, Country, Operator, OptionPlan,
 
 class ShareholderAdmin(VersionAdmin):
 
-    list_display = ('user_name', 'company', 'number')
+    list_display = ('get_full_name', 'company', 'number')
     search_fields = ['user__email', 'user__first_name', 'user__last_name',
-                     'user__userprofile__company_name']
+                     'user__userprofile__company_name', 'number']
     list_filter = ('company',)
 
     def get_urls(self):
@@ -47,7 +47,7 @@ class ShareholderAdmin(VersionAdmin):
             raise Http404()
         context = dict(
             user=obj.user,
-            user_name=obj.user_name,
+            user_name=obj.get_full_name(),
             company=obj.company,
             shareholder_list=[obj],
             report_date=now().date(),
@@ -141,6 +141,8 @@ class PositionAdmin(VersionAdmin):
         'buyer__user__last_name', 'seller__user__last_name',
         'buyer__user__first_name', 'seller__user__first_name',
     ]
+    raw_id_fields = ('buyer', 'seller', 'depot_bank',
+                     'certificate_invalidation_position')
 
     def get_seller(self, obj):
         if obj.seller:
@@ -186,6 +188,7 @@ class SecurityAdmin(VersionAdmin):
 
 class OptionTransactionAdmin(VersionAdmin):
     list_display = ('bought_at', 'buyer', 'seller',)
+    raw_id_fields = ('buyer', 'seller')
 
 
 class OptionPlanAdmin(VersionAdmin):

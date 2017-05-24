@@ -1,14 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from django.core import mail
 from django.core.urlresolvers import reverse
-from django.test import Client, TestCase, RequestFactory
+from django.test import Client, RequestFactory, TestCase
 from django.utils.translation import ugettext as _
 from model_mommy import mommy
 
 from project.generators import (OperatorGenerator, OptionTransactionGenerator,
-                                PositionGenerator, ShareholderGenerator)
-from project.tests.mixins import StripeTestCaseMixin, SubscriptionTestMixin
+                                PositionGenerator, ShareholderGenerator,
+                                UserGenerator, DEFAULT_TEST_DATA)
+from project.tests.mixins import (MoreAssertsTestCaseMixin,
+                                  StripeTestCaseMixin, SubscriptionTestMixin)
 from shareholder.models import ShareholderStatement, ShareholderStatementReport
 from shareholder.tests.mixins import StatementTestMixin
 from shareholder.views import ShareholderView
@@ -46,6 +49,82 @@ class BaseViewTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
 
         self.shareholder1_url = reverse('shareholder',
                                         kwargs={'pk': self.shareholder1.pk})
+
+
+class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
+                       TestCase):
+
+    def _get_attachment_content(self, idx=None):
+        """ from email with idx inside mail.outbox, get the first attachments
+        string content
+        """
+        msgs = [msg for msg in mail.outbox if msg.attachments]
+        msg = msgs[idx or 0]
+        attn = msg.attachments[0]
+        return attn[0], attn[1]
+
+    def setUp(self):
+        self.client = Client()
+
+    def test_option_pdf(self):
+        """ test printable certificate """
+        ot = OptionTransactionGenerator().generate()
+        company = ot.option_plan.company
+        # run test
+        response = self.client.get(
+            reverse('option_pdf', kwargs={"option_id": ot.pk}))
+
+        # not logged in user
+        self.assertEqual(response.status_code, 302)
+
+        # login and retest
+        user = UserGenerator().generate()
+        OperatorGenerator().generate(user=user, company=company)
+        self.add_subscription(company)
+        is_loggedin = self.client.login(username=user.username,
+                                        password=DEFAULT_TEST_DATA['password'])
+        self.assertTrue(is_loggedin)
+        # was 53
+        with self.assertLessNumQueries(78):
+            response = self.client.get(
+                reverse('option_pdf', kwargs={"option_id": ot.pk}))
+
+        # assert response code
+        self.assertEqual(response.status_code, 200)
+        # assert proper csv
+        content = response.content
+        self.assertTrue(content.startswith('%PDF'))
+        self.assertTrue(content.endswith('EOF\n'))
+
+    def test_position_option_pdf(self):
+        """ test printable certificate """
+        pos = PositionGenerator().generate()
+        company = pos.buyer.company
+        # run test
+        response = self.client.get(
+            reverse('position_option_pdf', kwargs={"option_id": pos.pk}))
+
+        # not logged in user
+        self.assertEqual(response.status_code, 302)
+
+        # login and retest
+        user = UserGenerator().generate()
+        OperatorGenerator().generate(user=user, company=company)
+        self.add_subscription(company)
+        is_loggedin = self.client.login(username=user.username,
+                                        password=DEFAULT_TEST_DATA['password'])
+        self.assertTrue(is_loggedin)
+        # was 55
+        with self.assertLessNumQueries(79):
+            response = self.client.get(
+                reverse('position_option_pdf', kwargs={"option_id": pos.pk}))
+
+        # assert response code
+        self.assertEqual(response.status_code, 200)
+        # assert proper csv
+        content = response.content
+        self.assertTrue(content.startswith('%PDF-1'))
+        self.assertTrue(content.endswith('EOF\n'))
 
 
 class ShareholderViewTestCase(BaseViewTestCase):

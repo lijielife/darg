@@ -128,7 +128,10 @@ class CompanyTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
             list(shs.order_by('number')),
             list(self.company.shareholder_set.all().order_by('number')))
         self.assertEqual(len(shs), 2)
-        cache_mock.set.assert_called_with(cache_key, shs, 86400)
+        shs_ids = list(shs.values_list('pk', flat=True))
+        self.assertEqual(
+            cache_mock.set.call_args,
+            mock.call(cache_key, shs_ids, 86400))
 
         # cache hit
         cache_mock.reset_mock()

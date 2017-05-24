@@ -4,6 +4,7 @@
 <div class="table">
   <div class="tr th">
     <div class="td td-width-2">{% trans "User" %}</div>
+    <div class="td">{% trans "Date" %}</div>
     <div class="td" title="{% trans 'Statement email sent to shareholder at' %}">
       {% trans "email" %}
     </div>
@@ -22,6 +23,7 @@
   {% for statement in statements %}
     <div class="tr">
       <div class="td td-width-2">{{ statement.user.shareholder_set.first.get_full_name }}</div>
+      <div class="td">{{ statement.created_at|date:"SHORT_DATE_FORMAT" }}</div>
       <div class="td">{{ statement.email_sent_at|date:"SHORT_DATETIME_FORMAT" }}</div>
       <div class="td">{{ statement.email_opened_at|date:"SHORT_DATETIME_FORMAT" }}</div>
       <div class="td">{{ statement.pdf_downloaded_at|date:"SHORT_DATETIME_FORMAT" }}</div>

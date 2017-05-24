@@ -128,6 +128,7 @@
       </div>
       <div class="td">
         {% verbatim %}{{ position.vesting_months | number }}{% endverbatim %}
+        ({% verbatim %}{{ position.vesting_expires_at|date:'d.MM.yyyy' }}{% endverbatim %})
       </div>
     </div>
     <div class="tr th depot-bank" ng-show="position.depot_bank">

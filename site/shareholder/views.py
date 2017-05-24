@@ -1,10 +1,13 @@
 import os
+import datetime
+import time
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core import signing
-from django.http import Http404, HttpResponse, HttpResponseForbidden
+from django.db.models import Q
+from django.http import Http404, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
-from django.template import loader
 from django.utils.timezone import now
 from django.utils.translation import ugettext as _
 from django.views.generic import DetailView, ListView
@@ -14,12 +17,13 @@ from company.mixins import SubscriptionViewMixin
 from project.permissions import OperatorPermissionRequiredMixin
 from shareholder.models import (OptionPlan, OptionTransaction, Position,
                                 Shareholder, ShareholderStatement,
-                                ShareholderStatementReport)
+                                ShareholderStatementReport, Operator)
 from utils.formatters import human_readable_segments
 from utils.session import get_company_from_request
 
 from .mixins import (AuthTokenSingleViewMixin,
                      ShareholderStatementReportViewMixin)
+from utils.pdf import render_to_pdf_response
 
 
 class PositionsView(OperatorPermissionRequiredMixin, ListView):
@@ -128,6 +132,93 @@ def optionsplan_download_img(request, optionsplan_id):
         return sendfile(request, optionplan.pdf_file_preview_path())
     else:
         return HttpResponseForbidden(_("Permission denied"))
+
+
+@login_required
+def option_pdf(request, option_id):
+    """
+    generate pdf for option transaction/urkunde
+    """
+    # perm check
+    if not Operator.objects.filter(
+        user=request.user, company__optionplan__optiontransaction__id=option_id
+    ).exists():
+        return HttpResponseForbidden()
+
+    option = get_object_or_404(OptionTransaction, id=option_id)
+    company = option.option_plan.company
+
+    response = render_to_pdf_response(
+        'pdf/option.pdf.html',
+        {
+            'pagesize': 'A4',
+            'company': company,
+            'today': datetime.datetime.now(),
+            'currency': 'CHF',
+            'option': option,
+        }
+    )
+
+    # Create the HttpResponse object with the appropriate PDF header.
+    # if not DEBUG
+    if not settings.DEBUG:
+        response['Content-Disposition'] = (
+            u'attachment; filename="'
+            u'{}_option_{}_ID{}.pdf"'.format(
+                time.strftime("%Y-%m-%d"), company.name, option.certificate_id)
+        )
+
+    if not option.printed_at:
+        option.printed_at = datetime.datetime.now()
+        option.save()
+
+    return response
+
+
+@login_required
+def position_option_pdf(request, option_id):
+    """
+    print pdf for certificate depot for stocks
+    """
+
+    # perm check
+    operator_qs = Operator.objects.filter(
+        Q(company__shareholder__seller__id=option_id) |
+        Q(company__shareholder__buyer__id=option_id),
+        user=request.user
+    )
+    if not operator_qs.exists():
+        return HttpResponseForbidden()
+
+    position = get_object_or_404(Position, id=option_id)
+    company = operator_qs.first().company
+
+    response = render_to_pdf_response(
+        'pdf/certificate.pdf.html',
+        {
+            'pagesize': 'A4',
+            'company': company,
+            'today': datetime.datetime.now(),
+            'currency': 'CHF',
+            'position': position,
+        }
+    )
+
+    # Create the HttpResponse object with the appropriate PDF header.
+    # if not DEBUG
+    if not settings.DEBUG:
+        response['Content-Disposition'] = (
+            u'attachment; filename="'
+            u'{}_option_{}_ID{}.pdf"'.format(
+                time.strftime("%Y-%m-%d"), company.name,
+                position.certificate_id)
+        )
+
+    if not position.printed_at:
+        position.printed_at = datetime.datetime.now()
+        position.save()
+
+    return response
 
 
 class StatementListView(ListView):

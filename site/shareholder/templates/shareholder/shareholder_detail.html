@@ -260,7 +260,17 @@
 	</p>
 	{# company shareholder does not have voting rights #}
     <p>{% trans "Voting rights total count" %}: {% verbatim %}{{ shareholder.vote_count|number }}{% endverbatim %}</p>
-    <p>{% trans "Voting rights percent" %}: {% verbatim %}{{ shareholder.vote_percent | percentage:6 }}{% endverbatim %}</p>
+    <p>
+      {% trans "Voting rights percent" %}: 
+      {% verbatim %}
+        <span ng-show="shareholder.vote_percent < 0.10">
+        {{ shareholder.vote_percent|percentage:6 }}
+        </span>
+        <span ng-show="shareholder.vote_percent >= 0.10">
+        {{ shareholder.vote_percent|percentage:2 }}
+        </span>
+      {% endverbatim %}
+    </p>
   {% endif %}
 
   <!-- asset ownership table -->

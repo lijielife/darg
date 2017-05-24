@@ -398,6 +398,21 @@ class OperatorTestCase(SubscriptionTestMixin, TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertFalse(Operator.objects.filter(pk=operator2.pk).exists())
 
+    def test_exclude_superusers(self):
+        """ userusers must not be shown """
+        operator = OperatorGenerator().generate()
+        operator2 = OperatorGenerator().generate(company=operator.company)
+        self.add_subscription(operator.company)
+        user = operator.user
+        user.is_superuser = True
+        user.save()
+
+        self.client.force_login(user)
+        response = self.client.get(reverse('operators-list'))
+        self.assertEqual(len(response.data['results']), 1)
+        self.assertEqual(response.data['results'][0]['user']['email'],
+                         operator2.user.email)
+
 
 class OptionTransactionViewSetTestCase(StripeTestCaseMixin,
                                        SubscriptionTestMixin, APITestCase):
@@ -1270,7 +1285,7 @@ class PositionViewSetTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
         # was 55, increased to 95
         # with self.assertLessNumQueries(60):
         # NOTE: increased queries due to subscription check. was 78
-        with self.assertLessNumQueries(140):
+        with self.assertLessNumQueries(156):
             response = self.client.post(
                 u'/services/rest/position',
                 data,
@@ -1711,6 +1726,17 @@ class ReportViewSetTestCase(SubscriptionTestMixin, APITestCase):
     def test_perform_create_csv(self):
         """ create report with adding some automatic data """
         data = {'report_type': 'captable', 'file_type': 'CSV',
+                'order_by': 'share_count', 'report_at': '2017-05-02'}
+        serializer = ReportSerializer(
+            data=data)
+        serializer.is_valid()
+        report = self.view.perform_create(serializer)
+        self.assertIsNotNone(report.eta)
+        self.assertIsNone(report.downloaded_at)
+
+    def test_perform_create_xls(self):
+        """ create report with adding some automatic data """
+        data = {'report_type': 'captable', 'file_type': 'XLS',
                 'order_by': 'share_count', 'report_at': '2017-05-02'}
         serializer = ReportSerializer(
             data=data)

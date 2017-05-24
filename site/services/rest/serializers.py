@@ -125,7 +125,9 @@ class CompanySerializer(SubscriptionSerializerMixin,
                   'vote_count', 'vote_ratio', 'vote_count_floating',
                   'current_subscription', 'subscription_features',
                   'subscription_permissions',
-                  'send_shareholder_statement_via_letter_enabled'
+                  'send_shareholder_statement_via_letter_enabled',
+                  'signatures',
+                  'support_contact',
                   ) + Company.ADDRESS_FIELDS
 
     def get_profile_url(self, obj):
@@ -373,6 +375,7 @@ class ShareholderListSerializer(serializers.HyperlinkedModelSerializer):
             # 'user',
             'share_percent',  # +2 queries/obj
             'share_count',  # +2 queries/obj
+            'cumulated_face_value',
             'validate_gafi',
             'is_company',
             'full_name',
@@ -619,6 +622,7 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
             'readable_number_segments', 'registration_type',
             'readable_registration_type', 'position_type', 'depot_type',
             'readable_depot_type', 'stock_book_id', 'vesting_months',
+            'vesting_expires_at',
             'certificate_id', 'printed_at', 'depot_bank',
             'certificate_invalidation_position_url',
             'certificate_invalidation_initial_position_url',

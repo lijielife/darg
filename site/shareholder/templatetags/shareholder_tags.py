@@ -16,7 +16,7 @@ def user_name(user):
     """
     get full name or email of user
     """
-    return user.get_full_name() or user.email
+    return user.shareholder_set.first().get_full_name()
 
 
 # shareholder assets
@@ -27,19 +27,22 @@ def get_shareholder_assets(shareholder, date=None):
     result_list = list()
     for sec in securities:
         count = shareholder.share_count(security=sec, date=date) or 0
+        cumulated_face_value = shareholder.cumulated_face_value(
+            security=sec, date=date) or 0
         if count:
             result_list.append(dict(
                 name=unicode(sec),
                 count=count,
                 date=date or now().date(),
-                value=sec.face_value
+                value=sec.face_value,
+                cumulated_face_value=cumulated_face_value
             ))
     return result_list
 
 
 @register.assignment_tag
 def get_share_value(shareholder, date=None):
-    return shareholder.share_value(date=date)
+    return shareholder.cumulated_face_value(date=date)
 
 
 @register.assignment_tag

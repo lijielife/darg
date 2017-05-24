@@ -16,10 +16,12 @@ from shareholder.models import Company
 REPORT_FILE_TYPES = (
     ('PDF', 'PDF'),
     ('CSV', 'CSV'),
+    ('XLS', 'XLS'),
 )
 
 REPORT_TYPES = (
     ('captable', _('Active Shareholders')),
+    ('assembly_participation', _('Assembly Participation')),
 )
 
 ORDERING_TYPES = (
@@ -71,14 +73,19 @@ class Report(TimeStampedModel):
         return reverse('reports:download', kwargs={'report_id': self.pk})
 
     def get_filename(self):
+        if self.file_type == 'XLS':
+            file_type = 'xlsx'
+        else:
+            file_type = self.file_type.lower()
         return u"report-{}-{}-{}.{}".format(slugify(self.company), self.pk,
-                                            self.report_type,
-                                            self.file_type.lower())
+                                            self.report_type, file_type)
 
     def render(self, notify=False, track_downloads=False):
         """ trigger the right task to render the file """
         # avoid circular import
-        from reports.tasks import render_captable_pdf, render_captable_csv
+        from reports.tasks import (render_captable_pdf, render_captable_csv,
+                                   render_captable_xls,
+                                   render_assembly_participation_csv)
 
         args = [self.company.pk, self.pk]
         kwargs = {'ordering': self.order_by, 'notify': notify,
@@ -86,10 +93,22 @@ class Report(TimeStampedModel):
         if self.user:
             kwargs.update({'user_id': self.user.pk})
 
-        if self.report_type == 'captable' and self.file_type == 'CSV':
-            render_captable_csv.apply_async(args=args, kwargs=kwargs)
-        elif self.report_type == 'captable' and self.file_type == 'PDF':
-            render_captable_pdf.apply_async(args=args, kwargs=kwargs)
+        # FIXME build render method name dynamically and remove ifs
+        if self.report_type == 'captable':
+            if self.file_type == 'CSV':
+                render_captable_csv.apply_async(args=args, kwargs=kwargs)
+            elif self.file_type == 'PDF':
+                render_captable_pdf.apply_async(args=args, kwargs=kwargs)
+            elif self.file_type == 'XLS':
+                render_captable_xls.apply_async(args=args, kwargs=kwargs)
+
+        elif self.report_type == 'assembly_participation':
+            render_assembly_participation_csv.apply_async(
+                args=args, kwargs=kwargs)
+            # elif self.file_type == 'PDF':
+            #    render_captable_pdf.apply_async(args=args, kwargs=kwargs)
+            # elif self.file_type == 'XLS':
+            #    render_captable_xls.apply_async(args=args, kwargs=kwargs)
 
         else:
             raise NotImplementedError('report cannot be created')

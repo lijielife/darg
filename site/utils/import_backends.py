@@ -8,6 +8,7 @@ import os
 from dateutil.parser import parse
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.db import DataError
 from django.db.models import Sum
 from django.utils.text import slugify
@@ -144,10 +145,10 @@ class SisWareImportBackend(BaseImportBackend):
         # named "AK Uebertrag" which represents the old deprecated share
         # register. this shareholder will serve as source for distributing all
         # shares each resp. shareholder
-        user = self._get_or_create_user(__('TRANSFER-1'), __('TRANSFER'),
-                                        __('SHAREHOLDER'))
+        user = self._get_or_create_user(_('TRANSFER-1'), _('TRANSFER'),
+                                        _('SHAREHOLDER'))
         self.transfer_shareholder = self._get_or_create_shareholder(
-            __('TRANSFER-1'), user)
+            _('TRANSFER-1'), user)
         self.transfer_shareholder.set_transfer_shareholder()
         # transfer shares from corp sh to transfer sh
         for s in self.company.security_set.all():
@@ -164,6 +165,11 @@ class SisWareImportBackend(BaseImportBackend):
                                                'is_draft': False,
                                                'value': s.face_value,
                                            })
+
+        # create dispo shareholder here... so it gets one of the first three IDs
+        # of this company (for later sorting and disply)
+        self.dispo_shareholder = self._get_or_create_dispo_shareholder()
+        self.dispo_shareholder.set_dispo_shareholder()
 
         # and a matching operator? take the first one we find inside db
         self.operator = self.company.operator_set.first()
@@ -225,8 +231,6 @@ class SisWareImportBackend(BaseImportBackend):
         """
         # first before summarizing
         # create dispo shares (non registered shares placeholder)
-        self.dispo_shareholder = self._get_or_create_dispo_shareholder()
-        self.dispo_shareholder.set_dispo_shareholder()
         self._get_or_create_dispo_shares()
 
         # update security.count value
@@ -242,6 +246,9 @@ class SisWareImportBackend(BaseImportBackend):
 
         # update day of first share register occurence of user
         self._get_or_update_init_date()
+
+        # clear cache
+        cache.clear()
 
     def _get_or_create_dispo_shares(self):
         """

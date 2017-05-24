@@ -66,8 +66,14 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 #reports .captable .btn-panel .csv .icon {
   background-image: url("/static/compiled/images/csv-icon.png");
 }
-#reports .captable .form .input-group {
-  margin-bottom: 1em;
+#reports .captable .btn-panel .xls .icon {
+  background-image: url("/static/compiled/images/xlsx-icon.png");
+}
+#reports .captable .form-group {
+  width: 100%;
+}
+#reports .captable p {
+  padding-top: 10px;
 }
 
 .intro {

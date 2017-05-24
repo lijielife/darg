@@ -1,34 +1,47 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import datetime
+
 from django.core import mail
-from django.test import TestCase
 from django.template.defaultfilters import slugify
+from django.test import TestCase
 from django.utils import timezone
 from mock import patch
 from model_mommy import mommy
 
 from project.generators import (CompanyGenerator,
                                 ComplexShareholderConstellationGenerator,
-                                ReportGenerator, PositionGenerator)
-from reports.tasks import (_add_file_to_report, _get_captable_pdf_context,
-                           _get_filename, _order_queryset, _parse_ordering,
-                           _prepare_report, _send_notify, _summarize_report,
-                           prerender_reports, render_captable_csv,
-                           render_captable_pdf)
+                                PositionGenerator, ReportGenerator)
+from project.tests.mixins import MoreAssertsTestCaseMixin
+from reports.tasks import (_add_file_to_report,
+                           _collect_participation_csv_data,
+                           _get_captable_pdf_context, _get_filename,
+                           _order_queryset, _parse_ordering, _prepare_report,
+                           _send_notify, _summarize_report, prerender_reports,
+                           render_assembly_participation_csv,
+                           render_captable_csv, render_captable_pdf,
+                           render_captable_xls)
 from shareholder.models import Shareholder
 
 
 # --- TASKS
-class TaskTestCase(TestCase):
+class ReportTaskTestCase(MoreAssertsTestCaseMixin, TestCase):
 
     def setUp(self):
         self.shs, self.sec = (
             ComplexShareholderConstellationGenerator().generate())
+        self.company = self.shs[0].company
         # have at least one unicode sh number (failed on test prev.)
         sh = self.shs[0]
         sh.number = u'ü' + sh.number
         sh.save()
+
+    def test_collect_participation_csv_data(self):
+        """ return single row for csv file """
+        res = _collect_participation_csv_data(self.shs[0],
+                                              timezone.now().date())
+        self.assertEqual(len(res), 6)
+        self.assertEqual(res[0], self.shs[0].number)
 
     def test_get_captable_pdf_context(self):
 
@@ -193,8 +206,24 @@ class TaskTestCase(TestCase):
         self.assertIsNotNone(report.file_type)
         self.assertIsNotNone(report.report_type)
 
+    def test_render_assembly_participation_csv(self):
+        """ render csv with assembly participants """
+        report = ReportGenerator().generate(company=self.company)
+        PositionGenerator().generate(company=report.company, seller=None)
+        render_assembly_participation_csv(
+            report.company.pk, report.pk,
+            user_id=report.user.pk, ordering=None,
+            notify=True, track_downloads=False)
+        report.refresh_from_db()
+
+        self.assertIsNotNone(report.file)
+        contents = report.file.read()
+        rows = contents.split('\r\n')
+        del rows[-1]  # del empty last line
+        self.assertEqual(len(rows), 13)  # header + single sh with pos
+
     def test_render_captable_csv(self):
-        report = ReportGenerator().generate()
+        report = ReportGenerator().generate(company=self.company)
         PositionGenerator().generate(company=report.company, seller=None)
         render_captable_csv(report.company.pk, report.pk,
                             user_id=report.user.pk, ordering=None,
@@ -204,15 +233,26 @@ class TaskTestCase(TestCase):
         self.assertIsNotNone(report.file)
         contents = report.file.read()
         rows = contents.split('\r\n')
-        self.assertEqual(len(rows), 6)
-        self.assertIn(
-            u'--- {}'.format(unicode(
-                report.company.security_set.first()).upper()),
-            rows[2].decode('utf-8'))
+        del rows[-1]  # del empty last line
+        self.assertEqual(len(rows), 13)  # header + single sh with pos
 
     def test_render_captable_pdf(self):
-        report = ReportGenerator().generate()
-        render_captable_pdf(report.company.pk, report.pk,
+        report = ReportGenerator().generate(company=self.company)
+        # FIXME way tooooo many queries for 13 shs, just calculate how this
+        # would be for 10.000 shs
+        with self.assertLessNumQueries(278):
+            render_captable_pdf(report.company.pk, report.pk,
+                                user_id=report.user.pk, ordering=None,
+                                notify=True, track_downloads=False)
+        report.refresh_from_db()
+
+        self.assertIsNotNone(report.file)
+
+    def test_render_captable_xls(self):
+        report = ReportGenerator().generate(file_type='XLS',
+                                            company=self.company)
+        PositionGenerator().generate(company=report.company, seller=None)
+        render_captable_xls(report.company.pk, report.pk,
                             user_id=report.user.pk, ordering=None,
                             notify=True, track_downloads=False)
         report.refresh_from_db()
@@ -220,27 +260,38 @@ class TaskTestCase(TestCase):
         self.assertIsNotNone(report.file)
 
     @patch('reports.tasks.render_captable_csv.apply_async')
+    @patch('reports.tasks.render_assembly_participation_csv.apply_async')
     @patch('reports.tasks.render_captable_pdf.apply_async')
-    def test_prerender_reports(self, mock_pdf, mock_csv):
+    @patch('reports.tasks.render_captable_xls.apply_async')
+    def test_prerender_reports(self, mock_xls, mock_pdf,
+                               mock_assembly_participation_csv, mock_csv):
         """ render every night the reports for all corps """
-        # valid corps
-        for x in range(0, 1):
-            shs, s1 = ComplexShareholderConstellationGenerator().generate()
-
-        # corps not needing a report
+        # corps not needing a report = noise
         CompanyGenerator().generate()
         ReportGenerator().generate()
 
         prerender_reports()
 
-        company = shs[0].company
+        company = self.shs[0].company
         pdf_report = company.report_set.filter(file_type='PDF').last()
-        csv_report = company.report_set.filter(file_type='CSV').last()
-        self.assertEqual(mock_pdf.call_count, 20)
+        csv_report = company.report_set.filter(file_type='CSV',
+                                               report_type='captable').last()
+        csv_ass_report = company.report_set.filter(
+            file_type='CSV', report_type='assembly_participation').last()
+        xls_report = company.report_set.filter(file_type='XLS').last()
+        self.assertEqual(mock_pdf.call_count, 10)
         mock_pdf.assert_called_with(
             args=[company.pk, pdf_report.pk],
             kwargs={'ordering': pdf_report.order_by})
-        self.assertEqual(mock_csv.call_count, 20)
+        self.assertEqual(mock_csv.call_count, 10)
         mock_csv.assert_called_with(
             args=[company.pk, csv_report.pk],
             kwargs={'ordering': csv_report.order_by})
+        self.assertEqual(mock_xls.call_count, 10)
+        mock_xls.assert_called_with(
+            args=[company.pk, xls_report.pk],
+            kwargs={'ordering': xls_report.order_by})
+        self.assertEqual(mock_assembly_participation_csv.call_count, 1)
+        mock_assembly_participation_csv.assert_called_with(
+            args=[company.pk, csv_ass_report.pk],
+            kwargs={'ordering': csv_ass_report.order_by})

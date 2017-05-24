@@ -97,90 +97,83 @@
         <div style="margin-bottom: 2em">{% trans "Founding Date" %}: {{ company.founded_at}} </div>
         {% endif %}
     </div>
+    {% get_active_shareholders company report_date ordering as active_shareholders %} 
     <table class="table table-hover">
-      <thead>
+      <thead repeat="1">
         <tr>
+          <th align="right" width="10%">{% trans "ID" %}</th>
           <th align="left">{% trans "Name" %}</th>
-          <th align="left">{% trans "Email" %}</th>
-          <th align="right">{% trans "Shareholder Number" %}</th>
-          <th align="right">{% trans "Shares (%)" %}</th>
+          <th align="left">{% trans "Address" %}</th>
+          <th align="right" width="20%">{% trans "CumFaceCap" %}</th>
+          <th align="right" width="20%">{% trans "Shares (%)" %}</th>
           {% if securities_with_track_numbers.exists %}
           <th align="left">
             {% trans "Aktiennummern" %}
           </th>
           {% endif %}
       </thead>
-    </table>
-
-    {% for security in company.security_set.all %}
-      <h3>{{ security }}</h3>
-      {% get_active_shareholders security report_date ordering as active_shareholders %} 
       {% for shareholder in active_shareholders %}
-      <table>
-        <tr class="panel {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
-          <td>
-            {{ shareholder.get_full_name}}
-          </td>
-          <td>
-            {{ shareholder.user.email }}
-          </td>
-          <td align="right">
-            {{ shareholder.number }}
-          </td>
-          <td align="right">
-            {% shareholder_share_count shareholder report_date as share_count %}
-            {{ share_count|intcomma }}
-            {% shareholder_share_percent shareholder report_date as share_percent %}
-            {% if share_percent %}({{share_percent }}){% endif %}
-          </td>
-          {% if securities_with_track_numbers.exists %}
-          <td>
-            {{ shareholder.get_number_segments_display }}
-          </td>
-          {% endif %}
-        </tr>
-      </table>
+      <tr class="panel {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
+        <td align="right" width="10%">
+          {{ shareholder.number }}
+        </td>
+        <td>
+          {{ shareholder.get_full_name}}
+        </td>
+        <td>
+          {{ shareholder.user.userprofile.get_address}}
+        </td>
+        <td align="right" width="20%">
+          {% shareholder_cumulated_face_value shareholder report_date  as cumulated_face_value %}
+          {{ cumulated_face_value }}
+        </td>
+        <td align="right" width="20%">
+          {% shareholder_share_count shareholder report_date as share_count %}
+          {{ share_count|intcomma }}
+          {% shareholder_share_percent shareholder report_date as share_percent %}
+          {% if share_percent %}({{share_percent }}){% endif %}
+        </td>
+        {% if securities_with_track_numbers.exists %}
+        <td>
+          {{ shareholder.get_number_segments_display }}
+        </td>
+        {% endif %}
+      </tr>
       {% endfor %}
-    {% endfor %}
+    </table>
 
 
     {% if company.get_active_option_holders %}
 
       <h2 class="heading">{% trans "Options" %}</h2>
   
+      {% get_active_option_holders company report_date options_ordering as active_option_holders %} 
       <table class="table table-hover">
-        <thead>
+        <thead repeat="1">
           <tr>
-            <th align="left">{% trans "Name" %}</th>
-            <th align="left">{% trans "Email" %}</th>
             <th align="right">{% trans "Shareholder Number" %}</th>
+            <th align="left">{% trans "Name" %}</th>
+            <th align="left">{% trans "Address" %}</th>
             <th align="right">{% trans "Optionen (%)" %}</th>
           </tr>
         </thead>
-      </table>
-  
-      {% for security in company.security_set.all %}
-        <h3>{{ security }}</h3>
-        {% get_active_option_holders security report_date options_ordering as active_option_holders %} 
         {% for shareholder in active_option_holders %}
-        <table>
-            <tr class="panel {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
-            <td>
-              {{ shareholder.get_full_name }}
-            </td>
-            <td>
-              {{ shareholder.user.email }}
-            </td>
-            <td align="right">
-              {{ shareholder.number }}
-            </td>
-            <td align="right">
-              {{ shareholder.options_count|intcomma }} ({{shareholder.options_percent }})
-            </td>
-          </tr>
-        </table>
-        {% endfor %}
-      {% endfor %}
-    {% endif %}
+        <tr class="panel {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
+          <td align="right">
+            {{ shareholder.number }}
+          </td>
+          <td>
+            {{ shareholder.get_full_name }}
+          </td>
+          <td>
+            {{ shareholder.user.userprofile.get_address}}
+          </td>
+          <td align="right">
+            {{ shareholder.options_count|intcomma }} ({{shareholder.options_percent }})
+          </td>
+        </tr>
+       {% endfor %}
+      </table>
+   {% endif %}
   {% endblock %}
 {% endblock %}

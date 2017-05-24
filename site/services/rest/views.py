@@ -97,7 +97,7 @@ class OperatorViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         company = get_company_from_request(self.request)
         return Operator.objects.filter(company=company)\
-            .distinct()
+            .exclude(user__is_superuser=True).distinct()
 
     def destroy(self, request, pk=None):
         operator = self.get_object()

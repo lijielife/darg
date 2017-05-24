@@ -12,7 +12,6 @@ def notify_admin_on_signin(sender, request, user, **kwargs):
     if not settings.DEBUG:
         subject = 'user {} signed in'.format(user.email)
         mail_admins(subject, subject)  # subject=message
-        print 'sent admin notify'
 
 
 def set_company_in_session(sender, user, request, **kwargs):

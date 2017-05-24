@@ -39,7 +39,11 @@ app.controller 'ReportsController', ['$scope', '$http', 'Shareholder', 'Report',
         {title: gettext('Postal Code'), value: 'user__userprofile__postal_code'},
         {title: gettext('Postal Code desc'), value: '-user__user_profile__postal_code'},
     ]
-    $scope.last_captable_report = new Report({order_by: $scope.captable_orderings[6], file_type:'PDF', report_type:'captable', report_at: new Date()})
+    $scope.report_types = [
+        {title: gettext('Active Shareholders'), value: 'captable'},
+        {title: gettext('Assembly Participation'), value: 'assembly_participation'},
+    ]
+    $scope.last_captable_report = undefined
 
     # --- dynamic props
     # transaction download url
@@ -56,6 +60,9 @@ app.controller 'ReportsController', ['$scope', '$http', 'Shareholder', 'Report',
 
         # preprocess ordering
         $scope.last_captable_report.order_by = $scope.last_captable_report.order_by.value
+        $scope.last_captable_report.report_type = $scope.last_captable_report.report_type.value
+        if $scope.last_captable_report.report_type == 'assembly_participation'
+            $scope.last_captable_report.file_type = 'CSV'
         $scope.last_captable_report.report_at = $scope.last_captable_report.report_at.toISOString().substring(0, 10)
         # save
         $scope.captable_loading = true
@@ -80,13 +87,18 @@ app.controller 'ReportsController', ['$scope', '$http', 'Shareholder', 'Report',
             
 
     $scope.get_captable_report = ->
-        params = {
-            order_by: $scope.last_captable_report.order_by.value,
-            report_type: $scope.last_captable_report.report_type,
-            file_type: $scope.last_captable_report.file_type,
-            limit: 1,
-            report_at: $scope.last_captable_report.report_at
-        }
+        if $scope.last_captable_report
+            if $scope.last_captable_report.report_type == 'assembly_participation'
+                $scope.last_captable_report.file_type = 'CSV'
+            params = {
+                order_by: $scope.last_captable_report.order_by.value,
+                report_type: $scope.last_captable_report.report_type.value,
+                file_type: $scope.last_captable_report.file_type,
+                limit: 1,
+                report_at: $scope.last_captable_report.report_at
+            }
+        else
+            params = {}
         $scope.captable_loading = true
         $http.get('/services/rest/report', {params:params}).then (result) ->
             if result.data.results.length > 0
@@ -94,7 +106,8 @@ app.controller 'ReportsController', ['$scope', '$http', 'Shareholder', 'Report',
             else
                 # if we don't have that report yet, make ablank one:
                 params.order_by = $scope.lookup_ordering(params.order_by)
-                $scope.last_captable_report = new Report(params)
+                params.report_type = $scope.lookup_report_type(params.report_type)
+                $scope.last_captable_report = new Report({order_by: $scope.captable_orderings[6], file_type:'PDF', report_type: $scope.report_types[0], report_at: new Date()})
             $scope.captable_loading=false
         , (rejection) ->
             $scope.captable_loading=false
@@ -106,6 +119,7 @@ app.controller 'ReportsController', ['$scope', '$http', 'Shareholder', 'Report',
     $scope.get_report_from_api_result = (result) ->
         report = result.data.results[0]
         report.order_by = $scope.lookup_ordering(result.data.results[0].order_by)
+        report.report_type = $scope.lookup_report_type(result.data.results[0].report_type)
         report.report_at = new Date(result.data.results[0].report_at)
         return report
 
@@ -113,6 +127,11 @@ app.controller 'ReportsController', ['$scope', '$http', 'Shareholder', 'Report',
         orderings = $scope.captable_orderings.filter (obj) ->
             return obj.value == order_by
         return orderings[0] 
+
+    $scope.lookup_report_type = (report_type) ->
+        report_types = $scope.report_types.filter (obj) ->
+            return obj.value == report_type
+        return report_types[0] 
 
     # --- INITIAL DATA
     $scope.get_all_securities()

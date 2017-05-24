@@ -23,7 +23,7 @@
 
   {% include "_form_errors.html" %}
 
-  <!-- pdf file -->
+  <!-- COMPANY LOGO -->
   <h2>{% trans "Company Logo" %}</h2>
   <div>
     {% verbatim %}
@@ -45,8 +45,9 @@
     <pre>{{log}}</pre>
   </div>-->
   {% endverbatim %}
-  
-  <h2>{% trans "Data" %}</h2>
+ 
+  <!-- COMPANY SETTINGS -->
+  <h2>{% trans "Compeny settings" %}</h2>
   <div class="table table-striped">
     <div class="tr th">
       <div class="td">{% trans "Company Name" %}:</div>
@@ -99,7 +100,7 @@
     </div>
     <div class="tr th">
       <div class="td">
-        {% trans "Provisioned Capital (Liberiertes Kapital)" %}:
+        {% trans "Provisioned Capital (Liberiertes Kapital)" %}
       </div>
       <div class="td">
         {% verbatim %}
@@ -112,7 +113,7 @@
     </div>
     <div class="tr th">
       <div class="td">
-        {% trans "CHF for one vote based on face value of securities" %}:
+        {% trans "CHF for one vote based on face value of securities" %}
       </div>
       <div class="td">
         {% verbatim %}
@@ -123,7 +124,6 @@
         {% endverbatim %}
       </div>
     </div>
-
     <div class="tr th">
       <div class="td">
         {% trans "Company Headquarter Country" %}:
@@ -137,6 +137,39 @@
       {% endverbatim %}
       </div>
     </div>
+    <div class="tr th">
+      <div class="td">
+          {% trans "Enter names of VR members to appear inside share certificate PDF signature. Separate names with comma" as msg %}
+          {% trans "Certificate Signatures" %} {% context_help msg %}
+      </div>
+      <div class="td">
+        {% verbatim %}
+        <span editable-text="company.signatures" onaftersave="edit_company()">
+          {{ company.signatures || 'empty' }}
+          <span class="el-icon-pencil"></span>
+        </span>
+        {% endverbatim %}
+      </div>
+    </div>
+    <div class="tr th">
+      <div class="td">
+          {% trans "Enter names of company staff members for support of shareholder issues. Used in header of PDF documents such as statements or certificates. Separate names with comma." as msg %}
+          {% trans "Support contacts" %} {% context_help msg %}
+      </div>
+      <div class="td">
+        {% verbatim %}
+        <span editable-text="company.support_contact" onaftersave="edit_company()">
+          {{ company.support_contact || 'empty' }}
+          <span class="el-icon-pencil"></span>
+        </span>
+        {% endverbatim %}
+      </div>
+    </div>
+  </div> <!-- end company settings -->
+
+  <!-- COMPANY KPI -->
+  <h2>{% trans "Company KPIs" %}</h2>
+  <div class="table table-striped">
 
     {% cache 86400 active-shareholder company %}
     <div class="tr th">
@@ -196,7 +229,6 @@
     
   <!-- company shareholder only: -->
   {% with shareholder=company.get_company_shareholder %}
-
     {% trans "total capital of the company. math: all shares existing * face value" as msg %}
     <div class="tr th">
       <div class="td">
@@ -270,7 +302,6 @@
         {{shareholder.company.get_total_options_floating }}
       </div>
     </div>
-
   {% endwith %}
   
 
