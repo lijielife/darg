@@ -248,7 +248,9 @@ class Company(AddressModelMixin, models.Model):
             slugify(security))
         cached = cache.get(cache_key)
         if cached:
-            return Shareholder.objects.filter(pk__in=cached)
+            return Shareholder.objects.filter(pk__in=cached).select_related(
+                'user', 'user__userprofile', 'user__userprofile__country',
+                'company').order_by('number')
 
         kwargs = {}
         if date:
@@ -1260,7 +1262,6 @@ class Shareholder(TagMixin, models.Model):
         but where the vesting period is over. `without_vesting` gets
         share count for all pkgds which don't have a vesting at all
         """
-
         qs_bought = self.buyer.all()
         qs_sold = self.seller.all()
 

@@ -212,6 +212,10 @@ def _summarize_report(report):
     report.generated_at = now
     report.save()
 
+    if report.generation_time > 3*60:
+        logger.warning('report creation time took more then 3 mins: {}'.format(
+            report.generation_time/60))
+
 
 def _send_notify(user, filename, subject, body, file_desc, url=None):
     msg = EmailMessage(

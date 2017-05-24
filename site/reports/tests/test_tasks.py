@@ -12,6 +12,7 @@ from model_mommy import mommy
 from project.generators import (CompanyGenerator,
                                 ComplexShareholderConstellationGenerator,
                                 PositionGenerator, ReportGenerator)
+from project.tests.mixins import MoreAssertsTestCaseMixin
 from reports.tasks import (_add_file_to_report,
                            _collect_participation_csv_data,
                            _get_captable_pdf_context, _get_filename,
@@ -24,11 +25,12 @@ from shareholder.models import Shareholder
 
 
 # --- TASKS
-class TaskTestCase(TestCase):
+class ReportTaskTestCase(MoreAssertsTestCaseMixin, TestCase):
 
     def setUp(self):
         self.shs, self.sec = (
             ComplexShareholderConstellationGenerator().generate())
+        self.company = self.shs[0].company
         # have at least one unicode sh number (failed on test prev.)
         sh = self.shs[0]
         sh.number = u'ü' + sh.number
@@ -206,7 +208,7 @@ class TaskTestCase(TestCase):
 
     def test_render_assembly_participation_csv(self):
         """ render csv with assembly participants """
-        report = ReportGenerator().generate()
+        report = ReportGenerator().generate(company=self.company)
         PositionGenerator().generate(company=report.company, seller=None)
         render_assembly_participation_csv(
             report.company.pk, report.pk,
@@ -218,10 +220,10 @@ class TaskTestCase(TestCase):
         contents = report.file.read()
         rows = contents.split('\r\n')
         del rows[-1]  # del empty last line
-        self.assertEqual(len(rows), 2)  # header + single sh with pos
+        self.assertEqual(len(rows), 13)  # header + single sh with pos
 
     def test_render_captable_csv(self):
-        report = ReportGenerator().generate()
+        report = ReportGenerator().generate(company=self.company)
         PositionGenerator().generate(company=report.company, seller=None)
         render_captable_csv(report.company.pk, report.pk,
                             user_id=report.user.pk, ordering=None,
@@ -232,19 +234,23 @@ class TaskTestCase(TestCase):
         contents = report.file.read()
         rows = contents.split('\r\n')
         del rows[-1]  # del empty last line
-        self.assertEqual(len(rows), 2)  # header + single sh with pos
+        self.assertEqual(len(rows), 13)  # header + single sh with pos
 
     def test_render_captable_pdf(self):
-        report = ReportGenerator().generate()
-        render_captable_pdf(report.company.pk, report.pk,
-                            user_id=report.user.pk, ordering=None,
-                            notify=True, track_downloads=False)
+        report = ReportGenerator().generate(company=self.company)
+        # FIXME way tooooo many queries for 13 shs, just calculate how this
+        # would be for 10.000 shs
+        with self.assertLessNumQueries(278):
+            render_captable_pdf(report.company.pk, report.pk,
+                                user_id=report.user.pk, ordering=None,
+                                notify=True, track_downloads=False)
         report.refresh_from_db()
 
         self.assertIsNotNone(report.file)
 
     def test_render_captable_xls(self):
-        report = ReportGenerator().generate(file_type='XLS')
+        report = ReportGenerator().generate(file_type='XLS',
+                                            company=self.company)
         PositionGenerator().generate(company=report.company, seller=None)
         render_captable_xls(report.company.pk, report.pk,
                             user_id=report.user.pk, ordering=None,
