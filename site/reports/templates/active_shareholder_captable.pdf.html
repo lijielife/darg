@@ -97,8 +97,9 @@
         <div style="margin-bottom: 2em">{% trans "Founding Date" %}: {{ company.founded_at}} </div>
         {% endif %}
     </div>
+    {% get_active_shareholders company report_date ordering as active_shareholders %} 
     <table class="table table-hover">
-      <thead>
+      <thead repeat="1">
         <tr>
           <th align="right" width="10%">{% trans "ID" %}</th>
           <th align="left">{% trans "Name" %}</th>
@@ -111,11 +112,7 @@
           </th>
           {% endif %}
       </thead>
-    </table>
-
-    {% get_active_shareholders company report_date ordering as active_shareholders %} 
-    {% for shareholder in active_shareholders %}
-    <table>
+      {% for shareholder in active_shareholders %}
       <tr class="panel {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
         <td align="right" width="10%">
           {{ shareholder.number }}
@@ -142,16 +139,17 @@
         </td>
         {% endif %}
       </tr>
+      {% endfor %}
     </table>
-    {% endfor %}
 
 
     {% if company.get_active_option_holders %}
 
       <h2 class="heading">{% trans "Options" %}</h2>
   
+      {% get_active_option_holders company report_date options_ordering as active_option_holders %} 
       <table class="table table-hover">
-        <thead>
+        <thead repeat="1">
           <tr>
             <th align="right">{% trans "Shareholder Number" %}</th>
             <th align="left">{% trans "Name" %}</th>
@@ -159,11 +157,7 @@
             <th align="right">{% trans "Optionen (%)" %}</th>
           </tr>
         </thead>
-      </table>
-  
-      {% get_active_option_holders company report_date options_ordering as active_option_holders %} 
-      {% for shareholder in active_option_holders %}
-      <table>
+        {% for shareholder in active_option_holders %}
         <tr class="panel {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
           <td align="right">
             {{ shareholder.number }}
@@ -178,8 +172,8 @@
             {{ shareholder.options_count|intcomma }} ({{shareholder.options_percent }})
           </td>
         </tr>
+       {% endfor %}
       </table>
-      {% endfor %}
-    {% endif %}
+   {% endif %}
   {% endblock %}
 {% endblock %}
