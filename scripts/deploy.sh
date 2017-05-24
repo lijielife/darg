@@ -12,7 +12,7 @@ git pull --no-edit && pip install -r requirements.txt | grep -v "Requirement alr
 echo "Creating fresh DB and media backups..."
 
 skip_backup=false
-while getopts ":a" opt; do
+while getopts ":s" opt; do
   case $opt in
     a)
       skip_backup=true
@@ -29,6 +29,8 @@ if [ "$skip_backup" = true ] ; then
   ./manage.py dbbackup
   ./manage.py mediabackup
   cd ..
+else
+  echo "BACKUP SKIPPED"
 fi
 
 python ./scripts/minify_static.py && ./site/manage.py migrate && ./site/manage.py collectstatic --noinput
