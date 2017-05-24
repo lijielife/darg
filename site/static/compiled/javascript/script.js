@@ -45104,12 +45104,16 @@ return deCh;
           value: '-user__user_profile__postal_code'
         }
       ];
-      $scope.last_captable_report = new Report({
-        order_by: $scope.captable_orderings[6],
-        file_type: 'PDF',
-        report_type: 'captable',
-        report_at: new Date()
-      });
+      $scope.report_types = [
+        {
+          title: gettext('Active Shareholders'),
+          value: 'captable'
+        }, {
+          title: gettext('Assembly Participation'),
+          value: 'assembly_participation'
+        }
+      ];
+      $scope.last_captable_report = void 0;
       $scope.$watchCollection('transactions_download_params', function(transactions_download_params) {
         if (transactions_download_params.to && transactions_download_params.from && transactions_download_params.security) {
           $scope.enable_transaction_download = true;
@@ -45121,6 +45125,10 @@ return deCh;
           delete $scope.last_captable_report.pk;
         }
         $scope.last_captable_report.order_by = $scope.last_captable_report.order_by.value;
+        $scope.last_captable_report.report_type = $scope.last_captable_report.report_type.value;
+        if ($scope.last_captable_report.report_type === 'assembly_participation') {
+          $scope.last_captable_report.file_type = 'CSV';
+        }
         $scope.last_captable_report.report_at = $scope.last_captable_report.report_at.toISOString().substring(0, 10);
         $scope.captable_loading = true;
         return $scope.last_captable_report.$save().then(function(result) {
@@ -45154,13 +45162,20 @@ return deCh;
       };
       $scope.get_captable_report = function() {
         var params;
-        params = {
-          order_by: $scope.last_captable_report.order_by.value,
-          report_type: $scope.last_captable_report.report_type,
-          file_type: $scope.last_captable_report.file_type,
-          limit: 1,
-          report_at: $scope.last_captable_report.report_at
-        };
+        if ($scope.last_captable_report) {
+          if ($scope.last_captable_report.report_type === 'assembly_participation') {
+            $scope.last_captable_report.file_type = 'CSV';
+          }
+          params = {
+            order_by: $scope.last_captable_report.order_by.value,
+            report_type: $scope.last_captable_report.report_type.value,
+            file_type: $scope.last_captable_report.file_type,
+            limit: 1,
+            report_at: $scope.last_captable_report.report_at
+          };
+        } else {
+          params = {};
+        }
         $scope.captable_loading = true;
         return $http.get('/services/rest/report', {
           params: params
@@ -45169,7 +45184,13 @@ return deCh;
             $scope.last_captable_report = new Report($scope.get_report_from_api_result(result));
           } else {
             params.order_by = $scope.lookup_ordering(params.order_by);
-            $scope.last_captable_report = new Report(params);
+            params.report_type = $scope.lookup_report_type(params.report_type);
+            $scope.last_captable_report = new Report({
+              order_by: $scope.captable_orderings[6],
+              file_type: 'PDF',
+              report_type: $scope.report_types[0],
+              report_at: new Date()
+            });
           }
           return $scope.captable_loading = false;
         }, function(rejection) {
@@ -45186,6 +45207,7 @@ return deCh;
         var report;
         report = result.data.results[0];
         report.order_by = $scope.lookup_ordering(result.data.results[0].order_by);
+        report.report_type = $scope.lookup_report_type(result.data.results[0].report_type);
         report.report_at = new Date(result.data.results[0].report_at);
         return report;
       };
@@ -45195,6 +45217,13 @@ return deCh;
           return obj.value === order_by;
         });
         return orderings[0];
+      };
+      $scope.lookup_report_type = function(report_type) {
+        var report_types;
+        report_types = $scope.report_types.filter(function(obj) {
+          return obj.value === report_type;
+        });
+        return report_types[0];
       };
       $scope.get_all_securities();
       $scope.get_captable_report();

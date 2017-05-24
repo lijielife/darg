@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-23 10:51+0000\n"
+"POT-Creation-Date: 2017-05-24 20:33+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,41 +49,41 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: shareholder/admin.py:222 shareholder/models.py:2093
+#: shareholder/admin.py:225 shareholder/models.py:2099
 msgid "shareholder statements"
 msgstr ""
 
-#: shareholder/admin.py:227
+#: shareholder/admin.py:230
 msgid "Timestamps"
 msgstr ""
 
-#: shareholder/admin.py:235 shareholder/admin.py:293 shareholder/admin.py:301
-#: shareholder/admin.py:309 shareholder/admin.py:318
+#: shareholder/admin.py:238 shareholder/admin.py:296 shareholder/admin.py:304
+#: shareholder/admin.py:312 shareholder/admin.py:321
 msgid "Yes"
 msgstr ""
 
-#: shareholder/admin.py:236 shareholder/admin.py:293 shareholder/admin.py:301
-#: shareholder/admin.py:309 shareholder/admin.py:318
+#: shareholder/admin.py:239 shareholder/admin.py:296 shareholder/admin.py:304
+#: shareholder/admin.py:312 shareholder/admin.py:321
 msgid "No"
 msgstr ""
 
-#: shareholder/admin.py:249
+#: shareholder/admin.py:252
 msgid "Was email sent"
 msgstr ""
 
-#: shareholder/admin.py:256
+#: shareholder/admin.py:259
 msgid "Was email opened"
 msgstr ""
 
-#: shareholder/admin.py:263
+#: shareholder/admin.py:266
 msgid "Was PDF downloaded"
 msgstr ""
 
-#: shareholder/admin.py:270
+#: shareholder/admin.py:273
 msgid "Was letter sent"
 msgstr ""
 
-#: shareholder/admin.py:279 shareholder/templates/_statements_table.html:6
+#: shareholder/admin.py:282 shareholder/templates/_statements_table.html:6
 #: shareholder/templates/pdf/_statement_preview.pdf.html:6
 #: shareholder/templates/pdf/_statement_preview.pdf.html:7
 #: shareholder/templates/pdf/_statement_preview.pdf.html:8
@@ -97,31 +97,31 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: shareholder/admin.py:283 shareholder/models.py:1787
+#: shareholder/admin.py:286 shareholder/models.py:1793
 msgid "company"
 msgstr ""
 
-#: shareholder/admin.py:287 shareholder/models.py:1788
+#: shareholder/admin.py:290 shareholder/models.py:1794
 msgid "report date"
 msgstr ""
 
-#: shareholder/admin.py:294
+#: shareholder/admin.py:297
 msgid "email sent"
 msgstr ""
 
-#: shareholder/admin.py:302
+#: shareholder/admin.py:305
 msgid "email opened"
 msgstr ""
 
-#: shareholder/admin.py:311
+#: shareholder/admin.py:314
 msgid "pdf downloaded"
 msgstr ""
 
-#: shareholder/admin.py:319
+#: shareholder/admin.py:322
 msgid "letter sent"
 msgstr ""
 
-#: shareholder/admin.py:327
+#: shareholder/admin.py:330
 msgid "Download PDF"
 msgstr ""
 
@@ -387,7 +387,7 @@ msgid "Nominal value of this asset"
 msgstr ""
 
 #: shareholder/models.py:1473 shareholder/models.py:1565
-#: shareholder/models.py:1682 shareholder/models.py:1740
+#: shareholder/models.py:1688 shareholder/models.py:1746
 msgid "JSON list of segments of ids for securities. can be 1, 2, 3, 4-10"
 msgstr ""
 
@@ -417,15 +417,15 @@ msgstr ""
 msgid "Position is part of a split transaction"
 msgstr ""
 
-#: shareholder/models.py:1568 shareholder/models.py:1743
+#: shareholder/models.py:1568 shareholder/models.py:1749
 msgid "Securities are purchase type (for myself, etc.)"
 msgstr ""
 
-#: shareholder/models.py:1571 shareholder/models.py:1746
+#: shareholder/models.py:1571 shareholder/models.py:1752
 msgid "aka Skontro (read http://bit.ly/2iJquEl)"
 msgstr ""
 
-#: shareholder/models.py:1574 shareholder/models.py:1749
+#: shareholder/models.py:1574 shareholder/models.py:1755
 msgid "What kind of depot is this position stored within"
 msgstr ""
 
@@ -466,44 +466,44 @@ msgstr ""
 msgid "Certificate Invalidation for position {}"
 msgstr ""
 
-#: shareholder/models.py:1676
+#: shareholder/models.py:1682
 msgid "Number of shares approved"
 msgstr ""
 
-#: shareholder/models.py:1801 shareholder/models.py:2062
+#: shareholder/models.py:1807 shareholder/models.py:2068
 msgid "shareholder statement report"
 msgstr ""
 
-#: shareholder/models.py:1802
+#: shareholder/models.py:1808
 msgid "shareholder statement reports"
 msgstr ""
 
-#: shareholder/models.py:2069
+#: shareholder/models.py:2075
 msgid "email sent at"
 msgstr ""
 
-#: shareholder/models.py:2071
+#: shareholder/models.py:2077
 msgid "email opened at"
 msgstr ""
 
-#: shareholder/models.py:2073
+#: shareholder/models.py:2079
 msgid "PDF downloaded at"
 msgstr ""
 
-#: shareholder/models.py:2075
+#: shareholder/models.py:2081
 msgid "letter sent at"
 msgstr ""
 
-#: shareholder/models.py:2079
+#: shareholder/models.py:2085
 msgid "remote email id"
 msgstr ""
 
-#: shareholder/models.py:2082
+#: shareholder/models.py:2088
 #, python-brace-format
 msgid "Prefix id with provider, e.g. mandrill{sep}[EMAIL_ID]"
 msgstr ""
 
-#: shareholder/models.py:2092
+#: shareholder/models.py:2098
 msgid "shareholder statement"
 msgstr ""
 
@@ -593,41 +593,48 @@ msgid "Your personal shareholder statement for {company}"
 msgstr ""
 
 #: shareholder/templates/_statements_table.html:7
-msgid "Statement email sent to shareholder at"
+#: shareholder/templates/shareholder/optiontransaction_detail.html:44
+#: shareholder/templates/shareholder/position_detail.html:69
+#: shareholder/templates/statement_report_list.html:17
+msgid "Date"
 msgstr ""
 
 #: shareholder/templates/_statements_table.html:8
+msgid "Statement email sent to shareholder at"
+msgstr ""
+
+#: shareholder/templates/_statements_table.html:9
 #: shareholder/templates/statement_report_list.html:23
 msgid "email"
 msgstr ""
 
-#: shareholder/templates/_statements_table.html:10
+#: shareholder/templates/_statements_table.html:11
 msgid "Statement email was opened at"
 msgstr ""
 
-#: shareholder/templates/_statements_table.html:11
+#: shareholder/templates/_statements_table.html:12
 msgid "Opened at"
 msgstr ""
 
-#: shareholder/templates/_statements_table.html:13
+#: shareholder/templates/_statements_table.html:14
 msgid "Statement PDF was downloaded at"
 msgstr ""
 
-#: shareholder/templates/_statements_table.html:14
+#: shareholder/templates/_statements_table.html:15
 #: shareholder/templates/statement_report_list.html:29
 msgid "Downloaded"
 msgstr ""
 
-#: shareholder/templates/_statements_table.html:16
+#: shareholder/templates/_statements_table.html:17
 msgid "Statement letter was sent to shareholder at"
 msgstr ""
 
-#: shareholder/templates/_statements_table.html:17
+#: shareholder/templates/_statements_table.html:18
 #: shareholder/templates/statement_report_list.html:32
 msgid "Letter"
 msgstr ""
 
-#: shareholder/templates/_statements_table.html:34
+#: shareholder/templates/_statements_table.html:36
 msgid "No statements found."
 msgstr ""
 
@@ -815,12 +822,12 @@ msgid "Name"
 msgstr ""
 
 #: shareholder/templates/pdf/_statement_preview.pdf.html:21
-#: shareholder/templates/pdf/statement.pdf.html:89
+#: shareholder/templates/pdf/statement.pdf.html:99
 msgid "Your contact person(s):"
 msgstr ""
 
 #: shareholder/templates/pdf/_statement_preview.pdf.html:24
-#: shareholder/templates/pdf/statement.pdf.html:92
+#: shareholder/templates/pdf/statement.pdf.html:103
 msgid "Your shareholder number:"
 msgstr ""
 
@@ -834,8 +841,8 @@ msgstr ""
 
 #: shareholder/templates/pdf/_statement_preview.pdf.html:36
 #: shareholder/templates/pdf/_statement_preview.pdf.html:138
-#: shareholder/templates/pdf/statement.pdf.html:103
-#: shareholder/templates/pdf/statement.pdf.html:199
+#: shareholder/templates/pdf/statement.pdf.html:114
+#: shareholder/templates/pdf/statement.pdf.html:210
 msgid "Depot statement for"
 msgstr ""
 
@@ -849,28 +856,28 @@ msgstr ""
 
 #: shareholder/templates/pdf/_statement_preview.pdf.html:41
 #: shareholder/templates/pdf/_statement_preview.pdf.html:143
-#: shareholder/templates/pdf/statement.pdf.html:107
-#: shareholder/templates/pdf/statement.pdf.html:203
+#: shareholder/templates/pdf/statement.pdf.html:118
+#: shareholder/templates/pdf/statement.pdf.html:214
 msgid "Herewith company"
 msgstr ""
 
 #: shareholder/templates/pdf/_statement_preview.pdf.html:61
 #: shareholder/templates/pdf/_statement_preview.pdf.html:163
-#: shareholder/templates/pdf/statement.pdf.html:109
-#: shareholder/templates/pdf/statement.pdf.html:205
+#: shareholder/templates/pdf/statement.pdf.html:120
+#: shareholder/templates/pdf/statement.pdf.html:216
 msgid "confirms that"
 msgstr ""
 
 #: shareholder/templates/pdf/_statement_preview.pdf.html:71
 #: shareholder/templates/pdf/_statement_preview.pdf.html:173
-#: shareholder/templates/pdf/statement.pdf.html:111
-#: shareholder/templates/pdf/statement.pdf.html:207
+#: shareholder/templates/pdf/statement.pdf.html:122
+#: shareholder/templates/pdf/statement.pdf.html:218
 msgid "is the record holder of the following investment(s)"
 msgstr ""
 
 #: shareholder/templates/pdf/_statement_preview.pdf.html:76
 #: shareholder/templates/pdf/_statement_preview.pdf.html:176
-#: shareholder/templates/pdf/statement.pdf.html:211
+#: shareholder/templates/pdf/statement.pdf.html:222
 msgid "Assets"
 msgstr ""
 
@@ -878,10 +885,10 @@ msgstr ""
 #: shareholder/templates/pdf/_statement_preview.pdf.html:101
 #: shareholder/templates/pdf/_statement_preview.pdf.html:179
 #: shareholder/templates/pdf/_statement_preview.pdf.html:201
-#: shareholder/templates/pdf/statement.pdf.html:118
-#: shareholder/templates/pdf/statement.pdf.html:152
-#: shareholder/templates/pdf/statement.pdf.html:214
-#: shareholder/templates/pdf/statement.pdf.html:247
+#: shareholder/templates/pdf/statement.pdf.html:129
+#: shareholder/templates/pdf/statement.pdf.html:163
+#: shareholder/templates/pdf/statement.pdf.html:225
+#: shareholder/templates/pdf/statement.pdf.html:258
 msgid "Type"
 msgstr ""
 
@@ -889,10 +896,10 @@ msgstr ""
 #: shareholder/templates/pdf/_statement_preview.pdf.html:102
 #: shareholder/templates/pdf/_statement_preview.pdf.html:180
 #: shareholder/templates/pdf/_statement_preview.pdf.html:202
-#: shareholder/templates/pdf/statement.pdf.html:119
-#: shareholder/templates/pdf/statement.pdf.html:153
-#: shareholder/templates/pdf/statement.pdf.html:215
-#: shareholder/templates/pdf/statement.pdf.html:248
+#: shareholder/templates/pdf/statement.pdf.html:130
+#: shareholder/templates/pdf/statement.pdf.html:164
+#: shareholder/templates/pdf/statement.pdf.html:226
+#: shareholder/templates/pdf/statement.pdf.html:259
 msgid "Record Date"
 msgstr ""
 
@@ -900,17 +907,17 @@ msgstr ""
 #: shareholder/templates/pdf/_statement_preview.pdf.html:103
 #: shareholder/templates/pdf/_statement_preview.pdf.html:181
 #: shareholder/templates/pdf/_statement_preview.pdf.html:203
-#: shareholder/templates/pdf/statement.pdf.html:120
-#: shareholder/templates/pdf/statement.pdf.html:154
-#: shareholder/templates/pdf/statement.pdf.html:216
-#: shareholder/templates/pdf/statement.pdf.html:249
+#: shareholder/templates/pdf/statement.pdf.html:131
+#: shareholder/templates/pdf/statement.pdf.html:165
+#: shareholder/templates/pdf/statement.pdf.html:227
+#: shareholder/templates/pdf/statement.pdf.html:260
 msgid "Quantity"
 msgstr ""
 
 #: shareholder/templates/pdf/_statement_preview.pdf.html:82
 #: shareholder/templates/pdf/_statement_preview.pdf.html:182
-#: shareholder/templates/pdf/statement.pdf.html:121
-#: shareholder/templates/pdf/statement.pdf.html:217
+#: shareholder/templates/pdf/statement.pdf.html:132
+#: shareholder/templates/pdf/statement.pdf.html:228
 msgid "Nominal Value"
 msgstr ""
 
@@ -944,16 +951,16 @@ msgstr ""
 
 #: shareholder/templates/pdf/_statement_preview.pdf.html:98
 #: shareholder/templates/pdf/_statement_preview.pdf.html:198
-#: shareholder/templates/pdf/statement.pdf.html:149
-#: shareholder/templates/pdf/statement.pdf.html:244
+#: shareholder/templates/pdf/statement.pdf.html:160
+#: shareholder/templates/pdf/statement.pdf.html:255
 #: shareholder/templates/shareholder/optiontransaction_list.html:13
 msgid "Options"
 msgstr ""
 
 #: shareholder/templates/pdf/_statement_preview.pdf.html:104
 #: shareholder/templates/pdf/_statement_preview.pdf.html:204
-#: shareholder/templates/pdf/statement.pdf.html:155
-#: shareholder/templates/pdf/statement.pdf.html:250
+#: shareholder/templates/pdf/statement.pdf.html:166
+#: shareholder/templates/pdf/statement.pdf.html:261
 msgid "Strike Price"
 msgstr ""
 
@@ -1009,7 +1016,7 @@ msgid "Operator company"
 msgstr ""
 
 #: shareholder/templates/pdf/_statement_preview.pdf.html:222
-#: shareholder/templates/pdf/statement.pdf.html:347
+#: shareholder/templates/pdf/statement.pdf.html:358
 msgid "This document is to be used for tax authority."
 msgstr ""
 
@@ -1084,8 +1091,8 @@ msgstr ""
 
 #: shareholder/templates/pdf/certificate.pdf.html:129
 #: shareholder/templates/pdf/option.pdf.html:115
-#: shareholder/templates/shareholder/shareholder_detail.html:270
-#: shareholder/templates/shareholder/shareholder_detail.html:287
+#: shareholder/templates/shareholder/shareholder_detail.html:280
+#: shareholder/templates/shareholder/shareholder_detail.html:297
 msgid "cusip"
 msgstr ""
 
@@ -1162,19 +1169,19 @@ msgstr ""
 msgid " Mit freundlichen Grüßen!<br/><br/>Jirka Schäfer "
 msgstr ""
 
-#: shareholder/templates/pdf/statement.pdf.html:122
-#: shareholder/templates/pdf/statement.pdf.html:218
+#: shareholder/templates/pdf/statement.pdf.html:133
+#: shareholder/templates/pdf/statement.pdf.html:229
 msgid "Cumulated Capital based on face value"
 msgstr ""
 
-#: shareholder/templates/pdf/statement.pdf.html:128
-#: shareholder/templates/pdf/statement.pdf.html:224
+#: shareholder/templates/pdf/statement.pdf.html:139
+#: shareholder/templates/pdf/statement.pdf.html:235
 #: shareholder/templates/shareholder/optionplan_detail.html:68
 #: shareholder/templates/shareholder/position_detail.html:56
 msgid "Valor"
 msgstr ""
 
-#: shareholder/templates/pdf/statement.pdf.html:180
+#: shareholder/templates/pdf/statement.pdf.html:191
 #, python-format
 msgid ""
 "\n"
@@ -1185,66 +1192,66 @@ msgid ""
 "          "
 msgstr ""
 
-#: shareholder/templates/pdf/statement.pdf.html:274
+#: shareholder/templates/pdf/statement.pdf.html:285
 msgid ""
 "is as of today a member of the management/vr of this company. he holds the "
 "following positions with vesting and adjusted tax value according to swiss "
 "law. See https://goo.gl/U6ufgL for underlying regulations."
 msgstr ""
 
-#: shareholder/templates/pdf/statement.pdf.html:279
+#: shareholder/templates/pdf/statement.pdf.html:290
 msgid "vested shares"
 msgstr ""
 
-#: shareholder/templates/pdf/statement.pdf.html:282
-#: shareholder/templates/pdf/statement.pdf.html:309
+#: shareholder/templates/pdf/statement.pdf.html:293
+#: shareholder/templates/pdf/statement.pdf.html:320
 msgid "bought at"
 msgstr ""
 
-#: shareholder/templates/pdf/statement.pdf.html:283
-#: shareholder/templates/pdf/statement.pdf.html:310
+#: shareholder/templates/pdf/statement.pdf.html:294
+#: shareholder/templates/pdf/statement.pdf.html:321
 msgid "count"
 msgstr ""
 
-#: shareholder/templates/pdf/statement.pdf.html:284
-#: shareholder/templates/pdf/statement.pdf.html:311
-#: shareholder/templates/shareholder/shareholder_detail.html:269
-#: shareholder/templates/shareholder/shareholder_detail.html:286
+#: shareholder/templates/pdf/statement.pdf.html:295
+#: shareholder/templates/pdf/statement.pdf.html:322
+#: shareholder/templates/shareholder/shareholder_detail.html:279
+#: shareholder/templates/shareholder/shareholder_detail.html:296
 msgid "security"
 msgstr ""
 
-#: shareholder/templates/pdf/statement.pdf.html:285
-#: shareholder/templates/pdf/statement.pdf.html:312
+#: shareholder/templates/pdf/statement.pdf.html:296
+#: shareholder/templates/pdf/statement.pdf.html:323
 msgid "vesting months"
 msgstr ""
 
-#: shareholder/templates/pdf/statement.pdf.html:286
-#: shareholder/templates/pdf/statement.pdf.html:313
+#: shareholder/templates/pdf/statement.pdf.html:297
+#: shareholder/templates/pdf/statement.pdf.html:324
 msgid "vesting expiration date"
 msgstr ""
 
-#: shareholder/templates/pdf/statement.pdf.html:287
-#: shareholder/templates/pdf/statement.pdf.html:314
+#: shareholder/templates/pdf/statement.pdf.html:298
+#: shareholder/templates/pdf/statement.pdf.html:325
 #, python-format
 msgid "discounted tax ratio(%%)"
 msgstr ""
 
-#: shareholder/templates/pdf/statement.pdf.html:288
-#: shareholder/templates/pdf/statement.pdf.html:315
+#: shareholder/templates/pdf/statement.pdf.html:299
+#: shareholder/templates/pdf/statement.pdf.html:326
 msgid "discounted tax value"
 msgstr ""
 
-#: shareholder/templates/pdf/statement.pdf.html:306
+#: shareholder/templates/pdf/statement.pdf.html:317
 msgid "vested options"
 msgstr ""
 
-#: shareholder/templates/pdf/statement.pdf.html:333
+#: shareholder/templates/pdf/statement.pdf.html:344
 msgid ""
 "There are not positions and no options with applied vesting at this point of "
 "time."
 msgstr ""
 
-#: shareholder/templates/pdf/statement.pdf.html:339
+#: shareholder/templates/pdf/statement.pdf.html:350
 msgid "Total amount of discounted tax value is:"
 msgstr ""
 
@@ -1315,12 +1322,6 @@ msgstr ""
 msgid "Seller"
 msgstr ""
 
-#: shareholder/templates/shareholder/optiontransaction_detail.html:44
-#: shareholder/templates/shareholder/position_detail.html:69
-#: shareholder/templates/statement_report_list.html:17
-msgid "Date"
-msgstr ""
-
 #: shareholder/templates/shareholder/optiontransaction_detail.html:52
 #: shareholder/templates/shareholder/position_detail.html:61
 #: shareholder/templates/statement_report_list.html:20
@@ -1361,12 +1362,12 @@ msgid "Number Segments"
 msgstr ""
 
 #: shareholder/templates/shareholder/optiontransaction_detail.html:121
-#: shareholder/templates/shareholder/position_detail.html:182
+#: shareholder/templates/shareholder/position_detail.html:183
 msgid "Print certificate"
 msgstr ""
 
 #: shareholder/templates/shareholder/optiontransaction_detail.html:124
-#: shareholder/templates/shareholder/position_detail.html:185
+#: shareholder/templates/shareholder/position_detail.html:186
 msgid "Print certificate copy"
 msgstr ""
 
@@ -1484,37 +1485,37 @@ msgstr ""
 msgid "Vesting period in months"
 msgstr ""
 
-#: shareholder/templates/shareholder/position_detail.html:135
+#: shareholder/templates/shareholder/position_detail.html:136
 msgid "Certificate deposited with bank"
 msgstr ""
 
-#: shareholder/templates/shareholder/position_detail.html:146
+#: shareholder/templates/shareholder/position_detail.html:147
 msgid "Invalidation position"
-msgstr ""
-
-#: shareholder/templates/shareholder/position_detail.html:150
-#: shareholder/templates/shareholder/position_detail.html:163
-msgid "Go to position"
 msgstr ""
 
 #: shareholder/templates/shareholder/position_detail.html:151
 #: shareholder/templates/shareholder/position_detail.html:164
+msgid "Go to position"
+msgstr ""
+
+#: shareholder/templates/shareholder/position_detail.html:152
+#: shareholder/templates/shareholder/position_detail.html:165
 msgid "Link"
 msgstr ""
 
-#: shareholder/templates/shareholder/position_detail.html:159
+#: shareholder/templates/shareholder/position_detail.html:160
 msgid "Invalidation source position"
 msgstr ""
 
-#: shareholder/templates/shareholder/position_detail.html:178
+#: shareholder/templates/shareholder/position_detail.html:179
 msgid "Destroy Share Certificate"
 msgstr ""
 
-#: shareholder/templates/shareholder/position_detail.html:189
+#: shareholder/templates/shareholder/position_detail.html:190
 msgid "first at"
 msgstr ""
 
-#: shareholder/templates/shareholder/position_detail.html:189
+#: shareholder/templates/shareholder/position_detail.html:190
 msgid "printed"
 msgstr ""
 
@@ -1729,43 +1730,43 @@ msgstr ""
 msgid "Voting rights total count"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:263
+#: shareholder/templates/shareholder/shareholder_detail.html:264
 msgid "Voting rights percent"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:272
-#: shareholder/templates/shareholder/shareholder_detail.html:289
+#: shareholder/templates/shareholder/shareholder_detail.html:282
+#: shareholder/templates/shareholder/shareholder_detail.html:299
 msgid "issued"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:275
-#: shareholder/templates/shareholder/shareholder_detail.html:291
+#: shareholder/templates/shareholder/shareholder_detail.html:285
+#: shareholder/templates/shareholder/shareholder_detail.html:301
 msgid "shares owned"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:277
+#: shareholder/templates/shareholder/shareholder_detail.html:287
 msgid "cleaned by options count"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:279
+#: shareholder/templates/shareholder/shareholder_detail.html:289
 msgid "including shares inside certificate depot"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:281
-#: shareholder/templates/shareholder/shareholder_detail.html:292
+#: shareholder/templates/shareholder/shareholder_detail.html:291
+#: shareholder/templates/shareholder/shareholder_detail.html:302
 msgid "options owned"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:282
-#: shareholder/templates/shareholder/shareholder_detail.html:294
+#: shareholder/templates/shareholder/shareholder_detail.html:292
+#: shareholder/templates/shareholder/shareholder_detail.html:304
 msgid "share segments"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:300
+#: shareholder/templates/shareholder/shareholder_detail.html:310
 msgid "Delete shareholder"
 msgstr ""
 
-#: shareholder/templates/shareholder/shareholder_detail.html:305
+#: shareholder/templates/shareholder/shareholder_detail.html:315
 #: shareholder/tests/test_views.py:169
 msgid "Depot Statements"
 msgstr ""

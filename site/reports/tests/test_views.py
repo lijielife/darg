@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.test import Client, TestCase
 from django.utils import timezone
 from django.utils.translation import gettext as _
-from model_mommy import mommy
+# from model_mommy import mommy
 
 from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
                                 ComplexOptionTransactionsGenerator,
@@ -95,53 +95,6 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
         self.company = CompanyGenerator().generate()
         self.shs, self.s = ComplexShareholderConstellationGenerator().generate(
             company=self.company)
-
-    def test_assembly_participation_csv(self):
-        """ csv list for entrance control of assembly """
-        # run test
-        url = reverse('reports:assembly_participation_csv',
-                      kwargs={"company_id": self.company.id})
-        self.add_subscription(self.company)
-
-        # not logged in user
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
-
-        # login and retest
-        user = UserGenerator().generate()
-        self.client.force_login(user)
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 403)
-
-        # other operator
-        operator = mommy.make('shareholder.Operator')
-        self.client.force_login(operator.user)
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
-
-        # proper operator
-        mommy.make('shareholder.Operator', user=user, company=self.company)
-        self.client.force_login(user)
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-
-        # content check
-        reader = csv.reader(response.content.split('\n'), delimiter=',')
-        lines = list(reader)
-        del lines[-1]
-        self.assertEqual(len(lines[0]), 6)
-        self.assertEqual(len(lines[1]), 6)
-        self.assertEqual(len(lines), 12)  # ensure we have the right data
-        # assert company itself
-        self.assertIn(self.shs[0].get_full_name(),
-                      [f[1] for f in lines])
-        # assert share owner
-        self.assertIn(self.shs[1].get_full_name(), [f[1] for f in lines])
-        # no duplicates
-        self.assertEqual(list(set([f[0] for f in lines])).sort(),
-                         [f[0] for f in lines].sort())
-        self.assertEqual(list(set([f[1] for f in lines])).sort(),
-                         [f[1] for f in lines].sort())
 
     def test_captable_csv_download(self):
         """ rest download of captable csv """

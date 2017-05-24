@@ -16,9 +16,6 @@
   <h1>{% trans "Reports and Downloads" %}</h1>
 
   <div>
-    <h2>
-      {% trans "Download active Shareholders" %}
-	</h2>
     <!-- CAPTABLE -->
 	<div>
 	  {% include "reports/_captable_form.html" %} 
@@ -29,20 +26,6 @@
       {% trans "Other Downloads" %}
 	</h2>
     <ul>
-      <li>
-        {% trans "Assembly participation list" %}
-        {% if company.get_active_shareholders %}
-        <a href="{% url "reports:assembly_participation_csv" company_id=company.id %}" title="{% trans "assembly participation csv" %}">
-  	      <span class="el-icon-download-alt"></span>
-  	    </a>
-        {% endif %}
-        <div class="note">{% trans "use this list for the entrance control to the company assembly" %}</div>
-        {% if not company.get_active_shareholders %}
-        <div class="note">
-          {% trans 'no active shareholders. please use <a href="/positions/">transactions</a> to assign shares to shareholders' %}
-        </div>
-  	    {% endif %}
-      </li>
       <li>
         {% trans "Transactions per security in period" %}
         <span class="el-icon-chevron-down" ng-click="toggle_transaction_form()"></span>

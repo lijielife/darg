@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-23 10:51+0000\n"
-"PO-Revision-Date: 2017-05-23 10:52+0000\n"
+"POT-Creation-Date: 2017-05-24 20:33+0000\n"
+"PO-Revision-Date: 2017-05-24 20:40+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -23,202 +23,235 @@ msgstr ""
 msgid "Active Shareholders"
 msgstr "Aktive Gesellschafter"
 
-#: reports/models.py:27 reports/models.py:29
+#: reports/models.py:24
+#| msgid "Assembly participation list"
+msgid "Assembly Participation"
+msgstr "Teilnehmerliste für Generalversammlung"
+
+#: reports/models.py:28 reports/models.py:30
 msgid "Last Name"
 msgstr "Nachname"
 
-#: reports/models.py:28 reports/models.py:30
+#: reports/models.py:29 reports/models.py:31
 msgid "Last Name (descending)"
 msgstr "Nachname (absteigend)"
 
-#: reports/models.py:31
+#: reports/models.py:32
 msgid "Share Count"
 msgstr "Anzahl Aktien"
 
-#: reports/models.py:32
+#: reports/models.py:33
 msgid "Share Count (descending)"
 msgstr "Anzahl Aktien (absteigend)"
 
-#: reports/models.py:33
-#: reports/templates/active_shareholder_captable.pdf.html:156
+#: reports/models.py:34
+#: reports/templates/active_shareholder_captable.pdf.html:154
 msgid "Shareholder Number"
 msgstr "Aktionärsnummer"
 
-#: reports/models.py:34
+#: reports/models.py:35
 msgid "Shareholder Number (descending)"
 msgstr "Aktionärsnummer (absteigend)"
 
-#: reports/models.py:35
+#: reports/models.py:36
 msgid "Share Percent Ownership"
 msgstr "Prozent Aktienanteil"
 
-#: reports/models.py:36
+#: reports/models.py:37
 msgid "Share Percent Ownership (descending)"
 msgstr "Prozent Aktienanteil(absteigend)"
 
-#: reports/models.py:58
+#: reports/models.py:59
 msgid "Estimated rendering completion time"
 msgstr "Geschätzte Dauer für die Erstellung des Berichts"
 
-#: reports/models.py:59
+#: reports/models.py:60
 msgid "file creation datetime"
 msgstr "Dauer zur Erstellung der Datei"
 
-#: reports/models.py:62
+#: reports/models.py:63
 msgid "time it took to generate the file in seconds"
 msgstr "Dauer der Dateierstellung in Sekunden"
 
-#: reports/models.py:64
+#: reports/models.py:65
 msgid "report filter date"
 msgstr "Berichtsdatum"
 
-#: reports/tasks.py:34 reports/tests/test_views.py:369 reports/views.py:25
+#: reports/tasks.py:36 reports/tests/test_views.py:322 reports/views.py:25
 msgid "shareholder number"
 msgstr "Aktionärsnummer"
 
-#: reports/tasks.py:34
+#: reports/tasks.py:36
 msgid "legal type"
 msgstr "Aktionärsart"
 
-#: reports/tasks.py:34
+#: reports/tasks.py:36
 msgid "registration types"
 msgstr "Eintragungsart"
 
-#: reports/tasks.py:35
+#: reports/tasks.py:37
 msgid "company_department"
 msgstr "Abteilung im Unternehmen"
 
-#: reports/tasks.py:35
+#: reports/tasks.py:37
 msgid "title"
 msgstr "Titel"
 
-#: reports/tasks.py:35
+#: reports/tasks.py:37
 msgid "salutation"
 msgstr "Anrede"
 
-#: reports/tasks.py:35 reports/views.py:25
-msgid "last name"
-msgstr "Nachname"
+#: reports/tasks.py:37
+#| msgid "last name"
+msgid "name"
+msgstr "Name"
 
-#: reports/tasks.py:36 reports/views.py:25
-msgid "first name"
-msgstr "Vorname"
-
-#: reports/tasks.py:36
+#: reports/tasks.py:38
 msgid "address"
 msgstr "Adresse"
 
-#: reports/tasks.py:36
+#: reports/tasks.py:38
 msgid "postal_code"
 msgstr "PLZ"
 
-#: reports/tasks.py:36 reports/views.py:28
+#: reports/tasks.py:38 reports/views.py:28
 msgid "city"
 msgstr "Stadt"
 
-#: reports/tasks.py:37
+#: reports/tasks.py:39
 msgid "birthday"
 msgstr "Geburtstag"
 
-#: reports/tasks.py:37
+#: reports/tasks.py:39
 msgid "mailing_type"
 msgstr "Versandart"
 
-#: reports/tasks.py:37 reports/views.py:29
+#: reports/tasks.py:39 reports/views.py:29
 msgid "nationality"
 msgstr "Nationalität"
 
-#: reports/tasks.py:37 reports/views.py:276
+#: reports/tasks.py:39 reports/views.py:247
 msgid "security type"
 msgstr "Wertpapier"
 
-#: reports/tasks.py:38
+#: reports/tasks.py:40
 msgid "cusip"
 msgstr "WKN/Valor"
 
-#: reports/tasks.py:38
+#: reports/tasks.py:40
 msgid "face_value"
 msgstr "Nennwert"
 
-#: reports/tasks.py:38
+#: reports/tasks.py:40
 msgid "certificate_ids (issue date)"
 msgstr "ZertifikatsIDs"
 
-#: reports/tasks.py:39 reports/views.py:85
+#: reports/tasks.py:41 reports/views.py:85
 msgid "stock book id"
 msgstr "Skontro"
 
-#: reports/tasks.py:39
+#: reports/tasks.py:41
 msgid "depot_type"
 msgstr "Depotart"
 
-#: reports/tasks.py:40 reports/views.py:26
+#: reports/tasks.py:42 reports/views.py:26
 msgid "email"
 msgstr "Email"
 
-#: reports/tasks.py:40 reports/views.py:157 reports/views.py:274
+#: reports/tasks.py:42 reports/tasks.py:270 reports/views.py:245
 msgid "share count"
 msgstr "Aktienzahl"
 
-#: reports/tasks.py:40
+#: reports/tasks.py:42
 msgid "share percent"
 msgstr "Aktienanteil in Prozent"
 
-#: reports/tasks.py:41
+#: reports/tasks.py:43
 msgid "votes percent"
 msgstr "Stimmrechte in Prozent"
 
-#: reports/tasks.py:42
+#: reports/tasks.py:44
 msgid "cumulated face value"
 msgstr "Gesamtkapital (Basis: Nennwert)"
 
-#: reports/tasks.py:42
+#: reports/tasks.py:44
 msgid "is management"
 msgstr "Mitglied VR/Management"
 
-#: reports/tasks.py:43 reports/views.py:27
+#: reports/tasks.py:45 reports/views.py:27
 msgid "language ISO"
 msgstr "Sprache ISO-Code"
 
-#: reports/tasks.py:43 reports/views.py:27
+#: reports/tasks.py:45 reports/views.py:27
 msgid "language full"
 msgstr "Sprache"
 
-#: reports/tasks.py:120 reports/tests/test_views.py:261
+#: reports/tasks.py:121 reports/tests/test_views.py:214
 msgid "None"
 msgstr "Keine"
 
-#: reports/tasks.py:261
-msgid "Your pdf captable file"
-msgstr "Ihre Aktionärsübersicht als PDF"
+#: reports/tasks.py:269
+msgid "Shareholder#"
+msgstr "Aktionärsnummer"
 
-#: reports/tasks.py:262 reports/tasks.py:317 reports/tasks.py:366
+#: reports/tasks.py:269
+msgid "Full Name"
+msgstr "Nachname"
+
+#: reports/tasks.py:269
+#: reports/templates/active_shareholder_captable.pdf.html:106
+#: reports/templates/active_shareholder_captable.pdf.html:156
+msgid "Address"
+msgstr "Adresse"
+
+#: reports/tasks.py:270
+msgid "capital"
+msgstr "Kapital"
+
+#: reports/tasks.py:270
+msgid "vote count"
+msgstr "Stimmrechte"
+
+#: reports/tasks.py:297
+#| msgid "assembly participation csv"
+msgid "Your csv assembly participation file"
+msgstr "Teilnehmerliste für Generalversammlung als CSV"
+
+#: reports/tasks.py:298 reports/tasks.py:330 reports/tasks.py:385
+#: reports/tasks.py:434
 msgid "Your file is attached to this email"
 msgstr "Ihre Datei ist diese Email angehängt."
 
-#: reports/tasks.py:263
+#: reports/tasks.py:299
+#| msgid "Assembly participation list"
+msgid "CSV Assembly Participation"
+msgstr "Teilnehmerliste für Generalversammlung"
+
+#: reports/tasks.py:329
+msgid "Your pdf captable file"
+msgstr "Ihre Aktionärsübersicht als PDF"
+
+#: reports/tasks.py:331
 msgid "PDF Captable/Active Shareholders"
 msgstr "Aktive Gesellschafter"
 
-#: reports/tasks.py:289 reports/tasks.py:341
+#: reports/tasks.py:357 reports/tasks.py:409
 msgid "Share IDs"
 msgstr "Aktiennummern"
 
-#: reports/tasks.py:316
+#: reports/tasks.py:384
 msgid "Your csv captable file"
 msgstr "Ihre Aktionärsübersicht"
 
-#: reports/tasks.py:318
+#: reports/tasks.py:386
 msgid "CSV Captable/Active Shareholders"
 msgstr "Aktive Gesellschafter"
 
-#: reports/tasks.py:365
-#| msgid "Your csv captable file"
+#: reports/tasks.py:433
 msgid "Your xls captable file"
 msgstr "Ihre Aktionärsübersicht für Excel"
 
-#: reports/tasks.py:367
-#| msgid "CSV Captable/Active Shareholders"
+#: reports/tasks.py:435
 msgid "XLS Captable/Active Shareholders"
 msgstr "Aktive Gesellschafter im Excel-Format"
 
@@ -258,39 +291,33 @@ msgstr "Liberiertes Kapital"
 msgid "Founding Date"
 msgstr "Gründungsdatum"
 
-#: reports/templates/active_shareholder_captable.pdf.html:103
+#: reports/templates/active_shareholder_captable.pdf.html:104
 msgid "ID"
 msgstr "ID"
 
-#: reports/templates/active_shareholder_captable.pdf.html:104
-#: reports/templates/active_shareholder_captable.pdf.html:157
+#: reports/templates/active_shareholder_captable.pdf.html:105
+#: reports/templates/active_shareholder_captable.pdf.html:155
 msgid "Name"
 msgstr "Nachname"
 
-#: reports/templates/active_shareholder_captable.pdf.html:105
-#: reports/templates/active_shareholder_captable.pdf.html:158
-#: reports/views.py:156
-msgid "Address"
-msgstr "Adresse"
-
-#: reports/templates/active_shareholder_captable.pdf.html:106
+#: reports/templates/active_shareholder_captable.pdf.html:107
 msgid "CumFaceCap"
 msgstr "Kapital"
 
-#: reports/templates/active_shareholder_captable.pdf.html:107
+#: reports/templates/active_shareholder_captable.pdf.html:108
 #, python-format
 msgid "Shares (%%)"
 msgstr "Aktien (%%)"
 
-#: reports/templates/active_shareholder_captable.pdf.html:110
+#: reports/templates/active_shareholder_captable.pdf.html:111
 msgid "Aktiennummern"
 msgstr "Aktiennummern"
 
-#: reports/templates/active_shareholder_captable.pdf.html:151
+#: reports/templates/active_shareholder_captable.pdf.html:148
 msgid "Options"
 msgstr "Optionen"
 
-#: reports/templates/active_shareholder_captable.pdf.html:159
+#: reports/templates/active_shareholder_captable.pdf.html:157
 #, python-format
 msgid "Optionen (%%)"
 msgstr "Optionen (%%)"
@@ -315,41 +342,46 @@ msgstr "Dieser Report wurde neu erstellt und noch nicht angeschaut."
 msgid "Download now"
 msgstr "Jetzt herunterladen"
 
-#: reports/templates/reports/_captable_form.html:20
+#: reports/templates/reports/_captable_form.html:23
+#| msgid "Reports"
+msgid "Report Type"
+msgstr "Art des Berichtes/Downloads"
+
+#: reports/templates/reports/_captable_form.html:37
 msgid "Select Format"
 msgstr "Format auswählen"
 
-#: reports/templates/reports/_captable_form.html:25
+#: reports/templates/reports/_captable_form.html:41
 msgid "PDF"
 msgstr "PDF"
 
-#: reports/templates/reports/_captable_form.html:30
+#: reports/templates/reports/_captable_form.html:46
 msgid "CSV"
 msgstr "CSV"
 
-#: reports/templates/reports/_captable_form.html:35
+#: reports/templates/reports/_captable_form.html:51
 msgid "XLS"
 msgstr "XLS"
 
-#: reports/templates/reports/_captable_form.html:43
+#: reports/templates/reports/_captable_form.html:58
 msgid "Sort by:"
 msgstr "Sortieren nach:"
 
-#: reports/templates/reports/_captable_form.html:53
+#: reports/templates/reports/_captable_form.html:70
 msgid "Report as of date:"
 msgstr "Berichtsdatum"
 
-#: reports/templates/reports/_captable_form.html:84
+#: reports/templates/reports/_captable_form.html:101
 #: reports/templates/reports/index.html:20
 msgid "Download active Shareholders"
 msgstr "Aktive Gesellschafter herunterladen"
 
-#: reports/templates/reports/_captable_form.html:88
+#: reports/templates/reports/_captable_form.html:105
 msgid "File generated at "
 msgstr "Datei erstellt"
 
-#: reports/templates/reports/_captable_form.html:91
-#: reports/templates/reports/_captable_form.html:98
+#: reports/templates/reports/_captable_form.html:108
+#: reports/templates/reports/_captable_form.html:115
 msgid "Generate fresh file"
 msgstr "Datei neu generieren"
 
@@ -390,41 +422,19 @@ msgid "Other Downloads"
 msgstr "Andere Berichte/Downloads"
 
 #: reports/templates/reports/index.html:33
-msgid "Assembly participation list"
-msgstr "Teilnehmerliste für Generalversammlung"
-
-#: reports/templates/reports/index.html:35
-msgid "assembly participation csv"
-msgstr "Teilnehmerliste für Generalversammlung als CSV"
-
-#: reports/templates/reports/index.html:39
-msgid "use this list for the entrance control to the company assembly"
-msgstr ""
-"Verwenden Sie diese Liste für die Eingangskontrolle zur Generalversammlung."
-
-#: reports/templates/reports/index.html:42
-msgid ""
-"no active shareholders. please use <a href=\"/positions/\">transactions</a> "
-"to assign shares to shareholders"
-msgstr ""
-"Keine aktiven Gesellschafter vorhanden. Verwenden Sie <a "
-"href=\"/positions/\">Transaktionen</a> um Aktien den Gesellschaftern "
-"zuzuweisen."
-
-#: reports/templates/reports/index.html:47
 msgid "Transactions per security in period"
 msgstr "Transaktionen pro Wertpapier im Zeitraum"
 
-#: reports/templates/reports/index.html:52
-#: reports/templates/reports/index.html:53
+#: reports/templates/reports/index.html:38
+#: reports/templates/reports/index.html:39
 msgid "Address data of all shareholders"
 msgstr "Adressdaten aller Gesellschafter"
 
-#: reports/templates/reports/index.html:58
+#: reports/templates/reports/index.html:44
 msgid "Printed Certificates"
 msgstr "Gedruckte Zertifikate"
 
-#: reports/templates/reports/index.html:65
+#: reports/templates/reports/index.html:51
 msgid ""
 "No printed certificates are available. Please print a certificate via a "
 "transaction or option transaction"
@@ -432,11 +442,11 @@ msgstr ""
 "Es sind keine Urkunden vorhanden. Bitte drucken sie zuerst mindestens eine "
 "Urkunde via einer Transaktion oder Option."
 
-#: reports/templates/reports/index.html:70
+#: reports/templates/reports/index.html:56
 msgid "Vested Shares"
 msgstr "Aktien mit Sperrfrist"
 
-#: reports/templates/reports/index.html:77
+#: reports/templates/reports/index.html:63
 msgid ""
 "no vested positions yet. please add vesting data to either transaction or "
 "option transaction"
@@ -444,17 +454,25 @@ msgstr ""
 "Keine Positionen mit Sperrfrist vorhanden. Bitte fügen Sie vorher "
 "Sperrfristen zu Transaktionen oder Optionen hinzu."
 
-#: reports/templates/reports/index.html:82
+#: reports/templates/reports/index.html:68
 msgid "See all depot statements created for shareholders"
 msgstr "Alle Kontoauszüge pro Gesellschafter ansehen"
 
-#: reports/templates/reports/index.html:83
+#: reports/templates/reports/index.html:69
 msgid "Depot Statements Overview"
 msgstr "Überblick der Depotauzüge"
 
-#: reports/tests/test_views.py:415 reports/views.py:82
+#: reports/tests/test_views.py:368 reports/views.py:82
 msgid "date"
 msgstr "Datum"
+
+#: reports/views.py:25
+msgid "last name"
+msgstr "Nachname"
+
+#: reports/views.py:25
+msgid "first name"
+msgstr "Vorname"
 
 #: reports/views.py:27
 msgid "street"
@@ -492,7 +510,7 @@ msgstr "Käufer"
 msgid "seller"
 msgstr "Verkäufer"
 
-#: reports/views.py:83 reports/views.py:329
+#: reports/views.py:83 reports/views.py:300
 msgid "count"
 msgstr "Aktienzahl"
 
@@ -500,7 +518,7 @@ msgstr "Aktienzahl"
 msgid "value"
 msgstr "Nennwert"
 
-#: reports/views.py:84 reports/views.py:329
+#: reports/views.py:84 reports/views.py:300
 msgid "security"
 msgstr "Wertpapier"
 
@@ -528,65 +546,61 @@ msgstr "----------------------------------------"
 msgid "Transactions for options:"
 msgstr "Transaktionen pro Wertpapier im Zeitraum"
 
-#: reports/views.py:147 reports/views.py:176
+#: reports/views.py:147
 msgid "Permission denied"
 msgstr "Zugriff verboten"
 
-#: reports/views.py:156
-msgid "Shareholder#"
-msgstr "Aktionärsnummer"
-
-#: reports/views.py:156
-msgid "Full Name"
-msgstr "Nachname"
-
-#: reports/views.py:157
-msgid "capital"
-msgstr "Kapital"
-
-#: reports/views.py:157
-msgid "vote count"
-msgstr "Stimmrechte"
-
-#: reports/views.py:274 reports/views.py:329
+#: reports/views.py:245 reports/views.py:300
 msgid "full name"
 msgstr "Name"
 
-#: reports/views.py:274
+#: reports/views.py:245
 msgid "security name"
 msgstr "Wertpapier"
 
-#: reports/views.py:275
+#: reports/views.py:246
 msgid "certificate id"
 msgstr "ZertifikatsIDs"
 
-#: reports/views.py:275
+#: reports/views.py:246
 msgid "certificate printed at"
 msgstr "Zertifikat gedruckt am"
 
-#: reports/views.py:283
+#: reports/views.py:254
 msgid "option"
 msgstr "Optionen"
 
-#: reports/views.py:291 reports/views.py:334
+#: reports/views.py:262 reports/views.py:305
 msgid "stock"
 msgstr "Wertpapier"
 
-#: reports/views.py:330
+#: reports/views.py:301
 msgid "is management member"
 msgstr "Mitglied VR/Management"
 
-#: reports/views.py:331
+#: reports/views.py:302
 msgid "vesting in months"
 msgstr "Sperrfrist in Monaten"
 
-#: reports/views.py:331
+#: reports/views.py:302
 msgid "asset type"
 msgstr "Wertpapierart"
 
-#: reports/views.py:339
+#: reports/views.py:310
 msgid "certificate"
 msgstr "Gedruckte Zertifikate"
+
+#~ msgid "use this list for the entrance control to the company assembly"
+#~ msgstr ""
+#~ "Verwenden Sie diese Liste für die Eingangskontrolle zur Generalversammlung."
+
+#~ msgid ""
+#~ "no active shareholders. please use <a href=\"/positions/\">transactions</a> "
+#~ "to assign shares to shareholders"
+#~ msgstr ""
+#~ "Keine aktiven Gesellschafter vorhanden. Verwenden Sie <a "
+#~ "href=\"/positions/\">Transaktionen</a> um Aktien den Gesellschaftern "
+#~ "zuzuweisen."
 
 #~ msgid "Email"
 #~ msgstr "Email"

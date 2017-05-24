@@ -1,21 +1,25 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import datetime
+
 from django.core import mail
-from django.test import TestCase
 from django.template.defaultfilters import slugify
+from django.test import TestCase
 from django.utils import timezone
 from mock import patch
 from model_mommy import mommy
 
 from project.generators import (CompanyGenerator,
                                 ComplexShareholderConstellationGenerator,
-                                ReportGenerator, PositionGenerator)
-from reports.tasks import (_add_file_to_report, _get_captable_pdf_context,
-                           _get_filename, _order_queryset, _parse_ordering,
-                           _prepare_report, _send_notify, _summarize_report,
-                           prerender_reports, render_captable_csv,
-                           render_captable_pdf, render_captable_xls)
+                                PositionGenerator, ReportGenerator)
+from reports.tasks import (_add_file_to_report,
+                           _collect_participation_csv_data,
+                           _get_captable_pdf_context, _get_filename,
+                           _order_queryset, _parse_ordering, _prepare_report,
+                           _send_notify, _summarize_report, prerender_reports,
+                           render_assembly_participation_csv,
+                           render_captable_csv, render_captable_pdf,
+                           render_captable_xls)
 from shareholder.models import Shareholder
 
 
@@ -29,6 +33,13 @@ class TaskTestCase(TestCase):
         sh = self.shs[0]
         sh.number = u'ü' + sh.number
         sh.save()
+
+    def test_collect_participation_csv_data(self):
+        """ return single row for csv file """
+        res = _collect_participation_csv_data(self.shs[0],
+                                              timezone.now().date())
+        self.assertEqual(len(res), 6)
+        self.assertEqual(res[0], self.shs[0].number)
 
     def test_get_captable_pdf_context(self):
 
@@ -193,6 +204,22 @@ class TaskTestCase(TestCase):
         self.assertIsNotNone(report.file_type)
         self.assertIsNotNone(report.report_type)
 
+    def test_render_assembly_participation_csv(self):
+        """ render csv with assembly participants """
+        report = ReportGenerator().generate()
+        PositionGenerator().generate(company=report.company, seller=None)
+        render_assembly_participation_csv(
+            report.company.pk, report.pk,
+            user_id=report.user.pk, ordering=None,
+            notify=True, track_downloads=False)
+        report.refresh_from_db()
+
+        self.assertIsNotNone(report.file)
+        contents = report.file.read()
+        rows = contents.split('\r\n')
+        del rows[-1]  # del empty last line
+        self.assertEqual(len(rows), 2)  # header + single sh with pos
+
     def test_render_captable_csv(self):
         report = ReportGenerator().generate()
         PositionGenerator().generate(company=report.company, seller=None)
@@ -227,9 +254,11 @@ class TaskTestCase(TestCase):
         self.assertIsNotNone(report.file)
 
     @patch('reports.tasks.render_captable_csv.apply_async')
+    @patch('reports.tasks.render_assembly_participation_csv.apply_async')
     @patch('reports.tasks.render_captable_pdf.apply_async')
     @patch('reports.tasks.render_captable_xls.apply_async')
-    def test_prerender_reports(self, mock_xls, mock_pdf, mock_csv):
+    def test_prerender_reports(self, mock_xls, mock_pdf,
+                               mock_assembly_participation_csv, mock_csv):
         """ render every night the reports for all corps """
         # corps not needing a report = noise
         CompanyGenerator().generate()
@@ -239,7 +268,10 @@ class TaskTestCase(TestCase):
 
         company = self.shs[0].company
         pdf_report = company.report_set.filter(file_type='PDF').last()
-        csv_report = company.report_set.filter(file_type='CSV').last()
+        csv_report = company.report_set.filter(file_type='CSV',
+                                               report_type='captable').last()
+        csv_ass_report = company.report_set.filter(
+            file_type='CSV', report_type='assembly_participation').last()
         xls_report = company.report_set.filter(file_type='XLS').last()
         self.assertEqual(mock_pdf.call_count, 10)
         mock_pdf.assert_called_with(
@@ -253,3 +285,7 @@ class TaskTestCase(TestCase):
         mock_xls.assert_called_with(
             args=[company.pk, xls_report.pk],
             kwargs={'ordering': xls_report.order_by})
+        self.assertEqual(mock_assembly_participation_csv.call_count, 1)
+        mock_assembly_participation_csv.assert_called_with(
+            args=[company.pk, csv_ass_report.pk],
+            kwargs={'ordering': csv_ass_report.order_by})

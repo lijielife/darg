@@ -68,15 +68,15 @@ def _get_captable_pdf_context(company, ordering, date):
     return context
 
 
-def _collect_csv_data(shareholder, date):
-    # hide "None" strings
-    def to_string_or_empty(value):
-        if value and isinstance(value, list):
-            # remove NoneTypes
-            value = [v for v in value if v]
-            value = u" , ".join(value)
-        return unicode(value or u'')
+def to_string_or_empty(value):
+    if value and isinstance(value, list):
+        # remove NoneTypes
+        value = [v for v in value if v]
+        value = u" , ".join(value)
+    return unicode(value or u'')
 
+
+def _collect_csv_data(shareholder, date):
     rows = []
     for security in shareholder.company.security_set.all():
         if shareholder.share_count(date=date, security=security):
@@ -126,6 +126,20 @@ def _collect_csv_data(shareholder, date):
                 row.append(text)
             rows.append(row)
     return rows
+
+
+def _collect_participation_csv_data(shareholder, date):
+    row = [shareholder.number, shareholder.get_full_name(),
+           shareholder.user.userprofile.get_address(),
+           shareholder.share_count(),
+           shareholder.cumulated_face_value(),
+           shareholder.vote_count()
+           ]
+    # remove any kind of empty data and replace by empty string. make
+    # all utf8
+    row = [to_string_or_empty(val) for val in row]
+
+    return row
 
 
 def _parse_ordering(ordering):
@@ -235,6 +249,59 @@ def _prepare_report(company, report_type, ordering, file_type):
                                    eta=timezone.now(), report_at=timezone.now())
     report.update_eta()
     return report
+
+
+@app.task
+def render_assembly_participation_csv(company_id, report_id, user_id=None,
+                                      ordering=None, notify=False,
+                                      track_downloads=False):
+    # prepare
+    if user_id:
+        user = User.objects.get(pk=user_id)
+    company = Company.objects.get(pk=company_id)
+    report = Report.objects.get(pk=report_id)
+    ordering = u'number'
+    filename = _get_filename(report, company)
+
+    csvfile = StringIO.StringIO()
+    writer = csv.writer(csvfile)
+
+    header = [_('Shareholder#'), _('Full Name'), _('Address'),
+              _('share count'), _('capital'), _('vote count')]
+
+    def to_unicode(iterable):
+        return [unicode(s).encode("utf-8") for s in iterable]
+
+    writer.writerow(to_unicode(header))
+
+    # for each active shareholder
+    queryset = company.get_active_shareholders(date=report.report_at)
+    queryset = _order_queryset(queryset, ordering)
+
+    for shareholder in queryset:
+        if shareholder.share_count(date=report.report_at):
+            row = _collect_participation_csv_data(
+                shareholder, report.report_at)
+        else:
+            continue
+
+        writer.writerow([unicode(s).encode("utf-8") for s in row])
+
+    # post process
+    csvfile.seek(0)
+    _add_file_to_report(filename, report, csvfile.read())
+    _summarize_report(report)
+
+    if notify and user_id:
+        _send_notify(user, filename,
+                     subject=_('Your csv assembly participation file'),
+                     body=_('Your file is attached to this email'),
+                     file_desc=_('CSV Assembly Participation'),
+                     url=url_with_domain(report.get_absolute_url()))
+
+    if not track_downloads:
+        report.downloaded_at = timezone.now()
+        report.save()
 
 
 @app.task
@@ -384,12 +451,16 @@ def prerender_reports():
         if company.shareholder_set.count() < 2:
             continue
         for (report_type, rname) in REPORT_TYPES:
-            for (ordering, oname) in ORDERING_TYPES:
-                for file_type, fname in REPORT_FILE_TYPES:
+            for file_type, fname in REPORT_FILE_TYPES:
+                for (ordering, oname) in ORDERING_TYPES:
+                    if report_type == 'assembly_participation' and (
+                            ordering != 'number' or file_type != 'CSV'):
+                        continue
                     report = _prepare_report(
                         company, report_type, ordering, fname)
                     args = [company.pk, report.pk]
                     kwargs = {'ordering': report.order_by}
-                    method_name = 'render_captable_{}'.format(fname.lower())
+                    method_name = 'render_{}_{}'.format(report_type.lower(),
+                                                        fname.lower())
                     method = getattr(sys.modules[__name__], method_name)
                     method.apply_async(args=args, kwargs=kwargs)

@@ -147,35 +147,6 @@ def report_download(request, report_id):
         return HttpResponseForbidden(_("Permission denied"))
 
 
-def assembly_participation_csv(request, company_id):
-    """ download csv with company participation list """
-    company = get_object_or_404(Company, id=company_id)
-    if company.operator_set.filter(user=request.user).exists():
-
-        filename = u"assembly_participants_{}".format(slugify(company.name))
-        header = [_('Shareholder#'), _('Full Name'), _('Address'),
-                  _('share count'), _('capital'), _('vote count')]
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename={}'.format(
-            filename)
-
-        writer = csv.writer(response)
-        writer.writerow([unicode(s).encode("utf-8") for s in header])
-        for shareholder in company.get_active_shareholders().order_by('number'):
-
-            row = [shareholder.number, shareholder.get_full_name(),
-                   shareholder.user.userprofile.get_address(),
-                   shareholder.share_count(),
-                   shareholder.cumulated_face_value(),
-                   shareholder.vote_count()]
-            writer.writerow([unicode(s).encode("utf-8") for s in row])
-
-        return response
-
-    else:
-        return HttpResponseForbidden(_("Permission denied"))
-
-
 @login_required
 def contacts_csv(request, company_id):
     """ returns csv with active shareholders """

@@ -17,29 +17,44 @@
   </div>
 
   <!-- FORM -->
-  <p>{% trans "Select Format" %}</p>
-  <div class="btn-panel">
-
-    <button ng-click="last_captable_report.file_type='PDF'; get_captable_report()" class="btn btn-image pdf" ng-class="{selected: last_captable_report.file_type=='PDF'}">
-      <div class="icon"></div>
-      <div class="name">{% trans "PDF" %}</div>
-    </button>
-    
-    <button ng-click="last_captable_report.file_type='CSV'; get_captable_report()" class="btn btn-image csv" ng-class="{selected: last_captable_report.file_type=='CSV'}">
-      <div class="icon"></div>
-      <div class="name">{% trans "CSV" %}</div>
-    </button>
-
-    <button ng-click="last_captable_report.file_type='XLS'; get_captable_report()" class="btn btn-image xls" ng-class="{selected: last_captable_report.file_type=='XLS'}">
-      <div class="icon"></div>
-      <div class="name">{% trans "XLS" %}</div>
-    </button>
-
-  </div>
-
   {% verbatim %}
-  <form class="form-inline add-information-inline form">
+  <form class="form-inline report-form form">
     <div class="form-group block-level">
+      <p>{% endverbatim %}{% trans "Report Type" %}{% verbatim %}</p>
+      <span class="input-group">
+        <select class="form-control security" 
+                ng-model="last_captable_report.report_type" 
+                ng-options="type as type.title for type in report_types"
+                translate 
+                translate-attr-placeholder="Report Type"
+                ng-change="get_captable_report()">
+        </select>
+      </span>
+    </div>
+    {% endverbatim %}
+    <div class="btn-panel" ng-show="last_captable_report.report_type.value=='captable'">
+
+      <p>{% trans "Select Format" %}</p>
+  
+      <button ng-click="last_captable_report.file_type='PDF'; get_captable_report()" class="btn btn-image pdf" ng-class="{selected: last_captable_report.file_type=='PDF'}">
+        <div class="icon"></div>
+        <div class="name">{% trans "PDF" %}</div>
+      </button>
+      
+      <button ng-click="last_captable_report.file_type='CSV'; get_captable_report()" class="btn btn-image csv" ng-class="{selected: last_captable_report.file_type=='CSV'}">
+        <div class="icon"></div>
+        <div class="name">{% trans "CSV" %}</div>
+      </button>
+  
+      <button ng-click="last_captable_report.file_type='XLS'; get_captable_report()" class="btn btn-image xls" ng-class="{selected: last_captable_report.file_type=='XLS'}">
+        <div class="icon"></div>
+        <div class="name">{% trans "XLS" %}</div>
+      </button>
+  
+    </div>
+  
+    {% verbatim %}
+    <div class="form-group block-level" ng-show="last_captable_report.report_type.value=='captable'">
       <p>{% endverbatim %}{% trans "Sort by:" %}{% verbatim %}</p>
       <span class="input-group">
         <select class="form-control security" 
@@ -50,6 +65,8 @@
                 ng-change="get_captable_report()">
         </select>
       </span>
+    </div>
+    <div class="form-group block-level">
       <p>{% endverbatim %}{% trans "Report as of date:" %}{% verbatim %}</p>
       <span class="input-group date-field">
         <input type="text" class="form-control"

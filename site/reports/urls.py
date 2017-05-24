@@ -21,7 +21,4 @@ urlpatterns = [
     url(r'^company/(?P<company_id>[0-9]+)/download/printed_certificates_csv$',
         login_required(views.printed_certificates_csv),
         name='printed_certificates_csv'),
-    url(r'^(?P<company_id>[0-9]+)/assembly_participation_csv$',
-        login_required(views.assembly_participation_csv),
-        name='assembly_participation_csv'),
  ]
