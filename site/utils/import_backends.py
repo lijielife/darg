@@ -8,6 +8,7 @@ import os
 from dateutil.parser import parse
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.db import DataError
 from django.db.models import Sum
 from django.utils.text import slugify
@@ -245,6 +246,9 @@ class SisWareImportBackend(BaseImportBackend):
 
         # update day of first share register occurence of user
         self._get_or_update_init_date()
+
+        # clear cache
+        cache.clear()
 
     def _get_or_create_dispo_shares(self):
         """
