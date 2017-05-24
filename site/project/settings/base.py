@@ -425,7 +425,7 @@ SWISS_BANKS_DOWNLOAD_URL = ('https://www.six-interbank-clearing.com/dam'
 
 
 # app internal settings
-DISPO_SHAREHOLDER_NUMBER = '9999999999'
+DISPO_SHAREHOLDER_NUMBER = 'DISPO-1'
 
 
 # need to differentiate instances
