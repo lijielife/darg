@@ -145,10 +145,10 @@ class SisWareImportBackend(BaseImportBackend):
         # named "AK Uebertrag" which represents the old deprecated share
         # register. this shareholder will serve as source for distributing all
         # shares each resp. shareholder
-        user = self._get_or_create_user(__('TRANSFER-1'), __('TRANSFER'),
-                                        __('SHAREHOLDER'))
+        user = self._get_or_create_user(_('TRANSFER-1'), _('TRANSFER'),
+                                        _('SHAREHOLDER'))
         self.transfer_shareholder = self._get_or_create_shareholder(
-            __('TRANSFER-1'), user)
+            _('TRANSFER-1'), user)
         self.transfer_shareholder.set_transfer_shareholder()
         # transfer shares from corp sh to transfer sh
         for s in self.company.security_set.all():
