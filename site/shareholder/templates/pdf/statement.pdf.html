@@ -73,21 +73,32 @@
             <td class="user">
               {{ shareholder.get_full_name }}<br />
               {% if shareholder.user.userprofile.c_o %}c/o {{ shareholder.user.userprofile.c_o }} <br />{% endif %}
-              {{ shareholder.user.userprofile.street }}<br />
-              {{ shareholder.user.userprofile.postal_code }} {{ shareholder.user.userprofile.city }}<br />
-              {% if shareholder.user.userprofile.province %}{{ shareholder.user.userprofile.province }}<br />{% endif %}
-              {{ shareholder.user.userprofile.country.name }}
+              {% if shareholder.user.userprofile.street %}{{ shareholder.user.userprofile.street }}<br />{% endif %}
               {% if shareholder.user.userprofile.pobox %}PO Box: {{ shareholder.user.userprofile.pobox %}<br />{% endif %}
+              {% if shareholder.user.userprofile.city %}{{ shareholder.user.userprofile.postal_code }} {{ shareholder.user.userprofile.city }}<br />{% endif %}
+              {% if shareholder.user.userprofile.province %}{{ shareholder.user.userprofile.province }}<br />{% endif %}
+              {% if shareholder.user.userprofile.country.name %}{{ shareholder.user.userprofile.country.name }}{% endif %}
             </td>
             <td class="company">
               {{ shareholder.company.name }}<br />
-              {{ shareholder.company.get_company_shareholder.user.userprofile.street }}<br />
-              {{ shareholder.company.get_company_shareholder.user.userprofile.postal_code }} {{ shareholder.company.get_company_shareholder.user.userprofile.city }}<br />
-              {% if shareholder.company.get_company_shareholder.user.userprofile.province %}{{ shareholder.company.get_company_shareholder.user.userprofile.province }}<br />{% endif %}
-              {{ shareholder.company.get_company_shareholder.user.userprofile.country.name }}
-              <br /><br />
-              {% trans "Your contact person(s):" %}:<br />
-              {{ shareholder.company.support_contact }}
+              {% if shareholder.company.get_company_shareholder.user.userprofile.street %}
+                {{ shareholder.company.get_company_shareholder.user.userprofile.street }}<br />
+              {% endif %}
+              {% if shareholder.company.get_company_shareholder.user.userprofile.city %}
+                {{ shareholder.company.get_company_shareholder.user.userprofile.postal_code }} 
+                {{ shareholder.company.get_company_shareholder.user.userprofile.city }}<br />
+              {% endif %}
+              {% if shareholder.company.get_company_shareholder.user.userprofile.province %}
+                {{ shareholder.company.get_company_shareholder.user.userprofile.province }}<br />
+              {% endif %}
+              {% if shareholder.company.get_company_shareholder.user.userprofile.country.name %}
+                {{ shareholder.company.get_company_shareholder.user.userprofile.country.name }}
+              {% endif %}
+              {% if shareholder.company.support_contact %}
+                <br /><br />
+                {% trans "Your contact person(s):" %}:<br />
+                {{ shareholder.company.support_contact }}
+              {% endif %}
               <br /><br />
               {% trans "Your shareholder number:" %}:
               {{ shareholder.number }}
