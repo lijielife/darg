@@ -25,12 +25,12 @@ done
 
 # needs to be run from site dir
 if [ "$skip_backup" = true ] ; then
+  echo "BACKUP SKIPPED"
+else
   cd site
   ./manage.py dbbackup
   ./manage.py mediabackup
   cd ..
-else
-  echo "BACKUP SKIPPED"
 fi
 
 python ./scripts/minify_static.py && ./site/manage.py migrate && ./site/manage.py collectstatic --noinput
