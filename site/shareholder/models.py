@@ -865,9 +865,11 @@ class UserProfile(AddressModelMixin, models.Model):
         parts = [getattr(self, field) for field in fields]
         address = u", ".join(parts)
         if self.c_o:
-            address += u", c/o: {}".format(self.c_o)
+            address += u", c/o {}".format(self.c_o)
         if self.pobox:
-            address += u", POBOX: {}".format(self.pobox)
+            if address != u'':
+                address += u", "
+            address += u"POBOX: {}".format(self.pobox)
         if self.postal_code or self.city:
             address += u", {} {}".format(self.postal_code, self.city)
         if self.country:
