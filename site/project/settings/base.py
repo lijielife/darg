@@ -373,6 +373,9 @@ CELERY_QUEUES = (
 )
 CELERY_RESULT_BACKEND = 'django-db'
 BROKER_URL = 'amqp://darg:darg@localhost:5672/darg'
+# pdf generation is quite leaking. very low here to avoid having large celery
+# processes
+CELERYD_MAX_TASKS_PER_CHILD = 5
 
 # --- MARKDOWN X
 
