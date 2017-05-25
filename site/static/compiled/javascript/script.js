@@ -45089,19 +45089,19 @@ return deCh;
           value: 'user__email'
         }, {
           title: gettext('Email desc'),
-          value: '-user__email'
+          value: 'user__email_desc'
         }, {
           title: gettext('Capital based on face value'),
           value: 'cumulated_face_value'
         }, {
           title: gettext('Capital based on face value desc'),
-          value: '-cumulated_face_value'
+          value: 'cumulated_face_value_desc'
         }, {
           title: gettext('Postal Code'),
           value: 'user__userprofile__postal_code'
         }, {
           title: gettext('Postal Code desc'),
-          value: '-user__user_profile__postal_code'
+          value: 'user__user_profile__postal_code_desc'
         }
       ];
       $scope.report_types = [
