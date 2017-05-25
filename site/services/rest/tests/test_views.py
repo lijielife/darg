@@ -1747,7 +1747,7 @@ class ReportViewSetTestCase(SubscriptionTestMixin, APITestCase):
 
 
 class ShareholderViewSetTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
-                                 TestCase):
+                                 MoreAssertsTestCaseMixin, TestCase):
     fixtures = ['initial.json']
 
     def setUp(self):
@@ -2163,7 +2163,12 @@ class ShareholderViewSetTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         # add company subscription
         self.add_subscription(operator.company)
 
-        res = self.client.get('/services/rest/shareholders')
+        # most critical performance place here. be VERY carefull with increasing
+        # this threshold. app should be bleeding fast!
+        # FIXME should much less then 100 Qs
+        logger.warning('too many queries for API shareholder view. FIXME')
+        with self.assertLessNumQueries(432):
+            res = self.client.get('/services/rest/shareholders')
 
         self.assertEqual(res.status_code, 200)
 
