@@ -14,7 +14,7 @@ echo "Creating fresh DB and media backups..."
 skip_backup=false
 while getopts ":s" opt; do
   case $opt in
-    a)
+    s)
       skip_backup=true
       ;;
     \?)
