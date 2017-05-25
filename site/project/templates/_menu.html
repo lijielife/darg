@@ -1,6 +1,7 @@
 {% load i18n %}
 {% load staticfiles %}
 {% load shareholder_tags %}
+{% load header_tags %}
 
 <nav class="navbar navbar-default navbar-fixed-top collapse-expanded">
 
@@ -13,7 +14,11 @@
         <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="/">
-        <img alt="Brand" src="{% static "compiled/images/aktienregister_logo.png" %}" width="32px">
+        {% if request.user.is_authenticated and request.session.company_pk and request.user.userprofile.is_multi_company_allowed %}
+          <span class="company-initials">{% get_company_initials request %}</span>
+        {% else %}
+          <img alt="Brand" src="{% static "compiled/images/aktienregister_logo.png" %}" width="32px">
+        {% endif %}
       </a>
       <a class="navbar-brand" href="/">Das Aktienregister</a>
     </div>
