@@ -137,8 +137,9 @@ class CompanyTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
         cache_mock.reset_mock()
         cache_mock.get.return_value = self.company.shareholder_set.all()
         shs = self.company.get_active_shareholders()
-        self.assertEqual(list(shs.reverse()),
-                         list(self.company.shareholder_set.all()))
+        self.assertEqual(list(shs),
+                         list(self.company.shareholder_set.all().order_by(
+                             'number')))
         self.assertEqual(len(shs), 2)
         cache_mock.get.assert_called_with(cache_key)
 

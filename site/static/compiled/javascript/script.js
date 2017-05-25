@@ -45163,7 +45163,7 @@ return deCh;
       $scope.get_captable_report = function() {
         var params;
         if ($scope.last_captable_report) {
-          if ($scope.last_captable_report.report_type === 'assembly_participation') {
+          if ($scope.last_captable_report.report_type.value === 'assembly_participation') {
             $scope.last_captable_report.file_type = 'CSV';
           }
           params = {
@@ -45185,12 +45185,14 @@ return deCh;
           } else {
             params.order_by = $scope.lookup_ordering(params.order_by);
             params.report_type = $scope.lookup_report_type(params.report_type);
-            $scope.last_captable_report = new Report({
-              order_by: $scope.captable_orderings[6],
-              file_type: 'PDF',
-              report_type: $scope.report_types[0],
-              report_at: new Date()
-            });
+            if (!$scope.last_captable_report) {
+              $scope.last_captable_report = new Report({
+                order_by: $scope.captable_orderings[6],
+                file_type: 'PDF',
+                report_type: $scope.report_types[0],
+                report_at: new Date()
+              });
+            }
           }
           return $scope.captable_loading = false;
         }, function(rejection) {
