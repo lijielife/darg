@@ -88,7 +88,7 @@ app.controller 'ReportsController', ['$scope', '$http', 'Shareholder', 'Report',
 
     $scope.get_captable_report = ->
         if $scope.last_captable_report
-            if $scope.last_captable_report.report_type == 'assembly_participation'
+            if $scope.last_captable_report.report_type.value == 'assembly_participation'
                 $scope.last_captable_report.file_type = 'CSV'
             params = {
                 order_by: $scope.last_captable_report.order_by.value,
@@ -107,7 +107,9 @@ app.controller 'ReportsController', ['$scope', '$http', 'Shareholder', 'Report',
                 # if we don't have that report yet, make ablank one:
                 params.order_by = $scope.lookup_ordering(params.order_by)
                 params.report_type = $scope.lookup_report_type(params.report_type)
-                $scope.last_captable_report = new Report({order_by: $scope.captable_orderings[6], file_type:'PDF', report_type: $scope.report_types[0], report_at: new Date()})
+                # set default if there is nothing at all
+                if not $scope.last_captable_report
+                    $scope.last_captable_report = new Report({order_by: $scope.captable_orderings[6], file_type:'PDF', report_type: $scope.report_types[0], report_at: new Date()})
             $scope.captable_loading=false
         , (rejection) ->
             $scope.captable_loading=false
