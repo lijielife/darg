@@ -1419,6 +1419,39 @@ class PositionViewSetTestCase(MoreAssertsTestCaseMixin, StripeTestCaseMixin,
 
         self.assertEqual(res.status_code, 400)
 
+    def test_get_list(self):
+        """
+        check list for performance and content
+        """
+        operator = OperatorGenerator().generate()
+        user = operator.user
+        ComplexShareholderConstellationGenerator().generate(
+            company=operator.company, shareholder_count=100)
+
+        self.client.force_login(user)
+
+        res = self.client.get('/services/rest/position')
+
+        # no company subscription (feature not enabled)
+        self.assertEqual(res.status_code, 403)
+
+        # add company subscription
+        self.add_subscription(operator.company)
+
+        # most critical performance place here. be VERY carefull with increasing
+        # this threshold. app should be bleeding fast!
+        # FIXME should much less then 100 Qs
+        logger.warning('too many queries for API positions list view. FIXME')
+        with self.assertLessNumQueries(1035):
+            res = self.client.get('/services/rest/position')
+
+        self.assertEqual(res.status_code, 200)
+
+        # must have current page in meta payload
+        self.assertIn('current', res.data.keys())
+        # must have pagination
+        self.assertEqual(len(res.data['results']), 20)
+
     def test_get_new_certificate_id(self):
         """
         get new unused cert id
