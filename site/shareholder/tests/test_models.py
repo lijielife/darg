@@ -148,8 +148,9 @@ class CompanyTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
         cache_mock.get.return_value = self.company.shareholder_set.all()
         shs = self.company.get_active_shareholders(date=timezone.now().date(),
                                                    security=self.security)
-        self.assertEqual(list(shs.reverse()),
-                         list(self.company.shareholder_set.all()))
+        self.assertEqual(list(shs),
+                         list(self.company.shareholder_set.all().order_by(
+                             'number')))
         self.assertEqual(len(shs), 2)
 
         # kwargs used, ancient date
@@ -158,8 +159,9 @@ class CompanyTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
         oneyearago = timezone.now().date() - relativedelta(years=1)
         shs = self.company.get_active_shareholders(date=oneyearago,
                                                    security=self.security)
-        self.assertEqual(list(shs.reverse()),
-                         list(self.company.shareholder_set.all()))
+        self.assertEqual(list(shs),
+                         list(self.company.shareholder_set.all().order_by(
+                             'number')))
 
     def test_get_new_certificate_id(self):
         """
