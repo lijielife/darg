@@ -33,14 +33,14 @@
       </li>
       <li>
         {% trans "Address data of all shareholders" %}
-        <a href="{% url "reports:contacts_csv" company_id=company.id %}" title="{% trans "Address data of all shareholders" %}">
+        <a href="{% url "reports:contacts_xls" company_id=company.id %}" title="{% trans "Address data of all shareholders" %}">
           <span class="el-icon-download-alt"></span>
         </a>
       </li>
       <li>
   	    {% trans "Printed Certificates" %}
         {% if company.has_printed_certificates %}
-  	      <a href="{% url "reports:printed_certificates_csv" company_id=company.id %}" title="">
+  	      <a href="{% url "reports:printed_certificates_xls" company_id=company.id %}" title="">
   	        <span class="el-icon-download-alt"></span>
           </a>
         {% else %}
@@ -52,7 +52,7 @@
       <li>
   	    {% trans "Vested Shares" %}
         {% if company.has_vested_positions %}
-  	    <a href="{% url "reports:vested_csv" company_id=company.id %}" title="">
+  	    <a href="{% url "reports:vested_xls" company_id=company.id %}" title="">
   	      <span class="el-icon-download-alt"></span>
   	    </a>
         {% else %}

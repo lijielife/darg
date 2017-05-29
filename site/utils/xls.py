@@ -1,15 +1,20 @@
 import xlsxwriter
 
 
-def save_to_excel_file(filename, rows, header=None, formats={}):
+def save_to_excel_file(filename, rows, header=None, formats={}, response=None):
     """ save two dimensional list to excel file. learned here
     https://goo.gl/h397qZ
 
     formats param gives zeroindex col idx and format identifier just like
     `percent_format`
+
+    pass `response` to return response in view
     """
     # Create a workbook and add a worksheet.
-    workbook = xlsxwriter.Workbook(filename)
+    if not response:
+        workbook = xlsxwriter.Workbook(filename)
+    else:
+        workbook = xlsxwriter.Workbook(response, {'in_memory': True})
     worksheet = workbook.add_worksheet()
     start = 0
 
