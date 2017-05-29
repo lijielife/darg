@@ -36,3 +36,8 @@ class ReportTemplateTagTestCase(TestCase):
         res = shareholder_cumulated_face_value(self.shs[1], self.today)
         self.assertEqual(self.shs[1].cumulated_face_value(date=self.today),
                          res)
+
+        res = shareholder_cumulated_face_value(self.shs[1], self.today,
+                                               security=self.security)
+        self.assertEqual(self.shs[1].cumulated_face_value(date=self.today),
+                         res)

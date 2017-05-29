@@ -1209,6 +1209,15 @@ class Shareholder(TagMixin, models.Model):
                 deflate_segments(failed_segments),
                 deflate_segments(segments_owning))
 
+    def security_count(self, date=None):
+        """ how many different securities does the shareholder own at date """
+        date = date or timezone.now().date()
+        count = 0
+        for security in self.company.security_set.all():
+            if self.share_count(date=date, security=security) > 0:
+                count += 1
+        return count
+
     def set_dispo_shareholder(self):
         """ mark this shareholder as disposhareholder """
         if (

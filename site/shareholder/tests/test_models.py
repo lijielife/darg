@@ -1149,6 +1149,18 @@ class ShareholderTestCase(TestCase):
             shs[1].owns_options_segments(segments, security),
             (False, [1667], [u'1000-1200', 1666]))
 
+    def test_security_count(self):
+        """ how many securities does shareholder x hold """
+        self.assertEqual(self.shareholder2.security_count(), 1)
+        security = mommy.make('shareholder.Security', company=self.company)
+        mommy.make('shareholder.Position', security=security,
+                   buyer=self.shareholder1, count=1)
+        mommy.make('shareholder.Position', security=security,
+                   buyer=self.shareholder2, seller=self.shareholder1, count=1)
+        self.assertEqual(self.shareholder2.security_count(), 2)
+        self.assertEqual(
+            self.shareholder2.security_count(date=datetime.date(1970, 1, 1)), 0)
+
     def test_share_count(self):
         """
         return number of shares owned by shareholder or available

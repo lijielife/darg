@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import mock
 from dateutil.relativedelta import relativedelta
-
 from django.test import TestCase
 from django.utils import timezone
 
@@ -11,7 +11,9 @@ from project.generators import (OptionTransactionGenerator, PositionGenerator,
 from shareholder.templatetags.shareholder_tags import \
     get_total_discounted_tax_value  # noqa
 from shareholder.templatetags.shareholder_tags import \
-    get_vested_option_positions  # noqa
+    get_vested_option_positions  # noqa:
+from shareholder.templatetags.shareholder_tags import \
+    shareholder_security_count  # noqa
 from shareholder.templatetags.shareholder_tags import get_vested_positions
 
 
@@ -86,3 +88,9 @@ class ShareholderTagsTestCase(TestCase):
             get_total_discounted_tax_value(self.shareholder,
                                            date=self.future_date),
             1064.096)
+
+    @mock.patch('shareholder.models.Shareholder')
+    def test_shareholder_security_count(self, shareholder_mock):
+        shareholder_security_count(shareholder_mock, self.future_date)
+        shareholder_mock.security_count.assert_called_with(
+            date=self.future_date)
