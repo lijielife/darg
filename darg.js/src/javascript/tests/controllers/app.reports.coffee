@@ -35,7 +35,7 @@ describe 'Unit: Testing Reports Controller', ->
   describe 'get_captable_report methods specs:', ->
 
     it 'should set default report obj when server sends empty response', ->
-      $scope.last_captable_report.report_type = 'captable'
+      $scope.last_captable_report.report_type = {value: 'captable'}
       $httpBackend.expectGET(/\/services\/rest\/report?.*/g).respond 200, {results: []}
       $scope.get_captable_report()
       $httpBackend.flush()
@@ -81,6 +81,9 @@ describe 'Unit: Testing Reports Controller', ->
   describe 'ordering options', ->
     it 'should have 14 options', ->
       expect($scope.captable_orderings.length).toEqual 14
+    it 'should not start with `-`', ->
+      angular.forEach $scope.captable_orderings, ((value, key, obj) ->
+        expect(value.value.substr(-1)).not.toEqual "-")
 
   describe 'report types', ->
     it 'should have 2 items', ->

@@ -716,14 +716,83 @@ class PositionTestCase(TransactionTestCase):
 
 class UserProfileTestCase(TestCase):
 
+    def setUp(self):
+        self.user = UserGenerator().generate()
+        self.profile = self.user.userprofile
+
     def test_model(self):
+        """ test model properties """
+        self.assertEqual(self.profile.country.iso_code, 'de')
+        self.assertEqual(self.profile.country.name, 'Germany')
+        self.assertEqual(self.profile.province, 'Some Province')
 
-        user = UserGenerator().generate()
-        profile = user.userprofile
+    def test_get_address_pobox_only(self):
+        """ various versions of a address as string """
+        self.profile.street = None
+        self.profile.street2 = None
+        self.profile.pobox = '12345'
 
-        self.assertEqual(profile.country.iso_code, 'de')
-        self.assertEqual(profile.country.name, 'Germany')
-        self.assertEqual(profile.province, 'Some Province')
+        self.assertEqual(
+            self.profile.get_address(),
+            u"POBOX: {}, {} {}, {}".format(self.profile.pobox,
+                                           self.profile.postal_code,
+                                           self.profile.city,
+                                           self.profile.country.name))
+
+    def test_get_address_street_pobox(self):
+        """ various versions of a address as string """
+        self.profile.street = 'thunderstreet'
+        self.profile.street2 = None
+        self.profile.pobox = '12345'
+
+        string = u"{}, POBOX: {}, {} {}, {}"
+        self.assertEqual(
+            self.profile.get_address(),
+            string.format(self.profile.street, self.profile.pobox,
+                          self.profile.postal_code,
+                          self.profile.city,
+                          self.profile.country.name))
+
+    def test_get_address_street(self):
+        """ various versions of a address as string """
+        self.profile.street = 'thunderstreet'
+        self.profile.street2 = None
+        self.profile.pobox = None
+
+        string = u"{}, {} {}, {}"
+        self.assertEqual(
+            self.profile.get_address(),
+            string.format(self.profile.street,
+                          self.profile.postal_code,
+                          self.profile.city,
+                          self.profile.country.name))
+
+    def test_get_address_c_o(self):
+        """ various versions of a address as string """
+        self.profile.street = 'thunderstreet'
+        self.profile.street2 = None
+        self.profile.c_o = 'murkel'
+
+        string = u"{}, c/o {}, {} {}, {}"
+        self.assertEqual(
+            self.profile.get_address(),
+            string.format(self.profile.street,
+                          self.profile.c_o,
+                          self.profile.postal_code,
+                          self.profile.city,
+                          self.profile.country.name))
+
+    def test_get_address_no_street(self):
+        """ various versions of a address as string """
+        self.profile.street = None
+        self.profile.street2 = None
+
+        string = u"{} {}, {}"
+        self.assertEqual(
+            self.profile.get_address(),
+            string.format(self.profile.postal_code,
+                          self.profile.city,
+                          self.profile.country.name))
 
 
 class SecurityTestCase(TestCase):
