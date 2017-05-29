@@ -15,7 +15,6 @@ from shareholder.models import Company
 
 REPORT_FILE_TYPES = (
     ('PDF', 'PDF'),
-    ('CSV', 'CSV'),
     ('XLS', 'XLS'),
 )
 
@@ -87,7 +86,7 @@ class Report(TimeStampedModel):
     def render(self, notify=False, track_downloads=False):
         """ trigger the right task to render the file """
         # avoid circular import
-        from reports.tasks import (render_captable_pdf, render_captable_csv,
+        from reports.tasks import (render_captable_pdf,
                                    render_captable_xls,
                                    render_assembly_participation_xls)
 
@@ -99,9 +98,7 @@ class Report(TimeStampedModel):
 
         # FIXME build render method name dynamically and remove ifs
         if self.report_type == 'captable':
-            if self.file_type == 'CSV':
-                render_captable_csv.apply_async(args=args, kwargs=kwargs)
-            elif self.file_type == 'PDF':
+            if self.file_type == 'PDF':
                 render_captable_pdf.apply_async(args=args, kwargs=kwargs)
             elif self.file_type == 'XLS':
                 render_captable_xls.apply_async(args=args, kwargs=kwargs)

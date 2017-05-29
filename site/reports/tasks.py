@@ -1,12 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import csv
 from decimal import Decimal
 import datetime
 import logging
 import operator
 import os
-import StringIO
 import sys
 import time
 from copy import deepcopy
@@ -342,61 +340,6 @@ def render_captable_pdf(company_id, report_id, user_id=None, ordering=None,
         _send_notify(user, filename, subject=_('Your pdf captable file'),
                      body=_('Your file is attached to this email'),
                      file_desc=_('PDF Captable/Active Shareholders'),
-                     url=url_with_domain(report.get_absolute_url()))
-
-    if not track_downloads:
-        report.downloaded_at = timezone.now()
-        report.save()
-
-
-@app.task
-def render_captable_csv(company_id, report_id, user_id=None, ordering=None,
-                        notify=False, track_downloads=False):
-    # prepare
-    if user_id:
-        user = User.objects.get(pk=user_id)
-    company = Company.objects.get(pk=company_id)
-    report = Report.objects.get(pk=report_id)
-    ordering = _parse_ordering(ordering)
-    filename = _get_filename(report, company)
-    track_numbers_secs = company.security_set.filter(track_numbers=True)
-
-    csvfile = StringIO.StringIO()
-    writer = csv.writer(csvfile)
-
-    header = deepcopy(CSV_HEADER)
-    has_track_numbers = track_numbers_secs.exists()
-    if has_track_numbers:
-        header.append(_('Share IDs'))
-
-    def to_unicode(iterable):
-        return [unicode(s).encode("utf-8") for s in iterable]
-
-    writer.writerow(to_unicode(header))
-
-    # removed share percent due to heavy sql impact. killed perf for higher
-    # shareholder count
-    # for each active shareholder
-    queryset = company.get_active_shareholders(date=report.report_at)
-    queryset = _order_queryset(queryset, ordering)
-    for shareholder in queryset:
-        if shareholder.share_count(date=report.report_at):
-            rows = _collect_csv_data(shareholder, report.report_at)
-        else:
-            continue
-
-        for row in rows:
-            writer.writerow([unicode(s).encode("utf-8") for s in row])
-
-    # post process
-    csvfile.seek(0)
-    _add_file_to_report(filename, report, csvfile.read())
-    _summarize_report(report)
-
-    if notify and user_id:
-        _send_notify(user, filename, subject=_('Your csv captable file'),
-                     body=_('Your file is attached to this email'),
-                     file_desc=_('CSV Captable/Active Shareholders'),
                      url=url_with_domain(report.get_absolute_url()))
 
     if not track_downloads:

@@ -1,8 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import csv
 import datetime
-import StringIO
 
 from django.core import mail
 from django.core.urlresolvers import reverse
@@ -21,7 +19,7 @@ from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
 from project.tests.mixins import (MoreAssertsTestCaseMixin,
                                   SubscriptionTestMixin)
 from reports.views import _get_contacts, _get_transactions
-from shareholder.models import Company, OptionTransaction, Shareholder
+from shareholder.models import Company, OptionTransaction
 from utils.http import get_file_content_as_string
 from utils.session import add_company_to_session
 
@@ -126,7 +124,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
             seller=shareholder_list[2], security=security)
 
         # login and retest
-        report = ReportGenerator().generate(company=company, file_type='CSV')
+        report = ReportGenerator().generate(company=company, file_type='XLS')
         report.render()
         user = report.user
         OperatorGenerator().generate(user=user, company=company)
@@ -137,24 +135,6 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
 
         # assert response code
         self.assertEqual(response.status_code, 200)
-
-        # assert proper csv
-        content = get_file_content_as_string(response)
-        fileobj = StringIO.StringIO(content)
-        reader = csv.reader(fileobj, delimiter=',')
-        lines = list(reader)
-        self.assertEqual(len(lines[2]), 28)
-        # 2 shs + per security header
-        self.assertEqual(len(lines), 3)
-        # assert company itself
-        sh_numbers = [f[0] for f in lines if len(f) > 0]
-        self.assertIn(shareholder_list[0].number, sh_numbers)
-        # assert share owner
-        self.assertIn(shareholder_list[1].number, sh_numbers)
-        # assert shareholder witout position not in there
-        self.assertNotIn(shareholder_list[3].number, sh_numbers)
-        # assert shareholder which bought and sold again
-        self.assertNotIn(shareholder_list[2].number, sh_numbers)
 
     def test_csv_download_number_segments(self):
         """ rest download of captable csv """
@@ -188,7 +168,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
             seller=shareholder_list[2])
 
         # login and retest
-        report = ReportGenerator().generate(company=company, file_type='CSV')
+        report = ReportGenerator().generate(company=company, file_type='XLS')
         report.render()
         user = report.user
         OperatorGenerator().generate(user=user, company=company)
@@ -198,20 +178,6 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
 
         # assert response code
         self.assertEqual(response.status_code, 200)
-        # assert proper csv
-        content = get_file_content_as_string(response)
-        lines = content.split('\r\n')
-        lines.pop()  # remove last element based on final '\r\n'
-        for row in lines:
-            if row == lines[0] or ',' not in row:  # skip first row
-                continue
-            self.assertEqual(row.count(','), 28)
-            fields = row.split(',')
-            s = Shareholder.objects.get(company=company, number=fields[0])
-            text = s.current_segments(security)
-            if text:
-                self.assertTrue(text in fields[8])
-            self.assertIn(_('None'), fields[28])
 
     def test_pdf_download_with_number_segments(self):
         """ test download of captable pdf """

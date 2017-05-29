@@ -28,21 +28,15 @@ class ReportModelTestCase(TestCase):
         url = self.report.get_absolute_url()
         self.assertEqual(url, '/reports/{}/download'.format(self.report.pk))
 
-    @patch('reports.tasks.render_captable_csv.apply_async')
     @patch('reports.tasks.render_captable_pdf.apply_async')
     @patch('reports.tasks.render_assembly_participation_xls.apply_async')
-    def test_render(self, mock_participation_task, mock_task, mock_csv_task):
+    def test_render(self, mock_participation_task, mock_task):
         """ trigger rendering of report file """
         self.report.render()
         self.assertTrue(mock_task.called)
 
-        self.report.file_type = 'CSV'
-        self.report.save()
-        self.report.render()
-        self.assertTrue(mock_csv_task.called)
-
         self.report.report_type = 'assembly_participation'
-        self.report.file_type = 'CSV'
+        self.report.file_type = 'XLS'
         self.report.save()
         self.report.render()
         self.assertTrue(mock_participation_task.called)

@@ -20,8 +20,7 @@ from reports.tasks import (_add_file_to_report, _collect_csv_data,
                            _order_queryset, _parse_ordering, _prepare_report,
                            _send_notify, _summarize_report, prerender_reports,
                            render_assembly_participation_xls,
-                           render_captable_csv, render_captable_pdf,
-                           render_captable_xls)
+                           render_captable_pdf, render_captable_xls)
 from shareholder.models import Shareholder
 
 
@@ -226,20 +225,6 @@ class ReportTaskTestCase(MoreAssertsTestCaseMixin, TestCase):
 
         self.assertIsNotNone(report.file)
 
-    def test_render_captable_csv(self):
-        report = ReportGenerator().generate(company=self.company)
-        PositionGenerator().generate(company=report.company, seller=None)
-        render_captable_csv(report.company.pk, report.pk,
-                            user_id=report.user.pk, ordering=None,
-                            notify=True, track_downloads=False)
-        report.refresh_from_db()
-
-        self.assertIsNotNone(report.file)
-        contents = report.file.read()
-        rows = contents.split('\r\n')
-        del rows[-1]  # del empty last line
-        self.assertEqual(len(rows), 13)  # header + single sh with pos
-
     def test_render_captable_pdf(self):
         report = ReportGenerator().generate(company=self.company)
         # FIXME way tooooo many queries for 13 shs, just calculate how this
@@ -263,12 +248,11 @@ class ReportTaskTestCase(MoreAssertsTestCaseMixin, TestCase):
 
         self.assertIsNotNone(report.file)
 
-    @patch('reports.tasks.render_captable_csv.apply_async')
     @patch('reports.tasks.render_assembly_participation_xls.apply_async')
     @patch('reports.tasks.render_captable_pdf.apply_async')
     @patch('reports.tasks.render_captable_xls.apply_async')
     def test_prerender_reports(self, mock_xls, mock_pdf,
-                               mock_assembly_participation_csv, mock_csv):
+                               mock_assembly_participation_xls):
         """ render every night the reports for all corps """
         # corps not needing a report = noise
         CompanyGenerator().generate()
@@ -278,25 +262,19 @@ class ReportTaskTestCase(MoreAssertsTestCaseMixin, TestCase):
 
         company = self.shs[0].company
         pdf_report = company.report_set.filter(file_type='PDF').last()
-        csv_report = company.report_set.filter(file_type='CSV',
-                                               report_type='captable').last()
-        csv_ass_report = company.report_set.filter(
+        xls_ass_report = company.report_set.filter(
             file_type='XLS', report_type='assembly_participation').last()
         xls_report = company.report_set.filter(file_type='XLS',
                                                report_type='captable').last()
-        self.assertEqual(mock_pdf.call_count, 10)
+        self.assertEqual(mock_pdf.call_count, 14)
         mock_pdf.assert_called_with(
             args=[company.pk, pdf_report.pk],
             kwargs={'ordering': pdf_report.order_by})
-        self.assertEqual(mock_csv.call_count, 10)
-        mock_csv.assert_called_with(
-            args=[company.pk, csv_report.pk],
-            kwargs={'ordering': csv_report.order_by})
-        self.assertEqual(mock_xls.call_count, 10)
+        self.assertEqual(mock_xls.call_count, 14)
         mock_xls.assert_called_with(
             args=[company.pk, xls_report.pk],
             kwargs={'ordering': xls_report.order_by})
-        self.assertEqual(mock_assembly_participation_csv.call_count, 1)
-        mock_assembly_participation_csv.assert_called_with(
-            args=[company.pk, csv_ass_report.pk],
-            kwargs={'ordering': csv_ass_report.order_by})
+        self.assertEqual(mock_assembly_participation_xls.call_count, 1)
+        mock_assembly_participation_xls.assert_called_with(
+            args=[company.pk, xls_ass_report.pk],
+            kwargs={'ordering': xls_ass_report.order_by})
