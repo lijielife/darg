@@ -85,7 +85,7 @@ class Report(TimeStampedModel):
         # avoid circular import
         from reports.tasks import (render_captable_pdf, render_captable_csv,
                                    render_captable_xls,
-                                   render_assembly_participation_csv)
+                                   render_assembly_participation_xls)
 
         args = [self.company.pk, self.pk]
         kwargs = {'ordering': self.order_by, 'notify': notify,
@@ -103,12 +103,10 @@ class Report(TimeStampedModel):
                 render_captable_xls.apply_async(args=args, kwargs=kwargs)
 
         elif self.report_type == 'assembly_participation':
-            render_assembly_participation_csv.apply_async(
+            render_assembly_participation_xls.apply_async(
                 args=args, kwargs=kwargs)
             # elif self.file_type == 'PDF':
             #    render_captable_pdf.apply_async(args=args, kwargs=kwargs)
-            # elif self.file_type == 'XLS':
-            #    render_captable_xls.apply_async(args=args, kwargs=kwargs)
 
         else:
             raise NotImplementedError('report cannot be created')

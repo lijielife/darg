@@ -30,7 +30,7 @@ class ReportModelTestCase(TestCase):
 
     @patch('reports.tasks.render_captable_csv.apply_async')
     @patch('reports.tasks.render_captable_pdf.apply_async')
-    @patch('reports.tasks.render_assembly_participation_csv.apply_async')
+    @patch('reports.tasks.render_assembly_participation_xls.apply_async')
     def test_render(self, mock_participation_task, mock_task, mock_csv_task):
         """ trigger rendering of report file """
         self.report.render()

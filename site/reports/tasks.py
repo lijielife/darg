@@ -78,8 +78,6 @@ def to_string_or_empty(value):
     # casts
     if isinstance(value, (float, int, Decimal)):
         return value
-    if isinstance(value, (str, unicode)) and value.isdigit():
-        return float(value)
     return unicode(value or u'')
 
 
@@ -146,7 +144,7 @@ def _collect_participation_csv_data(shareholder, date):
     # all utf8
     row = [to_string_or_empty(val) for val in row]
 
-    return row
+    return [row]
 
 
 def _parse_ordering(ordering):
@@ -263,7 +261,7 @@ def _prepare_report(company, report_type, ordering, file_type):
 
 
 @app.task
-def render_assembly_participation_csv(company_id, report_id, user_id=None,
+def render_assembly_participation_xls(company_id, report_id, user_id=None,
                                       ordering=None, notify=False,
                                       track_downloads=False):
     # prepare
@@ -274,33 +272,30 @@ def render_assembly_participation_csv(company_id, report_id, user_id=None,
     ordering = u'number'
     filename = _get_filename(report, company)
 
-    csvfile = StringIO.StringIO()
-    writer = csv.writer(csvfile)
-
     header = [_('Shareholder#'), _('Full Name'), _('Address'),
               _('share count'), _('capital'), _('vote count')]
 
     def to_unicode(iterable):
         return [unicode(s).encode("utf-8") for s in iterable]
 
-    writer.writerow(to_unicode(header))
-
     # for each active shareholder
     queryset = company.get_active_shareholders(date=report.report_at)
     queryset = _order_queryset(queryset, ordering)
 
+    rows = []
     for shareholder in queryset:
         if shareholder.share_count(date=report.report_at):
-            row = _collect_participation_csv_data(
-                shareholder, report.report_at)
+            rows.extend(_collect_participation_csv_data(
+                shareholder, report.report_at))
         else:
             continue
 
-        writer.writerow([unicode(s).encode("utf-8") for s in row])
+    # money_format
+    formats = {'4': 'money_format'}
+    save_to_excel_file(filename, rows, header, formats)
 
     # post process
-    csvfile.seek(0)
-    _add_file_to_report(filename, report, csvfile.read())
+    _add_file_to_report(filename, report)
     _summarize_report(report)
 
     if notify and user_id:
@@ -314,6 +309,7 @@ def render_assembly_participation_csv(company_id, report_id, user_id=None,
         report.downloaded_at = timezone.now()
         report.save()
 
+    os.remove(filename)
 
 @app.task
 def render_captable_pdf(company_id, report_id, user_id=None, ordering=None,
@@ -468,7 +464,7 @@ def prerender_reports():
             for file_type, fname in REPORT_FILE_TYPES:
                 for (ordering, oname) in ORDERING_TYPES:
                     if report_type == 'assembly_participation' and (
-                            ordering != 'number' or file_type != 'CSV'):
+                            ordering != 'number' or file_type != 'XLS'):
                         continue
                     report = _prepare_report(
                         company, report_type, ordering, fname)
