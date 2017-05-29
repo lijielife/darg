@@ -782,6 +782,18 @@ class UserProfileTestCase(TestCase):
                           self.profile.city,
                           self.profile.country.name))
 
+    def test_get_address_no_street(self):
+        """ various versions of a address as string """
+        self.profile.street = None
+        self.profile.street2 = None
+
+        string = u"{} {}, {}"
+        self.assertEqual(
+            self.profile.get_address(),
+            string.format(self.profile.postal_code,
+                          self.profile.city,
+                          self.profile.country.name))
+
 
 class SecurityTestCase(TestCase):
 

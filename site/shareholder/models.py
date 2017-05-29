@@ -860,20 +860,28 @@ class UserProfile(AddressModelMixin, models.Model):
 
     def get_address(self):
         """ return string with full address """
+        def prepend_comma(address):
+            if address:
+                address += u", "
+            return address
+
         fields = ['street', 'street2']
         fields = [field for field in fields if getattr(self, field, None)]
         parts = [getattr(self, field) for field in fields]
         address = u", ".join(parts)
+
         if self.c_o:
-            address += u", c/o {}".format(self.c_o)
+            address = prepend_comma(address)
+            address += u"c/o {}".format(self.c_o)
         if self.pobox:
-            if address != u'':
-                address += u", "
+            address = prepend_comma(address)
             address += u"POBOX: {}".format(self.pobox)
         if self.postal_code or self.city:
-            address += u", {} {}".format(self.postal_code, self.city)
+            address = prepend_comma(address)
+            address += u"{} {}".format(self.postal_code, self.city)
         if self.country:
-            address += u", {}".format(self.country.name)
+            address = prepend_comma(address)
+            address += u"{}".format(self.country.name)
         return address
 
 
