@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 CSV_HEADER = [
     _(u'shareholder number'), _('legal type'), _('registration types'),
     _('company_department'), _('title'), _('salutation'), _(u'name'),
-    _('address'), _('postal_code'), _('city'),
+    _('address'), _('postal_code'), _('city'), _('country'),
     _('birthday'), _('mailing_type'), _('nationality'), _('security type'),
     _('cusip'), _('face_value'), _('certificate_ids (issue date)'),
     _('stock book id'), _('depot_type'),
@@ -95,8 +95,9 @@ def _collect_csv_data(shareholder, date):
                 shareholder.user.userprofile.title,
                 shareholder.user.userprofile.salutation,
                 shareholder.get_full_name(),
-                shareholder.user.userprofile.get_address(),
+                shareholder.user.userprofile.get_address(skip_city=True),
                 shareholder.user.userprofile.postal_code,
+                shareholder.user.userprofile.country,
                 shareholder.user.userprofile.city,
                 shareholder.user.userprofile.birthday,
                 shareholder.get_mailing_type_display(),
@@ -135,7 +136,10 @@ def _collect_csv_data(shareholder, date):
 
 def _collect_participation_csv_data(shareholder, date):
     row = [shareholder.number, shareholder.get_full_name(),
-           shareholder.user.userprofile.get_address(),
+           shareholder.user.userprofile.get_address(skip_city=True),
+           shareholder.user.userprofile.postal_code,
+           shareholder.user.userprofile.city,
+           shareholder.user.userprofile.country,
            shareholder.share_count(),
            shareholder.cumulated_face_value(),
            shareholder.vote_count()
@@ -273,6 +277,7 @@ def render_assembly_participation_xls(company_id, report_id, user_id=None,
     filename = _get_filename(report, company)
 
     header = [_('Shareholder#'), _('Full Name'), _('Address'),
+              _('postal code'), _('city'), _('country'),
               _('share count'), _('capital'), _('vote count')]
 
     def to_unicode(iterable):
@@ -291,7 +296,7 @@ def render_assembly_participation_xls(company_id, report_id, user_id=None,
             continue
 
     # money_format
-    formats = {'4': 'money_format'}
+    formats = {'7': 'money_format'}
     save_to_excel_file(filename, rows, header, formats)
 
     # post process
@@ -310,6 +315,7 @@ def render_assembly_participation_xls(company_id, report_id, user_id=None,
         report.save()
 
     os.remove(filename)
+
 
 @app.task
 def render_captable_pdf(company_id, report_id, user_id=None, ordering=None,
@@ -431,8 +437,8 @@ def render_captable_xls(company_id, report_id, user_id=None, ordering=None,
             continue
 
     # money_format
-    formats = {'21': 'percent_format', '22': 'percent_format',
-               '23': 'money_format'}
+    formats = {'22': 'percent_format', '23': 'percent_format',
+               '24': 'money_format'}
     save_to_excel_file(filename, rows, header, formats)
 
     # post process

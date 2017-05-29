@@ -41,14 +41,14 @@ class ReportTaskTestCase(MoreAssertsTestCaseMixin, TestCase):
         """ render csv date for xls/csv export """
         row = _collect_csv_data(self.shs[1], timezone.now().date())
         # required to write proper number formats in xlsx
-        for x in [21, 22, 23, 15]:
+        for x in [22, 23, 24, 16]:
             self.assertTrue(isinstance(row[0][x], (float, int, Decimal)))
 
     def test_collect_participation_csv_data(self):
         """ return single row for csv file """
         res = _collect_participation_csv_data(self.shs[0],
                                               timezone.now().date())
-        self.assertEqual(len(res[0]), 6)
+        self.assertEqual(len(res[0]), 9)
         self.assertEqual(res[0][0], self.shs[0].number)
 
     def test_get_captable_pdf_context(self):

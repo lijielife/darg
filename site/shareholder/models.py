@@ -858,8 +858,10 @@ class UserProfile(AddressModelMixin, models.Model):
             raise ValidationError(_('user company must have legal type set to '
                                     'company'))
 
-    def get_address(self):
-        """ return string with full address """
+    def get_address(self, skip_city=False):
+        """ return string with full address . `skip_city` removes city, zip,
+        country
+        """
         def prepend_comma(address):
             if address:
                 address += u", "
@@ -876,6 +878,10 @@ class UserProfile(AddressModelMixin, models.Model):
         if self.pobox:
             address = prepend_comma(address)
             address += u"POBOX: {}".format(self.pobox)
+
+        if skip_city:
+            return address
+
         if self.postal_code or self.city:
             address = prepend_comma(address)
             address += u"{} {}".format(self.postal_code, self.city)

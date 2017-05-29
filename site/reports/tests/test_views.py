@@ -143,7 +143,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
         fileobj = StringIO.StringIO(content)
         reader = csv.reader(fileobj, delimiter=',')
         lines = list(reader)
-        self.assertEqual(len(lines[2]), 27)
+        self.assertEqual(len(lines[2]), 28)
         # 2 shs + per security header
         self.assertEqual(len(lines), 3)
         # assert company itself
@@ -205,13 +205,13 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
         for row in lines:
             if row == lines[0] or ',' not in row:  # skip first row
                 continue
-            self.assertEqual(row.count(','), 29)
+            self.assertEqual(row.count(','), 28)
             fields = row.split(',')
             s = Shareholder.objects.get(company=company, number=fields[0])
             text = s.current_segments(security)
             if text:
                 self.assertTrue(text in fields[8])
-            self.assertIn(_('None'), fields[29])
+            self.assertIn(_('None'), fields[28])
 
     def test_pdf_download_with_number_segments(self):
         """ test download of captable pdf """
