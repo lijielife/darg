@@ -35,6 +35,10 @@ ORDERING_TYPES = (
     ('number_desc', _('Shareholder Number (descending)')),
     ('share_percent', _('Share Percent Ownership')),
     ('share_percent_desc', _('Share Percent Ownership (descending)')),
+    ('cumulated_face_value', _('face value total capital')),
+    ('cumulated_face_value_desc', _('face value total capital (descending)')),
+    ('user__userprofile__postal_code', _('postal code')),
+    ('user__userprofile__postal_code_desc', _('postal code (descending)')),
 )
 
 

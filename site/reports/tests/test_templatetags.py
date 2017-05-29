@@ -24,6 +24,23 @@ class ReportTemplateTagTestCase(TestCase):
         res = get_active_shareholders(self.company, self.today, self.ordering)
         self.assertEqual(len(res), 11)
 
+        for i, s in enumerate(self.company.shareholder_set.all()):
+            s.number = i
+            s.save()
+        ordering = '-number'
+        res = get_active_shareholders(self.company, self.today, ordering)
+        for idx, sh in enumerate(res):
+            if idx == 0:
+                continue
+            self.assertLess(float(sh.number), float(res[idx-1].number))
+
+        ordering = 'number'
+        res = get_active_shareholders(self.company, self.today, ordering)
+        for idx, sh in enumerate(res):
+            if idx == 0:
+                continue
+            self.assertGreater(float(sh.number), float(res[idx-1].number))
+
     def test_get_active_option_holders(self):
         """ return ordered list of active option holders for security on date
         """

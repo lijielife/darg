@@ -1756,6 +1756,25 @@ class ReportViewSetTestCase(SubscriptionTestMixin, APITestCase):
         self.assertIsNotNone(report.eta)
         self.assertIsNone(report.downloaded_at)
 
+        data = {'report_type': 'captable', 'file_type': 'PDF',
+                'order_by': 'user__userprofile__postal_code',
+                'report_at': '2017-05-02'}
+        serializer = ReportSerializer(
+            data=data)
+        serializer.is_valid()
+        report = self.view.perform_create(serializer)
+        self.assertIsNotNone(report.eta)
+        self.assertIsNone(report.downloaded_at)
+
+        data = {'report_type': 'captable', 'file_type': 'PDF',
+                'order_by': 'cumulated_face_value', 'report_at': '2017-05-02'}
+        serializer = ReportSerializer(
+            data=data)
+        serializer.is_valid()
+        report = self.view.perform_create(serializer)
+        self.assertIsNotNone(report.eta)
+        self.assertIsNone(report.downloaded_at)
+
     def test_perform_create_csv(self):
         """ create report with adding some automatic data """
         data = {'report_type': 'captable', 'file_type': 'CSV',
