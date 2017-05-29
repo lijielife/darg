@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import datetime
+from decimal import Decimal
 
 from django.core import mail
 from django.template.defaultfilters import slugify
@@ -13,7 +14,7 @@ from project.generators import (CompanyGenerator,
                                 ComplexShareholderConstellationGenerator,
                                 PositionGenerator, ReportGenerator)
 from project.tests.mixins import MoreAssertsTestCaseMixin
-from reports.tasks import (_add_file_to_report,
+from reports.tasks import (_add_file_to_report, _collect_csv_data,
                            _collect_participation_csv_data,
                            _get_captable_pdf_context, _get_filename,
                            _order_queryset, _parse_ordering, _prepare_report,
@@ -35,6 +36,13 @@ class ReportTaskTestCase(MoreAssertsTestCaseMixin, TestCase):
         sh = self.shs[0]
         sh.number = u'ü' + sh.number
         sh.save()
+
+    def test_collect_csv_data(self):
+        """ render csv date for xls/csv export """
+        row = _collect_csv_data(self.shs[1], timezone.now().date())
+        # required to write proper number formats in xlsx
+        for x in [21, 22, 23, 15]:
+            self.assertTrue(isinstance(row[0][x], (float, int, Decimal)))
 
     def test_collect_participation_csv_data(self):
         """ return single row for csv file """

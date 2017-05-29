@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import csv
+from decimal import Decimal
 import datetime
 import logging
 import operator
@@ -73,6 +74,12 @@ def to_string_or_empty(value):
         # remove NoneTypes
         value = [v for v in value if v]
         value = u" , ".join(value)
+
+    # casts
+    if isinstance(value, (float, int, Decimal)):
+        return value
+    if isinstance(value, (str, unicode)) and value.isdigit():
+        return float(value)
     return unicode(value or u'')
 
 
@@ -104,7 +111,7 @@ def _collect_csv_data(shareholder, date):
                 shareholder.get_depot_types(security=security),
                 shareholder.user.email,
                 shareholder.share_count(security=security, date=date),
-                shareholder.share_percent(security=security, date=date),
+                float(shareholder.share_percent(security=security, date=date)),
                 shareholder.vote_percent(security=security, date=date),
                 shareholder.cumulated_face_value(security=security, date=date),
                 shareholder.is_management,
@@ -427,7 +434,10 @@ def render_captable_xls(company_id, report_id, user_id=None, ordering=None,
         else:
             continue
 
-    save_to_excel_file(filename, rows, header)
+    # money_format
+    formats = {'21': 'percent_format', '22': 'percent_format',
+               '23': 'money_format'}
+    save_to_excel_file(filename, rows, header, formats)
 
     # post process
     _add_file_to_report(filename, report)

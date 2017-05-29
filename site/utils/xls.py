@@ -1,9 +1,13 @@
 import xlsxwriter
 
 
-def save_to_excel_file(filename, rows, header=None):
+def save_to_excel_file(filename, rows, header=None, formats={}):
     """ save two dimensional list to excel file. learned here
-    https://goo.gl/h397qZ """
+    https://goo.gl/h397qZ
+
+    formats param gives zeroindex col idx and format identifier just like
+    `percent_format`
+    """
     # Create a workbook and add a worksheet.
     workbook = xlsxwriter.Workbook(filename)
     worksheet = workbook.add_worksheet()
@@ -11,6 +15,8 @@ def save_to_excel_file(filename, rows, header=None):
 
     # formatting
     header_format = workbook.add_format({'bold': True})
+    percent_format = workbook.add_format({'num_format': '0.0000%'})  # NOQA
+    money_format = workbook.add_format({'num_format': '"CHF" #,##0'})  # NOQA
 
     if header:
         for idx, field in enumerate(header):
@@ -22,6 +28,11 @@ def save_to_excel_file(filename, rows, header=None):
     # Iterate over the data and write it out row by row.
     for ridx, row in enumerate(rows, start):
         for idx, field in enumerate(row):
-            worksheet.write(ridx, idx, field)
+            # if we have a format specified
+            if str(idx) in formats.keys():
+                fmt = locals()[formats[str(idx)]]
+                worksheet.write(ridx, idx, field, fmt)
+            else:
+                worksheet.write(ridx, idx, field)
 
     workbook.close()
