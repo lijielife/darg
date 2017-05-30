@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-24 20:33+0000\n"
+"POT-Creation-Date: 2017-05-30 09:37+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,87 +36,87 @@ msgstr ""
 msgid "modified at"
 msgstr ""
 
-#: project/settings/base.py:479
+#: project/settings/base.py:482
 msgid "Swiss franc"
 msgstr ""
 
-#: project/settings/base.py:483
+#: project/settings/base.py:486
 msgid "StartUp"
 msgstr ""
 
-#: project/settings/base.py:484
+#: project/settings/base.py:487
 msgid "Designed für StartUps und Neugründungen"
 msgstr ""
 
-#: project/settings/base.py:518
+#: project/settings/base.py:521
 msgid "Professional"
 msgstr ""
 
-#: project/settings/base.py:519
+#: project/settings/base.py:522
 msgid "Für etablierte Aktiengesellschaften und KMU"
 msgstr ""
 
-#: project/settings/base.py:549
+#: project/settings/base.py:552
 msgid "Enterprise"
 msgstr ""
 
-#: project/settings/base.py:551
+#: project/settings/base.py:554
 msgid "First-Class-Service für grosse Aktionärsgesellschaften"
 msgstr ""
 
-#: project/settings/base.py:589
+#: project/settings/base.py:592
 msgid "Shareholders"
 msgstr ""
 
-#: project/settings/base.py:590 project/templates/_menu.html:35
+#: project/settings/base.py:593 project/templates/_menu.html:40
 msgid "Positions"
 msgstr ""
 
-#: project/settings/base.py:591
+#: project/settings/base.py:594
 msgid "Options"
 msgstr ""
 
-#: project/settings/base.py:592
+#: project/settings/base.py:595
 msgid "Securities"
 msgstr ""
 
-#: project/settings/base.py:594
+#: project/settings/base.py:597
 msgid "Aktienausgabe, Aktienkauf, -verkauf, Kapitalerhöhung, Aktiensplit"
 msgstr ""
 
-#: project/settings/base.py:597
+#: project/settings/base.py:600
 msgid "GAFI Validierung"
 msgstr ""
 
-#: project/settings/base.py:598
+#: project/settings/base.py:601
 msgid "Revisionssicherheit"
 msgstr ""
 
-#: project/settings/base.py:600
+#: project/settings/base.py:603
 msgid "Depotauszug Email & Brief"
 msgstr ""
 
-#: project/settings/base.py:601
+#: project/settings/base.py:604
 msgid "Es entstehen weitere Kosten bei Briefversand pro versendetem Brief."
 msgstr ""
 
-#: project/settings/base.py:608
+#: project/settings/base.py:611
 msgid "Nummerierte Aktien"
 msgstr ""
 
-#: project/settings/base.py:609
+#: project/settings/base.py:612
 msgid "Email Support"
 msgstr ""
 
-#: project/settings/base.py:610
+#: project/settings/base.py:613
 msgid "Profi-Verwaltung Aktionäre"
 msgstr ""
 
-#: project/settings/base.py:611
+#: project/settings/base.py:614
 msgid "Premium-Support 24/7"
 msgstr ""
 
-#: project/settings/base.py:612
+#: project/settings/base.py:615
 msgid "Custom Export/Import"
 msgstr ""
 
@@ -260,72 +260,72 @@ msgstr ""
 msgid "Add Shareholder"
 msgstr ""
 
-#: project/templates/_menu.html:32
+#: project/templates/_menu.html:37
 msgid "Start"
 msgstr ""
 
-#: project/templates/_menu.html:38
+#: project/templates/_menu.html:43
 msgid "ESOP"
 msgstr ""
 
-#: project/templates/_menu.html:41
+#: project/templates/_menu.html:46
 msgid "Reports"
 msgstr ""
 
-#: project/templates/_menu.html:51
+#: project/templates/_menu.html:56
 msgid "Logged in as"
 msgstr ""
 
-#: project/templates/_menu.html:62
+#: project/templates/_menu.html:67
 msgid "Admin"
 msgstr ""
 
-#: project/templates/_menu.html:65
+#: project/templates/_menu.html:70
 msgid "I18N"
 msgstr ""
 
-#: project/templates/_menu.html:70 project/templates/_menu.html:71
+#: project/templates/_menu.html:75 project/templates/_menu.html:76
 msgid "Select Company"
 msgstr ""
 
-#: project/templates/_menu.html:77
+#: project/templates/_menu.html:82
 msgid "Subscriptions"
 msgstr ""
 
-#: project/templates/_menu.html:85
+#: project/templates/_menu.html:90
 msgid "Statements"
 msgstr ""
 
-#: project/templates/_menu.html:93
+#: project/templates/_menu.html:98
 msgid "Statement reports"
 msgstr ""
 
-#: project/templates/_menu.html:94
+#: project/templates/_menu.html:99
 msgid "Depot Statments"
 msgstr ""
 
-#: project/templates/_menu.html:99
+#: project/templates/_menu.html:104
 #: project/templates/registration/password_reset_form.html:4
 #: project/templates/registration/password_reset_form.html:14
 #: project/templates/registration/password_reset_form.html:33
 msgid "Reset password"
 msgstr ""
 
-#: project/templates/_menu.html:100
+#: project/templates/_menu.html:105
 #: project/templates/registration/password_change_form.html:4
 #: project/templates/registration/password_change_form.html:12
 msgid "Change password"
 msgstr ""
 
-#: project/templates/_menu.html:103
+#: project/templates/_menu.html:108
 msgid "Security Settings"
 msgstr ""
 
-#: project/templates/_menu.html:105
+#: project/templates/_menu.html:110
 msgid "Logout"
 msgstr ""
 
-#: project/templates/_menu.html:111
+#: project/templates/_menu.html:116
 #: project/templates/two_factor/core/login.html:61
 #: project/tests/test_views.py:192
 msgid "Register"

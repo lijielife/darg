@@ -8,8 +8,7 @@ from django.test import Client, TestCase
 from django.utils import timezone
 # from model_mommy import mommy
 
-from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
-                                ComplexOptionTransactionsGenerator,
+from project.generators import (CompanyGenerator,
                                 ComplexShareholderConstellationGenerator,
                                 OperatorGenerator, PositionGenerator,
                                 ReportGenerator, SecurityGenerator,
@@ -17,8 +16,8 @@ from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
                                 TwoInitialSecuritiesGenerator, UserGenerator)
 from project.tests.mixins import (MoreAssertsTestCaseMixin,
                                   SubscriptionTestMixin)
-from reports.views import _get_contacts, _get_transactions
-from shareholder.models import Company, OptionTransaction
+from reports.views import _get_transactions
+from shareholder.models import Company
 from utils.http import get_file_content_as_string
 from utils.session import add_company_to_session
 
@@ -43,8 +42,6 @@ class IndexViewTestCase(SubscriptionTestMixin, BaseReportViewTestCase):
         self.client.force_login(self.operator.user)
         response = self.client.get(reverse('reports:reports'))
         self.assertEqual(response.status_code, 200)
-        self.assertIn(reverse('statement_reports'),
-                      response.content.decode('utf-8'))
 
 
 class ReportDownloadTestCase(SubscriptionTestMixin, BaseReportViewTestCase):
@@ -201,77 +198,6 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
         content = get_file_content_as_string(response)
         self.assertTrue(content.startswith('%PDF'))
 
-    def test_printed_certificates_xls(self):
-        """
-        download of all certificates which are printed
-        """
-        now = timezone.now()
-        positions, shs = ComplexOptionTransactionsGenerator().generate()  # noqa
-        OptionTransaction.objects.filter(
-            pk__in=[ot.pk for ot in positions]).update(printed_at=now)
-        other_operator = OperatorGenerator().generate()
-        operator = shs[0].company.operator_set.first()
-        company = operator.company
-        self.add_subscription(company)
-        pos = PositionGenerator().generate(company=company)
-        pos.printed_at = timezone.now()
-        pos.certificate_id = '88888'
-        pos.save()
-
-        # run test for unauth'd user
-        url = reverse('reports:printed_certificates_xls',
-                      kwargs={"company_id": company.id})
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
-
-        # foreign operator must not access data
-        is_loggedin = self.client.login(username=other_operator.user.username,
-                                        password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(is_loggedin)
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
-        self.client.logout()
-
-        # company operator can access data
-        is_loggedin = self.client.login(username=operator.user.username,
-                                        password=DEFAULT_TEST_DATA['password'])
-        with self.assertLessNumQueries(44):
-            response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-
-    def test_contacts_xls(self):
-        """ test download of all shareholders contact data """
-        # run test
-        response = self.client.get(
-            reverse('reports:contacts_xls',
-                    kwargs={"company_id": self.company.id}))
-
-        # not logged in user
-        self.assertEqual(response.status_code, 302)
-
-        # login and retest
-        user = UserGenerator().generate()
-        self.client.force_login(user)
-
-        response = self.client.get(
-            reverse('reports:contacts_xls',
-                    kwargs={"company_id": self.company.id}))
-
-        # assert response code
-        self.assertEqual(response.status_code, 403)
-
-    def test_get_contacts(self):
-        """ get xls list array of contacts data """
-        ComplexShareholderConstellationGenerator().generate()
-
-        company = Company.objects.last()
-        with self.assertLessNumQueries(46):
-            res = _get_contacts(company)
-        self.assertTrue(len(res) > 1)
-        self.assertEqual(len(res[0]), 15)
-        self.assertEqual(len(res[1]), 15)  # no nationality
-        self.assertEqual(res[0][0].encode('utf8'), u'0')
-
     def test_transactions_xls(self):
         """ test download of all transactions data
         /company/3/download/transactions?from=2017-01-12T23:00:00.000Z&to=2017-01-13T23:00:00.000Z&security=56
@@ -315,44 +241,3 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
                 from_date, to_date, sec, company)
         self.assertTrue(len(res) > 1)
         self.assertEqual(len(res[0]), 9)
-
-    def test_vested_xls(self):
-        """
-        download of all shares and options which are vested
-        """
-        positions, shs = ComplexOptionTransactionsGenerator().generate()  # noqa
-        OptionTransaction.objects.filter(
-            pk__in=[ot.pk for ot in positions]).update(vesting_months=24)
-        other_operator = OperatorGenerator().generate()
-        operator = shs[0].company.operator_set.first()
-        company = operator.company
-        self.add_subscription(company)
-        shs2, s1 = ComplexShareholderConstellationGenerator().generate(
-            company=company, shareholder_count=10)
-        for s in shs2:
-            s.buyer.all().update(vesting_months=12)
-
-        # run test for unauth'd user
-        response = self.client.get(
-            reverse('reports:vested_xls',
-                    kwargs={"company_id": company.id}))
-        self.assertEqual(response.status_code, 302)
-
-        # foreign operator must not access data
-        is_loggedin = self.client.login(username=other_operator.user.username,
-                                        password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(is_loggedin)
-        response = self.client.get(
-            reverse('reports:vested_xls',
-                    kwargs={"company_id": company.id}))
-        self.assertEqual(response.status_code, 302)
-        self.client.logout()
-
-        # company operator can access data
-        is_loggedin = self.client.login(username=operator.user.username,
-                                        password=DEFAULT_TEST_DATA['password'])
-        with self.assertLessNumQueries(96):
-            response = self.client.get(
-                reverse('reports:vested_xls',
-                        kwargs={"company_id": company.id}))
-        self.assertEqual(response.status_code, 200)

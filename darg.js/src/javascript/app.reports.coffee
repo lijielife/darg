@@ -42,6 +42,9 @@ app.controller 'ReportsController', ['$scope', '$http', 'Shareholder', 'Report',
     $scope.report_types = [
         {title: gettext('Active Shareholders'), value: 'captable'},
         {title: gettext('Assembly Participation'), value: 'assembly_participation'},
+        {title: gettext('Address data of all shareholders'), value: 'address_data'},
+        {title: gettext('Printed Certificates'), value: 'certificates'},
+        {title: gettext('Vested Shares'), value: 'vested_shares'},
     ]
     $scope.last_captable_report = undefined
 

@@ -16,11 +16,18 @@ from project.generators import (CompanyGenerator,
 from project.tests.mixins import MoreAssertsTestCaseMixin
 from reports.tasks import (_add_file_to_report, _collect_csv_data,
                            _collect_participation_csv_data,
-                           _get_captable_pdf_context, _get_filename,
-                           _order_queryset, _parse_ordering, _prepare_report,
-                           _send_notify, _summarize_report, prerender_reports,
+                           _get_address_data_pdf_context,
+                           _get_captable_pdf_context,
+                           _get_certificates_pdf_context, _get_contacts,
+                           _get_default_pdf_context, _get_filename,
+                           _get_vested_shares_pdf_context, _order_queryset,
+                           _parse_ordering, _prepare_report, _send_notify,
+                           _summarize_report, prerender_reports,
+                           render_address_data_pdf, render_address_data_xls,
                            render_assembly_participation_xls,
-                           render_captable_pdf, render_captable_xls)
+                           render_captable_pdf, render_captable_xls,
+                           render_certificates_pdf, render_certificates_xls,
+                           render_vested_shares_pdf, render_vested_shares_xls)
 from shareholder.models import Shareholder
 
 
@@ -36,6 +43,18 @@ class ReportTaskTestCase(MoreAssertsTestCaseMixin, TestCase):
         sh.number = u'ü' + sh.number
         sh.save()
 
+    def test_get_certificates_pdf_context(self):
+        """ get context for certificate report pdf """
+        pos = self.company.shareholder_set.first().buyer.first()
+        pos.certificate_id = 99
+        pos.printed_at = timezone.now().date()
+        pos.save()
+        res = _get_certificates_pdf_context(self.company, timezone.now().date())
+        self.assertEqual(
+            res.keys(), ['pagesize', 'table_data', 'company', 'currency',
+                         'header', 'report_date', 'heading', 'today'])
+        self.assertEqual(len(res['table_data']), 1)
+
     def test_collect_csv_data(self):
         """ render csv date for xls/csv export """
         row = _collect_csv_data(self.shs[1], timezone.now().date())
@@ -50,6 +69,14 @@ class ReportTaskTestCase(MoreAssertsTestCaseMixin, TestCase):
         self.assertEqual(len(res[0]), 9)
         self.assertEqual(res[0][0], self.shs[0].number)
 
+    def test_get_address_data_pdf_context(self):
+        """ get context for address data pdf  """
+        res = _get_address_data_pdf_context(self.company, timezone.now().date())
+        self.assertEqual(res.keys(), ['pagesize', 'table_data', 'company',
+                                      'currency', 'header', 'report_date',
+                                      'heading', 'today'])
+        self.assertEqual(len(res['table_data']), 11)
+
     def test_get_captable_pdf_context(self):
 
         res = _get_captable_pdf_context(self.shs[0].company,
@@ -59,6 +86,35 @@ class ReportTaskTestCase(MoreAssertsTestCaseMixin, TestCase):
         self.assertIsNotNone(res.get('ordering'))
         self.assertIsNotNone(res.get('option_ordering'))
         self.assertTrue(isinstance(res.get('report_date'), datetime.date))
+
+    def test_get_contacts(self):
+        """ get xls list array of contacts data """
+        ComplexShareholderConstellationGenerator().generate()
+        with self.assertLessNumQueries(46):
+            res = _get_contacts(self.company)
+
+        self.assertTrue(len(res) > 1)
+        self.assertEqual(len(res[0]), 15)
+        self.assertEqual(len(res[1]), 15)  # no nationality
+        self.assertEqual(res[-1][0], u'ü0')
+
+    def test_get_default_context(self):
+        """ default context for pdf exports """
+        res = _get_default_pdf_context(self.company, timezone.now().date())
+        self.assertEqual(res.keys(), ['currency', 'company', 'report_date',
+                                      'today', 'pagesize'])
+
+    def test_get_vested_shares_pdf_context(self):
+        """ get context for pdf with vested shares export """
+        pos = self.company.shareholder_set.first().buyer.first()
+        pos.vesting_months = 99
+        pos.save()
+        res = _get_vested_shares_pdf_context(
+            self.company, timezone.now().date())
+        self.assertEqual(res.keys(), ['pagesize', 'table_data', 'company',
+                                      'currency', 'header', 'report_date',
+                                      'heading', 'today'])
+        self.assertEqual(len(res['table_data']), 1)
 
     def test_parse_ordering(self):
         """ convert ordering param from FE to ORM ready ordering """
@@ -213,6 +269,32 @@ class ReportTaskTestCase(MoreAssertsTestCaseMixin, TestCase):
         self.assertIsNotNone(report.file_type)
         self.assertIsNotNone(report.report_type)
 
+    def test_render_address_data_xls(self):
+        report = ReportGenerator().generate(company=self.company,
+                                            report_type='address_data',
+                                            file_type='XLS')
+        PositionGenerator().generate(company=report.company, seller=None)
+        render_address_data_xls(
+            report.company.pk, report.pk,
+            user_id=report.user.pk, ordering=None,
+            notify=True, track_downloads=False)
+        report.refresh_from_db()
+
+        self.assertIsNotNone(report.file)
+
+    def test_render_address_data_pdf(self):
+        report = ReportGenerator().generate(company=self.company,
+                                            report_type='address_data',
+                                            file_type='PDF')
+        PositionGenerator().generate(company=report.company, seller=None)
+        render_address_data_pdf(
+            report.company.pk, report.pk,
+            user_id=report.user.pk, ordering=None,
+            notify=True, track_downloads=False)
+        report.refresh_from_db()
+
+        self.assertIsNotNone(report.file)
+
     def test_render_assembly_participation_xls(self):
         """ render csv with assembly participants """
         report = ReportGenerator().generate(company=self.company)
@@ -248,6 +330,58 @@ class ReportTaskTestCase(MoreAssertsTestCaseMixin, TestCase):
 
         self.assertIsNotNone(report.file)
 
+    def test_render_certificates_xls(self):
+        report = ReportGenerator().generate(company=self.company,
+                                            report_type='certificates',
+                                            file_type='XLS')
+        PositionGenerator().generate(company=report.company, seller=None)
+        render_certificates_xls(
+            report.company.pk, report.pk,
+            user_id=report.user.pk, ordering=None,
+            notify=True, track_downloads=False)
+        report.refresh_from_db()
+
+        self.assertIsNotNone(report.file)
+
+    def test_render_certificates_pdf(self):
+        report = ReportGenerator().generate(company=self.company,
+                                            report_type='certificates',
+                                            file_type='PDF')
+        PositionGenerator().generate(company=report.company, seller=None)
+        render_certificates_pdf(
+            report.company.pk, report.pk,
+            user_id=report.user.pk, ordering=None,
+            notify=True, track_downloads=False)
+        report.refresh_from_db()
+
+        self.assertIsNotNone(report.file)
+
+    def test_render_vested_shares_xls(self):
+        report = ReportGenerator().generate(company=self.company,
+                                            report_type='vested_shares',
+                                            file_type='XLS')
+        PositionGenerator().generate(company=report.company, seller=None)
+        render_vested_shares_xls(
+            report.company.pk, report.pk,
+            user_id=report.user.pk, ordering=None,
+            notify=True, track_downloads=False)
+        report.refresh_from_db()
+
+        self.assertIsNotNone(report.file)
+
+    def test_render_vested_shares_pdf(self):
+        report = ReportGenerator().generate(company=self.company,
+                                            report_type='vested_shares',
+                                            file_type='PDF')
+        PositionGenerator().generate(company=report.company, seller=None)
+        render_vested_shares_pdf(
+            report.company.pk, report.pk,
+            user_id=report.user.pk, ordering=None,
+            notify=True, track_downloads=False)
+        report.refresh_from_db()
+
+        self.assertIsNotNone(report.file)
+
     @patch('reports.tasks.render_assembly_participation_xls.apply_async')
     @patch('reports.tasks.render_captable_pdf.apply_async')
     @patch('reports.tasks.render_captable_xls.apply_async')
@@ -261,7 +395,8 @@ class ReportTaskTestCase(MoreAssertsTestCaseMixin, TestCase):
         prerender_reports()
 
         company = self.shs[0].company
-        pdf_report = company.report_set.filter(file_type='PDF').last()
+        pdf_report = company.report_set.filter(file_type='PDF',
+                                               report_type='captable').last()
         xls_ass_report = company.report_set.filter(
             file_type='XLS', report_type='assembly_participation').last()
         xls_report = company.report_set.filter(file_type='XLS',

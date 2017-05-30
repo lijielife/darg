@@ -21,6 +21,9 @@ REPORT_FILE_TYPES = (
 REPORT_TYPES = (
     ('captable', _('Active Shareholders')),
     ('assembly_participation', _('Assembly Participation')),
+    ('address_data', _('Address data of all shareholders')),
+    ('certificates', _('Printed Certificates')),
+    ('vested_shares', _('Vested Shares')),
 )
 
 ORDERING_TYPES = (
@@ -86,9 +89,7 @@ class Report(TimeStampedModel):
     def render(self, notify=False, track_downloads=False):
         """ trigger the right task to render the file """
         # avoid circular import
-        from reports.tasks import (render_captable_pdf,
-                                   render_captable_xls,
-                                   render_assembly_participation_xls)
+        from reports import tasks
 
         args = [self.company.pk, self.pk]
         kwargs = {'ordering': self.order_by, 'notify': notify,
@@ -97,20 +98,10 @@ class Report(TimeStampedModel):
             kwargs.update({'user_id': self.user.pk})
 
         # FIXME build render method name dynamically and remove ifs
-        if self.report_type == 'captable':
-            if self.file_type == 'PDF':
-                render_captable_pdf.apply_async(args=args, kwargs=kwargs)
-            elif self.file_type == 'XLS':
-                render_captable_xls.apply_async(args=args, kwargs=kwargs)
-
-        elif self.report_type == 'assembly_participation':
-            render_assembly_participation_xls.apply_async(
-                args=args, kwargs=kwargs)
-            # elif self.file_type == 'PDF':
-            #    render_captable_pdf.apply_async(args=args, kwargs=kwargs)
-
-        else:
-            raise NotImplementedError('report cannot be created')
+        method_name = u'render_{}_{}'.format(self.report_type,
+                                             self.file_type.lower())
+        method = getattr(tasks, method_name)
+        method.apply_async(args=args, kwargs=kwargs)
 
     def update_eta(self):
         """ get from last item of same type or default 3m from now """

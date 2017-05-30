@@ -18,57 +18,8 @@ from shareholder.models import (Company, Operator, OptionTransaction, Position,
 from utils.session import get_company_from_request
 from utils.xls import save_to_excel_file
 
-XLSX_CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
-
-def _get_contacts(company):
-
-    rows = []
-    for shareholder in company.get_active_shareholders():
-        row = [
-            shareholder.number,
-            shareholder.user.last_name,
-            shareholder.user.first_name,
-            shareholder.user.email,
-            shareholder.user.userprofile.language,
-            shareholder.user.userprofile.get_language_display(),
-            shareholder.user.userprofile.street,
-            shareholder.user.userprofile.street2,
-            shareholder.user.userprofile.c_o,
-            shareholder.user.userprofile.city,
-            shareholder.user.userprofile.postal_code,
-            (shareholder.user.userprofile.country.name
-                if shareholder.user.userprofile.country else u''),
-            shareholder.user.userprofile.pobox,
-            shareholder.get_mailing_type_display(),
-            (shareholder.user.userprofile.nationality.name
-                if shareholder.user.userprofile.nationality else u'')
-        ]
-        rows.append(row)
-
-    for shareholder in company.get_active_option_holders():
-        row = [
-            shareholder.number,
-            shareholder.user.last_name,
-            shareholder.user.first_name,
-            shareholder.user.email,
-            shareholder.user.userprofile.language,
-            shareholder.user.userprofile.get_language_display(),
-            shareholder.user.userprofile.street,
-            shareholder.user.userprofile.street2,
-            shareholder.user.userprofile.c_o,
-            shareholder.user.userprofile.city,
-            shareholder.user.userprofile.postal_code,
-            (shareholder.user.userprofile.country.name
-                if shareholder.user.userprofile.country else u''),
-            shareholder.user.userprofile.pobox,
-            shareholder.get_mailing_type_display(),
-            (shareholder.user.userprofile.nationality.name
-                if shareholder.user.userprofile.nationality else u'')
-        ]
-        rows.append(row)
-
-    return rows
+XLSX_CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'  # noqa
 
 
 def _get_transactions(from_date, to_date, security, company):
@@ -136,43 +87,6 @@ def report_download(request, report_id):
 
 
 @login_required
-def contacts_xls(request, company_id):
-    """ returns xls with active shareholders """
-
-    # perm check
-    if not Operator.objects.filter(
-        user=request.user, company__id=company_id
-    ).exists():
-        return HttpResponseForbidden()
-
-    company = get_object_or_404(Company, id=company_id)
-
-    # Create the HttpResponse object with the appropriate content header.
-    filename = "{}_contacts_{}.xlsx".format(time.strftime("%Y-%m-%d"),
-                                            slugify(company.name))
-    response = HttpResponse(
-        content_type=XLSX_CONTENT_TYPE)
-    response['Content-Disposition'] = (
-        u'attachment; filename="{}"'.format(filename))
-
-    _rows = _get_contacts(company)
-    header = [
-        _(u'shareholder number'), _(u'last name'), _(u'first name'),
-        _(u'email'),
-        _(u'language ISO'), _('language full'), _('street'), _('street 2'),
-        _('c/o'), _('city'), _('zip'), _('country'),
-        _('pobox'), _('mailing type'), _('nationality'),
-    ]
-
-    rows = []
-    for row in _rows:
-        rows.append([to_string_or_empty(s) for s in row])
-
-    save_to_excel_file(filename, rows, header, response=response)
-    return response
-
-
-@login_required
 def transactions_xls(request, company_id):
     """ returns xls with transactions """
 
@@ -204,115 +118,6 @@ def transactions_xls(request, company_id):
     ]
 
     _rows = _get_transactions(from_date, to_date, security, company)
-    rows = []
-    for row in _rows:
-        rows.append([to_string_or_empty(s) for s in row])
-
-    save_to_excel_file(filename, rows, header, response=response)
-
-    return response
-
-
-@login_required
-def printed_certificates_xls(request, company_id):
-    """
-    return xls with list of printed certificates
-    """
-    # perm check
-    if not Operator.objects.filter(
-        user=request.user, company__id=company_id
-    ).exists():
-        return HttpResponseForbidden()
-
-    company = get_object_or_404(Company, id=company_id)
-
-    # Create the HttpResponse object with the appropriate content header.
-    filename = "{}_printed_certificates_{}.xlsx".format(
-        time.strftime("%Y-%m-%d"), slugify(company.name))
-    response = HttpResponse(content_type=XLSX_CONTENT_TYPE)
-    response['Content-Disposition'] = (
-        u'attachment; filename="{}"'.format(filename))
-
-    ots = OptionTransaction.objects.filter(
-        option_plan__company=company,
-        printed_at__isnull=False,
-        certificate_id__isnull=False,
-        ).distinct()
-    pos = Position.objects.filter(
-        Q(buyer__company=company) | Q(seller__company=company),
-        printed_at__isnull=False,
-        certificate_id__isnull=False,
-        ).distinct()
-    header = [_('full name'), _('share count'), _('security name'),
-              _('certificate id'), _('certificate printed at'),
-              _('security type')]
-    # add option transactions
-    _rows = []
-    _rows += [
-        [ot.buyer.get_full_name(),
-         ot.count,
-         unicode(ot.option_plan.security),
-         ot.certificate_id,
-         ot.printed_at, _('option')]
-        for ot in ots]
-    # add positions
-    _rows += [
-        [ot.buyer.get_full_name(),
-         ot.count,
-         unicode(ot.security),
-         ot.certificate_id,
-         ot.printed_at, _('stock')]
-        for ot in pos]
-    # render xls
-    rows = []
-    for row in _rows:
-        rows.append([to_string_or_empty(s) for s in row])
-
-    save_to_excel_file(filename, rows, header, response=response)
-
-    return response
-
-
-@login_required
-def vested_xls(request, company_id):
-    """
-    return xls with list of vested shareholders and positions
-    """
-    # perm check
-    if not Operator.objects.filter(
-        user=request.user, company__id=company_id
-    ).exists():
-        return HttpResponseForbidden()
-
-    company = get_object_or_404(Company, id=company_id)
-
-    # Create the HttpResponse object with the appropriate content header.
-    filename = "{}_vested_{}.xlsx".format(
-        time.strftime("%Y-%m-%d"), slugify(company.name))
-    response = HttpResponse(content_type=XLSX_CONTENT_TYPE)
-    response['Content-Disposition'] = (
-        u'attachment; '
-        u'filename="{}"'.format(filename))
-
-    positions = Position.objects.filter(
-        Q(buyer__company=company) | Q(seller__company=company),
-        vesting_months__gt=0).distinct()
-    ots = OptionTransaction.objects.filter(
-        option_plan__company=company,
-        vesting_months__gt=0).distinct()
-    header = [_('full name'), _('count'), _('security'),
-              _('is management member'),
-              _('vesting in months'), _('asset type')]
-    _rows = []
-    _rows += [
-        [p.buyer.get_full_name(), p.count, unicode(p.security),
-         p.buyer.is_management, p.vesting_months, _('stock')
-         ] for p in positions]
-    _rows += [[ot.buyer.get_full_name(), ot.count,
-              unicode(ot.option_plan.security),
-              ot.buyer.is_management,
-              ot.vesting_months, _('certificate')] for ot in ots]
-
     rows = []
     for row in _rows:
         rows.append([to_string_or_empty(s) for s in row])

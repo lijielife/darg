@@ -28,10 +28,12 @@ class ReportModelTestCase(TestCase):
         url = self.report.get_absolute_url()
         self.assertEqual(url, '/reports/{}/download'.format(self.report.pk))
 
+    @patch('reports.tasks.render_vested_shares_pdf.apply_async')
     @patch('reports.tasks.render_captable_pdf.apply_async')
     @patch('reports.tasks.render_assembly_participation_xls.apply_async')
-    def test_render(self, mock_participation_task, mock_task):
+    def test_render(self, mock_participation_task, mock_task, mock_vested_task):
         """ trigger rendering of report file """
+        # FIXME iterate over constant from models
         self.report.render()
         self.assertTrue(mock_task.called)
 
@@ -40,6 +42,12 @@ class ReportModelTestCase(TestCase):
         self.report.save()
         self.report.render()
         self.assertTrue(mock_participation_task.called)
+
+        self.report.report_type = 'vested_shares'
+        self.report.file_type = 'PDF'
+        self.report.save()
+        self.report.render()
+        self.assertTrue(mock_vested_task.called)
 
     def test_update_eta(self):
         """ calculate and update eta """

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-24 20:33+0000\n"
+"POT-Creation-Date: 2017-05-30 09:37+0000\n"
 "PO-Revision-Date: 2017-05-11 12:20+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -93,7 +93,7 @@ msgstr ""
 msgid "shareholder with this email already exists"
 msgstr "Ein Aktionär mit dieser Email existiert bereits."
 
-#: services/rest/serializers.py:595 services/rest/tests/test_views.py:1946
+#: services/rest/serializers.py:595 services/rest/tests/test_views.py:1987
 msgid "Number must be unique for this company"
 msgstr "Aktionärsnummer darf pro Unternehmen nur einmal vorkommen."
 

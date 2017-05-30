@@ -87,4 +87,4 @@ describe 'Unit: Testing Reports Controller', ->
 
   describe 'report types', ->
     it 'should have 2 items', ->
-      expect($scope.report_types.length).toEqual 2
+      expect($scope.report_types.length).toEqual 5

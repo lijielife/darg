@@ -45111,6 +45111,15 @@ return deCh;
         }, {
           title: gettext('Assembly Participation'),
           value: 'assembly_participation'
+        }, {
+          title: gettext('Address data of all shareholders'),
+          value: 'address_data'
+        }, {
+          title: gettext('Printed Certificates'),
+          value: 'certificates'
+        }, {
+          title: gettext('Vested Shares'),
+          value: 'vested_shares'
         }
       ];
       $scope.last_captable_report = void 0;

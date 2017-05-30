@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-24 20:33+0000\n"
+"POT-Creation-Date: 2017-05-30 09:37+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,301 +17,478 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: reports/models.py:23
+#: reports/models.py:22
 msgid "Active Shareholders"
 msgstr ""
 
-#: reports/models.py:24
+#: reports/models.py:23
 msgid "Assembly Participation"
 msgstr ""
 
-#: reports/models.py:28 reports/models.py:30
+#: reports/models.py:24
+msgid "Address data of all shareholders"
+msgstr ""
+
+#: reports/models.py:25
+msgid "Printed Certificates"
+msgstr ""
+
+#: reports/models.py:26
+msgid "Vested Shares"
+msgstr ""
+
+#: reports/models.py:30 reports/models.py:32
 msgid "Last Name"
 msgstr ""
 
-#: reports/models.py:29 reports/models.py:31
+#: reports/models.py:31 reports/models.py:33
 msgid "Last Name (descending)"
 msgstr ""
 
-#: reports/models.py:32
+#: reports/models.py:34
 msgid "Share Count"
 msgstr ""
 
-#: reports/models.py:33
+#: reports/models.py:35
 msgid "Share Count (descending)"
 msgstr ""
 
-#: reports/models.py:34
-#: reports/templates/active_shareholder_captable.pdf.html:154
+#: reports/models.py:36
+#: reports/templates/active_shareholder_captable.pdf.html:202
 msgid "Shareholder Number"
 msgstr ""
 
-#: reports/models.py:35
+#: reports/models.py:37
 msgid "Shareholder Number (descending)"
 msgstr ""
 
-#: reports/models.py:36
+#: reports/models.py:38
 msgid "Share Percent Ownership"
 msgstr ""
 
-#: reports/models.py:37
+#: reports/models.py:39
 msgid "Share Percent Ownership (descending)"
 msgstr ""
 
-#: reports/models.py:59
-msgid "Estimated rendering completion time"
+#: reports/models.py:40
+msgid "face value total capital"
 msgstr ""
 
-#: reports/models.py:60
-msgid "file creation datetime"
+#: reports/models.py:41
+msgid "face value total capital (descending)"
 msgstr ""
 
-#: reports/models.py:63
-msgid "time it took to generate the file in seconds"
+#: reports/models.py:42 reports/tasks.py:512
+msgid "postal code"
+msgstr ""
+
+#: reports/models.py:43
+msgid "postal code (descending)"
 msgstr ""
 
 #: reports/models.py:65
+msgid "Estimated rendering completion time"
+msgstr ""
+
+#: reports/models.py:66
+msgid "file creation datetime"
+msgstr ""
+
+#: reports/models.py:69
+msgid "time it took to generate the file in seconds"
+msgstr ""
+
+#: reports/models.py:71
 msgid "report filter date"
 msgstr ""
 
-#: reports/tasks.py:36 reports/tests/test_views.py:322 reports/views.py:25
+#: reports/tasks.py:35
 msgid "shareholder number"
 msgstr ""
 
-#: reports/tasks.py:36
+#: reports/tasks.py:35
 msgid "legal type"
 msgstr ""
 
-#: reports/tasks.py:36
+#: reports/tasks.py:35
 msgid "registration types"
 msgstr ""
 
-#: reports/tasks.py:37
+#: reports/tasks.py:36
 msgid "company_department"
 msgstr ""
 
-#: reports/tasks.py:37
+#: reports/tasks.py:36
 msgid "title"
 msgstr ""
 
-#: reports/tasks.py:37
+#: reports/tasks.py:36
 msgid "salutation"
 msgstr ""
 
-#: reports/tasks.py:37
+#: reports/tasks.py:36
 msgid "name"
 msgstr ""
 
-#: reports/tasks.py:38
+#: reports/tasks.py:37
 msgid "address"
 msgstr ""
 
-#: reports/tasks.py:38
+#: reports/tasks.py:37
 msgid "postal_code"
 msgstr ""
 
-#: reports/tasks.py:38 reports/views.py:28
+#: reports/tasks.py:37 reports/tasks.py:51 reports/tasks.py:512
 msgid "city"
 msgstr ""
 
-#: reports/tasks.py:39
+#: reports/tasks.py:37 reports/tasks.py:51 reports/tasks.py:512
+msgid "country"
+msgstr ""
+
+#: reports/tasks.py:38
 msgid "birthday"
 msgstr ""
 
-#: reports/tasks.py:39
+#: reports/tasks.py:38
 msgid "mailing_type"
 msgstr ""
 
-#: reports/tasks.py:39 reports/views.py:29
+#: reports/tasks.py:38 reports/tasks.py:52
 msgid "nationality"
 msgstr ""
 
-#: reports/tasks.py:39 reports/views.py:247
+#: reports/tasks.py:38 reports/tasks.py:63
 msgid "security type"
 msgstr ""
 
-#: reports/tasks.py:40
+#: reports/tasks.py:39
 msgid "cusip"
 msgstr ""
 
-#: reports/tasks.py:40
+#: reports/tasks.py:39
 msgid "face_value"
 msgstr ""
 
-#: reports/tasks.py:40
+#: reports/tasks.py:39
 msgid "certificate_ids (issue date)"
 msgstr ""
 
-#: reports/tasks.py:41 reports/views.py:85
+#: reports/tasks.py:40 reports/views.py:116
 msgid "stock book id"
 msgstr ""
 
-#: reports/tasks.py:41
+#: reports/tasks.py:40
 msgid "depot_type"
 msgstr ""
 
-#: reports/tasks.py:42 reports/views.py:26
+#: reports/tasks.py:41 reports/tasks.py:49
 msgid "email"
 msgstr ""
 
-#: reports/tasks.py:42 reports/tasks.py:270 reports/views.py:245
+#: reports/tasks.py:41 reports/tasks.py:62 reports/tasks.py:513
 msgid "share count"
 msgstr ""
 
-#: reports/tasks.py:42
+#: reports/tasks.py:41
 msgid "share percent"
 msgstr ""
 
-#: reports/tasks.py:43
+#: reports/tasks.py:42
 msgid "votes percent"
 msgstr ""
 
-#: reports/tasks.py:44
+#: reports/tasks.py:43
 msgid "cumulated face value"
 msgstr ""
 
-#: reports/tasks.py:44
+#: reports/tasks.py:43
 msgid "is management"
 msgstr ""
 
-#: reports/tasks.py:45 reports/views.py:27
+#: reports/tasks.py:44 reports/tasks.py:50
 msgid "language ISO"
 msgstr ""
 
-#: reports/tasks.py:45 reports/views.py:27
+#: reports/tasks.py:44 reports/tasks.py:50
 msgid "language full"
 msgstr ""
 
-#: reports/tasks.py:121 reports/tests/test_views.py:214
+#: reports/tasks.py:48
+msgid "shareholder ID"
+msgstr ""
+
+#: reports/tasks.py:48
+msgid "last name"
+msgstr ""
+
+#: reports/tasks.py:48
+msgid "first name"
+msgstr ""
+
+#: reports/tasks.py:50
+msgid "street"
+msgstr ""
+
+#: reports/tasks.py:50
+msgid "street 2"
+msgstr ""
+
+#: reports/tasks.py:51
+msgid "c/o"
+msgstr ""
+
+#: reports/tasks.py:51
+msgid "zip"
+msgstr ""
+
+#: reports/tasks.py:52
+msgid "pobox"
+msgstr ""
+
+#: reports/tasks.py:52
+msgid "mailing type"
+msgstr ""
+
+#: reports/tasks.py:57 reports/tasks.py:62
+msgid "full name"
+msgstr ""
+
+#: reports/tasks.py:57 reports/views.py:114
+msgid "count"
+msgstr ""
+
+#: reports/tasks.py:57
+#: reports/templates/active_shareholder_captable.pdf.html:111
+#: reports/views.py:115
+msgid "security"
+msgstr ""
+
+#: reports/tasks.py:57
+msgid "is management member"
+msgstr ""
+
+#: reports/tasks.py:58
+msgid "vesting in months"
+msgstr ""
+
+#: reports/tasks.py:58
+msgid "asset type"
+msgstr ""
+
+#: reports/tasks.py:62
+msgid "security name"
+msgstr ""
+
+#: reports/tasks.py:62
+msgid "certificate id"
+msgstr ""
+
+#: reports/tasks.py:63
+msgid "certificate printed at"
+msgstr ""
+
+#: reports/tasks.py:150
 msgid "None"
 msgstr ""
 
-#: reports/tasks.py:269
-msgid "Shareholder#"
+#: reports/tasks.py:235
+msgid "Active Shareholder contacts data"
 msgstr ""
 
-#: reports/tasks.py:269
-msgid "Full Name"
+#: reports/tasks.py:262 reports/tasks.py:669
+msgid "option"
 msgstr ""
 
-#: reports/tasks.py:269
-#: reports/templates/active_shareholder_captable.pdf.html:106
-#: reports/templates/active_shareholder_captable.pdf.html:156
-msgid "Address"
+#: reports/tasks.py:270 reports/tasks.py:298 reports/tasks.py:677
+#: reports/tasks.py:754
+msgid "stock"
 msgstr ""
 
-#: reports/tasks.py:270
-msgid "capital"
+#: reports/tasks.py:278
+msgid "printed certificates"
 msgstr ""
 
-#: reports/tasks.py:270
-msgid "vote count"
+#: reports/tasks.py:303 reports/tasks.py:759
+msgid "certificate"
 msgstr ""
 
-#: reports/tasks.py:297
-msgid "Your csv assembly participation file"
+#: reports/tasks.py:310
+msgid "vested shares"
 msgstr ""
 
-#: reports/tasks.py:298 reports/tasks.py:330 reports/tasks.py:385
-#: reports/tasks.py:434
+#: reports/tasks.py:456
+msgid "Your xls contacts file"
+msgstr ""
+
+#: reports/tasks.py:457 reports/tasks.py:490 reports/tasks.py:541
+#: reports/tasks.py:575 reports/tasks.py:627 reports/tasks.py:692
+#: reports/tasks.py:725 reports/tasks.py:773 reports/tasks.py:806
 msgid "Your file is attached to this email"
 msgstr ""
 
-#: reports/tasks.py:299
+#: reports/tasks.py:458
+msgid "XLS Shareholder Address Data"
+msgstr ""
+
+#: reports/tasks.py:489
+msgid "Your pdf contacts file"
+msgstr ""
+
+#: reports/tasks.py:491
+msgid "PDF Shareholder Contacts"
+msgstr ""
+
+#: reports/tasks.py:511
+msgid "Shareholder#"
+msgstr ""
+
+#: reports/tasks.py:511
+msgid "Full Name"
+msgstr ""
+
+#: reports/tasks.py:511
+#: reports/templates/active_shareholder_captable.pdf.html:111
+#: reports/templates/active_shareholder_captable.pdf.html:204
+msgid "Address"
+msgstr ""
+
+#: reports/tasks.py:513
+msgid "capital"
+msgstr ""
+
+#: reports/tasks.py:513
+msgid "vote count"
+msgstr ""
+
+#: reports/tasks.py:540
+msgid "Your csv assembly participation file"
+msgstr ""
+
+#: reports/tasks.py:542
 msgid "CSV Assembly Participation"
 msgstr ""
 
-#: reports/tasks.py:329
+#: reports/tasks.py:574
 msgid "Your pdf captable file"
 msgstr ""
 
-#: reports/tasks.py:331
+#: reports/tasks.py:576
 msgid "PDF Captable/Active Shareholders"
 msgstr ""
 
-#: reports/tasks.py:357 reports/tasks.py:409
+#: reports/tasks.py:599
 msgid "Share IDs"
 msgstr ""
 
-#: reports/tasks.py:384
-msgid "Your csv captable file"
-msgstr ""
-
-#: reports/tasks.py:386
-msgid "CSV Captable/Active Shareholders"
-msgstr ""
-
-#: reports/tasks.py:433
+#: reports/tasks.py:626
 msgid "Your xls captable file"
 msgstr ""
 
-#: reports/tasks.py:435
+#: reports/tasks.py:628
 msgid "XLS Captable/Active Shareholders"
 msgstr ""
 
-#: reports/templates/active_shareholder_captable.pdf.html:71
+#: reports/tasks.py:691
+msgid "Your xls certificates file"
+msgstr ""
+
+#: reports/tasks.py:693
+msgid "XLS Certificates"
+msgstr ""
+
+#: reports/tasks.py:724
+msgid "Your pdf certificates file"
+msgstr ""
+
+#: reports/tasks.py:726
+msgid "PDF Certificates"
+msgstr ""
+
+#: reports/tasks.py:772
+msgid "Your xls vested shares file"
+msgstr ""
+
+#: reports/tasks.py:774
+msgid "XLS Vested Shares"
+msgstr ""
+
+#: reports/tasks.py:805
+msgid "Your pdf vested shares file"
+msgstr ""
+
+#: reports/tasks.py:807
+msgid "PDF vested shares"
+msgstr ""
+
+#: reports/templates/active_shareholder_captable.pdf.html:76
 msgid "Your Shareholders on"
 msgstr ""
 
-#: reports/templates/active_shareholder_captable.pdf.html:71
+#: reports/templates/active_shareholder_captable.pdf.html:76
+#: reports/templates/reports/table_report.pdf.html:77
 msgid "for company"
 msgstr ""
 
-#: reports/templates/active_shareholder_captable.pdf.html:85
+#: reports/templates/active_shareholder_captable.pdf.html:90
+#: reports/templates/reports/table_report.pdf.html:90
 msgid "Das Aktienregister"
 msgstr ""
 
-#: reports/templates/active_shareholder_captable.pdf.html:85
+#: reports/templates/active_shareholder_captable.pdf.html:90
+#: reports/templates/reports/table_report.pdf.html:90
 msgid "Page"
 msgstr ""
 
-#: reports/templates/active_shareholder_captable.pdf.html:86
+#: reports/templates/active_shareholder_captable.pdf.html:91
+#: reports/templates/reports/table_report.pdf.html:91
 msgid "of"
 msgstr ""
 
-#: reports/templates/active_shareholder_captable.pdf.html:87
+#: reports/templates/active_shareholder_captable.pdf.html:92
+#: reports/templates/reports/table_report.pdf.html:92
 msgid "Date generated"
 msgstr ""
 
-#: reports/templates/active_shareholder_captable.pdf.html:92
+#: reports/templates/active_shareholder_captable.pdf.html:97
 msgid "Total company capital"
 msgstr ""
 
-#: reports/templates/active_shareholder_captable.pdf.html:94
+#: reports/templates/active_shareholder_captable.pdf.html:99
 msgid "Provisioned Capital"
 msgstr ""
 
-#: reports/templates/active_shareholder_captable.pdf.html:97
+#: reports/templates/active_shareholder_captable.pdf.html:102
 msgid "Founding Date"
 msgstr ""
 
-#: reports/templates/active_shareholder_captable.pdf.html:104
+#: reports/templates/active_shareholder_captable.pdf.html:109
 msgid "ID"
 msgstr ""
 
-#: reports/templates/active_shareholder_captable.pdf.html:105
-#: reports/templates/active_shareholder_captable.pdf.html:155
+#: reports/templates/active_shareholder_captable.pdf.html:110
+#: reports/templates/active_shareholder_captable.pdf.html:203
 msgid "Name"
 msgstr ""
 
-#: reports/templates/active_shareholder_captable.pdf.html:107
+#: reports/templates/active_shareholder_captable.pdf.html:112
 msgid "CumFaceCap"
 msgstr ""
 
-#: reports/templates/active_shareholder_captable.pdf.html:108
+#: reports/templates/active_shareholder_captable.pdf.html:113
 #, python-format
 msgid "Shares (%%)"
 msgstr ""
 
-#: reports/templates/active_shareholder_captable.pdf.html:111
+#: reports/templates/active_shareholder_captable.pdf.html:116
 msgid "Aktiennummern"
 msgstr ""
 
-#: reports/templates/active_shareholder_captable.pdf.html:148
+#: reports/templates/active_shareholder_captable.pdf.html:198
 msgid "Options"
 msgstr ""
 
-#: reports/templates/active_shareholder_captable.pdf.html:157
+#: reports/templates/active_shareholder_captable.pdf.html:205
 #, python-format
 msgid "Optionen (%%)"
 msgstr ""
@@ -349,32 +526,27 @@ msgid "PDF"
 msgstr ""
 
 #: reports/templates/reports/_captable_form.html:46
-msgid "CSV"
-msgstr ""
-
-#: reports/templates/reports/_captable_form.html:51
 msgid "XLS"
 msgstr ""
 
-#: reports/templates/reports/_captable_form.html:58
+#: reports/templates/reports/_captable_form.html:53
 msgid "Sort by:"
 msgstr ""
 
-#: reports/templates/reports/_captable_form.html:70
+#: reports/templates/reports/_captable_form.html:65
 msgid "Report as of date:"
 msgstr ""
 
-#: reports/templates/reports/_captable_form.html:101
-#: reports/templates/reports/index.html:20
+#: reports/templates/reports/_captable_form.html:96
 msgid "Download active Shareholders"
 msgstr ""
 
-#: reports/templates/reports/_captable_form.html:105
+#: reports/templates/reports/_captable_form.html:100
 msgid "File generated at "
 msgstr ""
 
-#: reports/templates/reports/_captable_form.html:108
-#: reports/templates/reports/_captable_form.html:115
+#: reports/templates/reports/_captable_form.html:103
+#: reports/templates/reports/_captable_form.html:110
 msgid "Generate fresh file"
 msgstr ""
 
@@ -410,171 +582,58 @@ msgstr ""
 msgid "Reports and Downloads"
 msgstr ""
 
-#: reports/templates/reports/index.html:29
+#: reports/templates/reports/index.html:26
 msgid "Other Downloads"
 msgstr ""
 
-#: reports/templates/reports/index.html:33
+#: reports/templates/reports/index.html:30
 msgid "Transactions per security in period"
 msgstr ""
 
-#: reports/templates/reports/index.html:38
-#: reports/templates/reports/index.html:39
-msgid "Address data of all shareholders"
+#: reports/templates/reports/table_report.pdf.html:77
+msgid "on"
 msgstr ""
 
-#: reports/templates/reports/index.html:44
-msgid "Printed Certificates"
-msgstr ""
-
-#: reports/templates/reports/index.html:51
-msgid ""
-"No printed certificates are available. Please print a certificate via a "
-"transaction or option transaction"
-msgstr ""
-
-#: reports/templates/reports/index.html:56
-msgid "Vested Shares"
-msgstr ""
-
-#: reports/templates/reports/index.html:63
-msgid ""
-"no vested positions yet. please add vesting data to either transaction or "
-"option transaction"
-msgstr ""
-
-#: reports/templates/reports/index.html:68
-msgid "See all depot statements created for shareholders"
-msgstr ""
-
-#: reports/templates/reports/index.html:69
-msgid "Depot Statements Overview"
-msgstr ""
-
-#: reports/tests/test_views.py:368 reports/views.py:82
-msgid "date"
-msgstr ""
-
-#: reports/views.py:25
-msgid "last name"
-msgstr ""
-
-#: reports/views.py:25
-msgid "first name"
-msgstr ""
-
-#: reports/views.py:27
-msgid "street"
-msgstr ""
-
-#: reports/views.py:27
-msgid "street 2"
-msgstr ""
-
-#: reports/views.py:28
-msgid "c/o"
-msgstr ""
-
-#: reports/views.py:28
-msgid "zip"
-msgstr ""
-
-#: reports/views.py:28
-msgid "country"
-msgstr ""
-
-#: reports/views.py:29
-msgid "pobox"
-msgstr ""
-
-#: reports/views.py:29
-msgid "mailing type"
-msgstr ""
-
-#: reports/views.py:82
-msgid "buyer"
-msgstr ""
-
-#: reports/views.py:82
-msgid "seller"
-msgstr ""
-
-#: reports/views.py:83 reports/views.py:300
-msgid "count"
-msgstr ""
-
-#: reports/views.py:84
-msgid "value"
-msgstr ""
-
-#: reports/views.py:84 reports/views.py:300
-msgid "security"
-msgstr ""
-
-#: reports/views.py:84
-msgid "comment"
-msgstr ""
-
-#: reports/views.py:84
-msgid "depot type"
-msgstr ""
-
-#: reports/views.py:85
-msgid "vesting period (options only"
-msgstr ""
-
-#: reports/views.py:86
-msgid "cert id (options only)"
-msgstr ""
-
-#: reports/views.py:107 reports/views.py:109
+#: reports/views.py:46 reports/views.py:48
 msgid "----------------------------------------"
 msgstr ""
 
-#: reports/views.py:108
+#: reports/views.py:47
 msgid "Transactions for options:"
 msgstr ""
 
-#: reports/views.py:147
+#: reports/views.py:86
 msgid "Permission denied"
 msgstr ""
 
-#: reports/views.py:245 reports/views.py:300
-msgid "full name"
+#: reports/views.py:113
+msgid "date"
 msgstr ""
 
-#: reports/views.py:245
-msgid "security name"
+#: reports/views.py:113
+msgid "buyer"
 msgstr ""
 
-#: reports/views.py:246
-msgid "certificate id"
+#: reports/views.py:113
+msgid "seller"
 msgstr ""
 
-#: reports/views.py:246
-msgid "certificate printed at"
+#: reports/views.py:115
+msgid "value"
 msgstr ""
 
-#: reports/views.py:254
-msgid "option"
+#: reports/views.py:115
+msgid "comment"
 msgstr ""
 
-#: reports/views.py:262 reports/views.py:305
-msgid "stock"
+#: reports/views.py:115
+msgid "depot type"
 msgstr ""
 
-#: reports/views.py:301
-msgid "is management member"
+#: reports/views.py:116
+msgid "vesting period (options only"
 msgstr ""
 
-#: reports/views.py:302
-msgid "vesting in months"
-msgstr ""
-
-#: reports/views.py:302
-msgid "asset type"
-msgstr ""
-
-#: reports/views.py:310
-msgid "certificate"
+#: reports/views.py:117
+msgid "cert id (options only)"
 msgstr ""
