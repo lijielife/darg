@@ -42,7 +42,7 @@ class ReportTaskTestCase(MoreAssertsTestCaseMixin, TestCase):
         self.company = self.shs[0].company
         # have at least one unicode sh number (failed on test prev.)
         sh = self.shs[0]
-        sh.number = '999ü'
+        sh.number = u'999ü'
         sh.save()
 
     def test_get_certificates_pdf_context(self):
