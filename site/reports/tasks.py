@@ -68,7 +68,6 @@ PARTICIPATION_HEADER = [
     _('city'), _('country'), _('share count'), _('capital'), _('vote count')]
 
 
-
 def _get_captable_pdf_context(company, ordering, date):
     """
     isolated code to make for better testing
@@ -773,6 +772,7 @@ def render_certificates_xls(company_id, report_id, user_id=None, ordering=None,
 def render_certificates_pdf(company_id, report_id, user_id=None, ordering=None,
                             notify=False, track_downloads=False):
     # prepare
+    started_at = timezone.now()
     if user_id:
         user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
