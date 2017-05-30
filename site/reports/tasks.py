@@ -272,6 +272,7 @@ def _get_assembly_participation_pdf_context(company, date):
 
     return context
 
+
 def _get_certificates_pdf_context(company, date):
     ots = OptionTransaction.objects.filter(
         option_plan__company=company,
@@ -410,9 +411,9 @@ def _add_file_to_report(filename, report, content=None):
     report.save()
 
 
-def _summarize_report(report):
+def _summarize_report(report, started_at):
     now = timezone.now()
-    delta = now - report.created_at
+    delta = now - started_at
     report.generation_time = delta.seconds
     report.generated_at = now
     report.save()
@@ -470,6 +471,7 @@ def render_address_data_xls(company_id, report_id, user_id=None, ordering=None,
     report = Report.objects.get(pk=report_id)
     ordering = _parse_ordering(ordering)
     filename = _get_filename(report, company)
+    started_at = timezone.now()
 
     _rows = _get_contacts(company)
 
@@ -481,7 +483,7 @@ def render_address_data_xls(company_id, report_id, user_id=None, ordering=None,
 
     # post process
     _add_file_to_report(filename, report)
-    _summarize_report(report)
+    _summarize_report(report, started_at)
 
     if notify and user_id:
         _send_notify(user, filename, subject=_('Your xls contacts file'),
@@ -506,6 +508,7 @@ def render_address_data_pdf(company_id, report_id, user_id=None, ordering=None,
     report = Report.objects.get(pk=report_id)
     ordering = _parse_ordering(ordering)
     filename = _get_filename(report, company)
+    started_at = timezone.now()
 
     # render
     context = _get_address_data_pdf_context(company, date=report.report_at)
@@ -514,7 +517,7 @@ def render_address_data_pdf(company_id, report_id, user_id=None, ordering=None,
 
     # post process
     _add_file_to_report(filename, report, content)
-    _summarize_report(report)
+    _summarize_report(report, started_at)
 
     if notify and user_id:
         _send_notify(user, filename, subject=_('Your pdf contacts file'),
@@ -532,6 +535,7 @@ def render_assembly_participation_xls(company_id, report_id, user_id=None,
                                       ordering=None, notify=False,
                                       track_downloads=False):
     # prepare
+    started_at = timezone.now()
     if user_id:
         user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
@@ -560,7 +564,7 @@ def render_assembly_participation_xls(company_id, report_id, user_id=None,
 
     # post process
     _add_file_to_report(filename, report)
-    _summarize_report(report)
+    _summarize_report(report, started_at)
 
     if notify and user_id:
         _send_notify(user, filename,
@@ -581,6 +585,7 @@ def render_assembly_participation_pdf(company_id, report_id, user_id=None,
                                       ordering=None, notify=False,
                                       track_downloads=False):
     # prepare
+    started_at = timezone.now()
     if user_id:
         user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
@@ -596,7 +601,7 @@ def render_assembly_participation_pdf(company_id, report_id, user_id=None,
 
     # post process
     _add_file_to_report(filename, report, content)
-    _summarize_report(report)
+    _summarize_report(report, started_at)
 
     if notify and user_id:
         _send_notify(user, filename,
@@ -614,6 +619,7 @@ def render_assembly_participation_pdf(company_id, report_id, user_id=None,
 def render_captable_pdf(company_id, report_id, user_id=None, ordering=None,
                         notify=False, track_downloads=False):
     # prepare
+    started_at = timezone.now()
     if user_id:
         user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
@@ -629,7 +635,7 @@ def render_captable_pdf(company_id, report_id, user_id=None, ordering=None,
 
     # post process
     _add_file_to_report(filename, report, content)
-    _summarize_report(report)
+    _summarize_report(report, started_at)
 
     if notify and user_id:
         _send_notify(user, filename, subject=_('Your pdf captable file'),
@@ -646,6 +652,7 @@ def render_captable_pdf(company_id, report_id, user_id=None, ordering=None,
 def render_captable_xls(company_id, report_id, user_id=None, ordering=None,
                         notify=False, track_downloads=False):
     # prepare
+    started_at = timezone.now()
     if user_id:
         user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
@@ -681,7 +688,7 @@ def render_captable_xls(company_id, report_id, user_id=None, ordering=None,
 
     # post process
     _add_file_to_report(filename, report)
-    _summarize_report(report)
+    _summarize_report(report, started_at)
 
     if notify and user_id:
         _send_notify(user, filename, subject=_('Your xls captable file'),
@@ -703,6 +710,7 @@ def render_certificates_xls(company_id, report_id, user_id=None, ordering=None,
     return xls with list of printed certificates
     """
     # prepare
+    started_at = timezone.now()
     if user_id:
         user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
@@ -746,7 +754,7 @@ def render_certificates_xls(company_id, report_id, user_id=None, ordering=None,
 
     # post process
     _add_file_to_report(filename, report)
-    _summarize_report(report)
+    _summarize_report(report, started_at)
 
     if notify and user_id:
         _send_notify(user, filename, subject=_('Your xls certificates file'),
@@ -779,7 +787,7 @@ def render_certificates_pdf(company_id, report_id, user_id=None, ordering=None,
 
     # post process
     _add_file_to_report(filename, report, content)
-    _summarize_report(report)
+    _summarize_report(report, started_at)
 
     if notify and user_id:
         _send_notify(user, filename, subject=_('Your pdf certificates file'),
@@ -796,6 +804,7 @@ def render_certificates_pdf(company_id, report_id, user_id=None, ordering=None,
 def render_vested_shares_xls(company_id, report_id, user_id=None, ordering=None,
                              notify=False, track_downloads=False):
     # prepare
+    started_at = timezone.now()
     if user_id:
         user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
@@ -827,7 +836,7 @@ def render_vested_shares_xls(company_id, report_id, user_id=None, ordering=None,
 
     # post process
     _add_file_to_report(filename, report)
-    _summarize_report(report)
+    _summarize_report(report, started_at)
 
     if notify and user_id:
         _send_notify(user, filename, subject=_('Your xls vested shares file'),
@@ -846,6 +855,7 @@ def render_vested_shares_xls(company_id, report_id, user_id=None, ordering=None,
 def render_vested_shares_pdf(company_id, report_id, user_id=None, ordering=None,
                              notify=False, track_downloads=False):
     # prepare
+    started_at = timezone.now()
     if user_id:
         user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
@@ -860,7 +870,7 @@ def render_vested_shares_pdf(company_id, report_id, user_id=None, ordering=None,
 
     # post process
     _add_file_to_report(filename, report, content)
-    _summarize_report(report)
+    _summarize_report(report, started_at)
 
     if notify and user_id:
         _send_notify(user, filename, subject=_('Your pdf vested shares file'),

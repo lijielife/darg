@@ -246,8 +246,9 @@ class ReportTaskTestCase(MoreAssertsTestCaseMixin, TestCase):
 
     def test_summarize_report(self):
         """ record some data when report finished rendering """
+        started_at = timezone.now()
         report = ReportGenerator().generate()
-        _summarize_report(report)
+        _summarize_report(report, started_at)
         report.refresh_from_db()
         self.assertIsNotNone(report.generation_time)
         self.assertIsNotNone(report.generated_at)
