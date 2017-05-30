@@ -1326,16 +1326,16 @@ class ShareholderTestCase(TestCase):
             bought_at=now-datetime.timedelta(days=8)
             )
 
-        self.assertEqual(s1.share_percent(), '99.00')
-        self.assertEqual(s2.share_percent(), '0.99')
-        self.assertEqual(s3.share_percent(), '0.01')
+        self.assertEqual(s1.share_percent(), 99.0001)
+        self.assertEqual(s2.share_percent(), 0.99)
+        self.assertEqual(s3.share_percent(), 0.0099)
 
         PositionGenerator().generate(
             buyer=s2, seller=s1, count=250000, value=100, security=security,
             bought_at=now-datetime.timedelta(days=7)
             )
 
-        self.assertEqual(s1.share_percent(), '49.50')
+        self.assertEqual(s1.share_percent(), 49.50)
 
     def test_share_value(self):
         """

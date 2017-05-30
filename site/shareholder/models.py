@@ -1273,8 +1273,7 @@ class Shareholder(TagMixin, models.Model):
                 return "{:.2f}".format(float(0))
 
             # do the math
-            return "{:.2f}".format(
-                count / float(total-cs_count) * 100)
+            return round(count / float(total-cs_count) * 100, 4)
 
         return False
 
