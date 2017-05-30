@@ -14,6 +14,14 @@ describe 'Unit: Testing Start Controller', ->
     return
   )
 
+  beforeEach ->
+      response = {results: []}
+      $httpBackend.whenGET('/services/rest/shareholders').respond 200, response
+      $httpBackend.whenGET('/services/rest/shareholders/option_holder').respond 200, response
+      $httpBackend.whenGET('/services/rest/user').respond 200, {results: [{selected_company: '/company/23/'}]}
+      $httpBackend.whenGET('/company/23/').respond 200, response
+      $httpBackend.flush()
+
   describe 'method show_full_menu', ->
     it 'makes the hidden menu items visible', ->
       spyOn($scope, 'show_full_menu')
@@ -22,13 +30,20 @@ describe 'Unit: Testing Start Controller', ->
       return
     return
 
+  describe 'captable display', ->
+    it 'should be hidden if there is one or less shareholders', ->
+        $scope.shareholders = [{name: 'shareholder1'}]
+        $scope.$digest()
+        expect($scope.hide_captable).toEqual true
+
+    it 'should be displayed of there are more then one shareholders', ->
+        $scope.shareholders = [{name: 'shareholder1'}, {name: 'shareholder2'}]
+        $scope.$digest()
+        expect($scope.hide_captable).toEqual false
+
   describe 'method get new shareholder number', ->
 
     it 'returns a single number and updates the newShareholder obj.number', ->
-      $httpBackend.expectGET('/services/rest/shareholders').respond(200, {results: []})
-      $httpBackend.expectGET('/services/rest/shareholders/option_holder').respond(200, {results: []})
-      $httpBackend.expectGET('/services/rest/user').respond(200, {results: [{selected_company: undefined}]})
-      $httpBackend.flush()
       $httpBackend.expectGET('/services/rest/shareholders/get_new_shareholder_number').respond(
         200, {number: 790})
       $scope.get_new_shareholder_number()

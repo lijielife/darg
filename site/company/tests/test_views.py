@@ -317,6 +317,9 @@ class ConfirmFormViewTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
         self.assertEqual(self.view.get_success_url(),
                          reverse('djstripe:history', args=[1]))
 
+        self.view.is_new_customer = True
+        self.assertEqual(self.view.get_success_url(), reverse('start'))
+
 
 class ChangePlanViewTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                              TestCase):
@@ -393,7 +396,8 @@ class ChangePlanViewTestCase(StripeTestCaseMixin, SubscriptionTestMixin,
                             return_value=True):
                 plans = copy.deepcopy(djstripe_settings.PLAN_LIST)
                 plans[0]['price'] = 1
-                with mock.patch('company.views.PLAN_LIST', return_value=plans) as plan_mock:
+                with mock.patch('company.views.PLAN_LIST',
+                                return_value=plans) as plan_mock:
                     plan_mock.__iter__.return_value = plans
                     self.view.post(req)
                     mock_sub.assert_called_with('test', prorate=True)

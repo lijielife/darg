@@ -166,6 +166,8 @@ class ConfirmFormView(CompanyOperatorPermissionRequiredViewMixin,
                 customer, created = Customer.get_or_create(
                     subscriber=subscriber_request_callback(self.request))
                 customer.update_card(post_data.get("stripe_token"))
+                if not hasattr(customer, "current_subscription"):
+                    self.is_new_customer = True
 
                 # update customer email (if necessary)
                 email = post_data.get('email')
@@ -203,6 +205,10 @@ class ConfirmFormView(CompanyOperatorPermissionRequiredViewMixin,
             return self.form_invalid(form)
 
     def get_success_url(self):
+        # new clients go to start to resume with next stepin company setup
+        if getattr(self, 'is_new_customer', False):
+            return reverse('start')
+
         return reverse('djstripe:history',
                        kwargs=dict(company_id=self.kwargs.get('company_id')))
 

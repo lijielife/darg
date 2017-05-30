@@ -59,7 +59,6 @@ app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'C
     ]
 
     $scope.show_add_shareholder = false
-    $scope.hide_captable = false
 
     # empty form data
     $scope.newShareholder = new Shareholder()
@@ -147,6 +146,14 @@ app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'C
         start = ($scope.optionholder_current - 1) * 20
         end = Math.min($scope.optionholder_current * 20, $scope.optionholder_total)
         $scope.optionholder_current_range = start.toString() + '-' + end.toString()
+
+    $scope.$watchCollection 'shareholders', (shareholders)->
+        # do not show table if there is only one shareholder to clear the page for
+        # the user and encourage him to add more shareholders
+        if $scope.shareholders.length > 1
+            $scope.hide_captable = false
+        else
+            $scope.hide_captable = true
 
     # --- PAGINATION
     $scope.next_page = ->
@@ -291,9 +298,6 @@ app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'C
             # Reset our editor to a new blank post
             $scope.newCompany = new Company()
             $window.ga('send', 'event', 'form-send', 'add-company')
-            # on company create hide captable in next step so the user is not
-            # confused. reenable on first shareholder add
-            $scope.hide_captable = true
             $scope.addCompanyLoading = false
         .then ->
             # Clear any errors
@@ -320,7 +324,6 @@ app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'C
             $scope.newShareholder = new Shareholder()
             $scope.shareholder_added_success = true
             $scope.show_add_shareholder = false
-            $scope.hide_captable = false
         .then ->
             # Clear any errors
             $scope.errors = null

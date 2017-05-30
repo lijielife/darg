@@ -45562,7 +45562,6 @@ return deCh;
         }
       ];
       $scope.show_add_shareholder = false;
-      $scope.hide_captable = false;
       $scope.newShareholder = new Shareholder();
       $scope.newCompany = new CompanyAdd();
       $scope.reset_search_params = function() {
@@ -45650,6 +45649,13 @@ return deCh;
         start = ($scope.optionholder_current - 1) * 20;
         end = Math.min($scope.optionholder_current * 20, $scope.optionholder_total);
         return $scope.optionholder_current_range = start.toString() + '-' + end.toString();
+      });
+      $scope.$watchCollection('shareholders', function(shareholders) {
+        if ($scope.shareholders.length > 1) {
+          return $scope.hide_captable = false;
+        } else {
+          return $scope.hide_captable = true;
+        }
       });
       $scope.next_page = function() {
         if ($scope.next) {
@@ -45830,7 +45836,6 @@ return deCh;
         }).then(function() {
           $scope.newCompany = new Company();
           $window.ga('send', 'event', 'form-send', 'add-company');
-          $scope.hide_captable = true;
           return $scope.addCompanyLoading = false;
         }).then(function() {
           var url;
@@ -45858,8 +45863,7 @@ return deCh;
         }).then(function() {
           $scope.newShareholder = new Shareholder();
           $scope.shareholder_added_success = true;
-          $scope.show_add_shareholder = false;
-          return $scope.hide_captable = false;
+          return $scope.show_add_shareholder = false;
         }).then(function() {
           $scope.errors = null;
           $scope.addShareholderLoading = false;
