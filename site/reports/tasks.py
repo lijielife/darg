@@ -319,6 +319,17 @@ def _get_certificates_pdf_context(company, date):
     return context
 
 
+def _get_report(report_id):
+    """ report might still be stuck in DRF atomic transaction during creation,
+    have patience """
+    try:
+        report = Report.objects.get(id=report_id)
+    except Report.DoesNotExist:
+        time.sleep(1)
+        report = Report.objects.get(id=report_id)
+    return report
+
+
 def _get_vested_shares_pdf_context(company, date):
 
     positions = Position.objects.filter(
@@ -471,7 +482,7 @@ def render_address_data_xls(company_id, report_id, user_id=None, ordering=None,
     if user_id:
         user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
-    report = Report.objects.get(pk=report_id)
+    report = _get_report(report_id)
     filename = _get_filename(report, company)
     started_at = timezone.now()
 
@@ -507,7 +518,7 @@ def render_address_data_pdf(company_id, report_id, user_id=None, ordering=None,
     if user_id:
         user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
-    report = Report.objects.get(pk=report_id)
+    report = _get_report(report_id)
     ordering = _parse_ordering(ordering)
     filename = _get_filename(report, company)
     started_at = timezone.now()
@@ -541,7 +552,7 @@ def render_assembly_participation_xls(company_id, report_id, user_id=None,
     if user_id:
         user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
-    report = Report.objects.get(pk=report_id)
+    report = _get_report(report_id)
     ordering = u'number'
     filename = _get_filename(report, company)
 
@@ -591,7 +602,7 @@ def render_assembly_participation_pdf(company_id, report_id, user_id=None,
     if user_id:
         user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
-    report = Report.objects.get(pk=report_id)
+    report = _get_report(report_id)
     ordering = _parse_ordering(ordering)
     filename = _get_filename(report, company)
 
@@ -625,7 +636,7 @@ def render_captable_pdf(company_id, report_id, user_id=None, ordering=None,
     if user_id:
         user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
-    report = Report.objects.get(pk=report_id)
+    report = _get_report(report_id)
     ordering = _parse_ordering(ordering)
     filename = _get_filename(report, company)
 
@@ -658,7 +669,7 @@ def render_captable_xls(company_id, report_id, user_id=None, ordering=None,
     if user_id:
         user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
-    report = Report.objects.get(pk=report_id)
+    report = _get_report(report_id)
     ordering = _parse_ordering(ordering)
     filename = _get_filename(report, company)
     track_numbers_secs = company.security_set.filter(track_numbers=True)
@@ -716,7 +727,7 @@ def render_certificates_xls(company_id, report_id, user_id=None, ordering=None,
     if user_id:
         user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
-    report = Report.objects.get(pk=report_id)
+    report = _get_report(report_id)
     ordering = _parse_ordering(ordering)
     filename = _get_filename(report, company)
 
@@ -779,7 +790,7 @@ def render_certificates_pdf(company_id, report_id, user_id=None, ordering=None,
     if user_id:
         user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
-    report = Report.objects.get(pk=report_id)
+    report = _get_report(report_id)
     ordering = _parse_ordering(ordering)
     filename = _get_filename(report, company)
 
@@ -811,7 +822,7 @@ def render_vested_shares_xls(company_id, report_id, user_id=None, ordering=None,
     if user_id:
         user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
-    report = Report.objects.get(pk=report_id)
+    report = _get_report(report_id)
     ordering = _parse_ordering(ordering)
     filename = _get_filename(report, company)
 
@@ -862,7 +873,7 @@ def render_vested_shares_pdf(company_id, report_id, user_id=None, ordering=None,
     if user_id:
         user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
-    report = Report.objects.get(pk=report_id)
+    report = _get_report(report_id)
     ordering = _parse_ordering(ordering)
     filename = _get_filename(report, company)
 

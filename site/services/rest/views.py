@@ -339,7 +339,6 @@ class ReportViewSet(viewsets.ModelViewSet):
             )
         report.update_eta()
         report.save()
-        transaction.commit()
         report.render(notify=True, track_downloads=True)
         return report
 
