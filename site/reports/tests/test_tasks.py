@@ -105,7 +105,7 @@ class ReportTaskTestCase(MoreAssertsTestCaseMixin, TestCase):
         self.assertTrue(len(res) > 1)
         self.assertEqual(len(res[0]), 15)
         self.assertEqual(len(res[1]), 15)  # no nationality
-        self.assertEqual(res[0][0], u'999ü')
+        self.assertIn(u'999ü', [r[0] for r in res])
 
     def test_get_default_context(self):
         """ default context for pdf exports """
