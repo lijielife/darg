@@ -250,7 +250,7 @@
   <p class="cumulated-face-value">{% trans "Total face value" %}{% context_help msg %}: {% verbatim %}{{ shareholder.cumulated_face_value | currency }}{% endverbatim %}</p>
 
   {% if shareholder.share_percent %}
-    <p>{% trans "% of shares floating" %}: {% verbatim %}{{ shareholder.share_percent }}%{% endverbatim %} </p>
+  <p>{% trans "% of shares floating" %}: {% verbatim %}{% widthratio shareholder.share_percent 1 100 %}%{% endverbatim %} </p>
   {% endif %}
 
   {% if not shareholder.is_company_shareholder and not shareholder.is_dispo_shareholder %}

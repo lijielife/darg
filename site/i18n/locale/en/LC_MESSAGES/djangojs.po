@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-24 20:33+0000\n"
+"POT-Creation-Date: 2017-05-30 11:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,16 +25,16 @@ msgstr ""
 #: static/compiled/javascript/i18n_noop.js:4
 #: static/compiled/javascript/i18n_noop.js:24
 #: static/compiled/javascript/script.js:45064
-#: static/compiled/javascript/script.js:45503
-#: static/compiled/javascript/script.js:45551
+#: static/compiled/javascript/script.js:45512
+#: static/compiled/javascript/script.js:45560
 msgid "Last Name"
 msgstr ""
 
 #: static/compiled/javascript/i18n_noop.js:5
 #: static/compiled/javascript/i18n_noop.js:25
 #: static/compiled/javascript/script.js:45076
-#: static/compiled/javascript/script.js:45497
-#: static/compiled/javascript/script.js:45548
+#: static/compiled/javascript/script.js:45506
+#: static/compiled/javascript/script.js:45557
 msgid "Shareholder Number"
 msgstr ""
 
@@ -295,33 +295,33 @@ msgid "Share Percent Ownership (descending)"
 msgstr ""
 
 #: static/compiled/javascript/script.js:45088
-#: static/compiled/javascript/script.js:45491
-#: static/compiled/javascript/script.js:45545
+#: static/compiled/javascript/script.js:45500
+#: static/compiled/javascript/script.js:45554
 msgid "Email"
 msgstr ""
 
 #: static/compiled/javascript/script.js:45091
-#: static/compiled/javascript/script.js:45494
+#: static/compiled/javascript/script.js:45503
 msgid "Email desc"
 msgstr ""
 
 #: static/compiled/javascript/script.js:45094
-#: static/compiled/javascript/script.js:45509
+#: static/compiled/javascript/script.js:45518
 msgid "Capital based on face value"
 msgstr ""
 
 #: static/compiled/javascript/script.js:45097
-#: static/compiled/javascript/script.js:45512
+#: static/compiled/javascript/script.js:45521
 msgid "Capital based on face value desc"
 msgstr ""
 
 #: static/compiled/javascript/script.js:45100
-#: static/compiled/javascript/script.js:45515
+#: static/compiled/javascript/script.js:45524
 msgid "Postal Code"
 msgstr ""
 
 #: static/compiled/javascript/script.js:45103
-#: static/compiled/javascript/script.js:45518
+#: static/compiled/javascript/script.js:45527
 msgid "Postal Code desc"
 msgstr ""
 
@@ -333,38 +333,50 @@ msgstr ""
 msgid "Assembly Participation"
 msgstr ""
 
-#: static/compiled/javascript/script.js:45312
-msgid "Human Being"
+#: static/compiled/javascript/script.js:45115
+msgid "Address data of all shareholders"
 msgstr ""
 
-#: static/compiled/javascript/script.js:45315
-msgid "Corporate"
+#: static/compiled/javascript/script.js:45118
+msgid "Printed Certificates"
+msgstr ""
+
+#: static/compiled/javascript/script.js:45121
+msgid "Vested Shares"
 msgstr ""
 
 #: static/compiled/javascript/script.js:45321
-msgid "Not deliverable"
+msgid "Human Being"
 msgstr ""
 
 #: static/compiled/javascript/script.js:45324
+msgid "Corporate"
+msgstr ""
+
+#: static/compiled/javascript/script.js:45330
+msgid "Not deliverable"
+msgstr ""
+
+#: static/compiled/javascript/script.js:45333
 msgid "Postal Mail"
 msgstr ""
 
-#: static/compiled/javascript/script.js:45327
+#: static/compiled/javascript/script.js:45336
 msgid "via Email"
 msgstr ""
 
-#: static/compiled/javascript/script.js:45500
+#: static/compiled/javascript/script.js:45509
 msgid "Shareholder Number desc"
 msgstr ""
 
-#: static/compiled/javascript/script.js:45506
+#: static/compiled/javascript/script.js:45515
 msgid "Last Name desc"
 msgstr ""
 
-#: static/compiled/javascript/script.js:45521
+#: static/compiled/javascript/script.js:45530
 msgid "Share count"
 msgstr ""
 
-#: static/compiled/javascript/script.js:45524
+#: static/compiled/javascript/script.js:45533
 msgid "Share count desc"
 msgstr ""

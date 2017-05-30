@@ -24,5 +24,5 @@ def get_active_option_holders(company, date, ordering, security=None):
 
 
 @register.assignment_tag
-def shareholder_cumulated_face_value(shareholder, date):
-    return shareholder.cumulated_face_value(date=date)
+def shareholder_cumulated_face_value(shareholder, date, security=None):
+    return shareholder.cumulated_face_value(date=date, security=security)

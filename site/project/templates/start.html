@@ -110,7 +110,7 @@
           <value class='transform-center' ng-if="shareholder.share_count != '-'">
             {{ shareholder.share_count | number }}
             <span class="shares-count" ng-hide="shareholder.is_company">
-              ({{shareholder.share_percent | number : 2}}%)
+              ({{shareholder.share_percent | percentage : 2}})
             </span>
           </value>
         </div>
@@ -150,7 +150,7 @@
         </div>
         <div class="td text-right-flex share shareholders-count gray-circle">
           <value class='transform-center' ng-if="option_holder.options_count != '-'">
-            {{ option_holder.options_count | number : 0}} ({{option_holder.options_percent | number : 2}}%)
+            {{ option_holder.options_count | number : 0}} ({{option_holder.options_percent | percentage : 2}})
           </value>
         </div>
       </div>

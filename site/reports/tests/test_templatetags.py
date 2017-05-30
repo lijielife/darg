@@ -24,6 +24,23 @@ class ReportTemplateTagTestCase(TestCase):
         res = get_active_shareholders(self.company, self.today, self.ordering)
         self.assertEqual(len(res), 11)
 
+        for i, s in enumerate(self.company.shareholder_set.all()):
+            s.number = i
+            s.save()
+        ordering = '-number'
+        res = get_active_shareholders(self.company, self.today, ordering)
+        for idx, sh in enumerate(res):
+            if idx == 0:
+                continue
+            self.assertLess(float(sh.number), float(res[idx-1].number))
+
+        ordering = 'number'
+        res = get_active_shareholders(self.company, self.today, ordering)
+        for idx, sh in enumerate(res):
+            if idx == 0:
+                continue
+            self.assertGreater(float(sh.number), float(res[idx-1].number))
+
     def test_get_active_option_holders(self):
         """ return ordered list of active option holders for security on date
         """
@@ -34,5 +51,10 @@ class ReportTemplateTagTestCase(TestCase):
     def test_shareholder_cumulated_face_value(self):
         """ return cumulated face value for single shareholder """
         res = shareholder_cumulated_face_value(self.shs[1], self.today)
+        self.assertEqual(self.shs[1].cumulated_face_value(date=self.today),
+                         res)
+
+        res = shareholder_cumulated_face_value(self.shs[1], self.today,
+                                               security=self.security)
         self.assertEqual(self.shs[1].cumulated_face_value(date=self.today),
                          res)

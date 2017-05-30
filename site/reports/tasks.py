@@ -1,11 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import csv
+from decimal import Decimal
 import datetime
 import logging
 import operator
 import os
-import StringIO
 import sys
 import time
 from copy import deepcopy
@@ -21,7 +20,7 @@ from natsort import natsorted
 from project.celery import app
 from reports.models import (ORDERING_TYPES, REPORT_FILE_TYPES, REPORT_TYPES,
                             Report)
-from shareholder.models import Company
+from shareholder.models import Company, OptionTransaction, Position, Q
 from utils.formatters import human_readable_segments
 from utils.http import url_with_domain
 from utils.pdf import render_to_pdf
@@ -35,7 +34,7 @@ logger = logging.getLogger(__name__)
 CSV_HEADER = [
     _(u'shareholder number'), _('legal type'), _('registration types'),
     _('company_department'), _('title'), _('salutation'), _(u'name'),
-    _('address'), _('postal_code'), _('city'),
+    _('address'), _('postal_code'), _('city'), _('country'),
     _('birthday'), _('mailing_type'), _('nationality'), _('security type'),
     _('cusip'), _('face_value'), _('certificate_ids (issue date)'),
     _('stock book id'), _('depot_type'),
@@ -45,6 +44,29 @@ CSV_HEADER = [
     _(u'language ISO'), _('language full')
 ]
 
+CONTACTS_HEADER = [
+    _(u'shareholder ID'), _(u'last name'), _(u'first name'),
+    _(u'email'),
+    _(u'language ISO'), _('language full'), _('street'), _('street 2'),
+    _('c/o'), _('city'), _('zip'), _('country'),
+    _('pobox'), _('mailing type'), _('nationality'),
+]
+
+
+VESTED_SHARES_HEADER = [
+    _('full name'), _('count'), _('security'), _('is management member'),
+    _('vesting in months'), _('asset type')]
+
+
+CERTIFICATES_HEADER = [
+    _('full name'), _('share count'), _('security name'), _('certificate id'),
+    _('certificate printed at'), _('security type')]
+
+
+PARTICIPATION_HEADER = [
+    _('Shareholder#'), _('Full Name'), _('Address'), _('postal code'),
+    _('city'), _('country'), _('share count'), _('capital'), _('vote count')]
+
 
 def _get_captable_pdf_context(company, ordering, date):
     """
@@ -53,16 +75,23 @@ def _get_captable_pdf_context(company, ordering, date):
     option_ordering = ordering.replace('share', 'options')
 
     context = {
-            'pagesize': 'A4',
-            'company': company,
-            'today': datetime.datetime.now().date(),
             'total_capital': company.get_total_capital(),
-            'currency': 'CHF',
             'provisioned_capital': company.get_provisioned_capital(),
             'securities_with_track_numbers': company.security_set.filter(
                 track_numbers=True),
             'ordering': ordering,
             'option_ordering': option_ordering,
+        }
+    context.update(_get_default_pdf_context(company, date))
+    return context
+
+
+def _get_default_pdf_context(company, date):
+    context = {
+            'company': company,
+            'pagesize': 'A4',
+            'today': datetime.datetime.now().date(),
+            'currency': 'CHF',
             'report_date': date,
         }
     return context
@@ -73,6 +102,10 @@ def to_string_or_empty(value):
         # remove NoneTypes
         value = [v for v in value if v]
         value = u" , ".join(value)
+
+    # casts
+    if isinstance(value, (float, int, Decimal)):
+        return value
     return unicode(value or u'')
 
 
@@ -90,8 +123,9 @@ def _collect_csv_data(shareholder, date):
                 shareholder.user.userprofile.title,
                 shareholder.user.userprofile.salutation,
                 shareholder.get_full_name(),
-                shareholder.user.userprofile.get_address(),
+                shareholder.user.userprofile.get_address(skip_city=True),
                 shareholder.user.userprofile.postal_code,
+                shareholder.user.userprofile.country,
                 shareholder.user.userprofile.city,
                 shareholder.user.userprofile.birthday,
                 shareholder.get_mailing_type_display(),
@@ -104,7 +138,7 @@ def _collect_csv_data(shareholder, date):
                 shareholder.get_depot_types(security=security),
                 shareholder.user.email,
                 shareholder.share_count(security=security, date=date),
-                shareholder.share_percent(security=security, date=date),
+                float(shareholder.share_percent(security=security, date=date)) * 100,
                 shareholder.vote_percent(security=security, date=date),
                 shareholder.cumulated_face_value(security=security, date=date),
                 shareholder.is_management,
@@ -130,7 +164,10 @@ def _collect_csv_data(shareholder, date):
 
 def _collect_participation_csv_data(shareholder, date):
     row = [shareholder.number, shareholder.get_full_name(),
-           shareholder.user.userprofile.get_address(),
+           shareholder.user.userprofile.get_address(skip_city=True),
+           shareholder.user.userprofile.postal_code,
+           shareholder.user.userprofile.city,
+           shareholder.user.userprofile.country,
            shareholder.share_count(),
            shareholder.cumulated_face_value(),
            shareholder.vote_count()
@@ -139,7 +176,190 @@ def _collect_participation_csv_data(shareholder, date):
     # all utf8
     row = [to_string_or_empty(val) for val in row]
 
-    return row
+    return [row]
+
+
+def _get_contacts(company):
+
+    rows = []
+    queryset = company.get_active_shareholders()
+    queryset = _order_queryset(queryset, 'user__last_name')
+    for shareholder in queryset:
+        row = [
+            shareholder.number,
+            shareholder.user.last_name,
+            shareholder.user.first_name,
+            shareholder.user.email,
+            shareholder.user.userprofile.language,
+            shareholder.user.userprofile.get_language_display(),
+            shareholder.user.userprofile.street,
+            shareholder.user.userprofile.street2,
+            shareholder.user.userprofile.c_o,
+            shareholder.user.userprofile.city,
+            shareholder.user.userprofile.postal_code,
+            (shareholder.user.userprofile.country.name
+                if shareholder.user.userprofile.country else u''),
+            shareholder.user.userprofile.pobox,
+            shareholder.get_mailing_type_display(),
+            (shareholder.user.userprofile.nationality.name
+                if shareholder.user.userprofile.nationality else u'')
+        ]
+        rows.append(row)
+
+    queryset = company.get_active_option_holders()
+    queryset = _order_queryset(queryset, 'user__last_name')
+    for shareholder in queryset:
+        row = [
+            shareholder.number,
+            shareholder.user.last_name,
+            shareholder.user.first_name,
+            shareholder.user.email,
+            shareholder.user.userprofile.language,
+            shareholder.user.userprofile.get_language_display(),
+            shareholder.user.userprofile.street,
+            shareholder.user.userprofile.street2,
+            shareholder.user.userprofile.c_o,
+            shareholder.user.userprofile.city,
+            shareholder.user.userprofile.postal_code,
+            (shareholder.user.userprofile.country.name
+                if shareholder.user.userprofile.country else u''),
+            shareholder.user.userprofile.pobox,
+            shareholder.get_mailing_type_display(),
+            (shareholder.user.userprofile.nationality.name
+                if shareholder.user.userprofile.nationality else u'')
+        ]
+        rows.append(row)
+
+    return rows
+
+
+def _get_address_data_pdf_context(company, date):
+    _rows = _get_contacts(company)
+
+    rows = []
+    for row in _rows:
+        rows.append([to_string_or_empty(s) for s in row])
+
+    context = {
+        'heading': _('Active Shareholder contacts data'),
+        'header': CONTACTS_HEADER,
+        'table_data': rows,
+    }
+    context.update(_get_default_pdf_context(company, date))
+
+    return context
+
+
+def _get_assembly_participation_pdf_context(company, date):
+    queryset = company.get_active_shareholders(date=date)
+    queryset = _order_queryset(queryset, 'number')
+
+    _rows = []
+    for shareholder in queryset:
+        if shareholder.share_count(date=date):
+            _rows.extend(_collect_participation_csv_data(
+                shareholder, date))
+        else:
+            continue
+
+    rows = []
+    for row in _rows:
+        rows.append([to_string_or_empty(s) for s in row])
+
+    context = {
+        'heading': _('Assembly Participants list'),
+        'header': PARTICIPATION_HEADER,
+        'table_data': rows,
+    }
+    context.update(_get_default_pdf_context(company, date))
+
+    return context
+
+
+def _get_certificates_pdf_context(company, date):
+    ots = OptionTransaction.objects.filter(
+        option_plan__company=company,
+        printed_at__isnull=False,
+        certificate_id__isnull=False,
+        ).distinct()
+    pos = Position.objects.filter(
+        Q(buyer__company=company) | Q(seller__company=company),
+        printed_at__isnull=False,
+        certificate_id__isnull=False,
+        ).distinct()
+    # add option transactions
+    _rows = []
+    _rows += [
+        [ot.buyer.get_full_name(),
+         ot.count,
+         unicode(ot.option_plan.security),
+         ot.certificate_id,
+         ot.printed_at, _('option')]
+        for ot in ots]
+    # add positions
+    _rows += [
+        [ot.buyer.get_full_name(),
+         ot.count,
+         unicode(ot.security),
+         ot.certificate_id,
+         ot.printed_at, _('stock')]
+        for ot in pos]
+    # render xls
+    rows = []
+    for row in _rows:
+        rows.append([to_string_or_empty(s) for s in row])
+
+    context = {
+        'heading': _('printed certificates'),
+        'header': CERTIFICATES_HEADER,
+        'table_data': rows,
+    }
+    context.update(_get_default_pdf_context(company, date))
+
+    return context
+
+
+def _get_report(report_id):
+    """ report might still be stuck in DRF atomic transaction during creation,
+    have patience """
+    try:
+        report = Report.objects.get(id=report_id)
+    except Report.DoesNotExist:
+        time.sleep(1)
+        report = Report.objects.get(id=report_id)
+    return report
+
+
+def _get_vested_shares_pdf_context(company, date):
+
+    positions = Position.objects.filter(
+        Q(buyer__company=company) | Q(seller__company=company),
+        vesting_months__gt=0).distinct()
+    ots = OptionTransaction.objects.filter(
+        option_plan__company=company,
+        vesting_months__gt=0).distinct()
+    _rows = []
+    _rows += [
+        [p.buyer.get_full_name(), p.count, unicode(p.security),
+         p.buyer.is_management, p.vesting_months, _('stock')
+         ] for p in positions]
+    _rows += [[ot.buyer.get_full_name(), ot.count,
+              unicode(ot.option_plan.security),
+              ot.buyer.is_management,
+              ot.vesting_months, _('certificate')] for ot in ots]
+
+    rows = []
+    for row in _rows:
+        rows.append([to_string_or_empty(s) for s in row])
+
+    context = {
+        'heading': _('vested shares'),
+        'header': VESTED_SHARES_HEADER,
+        'table_data': rows,
+    }
+    context.update(_get_default_pdf_context(company, date))
+
+    return context
 
 
 def _parse_ordering(ordering):
@@ -205,9 +425,9 @@ def _add_file_to_report(filename, report, content=None):
     report.save()
 
 
-def _summarize_report(report):
+def _summarize_report(report, started_at):
     now = timezone.now()
-    delta = now - report.created_at
+    delta = now - started_at
     report.generation_time = delta.seconds
     report.generated_at = now
     report.save()
@@ -256,45 +476,108 @@ def _prepare_report(company, report_type, ordering, file_type):
 
 
 @app.task
-def render_assembly_participation_csv(company_id, report_id, user_id=None,
-                                      ordering=None, notify=False,
-                                      track_downloads=False):
+def render_address_data_xls(company_id, report_id, user_id=None, ordering=None,
+                            notify=False, track_downloads=False):
     # prepare
     if user_id:
         user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
-    report = Report.objects.get(pk=report_id)
+    report = _get_report(report_id)
+    filename = _get_filename(report, company)
+    started_at = timezone.now()
+
+    _rows = _get_contacts(company)
+
+    rows = []
+    for row in _rows:
+        rows.append([to_string_or_empty(s) for s in row])
+
+    save_to_excel_file(filename, rows, CONTACTS_HEADER)
+
+    # post process
+    _add_file_to_report(filename, report)
+    _summarize_report(report, started_at)
+
+    if notify and user_id:
+        _send_notify(user, filename, subject=_('Your xls contacts file'),
+                     body=_('Your file is attached to this email'),
+                     file_desc=_('XLS Shareholder Address Data'),
+                     url=url_with_domain(report.get_absolute_url()))
+
+    if not track_downloads:
+        report.downloaded_at = timezone.now()
+        report.save()
+
+    os.remove(filename)  # del tmp file
+
+
+@app.task
+def render_address_data_pdf(company_id, report_id, user_id=None, ordering=None,
+                            notify=False, track_downloads=False):
+    # prepare
+    if user_id:
+        user = User.objects.get(pk=user_id)
+    company = Company.objects.get(pk=company_id)
+    report = _get_report(report_id)
+    ordering = _parse_ordering(ordering)
+    filename = _get_filename(report, company)
+    started_at = timezone.now()
+
+    # render
+    context = _get_address_data_pdf_context(company, date=report.report_at)
+    content = render_to_pdf(
+        'reports/table_report.pdf.html', context)
+
+    # post process
+    _add_file_to_report(filename, report, content)
+    _summarize_report(report, started_at)
+
+    if notify and user_id:
+        _send_notify(user, filename, subject=_('Your pdf contacts file'),
+                     body=_('Your file is attached to this email'),
+                     file_desc=_('PDF Shareholder Contacts'),
+                     url=url_with_domain(report.get_absolute_url()))
+
+    if not track_downloads:
+        report.downloaded_at = timezone.now()
+        report.save()
+
+
+@app.task
+def render_assembly_participation_xls(company_id, report_id, user_id=None,
+                                      ordering=None, notify=False,
+                                      track_downloads=False):
+    # prepare
+    started_at = timezone.now()
+    if user_id:
+        user = User.objects.get(pk=user_id)
+    company = Company.objects.get(pk=company_id)
+    report = _get_report(report_id)
     ordering = u'number'
     filename = _get_filename(report, company)
 
-    csvfile = StringIO.StringIO()
-    writer = csv.writer(csvfile)
-
-    header = [_('Shareholder#'), _('Full Name'), _('Address'),
-              _('share count'), _('capital'), _('vote count')]
-
     def to_unicode(iterable):
         return [unicode(s).encode("utf-8") for s in iterable]
-
-    writer.writerow(to_unicode(header))
 
     # for each active shareholder
     queryset = company.get_active_shareholders(date=report.report_at)
     queryset = _order_queryset(queryset, ordering)
 
+    rows = []
     for shareholder in queryset:
         if shareholder.share_count(date=report.report_at):
-            row = _collect_participation_csv_data(
-                shareholder, report.report_at)
+            rows.extend(_collect_participation_csv_data(
+                shareholder, report.report_at))
         else:
             continue
 
-        writer.writerow([unicode(s).encode("utf-8") for s in row])
+    # money_format
+    formats = {'7': 'money_format'}
+    save_to_excel_file(filename, rows, PARTICIPATION_HEADER, formats)
 
     # post process
-    csvfile.seek(0)
-    _add_file_to_report(filename, report, csvfile.read())
-    _summarize_report(report)
+    _add_file_to_report(filename, report)
+    _summarize_report(report, started_at)
 
     if notify and user_id:
         _send_notify(user, filename,
@@ -307,15 +590,53 @@ def render_assembly_participation_csv(company_id, report_id, user_id=None,
         report.downloaded_at = timezone.now()
         report.save()
 
+    os.remove(filename)
+
+
+@app.task
+def render_assembly_participation_pdf(company_id, report_id, user_id=None,
+                                      ordering=None, notify=False,
+                                      track_downloads=False):
+    # prepare
+    started_at = timezone.now()
+    if user_id:
+        user = User.objects.get(pk=user_id)
+    company = Company.objects.get(pk=company_id)
+    report = _get_report(report_id)
+    ordering = _parse_ordering(ordering)
+    filename = _get_filename(report, company)
+
+    # render
+    context = _get_assembly_participation_pdf_context(company,
+                                                      date=report.report_at)
+    content = render_to_pdf(
+        'reports/table_report.pdf.html', context)
+
+    # post process
+    _add_file_to_report(filename, report, content)
+    _summarize_report(report, started_at)
+
+    if notify and user_id:
+        _send_notify(user, filename,
+                     subject=_('Your assembly participation pdf file'),
+                     body=_('Your file is attached to this email'),
+                     file_desc=_('Assembly Participation PDF'),
+                     url=url_with_domain(report.get_absolute_url()))
+
+    if not track_downloads:
+        report.downloaded_at = timezone.now()
+        report.save()
+
 
 @app.task
 def render_captable_pdf(company_id, report_id, user_id=None, ordering=None,
                         notify=False, track_downloads=False):
     # prepare
+    started_at = timezone.now()
     if user_id:
         user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
-    report = Report.objects.get(pk=report_id)
+    report = _get_report(report_id)
     ordering = _parse_ordering(ordering)
     filename = _get_filename(report, company)
 
@@ -327,7 +648,7 @@ def render_captable_pdf(company_id, report_id, user_id=None, ordering=None,
 
     # post process
     _add_file_to_report(filename, report, content)
-    _summarize_report(report)
+    _summarize_report(report, started_at)
 
     if notify and user_id:
         _send_notify(user, filename, subject=_('Your pdf captable file'),
@@ -341,68 +662,14 @@ def render_captable_pdf(company_id, report_id, user_id=None, ordering=None,
 
 
 @app.task
-def render_captable_csv(company_id, report_id, user_id=None, ordering=None,
-                        notify=False, track_downloads=False):
-    # prepare
-    if user_id:
-        user = User.objects.get(pk=user_id)
-    company = Company.objects.get(pk=company_id)
-    report = Report.objects.get(pk=report_id)
-    ordering = _parse_ordering(ordering)
-    filename = _get_filename(report, company)
-    track_numbers_secs = company.security_set.filter(track_numbers=True)
-
-    csvfile = StringIO.StringIO()
-    writer = csv.writer(csvfile)
-
-    header = deepcopy(CSV_HEADER)
-    has_track_numbers = track_numbers_secs.exists()
-    if has_track_numbers:
-        header.append(_('Share IDs'))
-
-    def to_unicode(iterable):
-        return [unicode(s).encode("utf-8") for s in iterable]
-
-    writer.writerow(to_unicode(header))
-
-    # removed share percent due to heavy sql impact. killed perf for higher
-    # shareholder count
-    # for each active shareholder
-    queryset = company.get_active_shareholders(date=report.report_at)
-    queryset = _order_queryset(queryset, ordering)
-    for shareholder in queryset:
-        if shareholder.share_count(date=report.report_at):
-            rows = _collect_csv_data(shareholder, report.report_at)
-        else:
-            continue
-
-        for row in rows:
-            writer.writerow([unicode(s).encode("utf-8") for s in row])
-
-    # post process
-    csvfile.seek(0)
-    _add_file_to_report(filename, report, csvfile.read())
-    _summarize_report(report)
-
-    if notify and user_id:
-        _send_notify(user, filename, subject=_('Your csv captable file'),
-                     body=_('Your file is attached to this email'),
-                     file_desc=_('CSV Captable/Active Shareholders'),
-                     url=url_with_domain(report.get_absolute_url()))
-
-    if not track_downloads:
-        report.downloaded_at = timezone.now()
-        report.save()
-
-
-@app.task
 def render_captable_xls(company_id, report_id, user_id=None, ordering=None,
                         notify=False, track_downloads=False):
     # prepare
+    started_at = timezone.now()
     if user_id:
         user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
-    report = Report.objects.get(pk=report_id)
+    report = _get_report(report_id)
     ordering = _parse_ordering(ordering)
     filename = _get_filename(report, company)
     track_numbers_secs = company.security_set.filter(track_numbers=True)
@@ -427,11 +694,14 @@ def render_captable_xls(company_id, report_id, user_id=None, ordering=None,
         else:
             continue
 
-    save_to_excel_file(filename, rows, header)
+    # money_format
+    formats = {'22': 'percent_format', '23': 'percent_format',
+               '24': 'money_format'}
+    save_to_excel_file(filename, rows, header, formats)
 
     # post process
     _add_file_to_report(filename, report)
-    _summarize_report(report)
+    _summarize_report(report, started_at)
 
     if notify and user_id:
         _send_notify(user, filename, subject=_('Your xls captable file'),
@@ -447,6 +717,187 @@ def render_captable_xls(company_id, report_id, user_id=None, ordering=None,
 
 
 @app.task
+def render_certificates_xls(company_id, report_id, user_id=None, ordering=None,
+                            notify=False, track_downloads=False):
+    """
+    return xls with list of printed certificates
+    """
+    # prepare
+    started_at = timezone.now()
+    if user_id:
+        user = User.objects.get(pk=user_id)
+    company = Company.objects.get(pk=company_id)
+    report = _get_report(report_id)
+    ordering = _parse_ordering(ordering)
+    filename = _get_filename(report, company)
+
+    ots = OptionTransaction.objects.filter(
+        option_plan__company=company,
+        printed_at__isnull=False,
+        certificate_id__isnull=False,
+        ).distinct()
+    pos = Position.objects.filter(
+        Q(buyer__company=company) | Q(seller__company=company),
+        printed_at__isnull=False,
+        certificate_id__isnull=False,
+        ).distinct()
+    # add option transactions
+    _rows = []
+    _rows += [
+        [ot.buyer.get_full_name(),
+         ot.count,
+         unicode(ot.option_plan.security),
+         ot.certificate_id,
+         ot.printed_at, _('option')]
+        for ot in ots]
+    # add positions
+    _rows += [
+        [ot.buyer.get_full_name(),
+         ot.count,
+         unicode(ot.security),
+         ot.certificate_id,
+         ot.printed_at, _('stock')]
+        for ot in pos]
+    # render xls
+    rows = []
+    for row in _rows:
+        rows.append([to_string_or_empty(s) for s in row])
+
+    save_to_excel_file(filename, rows, CERTIFICATES_HEADER)
+
+    # post process
+    _add_file_to_report(filename, report)
+    _summarize_report(report, started_at)
+
+    if notify and user_id:
+        _send_notify(user, filename, subject=_('Your xls certificates file'),
+                     body=_('Your file is attached to this email'),
+                     file_desc=_('XLS Certificates'),
+                     url=url_with_domain(report.get_absolute_url()))
+
+    if not track_downloads:
+        report.downloaded_at = timezone.now()
+        report.save()
+
+    os.remove(filename)  # del tmp file
+
+
+@app.task
+def render_certificates_pdf(company_id, report_id, user_id=None, ordering=None,
+                            notify=False, track_downloads=False):
+    # prepare
+    started_at = timezone.now()
+    if user_id:
+        user = User.objects.get(pk=user_id)
+    company = Company.objects.get(pk=company_id)
+    report = _get_report(report_id)
+    ordering = _parse_ordering(ordering)
+    filename = _get_filename(report, company)
+
+    # render
+    context = _get_certificates_pdf_context(company, date=report.report_at)
+    content = render_to_pdf(
+        'reports/table_report.pdf.html', context)
+
+    # post process
+    _add_file_to_report(filename, report, content)
+    _summarize_report(report, started_at)
+
+    if notify and user_id:
+        _send_notify(user, filename, subject=_('Your pdf certificates file'),
+                     body=_('Your file is attached to this email'),
+                     file_desc=_('PDF Certificates'),
+                     url=url_with_domain(report.get_absolute_url()))
+
+    if not track_downloads:
+        report.downloaded_at = timezone.now()
+        report.save()
+
+
+@app.task
+def render_vested_shares_xls(company_id, report_id, user_id=None, ordering=None,
+                             notify=False, track_downloads=False):
+    # prepare
+    started_at = timezone.now()
+    if user_id:
+        user = User.objects.get(pk=user_id)
+    company = Company.objects.get(pk=company_id)
+    report = _get_report(report_id)
+    ordering = _parse_ordering(ordering)
+    filename = _get_filename(report, company)
+
+    positions = Position.objects.filter(
+        Q(buyer__company=company) | Q(seller__company=company),
+        vesting_months__gt=0).distinct()
+    ots = OptionTransaction.objects.filter(
+        option_plan__company=company,
+        vesting_months__gt=0).distinct()
+    _rows = []
+    _rows += [
+        [p.buyer.get_full_name(), p.count, unicode(p.security),
+         p.buyer.is_management, p.vesting_months, _('stock')
+         ] for p in positions]
+    _rows += [[ot.buyer.get_full_name(), ot.count,
+              unicode(ot.option_plan.security),
+              ot.buyer.is_management,
+              ot.vesting_months, _('certificate')] for ot in ots]
+
+    rows = []
+    for row in _rows:
+        rows.append([to_string_or_empty(s) for s in row])
+
+    save_to_excel_file(filename, rows, VESTED_SHARES_HEADER)
+
+    # post process
+    _add_file_to_report(filename, report)
+    _summarize_report(report, started_at)
+
+    if notify and user_id:
+        _send_notify(user, filename, subject=_('Your xls vested shares file'),
+                     body=_('Your file is attached to this email'),
+                     file_desc=_('XLS Vested Shares'),
+                     url=url_with_domain(report.get_absolute_url()))
+
+    if not track_downloads:
+        report.downloaded_at = timezone.now()
+        report.save()
+
+    os.remove(filename)  # del tmp file
+
+
+@app.task
+def render_vested_shares_pdf(company_id, report_id, user_id=None, ordering=None,
+                             notify=False, track_downloads=False):
+    # prepare
+    started_at = timezone.now()
+    if user_id:
+        user = User.objects.get(pk=user_id)
+    company = Company.objects.get(pk=company_id)
+    report = _get_report(report_id)
+    ordering = _parse_ordering(ordering)
+    filename = _get_filename(report, company)
+
+    # render
+    context = _get_vested_shares_pdf_context(company, date=report.report_at)
+    content = render_to_pdf(
+        'reports/table_report.pdf.html', context)
+
+    # post process
+    _add_file_to_report(filename, report, content)
+    _summarize_report(report, started_at)
+
+    if notify and user_id:
+        _send_notify(user, filename, subject=_('Your pdf vested shares file'),
+                     body=_('Your file is attached to this email'),
+                     file_desc=_('PDF vested shares'),
+                     url=url_with_domain(report.get_absolute_url()))
+
+    if not track_downloads:
+        report.downloaded_at = timezone.now()
+        report.save()
+
+
+@app.task
 def prerender_reports():
     """ prerender all reports each night for each company, each file type and
     each ordering for fast user access """
@@ -458,7 +909,7 @@ def prerender_reports():
             for file_type, fname in REPORT_FILE_TYPES:
                 for (ordering, oname) in ORDERING_TYPES:
                     if report_type == 'assembly_participation' and (
-                            ordering != 'number' or file_type != 'CSV'):
+                            ordering != 'number' or file_type != 'XLS'):
                         continue
                     report = _prepare_report(
                         company, report_type, ordering, fname)

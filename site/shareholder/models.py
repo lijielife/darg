@@ -858,8 +858,10 @@ class UserProfile(AddressModelMixin, models.Model):
             raise ValidationError(_('user company must have legal type set to '
                                     'company'))
 
-    def get_address(self):
-        """ return string with full address """
+    def get_address(self, skip_city=False):
+        """ return string with full address . `skip_city` removes city, zip,
+        country
+        """
         def prepend_comma(address):
             if address:
                 address += u", "
@@ -876,6 +878,10 @@ class UserProfile(AddressModelMixin, models.Model):
         if self.pobox:
             address = prepend_comma(address)
             address += u"POBOX: {}".format(self.pobox)
+
+        if skip_city:
+            return address
+
         if self.postal_code or self.city:
             address = prepend_comma(address)
             address += u"{} {}".format(self.postal_code, self.city)
@@ -1119,7 +1125,7 @@ class Shareholder(TagMixin, models.Model):
         count = sum(self.option_buyer.all().values_list('count', flat=True)) - \
             sum(self.option_seller.all().values_list('count', flat=True))
         if total:
-            return "{:.2f}".format(count / float(total) * 100)
+            return round(count / float(total), 4)
         return False
 
     def options_count(self, date=None, security=None):
@@ -1209,6 +1215,15 @@ class Shareholder(TagMixin, models.Model):
                 deflate_segments(failed_segments),
                 deflate_segments(segments_owning))
 
+    def security_count(self, date=None):
+        """ how many different securities does the shareholder own at date """
+        date = date or timezone.now().date()
+        count = 0
+        for security in self.company.security_set.all():
+            if self.share_count(date=date, security=security) > 0:
+                count += 1
+        return count
+
     def set_dispo_shareholder(self):
         """ mark this shareholder as disposhareholder """
         if (
@@ -1258,8 +1273,7 @@ class Shareholder(TagMixin, models.Model):
                 return "{:.2f}".format(float(0))
 
             # do the math
-            return "{:.2f}".format(
-                count / float(total-cs_count) * 100)
+            return round(count / float(total-cs_count), 4)
 
         return False
 

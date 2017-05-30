@@ -15,13 +15,15 @@ from shareholder.models import Company
 
 REPORT_FILE_TYPES = (
     ('PDF', 'PDF'),
-    ('CSV', 'CSV'),
     ('XLS', 'XLS'),
 )
 
 REPORT_TYPES = (
     ('captable', _('Active Shareholders')),
     ('assembly_participation', _('Assembly Participation')),
+    ('address_data', _('Address data of all shareholders')),
+    ('certificates', _('Printed Certificates')),
+    ('vested_shares', _('Vested Shares')),
 )
 
 ORDERING_TYPES = (
@@ -35,6 +37,10 @@ ORDERING_TYPES = (
     ('number_desc', _('Shareholder Number (descending)')),
     ('share_percent', _('Share Percent Ownership')),
     ('share_percent_desc', _('Share Percent Ownership (descending)')),
+    ('cumulated_face_value', _('face value total capital')),
+    ('cumulated_face_value_desc', _('face value total capital (descending)')),
+    ('user__userprofile__postal_code', _('postal code')),
+    ('user__userprofile__postal_code_desc', _('postal code (descending)')),
 )
 
 
@@ -83,9 +89,7 @@ class Report(TimeStampedModel):
     def render(self, notify=False, track_downloads=False):
         """ trigger the right task to render the file """
         # avoid circular import
-        from reports.tasks import (render_captable_pdf, render_captable_csv,
-                                   render_captable_xls,
-                                   render_assembly_participation_csv)
+        from reports import tasks
 
         args = [self.company.pk, self.pk]
         kwargs = {'ordering': self.order_by, 'notify': notify,
@@ -94,24 +98,10 @@ class Report(TimeStampedModel):
             kwargs.update({'user_id': self.user.pk})
 
         # FIXME build render method name dynamically and remove ifs
-        if self.report_type == 'captable':
-            if self.file_type == 'CSV':
-                render_captable_csv.apply_async(args=args, kwargs=kwargs)
-            elif self.file_type == 'PDF':
-                render_captable_pdf.apply_async(args=args, kwargs=kwargs)
-            elif self.file_type == 'XLS':
-                render_captable_xls.apply_async(args=args, kwargs=kwargs)
-
-        elif self.report_type == 'assembly_participation':
-            render_assembly_participation_csv.apply_async(
-                args=args, kwargs=kwargs)
-            # elif self.file_type == 'PDF':
-            #    render_captable_pdf.apply_async(args=args, kwargs=kwargs)
-            # elif self.file_type == 'XLS':
-            #    render_captable_xls.apply_async(args=args, kwargs=kwargs)
-
-        else:
-            raise NotImplementedError('report cannot be created')
+        method_name = u'render_{}_{}'.format(self.report_type,
+                                             self.file_type.lower())
+        method = getattr(tasks, method_name)
+        method.apply_async(args=args, kwargs=kwargs)
 
     def update_eta(self):
         """ get from last item of same type or default 3m from now """

@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load humanize %}
+{% load shareholder_tags %}
+{% load report_tags %}
+
+{% block head_links %}
+{% endblock %}
+
+{% block inline_styles %}
+<style>
+    @page {
+        size: a4 landscape;
+        @frame header_frame {           /* Static Frame */
+            -pdf-frame-content: header_content;
+            left: 50pt; top: 50pt; height: 60pt; margin-right:50pt;
+        }
+        @frame header_frame {           /* Static Frame */
+            -pdf-frame-content: header_content2;
+            left: 700pt; top: 50pt; height: 60pt; margin-right:50pt; float: right; text-align: right;
+        }
+
+        @frame content_frame {          /* Content Frame */
+            left: 50pt; top: 121pt; height: 430pt; width:100%; margin-right:50pt; position: relative;
+        }
+        @frame footer_frame {           /* Another static Frame */
+            -pdf-frame-content: footer_content;
+            left: 50pt; top: 552pt; height: 20pt; margin-right:50pt;
+        }
+
+    }
+
+    table, thead, tr, td, div, span {
+        font-size: 8pt;
+    }
+
+    td, th {
+      margin-right: 5px
+    }
+
+    .company-info {
+        background-color: #f7f7f7;
+        padding: 1em 1em 0em 1em;
+    }
+
+    .heading {
+        font-size: 18pt;
+    }
+
+    .text-right {
+        font-align: right;
+    }
+
+    div#footer_content {
+        font-size: 8pt;
+    }
+
+    td {
+      padding-top: 5px;
+      padding-bottom: 2px;
+    }
+    tr .even td {
+      background-color: #f7f7f7;
+    }
+    tr .subeven td, tr .subodd td {
+      border-top: 1px dotted #f7f7f7;
+    }
+</style>
+{% endblock %}
+
+{% block body_block %}
+  {% block content %}
+
+    <!-- Content for Static Frame 'header_frame' -->
+    <div id="header_content">
+      <h2 class="heading">{{ heading }}</h2>
+      {% trans "on" %} {{ report_date }} {% trans "for company" %} {{ company }}
+    </div>
+
+    <!-- right aligned logo -->
+    {% if company.get_logo_url %}
+    <div id="header_content2">
+      <img src="{{ company.get_logo_url }}" alt="company logo" />
+    </div>
+    {% endif %}
+
+
+    <!-- Content for Static Frame 'footer_frame' -->
+    <div id="footer_content">
+        {% trans "Das Aktienregister" %} - {% trans "Page" %} <pdf:pagenumber>
+        {% trans "of" %} <pdf:pagecount> -
+        {% trans "Date generated" %}: {{ today }}
+    </div>
+
+    <!-- HTML Content -->
+    <table class="table table-hover">
+      {% if header %}
+      <thead>
+        <tr repeat="1">
+          {% for head in header %}
+          <th>{{ head }}</th>
+          {% endfor %}
+      </thead>
+      {% endif %}
+
+      {% for row in table_data %}
+      <tr class="panel {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
+        {% for field in row %}
+        <td>
+          {{ field }}
+        </td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </table>
+
+  {% endblock %}
+{% endblock %}

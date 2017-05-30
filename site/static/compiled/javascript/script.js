@@ -45111,13 +45111,22 @@ return deCh;
         }, {
           title: gettext('Assembly Participation'),
           value: 'assembly_participation'
+        }, {
+          title: gettext('Address data of all shareholders'),
+          value: 'address_data'
+        }, {
+          title: gettext('Printed Certificates'),
+          value: 'certificates'
+        }, {
+          title: gettext('Vested Shares'),
+          value: 'vested_shares'
         }
       ];
       $scope.last_captable_report = void 0;
       $scope.$watchCollection('transactions_download_params', function(transactions_download_params) {
         if (transactions_download_params.to && transactions_download_params.from && transactions_download_params.security) {
           $scope.enable_transaction_download = true;
-          return $scope.transaction_download_url = '/company/' + company_id + '/download/transactions?from=' + $scope.transactions_download_params.from.toISOString() + '&to=' + $scope.transactions_download_params.to.toISOString() + '&security=' + $scope.transactions_download_params.security.pk;
+          return $scope.transaction_download_url = '/reports/company/' + company_id + '/download/transactions?from=' + $scope.transactions_download_params.from.toISOString() + '&to=' + $scope.transactions_download_params.to.toISOString() + '&security=' + $scope.transactions_download_params.security.pk;
         }
       });
       $scope.add_captable_report = function() {
@@ -45126,9 +45135,6 @@ return deCh;
         }
         $scope.last_captable_report.order_by = $scope.last_captable_report.order_by.value;
         $scope.last_captable_report.report_type = $scope.last_captable_report.report_type.value;
-        if ($scope.last_captable_report.report_type === 'assembly_participation') {
-          $scope.last_captable_report.file_type = 'CSV';
-        }
         $scope.last_captable_report.report_at = $scope.last_captable_report.report_at.toISOString().substring(0, 10);
         $scope.captable_loading = true;
         return $scope.last_captable_report.$save().then(function(result) {
@@ -45163,9 +45169,6 @@ return deCh;
       $scope.get_captable_report = function() {
         var params;
         if ($scope.last_captable_report) {
-          if ($scope.last_captable_report.report_type.value === 'assembly_participation') {
-            $scope.last_captable_report.file_type = 'CSV';
-          }
           params = {
             order_by: $scope.last_captable_report.order_by.value,
             report_type: $scope.last_captable_report.report_type.value,
@@ -45559,7 +45562,6 @@ return deCh;
         }
       ];
       $scope.show_add_shareholder = false;
-      $scope.hide_captable = false;
       $scope.newShareholder = new Shareholder();
       $scope.newCompany = new CompanyAdd();
       $scope.reset_search_params = function() {
@@ -45647,6 +45649,13 @@ return deCh;
         start = ($scope.optionholder_current - 1) * 20;
         end = Math.min($scope.optionholder_current * 20, $scope.optionholder_total);
         return $scope.optionholder_current_range = start.toString() + '-' + end.toString();
+      });
+      $scope.$watchCollection('shareholders', function(shareholders) {
+        if ($scope.shareholders.length > 1) {
+          return $scope.hide_captable = false;
+        } else {
+          return $scope.hide_captable = true;
+        }
       });
       $scope.next_page = function() {
         if ($scope.next) {
@@ -45827,7 +45836,6 @@ return deCh;
         }).then(function() {
           $scope.newCompany = new Company();
           $window.ga('send', 'event', 'form-send', 'add-company');
-          $scope.hide_captable = true;
           return $scope.addCompanyLoading = false;
         }).then(function() {
           var url;
@@ -45855,8 +45863,7 @@ return deCh;
         }).then(function() {
           $scope.newShareholder = new Shareholder();
           $scope.shareholder_added_success = true;
-          $scope.show_add_shareholder = false;
-          return $scope.hide_captable = false;
+          return $scope.show_add_shareholder = false;
         }).then(function() {
           $scope.errors = null;
           $scope.addShareholderLoading = false;
@@ -45912,6 +45919,14 @@ return deCh;
       return $scope.toggle_datepicker = function() {
         $scope.datepicker.opened = !$scope.datepicker.opened;
         return false;
+      };
+    }
+  ]);
+
+  app.filter('percentage', [
+    '$filter', function($filter) {
+      return function(input, decimals) {
+        return $filter('number')(input * 100, decimals) + '%';
       };
     }
   ]);

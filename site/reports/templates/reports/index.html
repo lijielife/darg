@@ -31,42 +31,11 @@
         <span class="el-icon-chevron-down" ng-click="toggle_transaction_form()"></span>
   	    {% include "reports/_transaction_form.html" %}
       </li>
-      <li>
-        {% trans "Address data of all shareholders" %}
-        <a href="{% url "reports:contacts_csv" company_id=company.id %}" title="{% trans "Address data of all shareholders" %}">
-          <span class="el-icon-download-alt"></span>
-        </a>
-      </li>
-      <li>
-  	    {% trans "Printed Certificates" %}
-        {% if company.has_printed_certificates %}
-  	      <a href="{% url "reports:printed_certificates_csv" company_id=company.id %}" title="">
-  	        <span class="el-icon-download-alt"></span>
-          </a>
-        {% else %}
-        <div class="note">
-          {% trans "No printed certificates are available. Please print a certificate via a transaction or option transaction" %}
-        </div>
-  	    {% endif %}
-      </li>
-      <li>
-  	    {% trans "Vested Shares" %}
-        {% if company.has_vested_positions %}
-  	    <a href="{% url "reports:vested_csv" company_id=company.id %}" title="">
-  	      <span class="el-icon-download-alt"></span>
-  	    </a>
-        {% else %}
-        <div class="note">
-          {% trans "no vested positions yet. please add vesting data to either transaction or option transaction" %}
-        </div>
-  	    {% endif %}
-      </li>
-      <li>
-        <a href="{% url "statement_reports" %}" title="{% trans "See all depot statements created for shareholders" %}">
-          {% trans "Depot Statements Overview" %}
-        </a>
-      </li>
     </ul>
   </div>
+  <br />
+  <br />
+  <br />
+  <br />
 </div>
 {% endblock %}

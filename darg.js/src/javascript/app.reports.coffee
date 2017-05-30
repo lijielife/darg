@@ -42,6 +42,9 @@ app.controller 'ReportsController', ['$scope', '$http', 'Shareholder', 'Report',
     $scope.report_types = [
         {title: gettext('Active Shareholders'), value: 'captable'},
         {title: gettext('Assembly Participation'), value: 'assembly_participation'},
+        {title: gettext('Address data of all shareholders'), value: 'address_data'},
+        {title: gettext('Printed Certificates'), value: 'certificates'},
+        {title: gettext('Vested Shares'), value: 'vested_shares'},
     ]
     $scope.last_captable_report = undefined
 
@@ -50,7 +53,7 @@ app.controller 'ReportsController', ['$scope', '$http', 'Shareholder', 'Report',
     $scope.$watchCollection 'transactions_download_params', (transactions_download_params)->
         if transactions_download_params.to && transactions_download_params.from && transactions_download_params.security
             $scope.enable_transaction_download = true
-            $scope.transaction_download_url = '/company/'+company_id+'/download/transactions?from='+$scope.transactions_download_params.from.toISOString()+'&to='+$scope.transactions_download_params.to.toISOString()+'&security='+$scope.transactions_download_params.security.pk
+            $scope.transaction_download_url = '/reports/company/'+company_id+'/download/transactions?from='+$scope.transactions_download_params.from.toISOString()+'&to='+$scope.transactions_download_params.to.toISOString()+'&security='+$scope.transactions_download_params.security.pk
 
     # --- LOGIC
     $scope.add_captable_report = ->
@@ -61,8 +64,6 @@ app.controller 'ReportsController', ['$scope', '$http', 'Shareholder', 'Report',
         # preprocess ordering
         $scope.last_captable_report.order_by = $scope.last_captable_report.order_by.value
         $scope.last_captable_report.report_type = $scope.last_captable_report.report_type.value
-        if $scope.last_captable_report.report_type == 'assembly_participation'
-            $scope.last_captable_report.file_type = 'CSV'
         $scope.last_captable_report.report_at = $scope.last_captable_report.report_at.toISOString().substring(0, 10)
         # save
         $scope.captable_loading = true
@@ -88,8 +89,6 @@ app.controller 'ReportsController', ['$scope', '$http', 'Shareholder', 'Report',
 
     $scope.get_captable_report = ->
         if $scope.last_captable_report
-            if $scope.last_captable_report.report_type.value == 'assembly_participation'
-                $scope.last_captable_report.file_type = 'CSV'
             params = {
                 order_by: $scope.last_captable_report.order_by.value,
                 report_type: $scope.last_captable_report.report_type.value,

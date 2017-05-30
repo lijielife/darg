@@ -1,18 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import csv
 import datetime
-import StringIO
 
 from django.core import mail
 from django.core.urlresolvers import reverse
 from django.test import Client, TestCase
 from django.utils import timezone
-from django.utils.translation import gettext as _
 # from model_mommy import mommy
 
-from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
-                                ComplexOptionTransactionsGenerator,
+from project.generators import (CompanyGenerator,
                                 ComplexShareholderConstellationGenerator,
                                 OperatorGenerator, PositionGenerator,
                                 ReportGenerator, SecurityGenerator,
@@ -20,8 +16,8 @@ from project.generators import (DEFAULT_TEST_DATA, CompanyGenerator,
                                 TwoInitialSecuritiesGenerator, UserGenerator)
 from project.tests.mixins import (MoreAssertsTestCaseMixin,
                                   SubscriptionTestMixin)
-from reports.views import _get_contacts, _get_transactions
-from shareholder.models import Company, OptionTransaction, Shareholder
+from reports.views import _get_transactions
+from shareholder.models import Company
 from utils.http import get_file_content_as_string
 from utils.session import add_company_to_session
 
@@ -46,8 +42,6 @@ class IndexViewTestCase(SubscriptionTestMixin, BaseReportViewTestCase):
         self.client.force_login(self.operator.user)
         response = self.client.get(reverse('reports:reports'))
         self.assertEqual(response.status_code, 200)
-        self.assertIn(reverse('statement_reports'),
-                      response.content.decode('utf-8'))
 
 
 class ReportDownloadTestCase(SubscriptionTestMixin, BaseReportViewTestCase):
@@ -96,8 +90,8 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
         self.shs, self.s = ComplexShareholderConstellationGenerator().generate(
             company=self.company)
 
-    def test_captable_csv_download(self):
-        """ rest download of captable csv """
+    def test_captable_xls_download(self):
+        """ rest download of captable xls """
 
         # data
         company = CompanyGenerator().generate()
@@ -126,7 +120,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
             seller=shareholder_list[2], security=security)
 
         # login and retest
-        report = ReportGenerator().generate(company=company, file_type='CSV')
+        report = ReportGenerator().generate(company=company, file_type='XLS')
         report.render()
         user = report.user
         OperatorGenerator().generate(user=user, company=company)
@@ -138,26 +132,8 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
         # assert response code
         self.assertEqual(response.status_code, 200)
 
-        # assert proper csv
-        content = get_file_content_as_string(response)
-        fileobj = StringIO.StringIO(content)
-        reader = csv.reader(fileobj, delimiter=',')
-        lines = list(reader)
-        self.assertEqual(len(lines[2]), 27)
-        # 2 shs + per security header
-        self.assertEqual(len(lines), 3)
-        # assert company itself
-        sh_numbers = [f[0] for f in lines if len(f) > 0]
-        self.assertIn(shareholder_list[0].number, sh_numbers)
-        # assert share owner
-        self.assertIn(shareholder_list[1].number, sh_numbers)
-        # assert shareholder witout position not in there
-        self.assertNotIn(shareholder_list[3].number, sh_numbers)
-        # assert shareholder which bought and sold again
-        self.assertNotIn(shareholder_list[2].number, sh_numbers)
-
-    def test_csv_download_number_segments(self):
-        """ rest download of captable csv """
+    def test_xls_download_number_segments(self):
+        """ rest download of captable xls """
 
         # data
         company = CompanyGenerator().generate()
@@ -188,7 +164,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
             seller=shareholder_list[2])
 
         # login and retest
-        report = ReportGenerator().generate(company=company, file_type='CSV')
+        report = ReportGenerator().generate(company=company, file_type='XLS')
         report.render()
         user = report.user
         OperatorGenerator().generate(user=user, company=company)
@@ -198,20 +174,6 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
 
         # assert response code
         self.assertEqual(response.status_code, 200)
-        # assert proper csv
-        content = get_file_content_as_string(response)
-        lines = content.split('\r\n')
-        lines.pop()  # remove last element based on final '\r\n'
-        for row in lines:
-            if row == lines[0] or ',' not in row:  # skip first row
-                continue
-            self.assertEqual(row.count(','), 29)
-            fields = row.split(',')
-            s = Shareholder.objects.get(company=company, number=fields[0])
-            text = s.current_segments(security)
-            if text:
-                self.assertTrue(text in fields[8])
-            self.assertIn(_('None'), fields[29])
 
     def test_pdf_download_with_number_segments(self):
         """ test download of captable pdf """
@@ -232,96 +194,11 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
 
         # assert response code
         self.assertEqual(response.status_code, 200)
-        # assert proper csv
+        # assert proper xls
         content = get_file_content_as_string(response)
         self.assertTrue(content.startswith('%PDF'))
 
-    def test_printed_certificates_csv(self):
-        """
-        download of all certificates which are printed
-        """
-        now = timezone.now()
-        positions, shs = ComplexOptionTransactionsGenerator().generate()  # noqa
-        OptionTransaction.objects.filter(
-            pk__in=[ot.pk for ot in positions]).update(printed_at=now)
-        other_operator = OperatorGenerator().generate()
-        operator = shs[0].company.operator_set.first()
-        company = operator.company
-        self.add_subscription(company)
-        pos = PositionGenerator().generate(company=company)
-        pos.printed_at = timezone.now()
-        pos.certificate_id = '88888'
-        pos.save()
-
-        # run test for unauth'd user
-        url = reverse('reports:printed_certificates_csv',
-                      kwargs={"company_id": company.id})
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
-
-        # foreign operator must not access data
-        is_loggedin = self.client.login(username=other_operator.user.username,
-                                        password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(is_loggedin)
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
-        self.client.logout()
-
-        # company operator can access data
-        is_loggedin = self.client.login(username=operator.user.username,
-                                        password=DEFAULT_TEST_DATA['password'])
-        with self.assertLessNumQueries(44):
-            response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-
-        # assert proper csv
-        content = response.content
-        lines = content.split('\r\n')
-        lines.pop()  # remove last element based on final '\r\n'
-        for row in lines[1:]:
-            self.assertEqual(row.count(','), 5)
-        self.assertEqual(len(lines), 8)  # ensure we have the right data
-        # assert company itself
-        self.assertIn(shs[0].get_full_name(),
-                      [f.split(',')[0].decode('utf-8') for f in lines])
-        # assert share owner
-        self.assertIn(shs[1].get_full_name(),
-                      [f.split(',')[0].decode('utf-8') for f in lines])
-
-    def test_contacts_csv(self):
-        """ test download of all shareholders contact data """
-        # run test
-        response = self.client.get(
-            reverse('reports:contacts_csv',
-                    kwargs={"company_id": self.company.id}))
-
-        # not logged in user
-        self.assertEqual(response.status_code, 302)
-
-        # login and retest
-        user = UserGenerator().generate()
-        self.client.force_login(user)
-
-        response = self.client.get(
-            reverse('reports:contacts_csv',
-                    kwargs={"company_id": self.company.id}))
-
-        # assert response code
-        self.assertEqual(response.status_code, 403)
-
-    def test_get_contacts(self):
-        """ get csv list array of contacts data """
-        ComplexShareholderConstellationGenerator().generate()
-
-        company = Company.objects.last()
-        with self.assertLessNumQueries(46):
-            res = _get_contacts(company)
-        self.assertTrue(len(res) > 1)
-        self.assertEqual(len(res[0]), 15)
-        self.assertEqual(len(res[1]), 15)  # no nationality
-        self.assertEqual(res[0][0].encode('utf8'), _(u'shareholder number'))
-
-    def test_transactions_csv(self):
+    def test_transactions_xls(self):
         """ test download of all transactions data
         /company/3/download/transactions?from=2017-01-12T23:00:00.000Z&to=2017-01-13T23:00:00.000Z&security=56
         """
@@ -329,7 +206,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
         security = SecurityGenerator().generate(company=company)
         # run test
         response = self.client.get(
-            reverse('reports:transactions_csv',
+            reverse('reports:transactions_xls',
                     kwargs={"company_id": company.id}),
             {'to': '2017-01-12T23:00:00.000Z',
              'from': '2011-01-12T23:00:00.000Z',
@@ -343,7 +220,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
         self.client.force_login(user)
 
         response = self.client.get(
-            reverse('reports:transactions_csv',
+            reverse('reports:transactions_xls',
                     kwargs={"company_id": company.id}),
             {'to': '2017-01-12T23:00:00.000Z',
              'from': '2011-01-12T23:00:00.000Z',
@@ -353,7 +230,7 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
         self.assertEqual(response.status_code, 403)
 
     def test_get_transactions(self):
-        """ get csv list array of contacts data """
+        """ get xls list array of contacts data """
         shs, sec = ComplexShareholderConstellationGenerator().generate()
 
         company = Company.objects.last()
@@ -363,59 +240,4 @@ class DownloadTestCase(MoreAssertsTestCaseMixin, SubscriptionTestMixin,
             res = _get_transactions(
                 from_date, to_date, sec, company)
         self.assertTrue(len(res) > 1)
-        self.assertEqual(len(res[0]), 11)
-        self.assertEqual(len(res[1]), 9)  # no nationality
-        self.assertEqual(res[0][0], _(u'date'))
-
-    def test_vested_csv(self):
-        """
-        download of all shares and options which are vested
-        """
-        positions, shs = ComplexOptionTransactionsGenerator().generate()  # noqa
-        OptionTransaction.objects.filter(
-            pk__in=[ot.pk for ot in positions]).update(vesting_months=24)
-        other_operator = OperatorGenerator().generate()
-        operator = shs[0].company.operator_set.first()
-        company = operator.company
-        self.add_subscription(company)
-        shs2, s1 = ComplexShareholderConstellationGenerator().generate(
-            company=company, shareholder_count=10)
-        for s in shs2:
-            s.buyer.all().update(vesting_months=12)
-
-        # run test for unauth'd user
-        response = self.client.get(
-            reverse('reports:vested_csv',
-                    kwargs={"company_id": company.id}))
-        self.assertEqual(response.status_code, 302)
-
-        # foreign operator must not access data
-        is_loggedin = self.client.login(username=other_operator.user.username,
-                                        password=DEFAULT_TEST_DATA['password'])
-        self.assertTrue(is_loggedin)
-        response = self.client.get(
-            reverse('reports:vested_csv',
-                    kwargs={"company_id": company.id}))
-        self.assertEqual(response.status_code, 302)
-        self.client.logout()
-
-        # company operator can access data
-        is_loggedin = self.client.login(username=operator.user.username,
-                                        password=DEFAULT_TEST_DATA['password'])
-        with self.assertLessNumQueries(96):
-            response = self.client.get(
-                reverse('reports:vested_csv',
-                        kwargs={"company_id": company.id}))
-        self.assertEqual(response.status_code, 200)
-
-        # assert proper csv
-        content = response.content
-        lines = content.split('\r\n')
-        lines.pop()  # remove last element based on final '\r\n'
-        for row in lines[1:]:
-            self.assertEqual(row.count(','), 5)
-        self.assertEqual(len(lines), 21)  # ensure we have the right data
-        # assert company itself
-        self.assertIn(shs[0].get_full_name(), [f.split(',')[0] for f in lines])
-        # assert share owner
-        self.assertIn(shs[1].get_full_name(), [f.split(',')[0] for f in lines])
+        self.assertEqual(len(res[0]), 9)

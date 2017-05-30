@@ -68,7 +68,7 @@ describe 'Unit: Testing Reports Controller', ->
       expect($scope.last_captable_report.order_by.value).toEqual 'share_percent'
 
     it 'should handle assembly participation and set file type to csv', ->
-      report = {report_type: 'assembly_participation', order_by: 'share_percent', report_at: new Date().toISOString().substring(0, 10), file_type: 'CSV'}
+      report = {report_type: 'assembly_participation', order_by: 'share_percent', report_at: new Date().toISOString().substring(0, 10), file_type: 'PDF'}
       $scope.last_captable_report.report_type = {value: 'assembly_participation'}
       $scope.last_captable_report.order_by = {value: 'share_percent'}
       $httpBackend.expectPOST('/services/rest/report', report).respond(
@@ -87,4 +87,4 @@ describe 'Unit: Testing Reports Controller', ->
 
   describe 'report types', ->
     it 'should have 2 items', ->
-      expect($scope.report_types.length).toEqual 2
+      expect($scope.report_types.length).toEqual 5

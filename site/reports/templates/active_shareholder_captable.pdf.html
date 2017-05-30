@@ -62,6 +62,9 @@
     tr .even td {
       background-color: #f7f7f7;
     }
+    tr .subeven td, tr .subodd td {
+      border-top: 1px dotted #f7f7f7;
+    }
 </style>
 {% endblock %}
 
@@ -101,11 +104,11 @@
     </div>
     {% get_active_shareholders company report_date ordering as active_shareholders %} 
     <table class="table table-hover">
-      <thead repeat="1">
-        <tr>
+      <thead>
+        <tr repeat="1">
           <th align="right" width="10%">{% trans "ID" %}</th>
           <th align="left">{% trans "Name" %}</th>
-          <th align="left">{% trans "Address" %}</th>
+          <th align="left">{% trans "Address" %}{% if company.security_set.count > 1%}/<br/>{% trans "security" %}{% endif %}</th>
           <th align="right" width="20%">{% trans "CumFaceCap" %}</th>
           <th align="right" width="20%">{% trans "Shares (%)" %}</th>
           {% if securities_with_track_numbers.exists %}
@@ -115,41 +118,84 @@
           {% endif %}
       </thead>
       {% for shareholder in active_shareholders %}
-      <tr class="panel {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
-        <td align="right" width="10%">
-          {{ shareholder.number }}
-        </td>
-        <td>
-          {{ shareholder.get_full_name}}
-        </td>
-        <td>
-          {{ shareholder.user.userprofile.get_address}}
-        </td>
-        <td align="right" width="20%">
-          {% shareholder_cumulated_face_value shareholder report_date  as cumulated_face_value %}
-          {{ cumulated_face_value }}
-        </td>
-        <td align="right" width="20%">
-          {% shareholder_share_count shareholder report_date as share_count %}
-          {{ share_count|intcomma }}
-          {% shareholder_share_percent shareholder report_date as share_percent %}
-          {% if share_percent %}({{share_percent }}){% endif %}
-        </td>
-        {% if securities_with_track_numbers.exists %}
-        <td>
-          {{ shareholder.get_number_segments_display }}
-        </td>
+          {% shareholder_security_count shareholder report_date as security_count %}
+          <tr class="panel {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
+            <td align="right" width="10%">
+              {{ shareholder.number }}
+            </td>
+            <td>
+              {{ shareholder.get_full_name}}
+            </td>
+            <td>
+              {{ shareholder.user.userprofile.get_address}}
+            </td>
+            <td align="right" width="20%">
+              {% if security_count == 1 %}
+                {% for security in company.security_set.all %}
+                 {% shareholder_share_count shareholder report_date security as share_count %}
+                 {% if share_count > 0 %}
+                   {{ security }} <br />
+                 {% endif %}
+                {% endfor %}
+              {% endif %}
+              {% shareholder_cumulated_face_value shareholder report_date as cumulated_face_value %}
+              {{ cumulated_face_value }}
+            </td>
+            <td align="right" width="20%">
+              {% shareholder_share_count shareholder report_date as share_count %}
+              {{ share_count|intcomma }}
+              {% shareholder_share_percent shareholder report_date as share_percent %}
+              {% if share_percent %}({% widthratio share_percent 1 100 %}%){% endif %}
+            </td>
+            {% if securities_with_track_numbers.exists and security_count == 1 %}
+            <td>
+              {{ shareholder.get_number_segments_display }}
+            </td>
+            {% endif %}
+          </tr>
+        <!-- NESTED per security data -->
+        {% if company.security_set.count > 1 %}
+        {% for security in company.security_set.all %}
+          {% shareholder_share_count shareholder report_date security as share_count %}
+          <!-- show only if we have more then one. otherwise we have identical rows -->
+          {% if security_count > 1 %}
+          <tr class="panel {% if forloop.counter|divisibleby:2 %}subeven{% else %}subodd{% endif %}">
+            <td align="right" width="10%">
+              &nbsp;
+            </td>
+            <td>
+              &nbsp;
+            </td>
+            <td>
+                {{ security }}
+            </td>
+            <td align="right" width="20%">
+              {% shareholder_cumulated_face_value shareholder report_date security as cumulated_face_value %}
+              {{ cumulated_face_value }}
+            </td>
+            <td align="right" width="20%">
+              {{ share_count|intcomma }}
+              {% shareholder_share_percent shareholder report_date security as share_percent %}
+              {% if share_percent %}({% widthratio share_percent 1 100 %}%){% endif %}
+            </td>
+            {% if security.track_numbers %}
+            <td>
+              {{ shareholder.get_number_segments_display }}
+            </td>
+            {% endif %}
+          </tr>
+          {% endif %}
+        {% endfor %}
         {% endif %}
-      </tr>
       {% endfor %}
     </table>
 
 
     {% if company.get_active_option_holders %}
 
-      <h2 class="heading">{% trans "Options" %}</h2>
-  
       {% get_active_option_holders company report_date options_ordering as active_option_holders %} 
+      {% if active_option_holders %}
+      <h2 class="heading">{% trans "Options" %}</h2>
       <table class="table table-hover">
         <thead repeat="1">
           <tr>
@@ -171,11 +217,12 @@
             {{ shareholder.user.userprofile.get_address}}
           </td>
           <td align="right">
-            {{ shareholder.options_count|intcomma }} ({{shareholder.options_percent }})
+              {{ shareholder.options_count|intcomma }} ({% widthratio shareholder.options_percent 1 100 %}%)
           </td>
         </tr>
        {% endfor %}
       </table>
+      {% endif %}
    {% endif %}
   {% endblock %}
 {% endblock %}
