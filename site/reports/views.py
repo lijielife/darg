@@ -43,31 +43,34 @@ def _get_transactions(from_date, to_date, security, company):
         ]
         rows.append(row)
 
-    rows.append([_('----------------------------------------')])
-    rows.append([_('Transactions for options:')])
-    rows.append([_('----------------------------------------')])
-
-    for optiontransaction in OptionTransaction.objects.filter(
+    options = OptionTransaction.objects.filter(
         bought_at__range=(from_date, to_date), option_plan__security=security
     ).filter(
         Q(buyer__company=company) | Q(seller__company=company)
     ).prefetch_related(
         'buyer', 'seller', 'option_plan', 'option_plan__security'
-    ):
-        row = [
-            optiontransaction.bought_at,
-            optiontransaction.buyer.get_full_name(),
-            optiontransaction.seller.get_full_name(),
-            optiontransaction.count,
-            optiontransaction.option_plan.exercise_price,
-            unicode(optiontransaction.option_plan.security),
-            '',
-            optiontransaction.get_depot_type_display(),
-            optiontransaction.stock_book_id,
-            optiontransaction.vesting_months,
-            optiontransaction.certificate_id,
-        ]
-        rows.append(row)
+    )
+    if options:
+        rows.append([_('----------------------------------------')])
+        rows.append([_('Transactions for options:')])
+        rows.append([_('----------------------------------------')])
+
+        for optiontransaction in options:
+            row = [
+                optiontransaction.bought_at,
+                optiontransaction.buyer.get_full_name(),
+                (optiontransaction.seller and
+                 optiontransaction.seller.get_full_name() or u''),
+                optiontransaction.count,
+                optiontransaction.option_plan.exercise_price,
+                unicode(optiontransaction.option_plan.security),
+                '',
+                optiontransaction.get_depot_type_display(),
+                optiontransaction.stock_book_id,
+                optiontransaction.vesting_months,
+                optiontransaction.certificate_id,
+            ]
+            rows.append(row)
 
     return rows
 
@@ -112,7 +115,7 @@ def transactions_xls(request, company_id):
     header = [
         _(u'date'), _(u'buyer'), _(u'seller'),
         _(u'count'),
-        _(u'value'), _('security'), _('comment'), _('depot type'),
+        _(u'price'), _('security'), _('comment'), _('depot type'),
         _('stock book id'), _(u'vesting period (options only'),
         _(u'cert id (options only)'),
     ]

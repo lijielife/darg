@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-30 11:10+0000\n"
-"PO-Revision-Date: 2017-05-30 11:10+0000\n"
+"PO-Revision-Date: 2017-05-30 11:29+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -618,7 +618,7 @@ msgstr "----------------------------------------"
 
 #: reports/views.py:47
 msgid "Transactions for options:"
-msgstr "Transaktionen pro Wertpapier im Zeitraum"
+msgstr "Transaktionen von Optionen"
 
 #: reports/views.py:86
 msgid "Permission denied"

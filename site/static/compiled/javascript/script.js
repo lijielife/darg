@@ -45126,7 +45126,7 @@ return deCh;
       $scope.$watchCollection('transactions_download_params', function(transactions_download_params) {
         if (transactions_download_params.to && transactions_download_params.from && transactions_download_params.security) {
           $scope.enable_transaction_download = true;
-          return $scope.transaction_download_url = '/company/' + company_id + '/download/transactions?from=' + $scope.transactions_download_params.from.toISOString() + '&to=' + $scope.transactions_download_params.to.toISOString() + '&security=' + $scope.transactions_download_params.security.pk;
+          return $scope.transaction_download_url = '/reports/company/' + company_id + '/download/transactions?from=' + $scope.transactions_download_params.from.toISOString() + '&to=' + $scope.transactions_download_params.to.toISOString() + '&security=' + $scope.transactions_download_params.security.pk;
         }
       });
       $scope.add_captable_report = function() {
