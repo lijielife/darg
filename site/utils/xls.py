@@ -21,7 +21,7 @@ def save_to_excel_file(filename, rows, header=None, formats={}, response=None):
     # formatting
     header_format = workbook.add_format({'bold': True})
     percent_format = workbook.add_format({'num_format': '0.0000%'})  # NOQA
-    money_format = workbook.add_format({'num_format': '"CHF" #,##0'})  # NOQA
+    money_format = workbook.add_format({'num_format': '"CHF" #.###'})  # NOQA
 
     if header:
         for idx, field in enumerate(header):
