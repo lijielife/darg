@@ -63,6 +63,12 @@ CERTIFICATES_HEADER = [
     _('certificate printed at'), _('security type')]
 
 
+PARTICIPATION_HEADER = [
+    _('Shareholder#'), _('Full Name'), _('Address'), _('postal code'),
+    _('city'), _('country'), _('share count'), _('capital'), _('vote count')]
+
+
+
 def _get_captable_pdf_context(company, ordering, date):
     """
     isolated code to make for better testing
@@ -240,6 +246,31 @@ def _get_address_data_pdf_context(company, date):
 
     return context
 
+
+def _get_assembly_participation_pdf_context(company, date):
+    queryset = company.get_active_shareholders(date=date)
+    queryset = _order_queryset(queryset, 'number')
+
+    _rows = []
+    for shareholder in queryset:
+        if shareholder.share_count(date=date):
+            _rows.extend(_collect_participation_csv_data(
+                shareholder, date))
+        else:
+            continue
+
+    rows = []
+    for row in _rows:
+        rows.append([to_string_or_empty(s) for s in row])
+
+    context = {
+        'heading': _('Assembly Participants list'),
+        'header': PARTICIPATION_HEADER,
+        'table_data': rows,
+    }
+    context.update(_get_default_pdf_context(company, date))
+
+    return context
 
 def _get_certificates_pdf_context(company, date):
     ots = OptionTransaction.objects.filter(
@@ -508,10 +539,6 @@ def render_assembly_participation_xls(company_id, report_id, user_id=None,
     ordering = u'number'
     filename = _get_filename(report, company)
 
-    header = [_('Shareholder#'), _('Full Name'), _('Address'),
-              _('postal code'), _('city'), _('country'),
-              _('share count'), _('capital'), _('vote count')]
-
     def to_unicode(iterable):
         return [unicode(s).encode("utf-8") for s in iterable]
 
@@ -529,7 +556,7 @@ def render_assembly_participation_xls(company_id, report_id, user_id=None,
 
     # money_format
     formats = {'7': 'money_format'}
-    save_to_excel_file(filename, rows, header, formats)
+    save_to_excel_file(filename, rows, PARTICIPATION_HEADER, formats)
 
     # post process
     _add_file_to_report(filename, report)
@@ -547,6 +574,40 @@ def render_assembly_participation_xls(company_id, report_id, user_id=None,
         report.save()
 
     os.remove(filename)
+
+
+@app.task
+def render_assembly_participation_pdf(company_id, report_id, user_id=None,
+                                      ordering=None, notify=False,
+                                      track_downloads=False):
+    # prepare
+    if user_id:
+        user = User.objects.get(pk=user_id)
+    company = Company.objects.get(pk=company_id)
+    report = Report.objects.get(pk=report_id)
+    ordering = _parse_ordering(ordering)
+    filename = _get_filename(report, company)
+
+    # render
+    context = _get_assembly_participation_pdf_context(company,
+                                                      date=report.report_at)
+    content = render_to_pdf(
+        'reports/table_report.pdf.html', context)
+
+    # post process
+    _add_file_to_report(filename, report, content)
+    _summarize_report(report)
+
+    if notify and user_id:
+        _send_notify(user, filename,
+                     subject=_('Your assembly participation pdf file'),
+                     body=_('Your file is attached to this email'),
+                     file_desc=_('Assembly Participation PDF'),
+                     url=url_with_domain(report.get_absolute_url()))
+
+    if not track_downloads:
+        report.downloaded_at = timezone.now()
+        report.save()
 
 
 @app.task

@@ -17,6 +17,7 @@ from project.tests.mixins import MoreAssertsTestCaseMixin
 from reports.tasks import (_add_file_to_report, _collect_csv_data,
                            _collect_participation_csv_data,
                            _get_address_data_pdf_context,
+                           _get_assembly_participation_pdf_context,
                            _get_captable_pdf_context,
                            _get_certificates_pdf_context, _get_contacts,
                            _get_default_pdf_context, _get_filename,
@@ -24,6 +25,7 @@ from reports.tasks import (_add_file_to_report, _collect_csv_data,
                            _parse_ordering, _prepare_report, _send_notify,
                            _summarize_report, prerender_reports,
                            render_address_data_pdf, render_address_data_xls,
+                           render_assembly_participation_pdf,
                            render_assembly_participation_xls,
                            render_captable_pdf, render_captable_xls,
                            render_certificates_pdf, render_certificates_xls,
@@ -40,7 +42,7 @@ class ReportTaskTestCase(MoreAssertsTestCaseMixin, TestCase):
         self.company = self.shs[0].company
         # have at least one unicode sh number (failed on test prev.)
         sh = self.shs[0]
-        sh.number = u'ü' + sh.number
+        sh.number = '999ü'
         sh.save()
 
     def test_get_certificates_pdf_context(self):
@@ -77,6 +79,14 @@ class ReportTaskTestCase(MoreAssertsTestCaseMixin, TestCase):
                                       'heading', 'today'])
         self.assertEqual(len(res['table_data']), 11)
 
+    def test_get_assembly_participation_pdf_context(self):
+        res = _get_assembly_participation_pdf_context(
+            self.shs[0].company, date=timezone.now().date())
+        self.assertEqual(res.keys(), ['pagesize', 'table_data', 'company',
+                                      'currency', 'header', 'report_date',
+                                      'heading', 'today'])
+        self.assertEqual(len(res['table_data']), 11)
+
     def test_get_captable_pdf_context(self):
 
         res = _get_captable_pdf_context(self.shs[0].company,
@@ -89,14 +99,13 @@ class ReportTaskTestCase(MoreAssertsTestCaseMixin, TestCase):
 
     def test_get_contacts(self):
         """ get xls list array of contacts data """
-        ComplexShareholderConstellationGenerator().generate()
         with self.assertLessNumQueries(46):
             res = _get_contacts(self.company)
 
         self.assertTrue(len(res) > 1)
         self.assertEqual(len(res[0]), 15)
         self.assertEqual(len(res[1]), 15)  # no nationality
-        self.assertEqual(res[-1][0], u'ü0')
+        self.assertEqual(res[0][0], u'999ü')
 
     def test_get_default_context(self):
         """ default context for pdf exports """
@@ -300,6 +309,17 @@ class ReportTaskTestCase(MoreAssertsTestCaseMixin, TestCase):
         report = ReportGenerator().generate(company=self.company)
         PositionGenerator().generate(company=report.company, seller=None)
         render_assembly_participation_xls(
+            report.company.pk, report.pk,
+            user_id=report.user.pk, ordering=None,
+            notify=True, track_downloads=False)
+        report.refresh_from_db()
+
+        self.assertIsNotNone(report.file)
+
+    def test_render_assembly_participation_pdf(self):
+        report = ReportGenerator().generate(company=self.company)
+        PositionGenerator().generate(company=report.company, seller=None)
+        render_assembly_participation_pdf(
             report.company.pk, report.pk,
             user_id=report.user.pk, ordering=None,
             notify=True, track_downloads=False)

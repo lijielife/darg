@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-30 09:37+0000\n"
+"POT-Creation-Date: 2017-05-30 11:10+0000\n"
 "PO-Revision-Date: 2017-05-30 08:51+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,16 +27,16 @@ msgstr "Vorname"
 #: static/compiled/javascript/i18n_noop.js:4
 #: static/compiled/javascript/i18n_noop.js:24
 #: static/compiled/javascript/script.js:45064
-#: static/compiled/javascript/script.js:45518
-#: static/compiled/javascript/script.js:45566
+#: static/compiled/javascript/script.js:45512
+#: static/compiled/javascript/script.js:45560
 msgid "Last Name"
 msgstr "Nachname"
 
 #: static/compiled/javascript/i18n_noop.js:5
 #: static/compiled/javascript/i18n_noop.js:25
 #: static/compiled/javascript/script.js:45076
-#: static/compiled/javascript/script.js:45512
-#: static/compiled/javascript/script.js:45563
+#: static/compiled/javascript/script.js:45506
+#: static/compiled/javascript/script.js:45557
 msgid "Shareholder Number"
 msgstr "Gesellschafter Nummer"
 
@@ -304,33 +304,33 @@ msgid "Share Percent Ownership (descending)"
 msgstr "Prozentualer Anteil (absteigend)"
 
 #: static/compiled/javascript/script.js:45088
-#: static/compiled/javascript/script.js:45506
-#: static/compiled/javascript/script.js:45560
+#: static/compiled/javascript/script.js:45500
+#: static/compiled/javascript/script.js:45554
 msgid "Email"
 msgstr "Email"
 
 #: static/compiled/javascript/script.js:45091
-#: static/compiled/javascript/script.js:45509
+#: static/compiled/javascript/script.js:45503
 msgid "Email desc"
 msgstr "Email absteigend"
 
 #: static/compiled/javascript/script.js:45094
-#: static/compiled/javascript/script.js:45524
+#: static/compiled/javascript/script.js:45518
 msgid "Capital based on face value"
 msgstr "Kapital basierend auf Nennwert"
 
 #: static/compiled/javascript/script.js:45097
-#: static/compiled/javascript/script.js:45527
+#: static/compiled/javascript/script.js:45521
 msgid "Capital based on face value desc"
 msgstr "Kapital basierend auf Nennwert absteigend"
 
 #: static/compiled/javascript/script.js:45100
-#: static/compiled/javascript/script.js:45530
+#: static/compiled/javascript/script.js:45524
 msgid "Postal Code"
 msgstr "Postleitzahl"
 
 #: static/compiled/javascript/script.js:45103
-#: static/compiled/javascript/script.js:45533
+#: static/compiled/javascript/script.js:45527
 msgid "Postal Code desc"
 msgstr "Postleitzahl absteigend"
 
@@ -354,39 +354,39 @@ msgstr "Gedruckte Zertifikate"
 msgid "Vested Shares"
 msgstr "Aktienpositionen mit Sperrfrist"
 
-#: static/compiled/javascript/script.js:45327
+#: static/compiled/javascript/script.js:45321
 msgid "Human Being"
 msgstr "Natürliche Person"
 
-#: static/compiled/javascript/script.js:45330
+#: static/compiled/javascript/script.js:45324
 msgid "Corporate"
 msgstr "Juristische Person"
 
-#: static/compiled/javascript/script.js:45336
+#: static/compiled/javascript/script.js:45330
 msgid "Not deliverable"
 msgstr "Unzustellbar"
 
-#: static/compiled/javascript/script.js:45339
+#: static/compiled/javascript/script.js:45333
 msgid "Postal Mail"
 msgstr "Briefversand"
 
-#: static/compiled/javascript/script.js:45342
+#: static/compiled/javascript/script.js:45336
 msgid "via Email"
 msgstr "Emailversand"
 
-#: static/compiled/javascript/script.js:45515
+#: static/compiled/javascript/script.js:45509
 msgid "Shareholder Number desc"
 msgstr "Gesellschafter Nummer absteigend"
 
-#: static/compiled/javascript/script.js:45521
+#: static/compiled/javascript/script.js:45515
 msgid "Last Name desc"
 msgstr "Nachname absteigend"
 
-#: static/compiled/javascript/script.js:45536
+#: static/compiled/javascript/script.js:45530
 msgid "Share count"
 msgstr "Anzahl Aktien"
 
-#: static/compiled/javascript/script.js:45539
+#: static/compiled/javascript/script.js:45533
 msgid "Share count desc"
 msgstr "Anzahl Aktien (absteigend)"
 
