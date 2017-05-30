@@ -2,6 +2,7 @@ import dateutil.parser
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.db.models.expressions import RawSQL
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.translation import ugettext as _
@@ -337,6 +338,8 @@ class ReportViewSet(viewsets.ModelViewSet):
             company=get_company_from_request(self.request)
             )
         report.update_eta()
+        report.save()
+        transaction.commit()
         report.render(notify=True, track_downloads=True)
         return report
 
