@@ -138,7 +138,7 @@ def _collect_csv_data(shareholder, date):
                 shareholder.get_depot_types(security=security),
                 shareholder.user.email,
                 shareholder.share_count(security=security, date=date),
-                float(shareholder.share_percent(security=security, date=date)),
+                float(shareholder.share_percent(security=security, date=date)) * 100,
                 shareholder.vote_percent(security=security, date=date),
                 shareholder.cumulated_face_value(security=security, date=date),
                 shareholder.is_management,

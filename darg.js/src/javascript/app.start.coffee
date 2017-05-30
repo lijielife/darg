@@ -375,3 +375,12 @@ app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'C
         $scope.datepicker.opened = !$scope.datepicker.opened
         return false
 ]
+
+app.filter 'percentage', [
+  '$filter'
+  ($filter) ->
+    (input, decimals) ->
+      return $filter('number')(input * 100, decimals) + '%'
+]
+
+

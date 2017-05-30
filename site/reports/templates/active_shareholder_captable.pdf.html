@@ -145,7 +145,7 @@
               {% shareholder_share_count shareholder report_date as share_count %}
               {{ share_count|intcomma }}
               {% shareholder_share_percent shareholder report_date as share_percent %}
-              {% if share_percent %}({{share_percent }}){% endif %}
+              {% if share_percent %}({% widthratio share_percent 1 100 %}%){% endif %}
             </td>
             {% if securities_with_track_numbers.exists and security_count == 1 %}
             <td>
@@ -176,7 +176,7 @@
             <td align="right" width="20%">
               {{ share_count|intcomma }}
               {% shareholder_share_percent shareholder report_date security as share_percent %}
-              {% if share_percent %}({{share_percent }}){% endif %}
+              {% if share_percent %}({% widthratio share_percent 1 100 %}%){% endif %}
             </td>
             {% if security.track_numbers %}
             <td>
@@ -217,7 +217,7 @@
             {{ shareholder.user.userprofile.get_address}}
           </td>
           <td align="right">
-            {{ shareholder.options_count|intcomma }} ({{shareholder.options_percent }})
+              {{ shareholder.options_count|intcomma }} ({% widthratio shareholder.options_percent 1 100 %}%)
           </td>
         </tr>
        {% endfor %}

@@ -1125,7 +1125,7 @@ class Shareholder(TagMixin, models.Model):
         count = sum(self.option_buyer.all().values_list('count', flat=True)) - \
             sum(self.option_seller.all().values_list('count', flat=True))
         if total:
-            return "{:.2f}".format(count / float(total) * 100)
+            return round(count / float(total), 4)
         return False
 
     def options_count(self, date=None, security=None):
