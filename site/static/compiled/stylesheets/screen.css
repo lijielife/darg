@@ -2738,6 +2738,9 @@ blockquote p.says:before {
 .core .container.members-area .footer {
   width: 100%;
   text-align: center;
+  clear: left;
+  float: left;
+  margin-top: 3em;
 }
 .core .container.members-area .login-meta a {
   margin-bottom: 15px;
