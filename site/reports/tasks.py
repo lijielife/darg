@@ -182,7 +182,9 @@ def _collect_participation_csv_data(shareholder, date):
 def _get_contacts(company):
 
     rows = []
-    for shareholder in company.get_active_shareholders():
+    queryset = company.get_active_shareholders()
+    queryset = _order_queryset(queryset, 'user__last_name')
+    for shareholder in queryset:
         row = [
             shareholder.number,
             shareholder.user.last_name,
@@ -204,7 +206,9 @@ def _get_contacts(company):
         ]
         rows.append(row)
 
-    for shareholder in company.get_active_option_holders():
+    queryset = company.get_active_option_holders()
+    queryset = _order_queryset(queryset, 'user__last_name')
+    for shareholder in queryset:
         row = [
             shareholder.number,
             shareholder.user.last_name,
@@ -468,7 +472,6 @@ def render_address_data_xls(company_id, report_id, user_id=None, ordering=None,
         user = User.objects.get(pk=user_id)
     company = Company.objects.get(pk=company_id)
     report = Report.objects.get(pk=report_id)
-    ordering = _parse_ordering(ordering)
     filename = _get_filename(report, company)
     started_at = timezone.now()
 
