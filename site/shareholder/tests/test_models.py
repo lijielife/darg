@@ -222,8 +222,8 @@ class CompanyTestCase(StripeTestCaseMixin, SubscriptionTestMixin, TestCase):
         OptionPlanGenerator().generate(company=company, security=security,
                                        number_segments=[2222, u'3000-4011'])
 
-        self.assertEqual(company.get_all_option_plan_segments(),
-                         [2222, u'3000-4011', u'1000-2000'])
+        self.assertEqual(set(company.get_all_option_plan_segments()),
+                         set([2222, u'3000-4011', u'1000-2000']))
 
         OptionPlanGenerator().generate(security=security,
                                        number_segments=[5555])
