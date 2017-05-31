@@ -45651,9 +45651,9 @@ return deCh;
         return $scope.optionholder_current_range = start.toString() + '-' + end.toString();
       });
       $scope.$watchCollection('shareholders', function(shareholders) {
-        if ($scope.shareholders.length > 1) {
+        if ($scope.shareholders.length > 1 || $scope.search_params.query !== void 0) {
           return $scope.hide_captable = false;
-        } else {
+        } else if ($scope.search_params.query === null) {
           return $scope.hide_captable = true;
         }
       });
