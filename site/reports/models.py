@@ -116,7 +116,15 @@ class Report(TimeStampedModel):
         if self.pk:
             prev_report = prev_report.exclude(pk=self.pk)
         prev_report = prev_report.first()
+        # last report duration
         seconds = getattr(prev_report, 'generation_time', None) or 3*60
+        # add unfinised reports
+        unfinished = Report.objects.filter(generated_at__isnull=True)
+        unfinished_seconds = 0
+        for report in unfinished:
+            delta = report.eta - report.created_at
+            unfinished_seconds += delta.seconds
+        seconds += unfinished_seconds
 
         self.eta = timezone.now() + datetime.timedelta(seconds=seconds)
         self.save()

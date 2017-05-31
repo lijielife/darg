@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+from dateutil.relativedelta import relativedelta
 from mock import patch
+from model_mommy import mommy
 
 from django.test import TestCase
 from django.utils import timezone
@@ -15,7 +17,8 @@ class ReportModelTestCase(TestCase):
 
     def setUp(self):
         self.report = ReportGenerator().generate(
-            file_type='PDF', report_type='captable')
+            file_type='PDF', report_type='captable',
+            eta=timezone.now()+relativedelta(minutes=3))
 
     def test_get_report_upload_path(self):
         """ render path for saving prive files for reports """
@@ -63,6 +66,19 @@ class ReportModelTestCase(TestCase):
         self.report.refresh_from_db()
         self.assertTrue(
             self.report.eta > timezone.now() + datetime.timedelta(seconds=170))
+
+    def test_update_eta_with_unfinished(self):
+        """ calculate and update eta if there are more unfinished reports """
+        mommy.make('reports.Report', generated_at=None,
+                   eta=(timezone.now()+relativedelta(minutes=3)), _quantity=3)
+        self.report.update_eta()
+        self.report.refresh_from_db()
+        self.assertTrue(
+            self.report.eta > timezone.now() + datetime.timedelta(
+                seconds=4*180-10))
+        self.assertTrue(
+            self.report.eta < timezone.now() + datetime.timedelta(
+                seconds=5*180+10))
 
     def test_update_eta_from_prev_report(self):
         """ calculate and update eta with prev reports existing"""
