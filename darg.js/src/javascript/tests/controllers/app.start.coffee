@@ -31,12 +31,18 @@ describe 'Unit: Testing Start Controller', ->
     return
 
   describe 'captable display', ->
+    it 'should be displayed if there is one or less shareholders and a search', ->
+        $scope.shareholders = [{name: 'shareholder1'}]
+        $scope.search_params.query = 'test'
+        $scope.$digest()
+        expect($scope.hide_captable).toEqual false
+
     it 'should be hidden if there is one or less shareholders', ->
         $scope.shareholders = [{name: 'shareholder1'}]
         $scope.$digest()
         expect($scope.hide_captable).toEqual true
 
-    it 'should be displayed of there are more then one shareholders', ->
+    it 'should be displayed if there are more than one shareholders', ->
         $scope.shareholders = [{name: 'shareholder1'}, {name: 'shareholder2'}]
         $scope.$digest()
         expect($scope.hide_captable).toEqual false
