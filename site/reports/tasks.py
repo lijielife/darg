@@ -45,7 +45,7 @@ CSV_HEADER = [
 ]
 
 CONTACTS_HEADER = [
-    _(u'shareholder ID'), _(u'last name'), _(u'first name'),
+    _(u'shareholder ID'), _(u'name'),
     _(u'email'),
     _(u'language ISO'), _('language full'), _('street'), _('street 2'),
     _('c/o'), _('city'), _('zip'), _('country'),
@@ -187,8 +187,7 @@ def _get_contacts(company):
     for shareholder in queryset:
         row = [
             shareholder.number,
-            shareholder.user.last_name,
-            shareholder.user.first_name,
+            shareholder.get_full_name(),
             shareholder.user.email,
             shareholder.user.userprofile.language,
             shareholder.user.userprofile.get_language_display(),
