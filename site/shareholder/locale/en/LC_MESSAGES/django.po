@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-30 11:10+0000\n"
+"POT-Creation-Date: 2017-05-31 07:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,7 +49,7 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: shareholder/admin.py:225 shareholder/models.py:2125
+#: shareholder/admin.py:225 shareholder/models.py:2124
 msgid "shareholder statements"
 msgstr ""
 
@@ -97,11 +97,11 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: shareholder/admin.py:286 shareholder/models.py:1819
+#: shareholder/admin.py:286 shareholder/models.py:1818
 msgid "company"
 msgstr ""
 
-#: shareholder/admin.py:290 shareholder/models.py:1820
+#: shareholder/admin.py:290 shareholder/models.py:1819
 msgid "report date"
 msgstr ""
 
@@ -342,168 +342,168 @@ msgstr ""
 msgid "cache data for fast sorting here"
 msgstr ""
 
-#: shareholder/models.py:1393
+#: shareholder/models.py:1392
 msgid "Missing all data required for #GAFI."
 msgstr ""
 
-#: shareholder/models.py:1404
+#: shareholder/models.py:1403
 msgid "Shareholder first name or last name missing."
 msgstr ""
 
-#: shareholder/models.py:1411
+#: shareholder/models.py:1410
 msgid "Company name or last name missing."
 msgstr ""
 
-#: shareholder/models.py:1415
+#: shareholder/models.py:1414
 msgid "Shareholder birthday missing."
 msgstr ""
 
-#: shareholder/models.py:1419
+#: shareholder/models.py:1418
 msgid "Shareholder origin/country missing."
 msgstr ""
 
-#: shareholder/models.py:1428
+#: shareholder/models.py:1427
 msgid "Shareholder address or address details missing."
 msgstr ""
 
-#: shareholder/models.py:1483
+#: shareholder/models.py:1482
 msgid "Preferred Stock"
 msgstr ""
 
-#: shareholder/models.py:1484
+#: shareholder/models.py:1483
 msgid "Common Stock"
 msgstr ""
 
-#: shareholder/models.py:1485
+#: shareholder/models.py:1484
 msgid "Registered Shares"
 msgstr ""
 
-#: shareholder/models.py:1486
+#: shareholder/models.py:1485
 msgid "Registered share with restricted transferability"
 msgstr ""
 
-#: shareholder/models.py:1493
+#: shareholder/models.py:1492
 msgid "Nominal value of this asset"
 msgstr ""
 
-#: shareholder/models.py:1499 shareholder/models.py:1591
-#: shareholder/models.py:1714 shareholder/models.py:1772
+#: shareholder/models.py:1498 shareholder/models.py:1590
+#: shareholder/models.py:1713 shareholder/models.py:1771
 msgid "JSON list of segments of ids for securities. can be 1, 2, 3, 4-10"
 msgstr ""
 
-#: shareholder/models.py:1502
+#: shareholder/models.py:1501
 msgid "public security id aka Valor, WKN, CUSIP: http://bit.ly/2ieXwuK"
 msgstr ""
 
-#: shareholder/models.py:1507
+#: shareholder/models.py:1506
 msgid ""
 "App needs to track IDs of shares. WARNING: update initial transaction with "
 "segments on enabling."
 msgstr ""
 
-#: shareholder/models.py:1515
+#: shareholder/models.py:1514
 msgid "{} ({} CHF)"
 msgstr ""
 
-#: shareholder/models.py:1580
+#: shareholder/models.py:1579
 msgid "Share Count transfered or created"
 msgstr ""
 
-#: shareholder/models.py:1584
+#: shareholder/models.py:1583
 msgid "Nominal value or payed price for the transaction"
 msgstr ""
 
-#: shareholder/models.py:1588
+#: shareholder/models.py:1587
 msgid "Position is part of a split transaction"
 msgstr ""
 
-#: shareholder/models.py:1594 shareholder/models.py:1775
+#: shareholder/models.py:1593 shareholder/models.py:1774
 msgid "Securities are purchase type (for myself, etc.)"
 msgstr ""
 
-#: shareholder/models.py:1597 shareholder/models.py:1778
+#: shareholder/models.py:1596 shareholder/models.py:1777
 msgid "aka Skontro (read http://bit.ly/2iJquEl)"
 msgstr ""
 
-#: shareholder/models.py:1600 shareholder/models.py:1781
+#: shareholder/models.py:1599 shareholder/models.py:1780
 msgid "What kind of depot is this position stored within"
 msgstr ""
 
-#: shareholder/models.py:1605
+#: shareholder/models.py:1604
 msgid ""
 "assigned position represents the change back to company depot from cert depot"
 msgstr ""
 
-#: shareholder/models.py:1638
+#: shareholder/models.py:1637
 msgid "Capital Increase"
 msgstr ""
 
-#: shareholder/models.py:1640
+#: shareholder/models.py:1639
 msgid "Part of Split"
 msgstr ""
 
-#: shareholder/models.py:1643
+#: shareholder/models.py:1642
 msgid "Share issue"
 msgstr ""
 
-#: shareholder/models.py:1645
+#: shareholder/models.py:1644
 msgid "share issue into cert depot"
 msgstr ""
 
-#: shareholder/models.py:1648
+#: shareholder/models.py:1647
 msgid "move stock to certificate depot"
 msgstr ""
 
-#: shareholder/models.py:1650
+#: shareholder/models.py:1649
 msgid "stock returns from certificate depot"
 msgstr ""
 
-#: shareholder/models.py:1651
+#: shareholder/models.py:1650
 msgid "Regular Ownership change"
 msgstr ""
 
-#: shareholder/models.py:1672
+#: shareholder/models.py:1671
 msgid "Certificate Invalidation for position {}"
 msgstr ""
 
-#: shareholder/models.py:1708
+#: shareholder/models.py:1707
 msgid "Number of shares approved"
 msgstr ""
 
-#: shareholder/models.py:1833 shareholder/models.py:2094
+#: shareholder/models.py:1832 shareholder/models.py:2093
 msgid "shareholder statement report"
 msgstr ""
 
-#: shareholder/models.py:1834
+#: shareholder/models.py:1833
 msgid "shareholder statement reports"
 msgstr ""
 
-#: shareholder/models.py:2101
+#: shareholder/models.py:2100
 msgid "email sent at"
 msgstr ""
 
-#: shareholder/models.py:2103
+#: shareholder/models.py:2102
 msgid "email opened at"
 msgstr ""
 
-#: shareholder/models.py:2105
+#: shareholder/models.py:2104
 msgid "PDF downloaded at"
 msgstr ""
 
-#: shareholder/models.py:2107
+#: shareholder/models.py:2106
 msgid "letter sent at"
 msgstr ""
 
-#: shareholder/models.py:2111
+#: shareholder/models.py:2110
 msgid "remote email id"
 msgstr ""
 
-#: shareholder/models.py:2114
+#: shareholder/models.py:2113
 #, python-brace-format
 msgid "Prefix id with provider, e.g. mandrill{sep}[EMAIL_ID]"
 msgstr ""
 
-#: shareholder/models.py:2124
+#: shareholder/models.py:2123
 msgid "shareholder statement"
 msgstr ""
 

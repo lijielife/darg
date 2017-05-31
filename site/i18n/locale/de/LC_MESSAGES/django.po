@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-30 11:10+0000\n"
+"POT-Creation-Date: 2017-05-31 07:32+0000\n"
 "PO-Revision-Date: 2017-05-23 10:51+0000\n"
 "Last-Translator: Jirka Schaefer <jirka@tschitschereengreen.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -465,12 +465,12 @@ msgstr "Leere Liste und '%(class_name)s.allow_empty' ist False."
 msgid "You already subscribed to this plan"
 msgstr "Sie sind bereits bei diesem Abonnement eingetragen."
 
-#: company/views.py:221
+#: company/views.py:227
 msgid "You must already be subscribed to a plan before you can change it."
 msgstr ""
 "Sie müssen bereits ein Paket abonniert haben, bevor Sie dieses ändern können."
 
-#: company/views.py:364
+#: company/views.py:370
 msgid "Could not find requested filed."
 msgstr "Die angefragte Datei kann nicht gefunden werden."
 
