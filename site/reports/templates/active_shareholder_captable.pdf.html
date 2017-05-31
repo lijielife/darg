@@ -187,6 +187,8 @@
           {% endif %}
         {% endfor %}
         {% endif %}
+        {# performance booster: https://goo.gl/qKRyQx #}
+        {% if forloop.counter|divisibleby:20 %}</table><table>{% endif %}
       {% endfor %}
     </table>
 
@@ -220,6 +222,8 @@
               {{ shareholder.options_count|intcomma }} ({% widthratio shareholder.options_percent 1 100 %}%)
           </td>
         </tr>
+        {# performance booster: https://goo.gl/qKRyQx #}
+        {% if forloop.counter|divisibleby:20 %}</table><table>{% endif %}
        {% endfor %}
       </table>
       {% endif %}

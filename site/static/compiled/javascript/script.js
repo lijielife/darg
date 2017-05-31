@@ -45101,7 +45101,7 @@ return deCh;
           value: 'user__userprofile__postal_code'
         }, {
           title: gettext('Postal Code desc'),
-          value: 'user__user_profile__postal_code_desc'
+          value: 'user__userprofile__postal_code_desc'
         }
       ];
       $scope.report_types = [
