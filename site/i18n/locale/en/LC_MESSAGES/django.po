@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-30 11:10+0000\n"
+"POT-Creation-Date: 2017-05-31 07:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -413,11 +413,11 @@ msgstr ""
 msgid "You already subscribed to this plan"
 msgstr ""
 
-#: company/views.py:221
+#: company/views.py:227
 msgid "You must already be subscribed to a plan before you can change it."
 msgstr ""
 
-#: company/views.py:364
+#: company/views.py:370
 msgid "Could not find requested filed."
 msgstr ""
 

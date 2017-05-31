@@ -55,7 +55,8 @@ CONTACTS_HEADER = [
 
 VESTED_SHARES_HEADER = [
     _('full name'), _('count'), _('security'), _('is management member'),
-    _('vesting in months'), _('asset type')]
+    _('bought at'),
+    _('vesting in months'), _('vesting expiration at'), _('asset type')]
 
 
 CERTIFICATES_HEADER = [
@@ -138,7 +139,8 @@ def _collect_csv_data(shareholder, date):
                 shareholder.get_depot_types(security=security),
                 shareholder.user.email,
                 shareholder.share_count(security=security, date=date),
-                float(shareholder.share_percent(security=security, date=date)) * 100,
+                float(shareholder.share_percent(
+                    security=security, date=date)) * 100,
                 shareholder.vote_percent(security=security, date=date),
                 shareholder.cumulated_face_value(security=security, date=date),
                 shareholder.is_management,
@@ -340,11 +342,14 @@ def _get_vested_shares_pdf_context(company, date):
     _rows = []
     _rows += [
         [p.buyer.get_full_name(), p.count, unicode(p.security),
-         p.buyer.is_management, p.vesting_months, _('stock')
+         p.buyer.is_management, p.bought_at, p.vesting_months,
+         p.vesting_expires_at,
+         _('stock')
          ] for p in positions]
+
     _rows += [[ot.buyer.get_full_name(), ot.count,
               unicode(ot.option_plan.security),
-              ot.buyer.is_management,
+              ot.buyer.is_management, ot.bought_at, u'',
               ot.vesting_months, _('certificate')] for ot in ots]
 
     rows = []
@@ -834,12 +839,13 @@ def render_vested_shares_xls(company_id, report_id, user_id=None, ordering=None,
     _rows = []
     _rows += [
         [p.buyer.get_full_name(), p.count, unicode(p.security),
-         p.buyer.is_management, p.vesting_months, _('stock')
+         p.buyer.is_management, p.bought_at, p.vesting_months,
+         p.vesting_expires_at, _('stock')
          ] for p in positions]
     _rows += [[ot.buyer.get_full_name(), ot.count,
               unicode(ot.option_plan.security),
-              ot.buyer.is_management,
-              ot.vesting_months, _('certificate')] for ot in ots]
+              ot.buyer.is_management, ot.bought_at,
+              ot.vesting_months, u'', _('certificate')] for ot in ots]
 
     rows = []
     for row in _rows:
