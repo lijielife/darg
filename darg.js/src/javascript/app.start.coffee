@@ -150,9 +150,11 @@ app.controller 'StartController', ['$scope', '$window', '$http', '$location', 'C
     $scope.$watchCollection 'shareholders', (shareholders)->
         # do not show table if there is only one shareholder to clear the page for
         # the user and encourage him to add more shareholders
-        if $scope.shareholders.length > 1 || $scope.search_params.query != undefined
+        if $scope.shareholders.length > 1
             $scope.hide_captable = false
-        else if $scope.search_params.query == null
+        else if $scope.search_params.query != null
+            $scope.hide_captable = false
+        else
             $scope.hide_captable = true
 
     # --- PAGINATION
