@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+from dateutil.relativedelta import relativedelta
 import hashlib
 import logging
 import random
@@ -392,7 +393,7 @@ class ReportGenerator(object):
         save = kwargs.pop('save', True)
 
         rkwargs = {
-            'eta': timezone.now(),
+            'eta': timezone.now() + relativedelta(minutes=3),
             'company': CompanyGenerator().generate(),
             'user': UserGenerator().generate(),
             'report_type': 'captable',

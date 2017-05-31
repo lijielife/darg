@@ -91,6 +91,6 @@ class ReportModelTestCase(TestCase):
         self.report.update_eta()
         self.report.refresh_from_db()
         self.assertTrue(
-            self.report.eta < timezone.now() + datetime.timedelta(seconds=70))
+            self.report.eta < timezone.now() + datetime.timedelta(seconds=6*70))
         self.assertTrue(
-            self.report.eta > timezone.now() + datetime.timedelta(seconds=50))
+            self.report.eta > timezone.now() + datetime.timedelta(seconds=6*50))
