@@ -1364,15 +1364,18 @@ class Shareholder(TagMixin, models.Model):
         if share_count == 0:
             return 0
 
-        # last payed price
-        position = Position.objects.filter(
-            buyer__company=self.company,
-            value__gt=0
-        ).order_by('-bought_at', '-id').first()
-        if position:
-            return share_count * position.value
-        else:
-            return 0
+        value = 0
+        for security in self.company.security_set.all():
+            # last payed price
+            position = Position.objects.filter(
+                buyer__company=self.company,
+                security=security,
+                value__gt=0
+            ).order_by('-bought_at', '-id').first()
+            if position:
+                value += share_count * position.value
+
+        return value
 
     def validate_gafi(self):
         """ returns dict with indication if all data is correct to match
