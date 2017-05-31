@@ -111,6 +111,8 @@
         </td>
         {% endfor %}
       </tr>
+      {# performance booster: https://goo.gl/qKRyQx #}
+      {% if forloop.counter|divisibleby:20 %}</table><table>{% endif %}
       {% endfor %}
     </table>
 

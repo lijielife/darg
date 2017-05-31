@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import datetime
+import logging
 from decimal import Decimal
 
 from django.core import mail
@@ -31,6 +32,9 @@ from reports.tasks import (_add_file_to_report, _collect_csv_data,
                            render_certificates_pdf, render_certificates_xls,
                            render_vested_shares_pdf, render_vested_shares_xls)
 from shareholder.models import Shareholder
+
+
+logger = logging.getLogger(__name__)
 
 
 # --- TASKS
@@ -304,6 +308,38 @@ class ReportTaskTestCase(MoreAssertsTestCaseMixin, TestCase):
         report.refresh_from_db()
 
         self.assertIsNotNone(report.file)
+
+    def test_render_address_data_pdf_performance(self):
+        """ ensure we don't run into https://goo.gl/qKRyQx """
+        start = timezone.now()
+        report = ReportGenerator().generate(company=self.company,
+                                            report_type='address_data',
+                                            file_type='PDF')
+        # seed more capital
+        mommy.make('shareholder.Position',
+                   buyer=self.company.get_company_shareholder(),
+                   seller=None, count=1000000, security=self.sec)
+        # mass shareholder creation
+        for x in range(0, 600):
+            shareholder = mommy.make('shareholder.Shareholder',
+                                     company=self.company)
+            mommy.make('shareholder.Position',
+                       seller=self.company.get_company_shareholder(),
+                       buyer=shareholder, count=1, security=self.sec)
+        # logger.warning('finished test data creation: {}'.format(
+        #     timezone.now()-start))
+
+        render_address_data_pdf(
+            report.company.pk, report.pk,
+            user_id=report.user.pk, ordering=None,
+            notify=True, track_downloads=False)
+        report.refresh_from_db()
+        # logger.warning('finished pdf rendering: {}'.format(
+        #     timezone.now()-start))
+
+        self.assertIsNotNone(report.file)
+        delta = timezone.now()-start
+        self.assertLess(delta.seconds, 120)
 
     def test_render_assembly_participation_xls(self):
         """ render csv with assembly participants """
