@@ -107,8 +107,8 @@ class ReportTaskTestCase(MoreAssertsTestCaseMixin, TestCase):
             res = _get_contacts(self.company)
 
         self.assertTrue(len(res) > 1)
-        self.assertEqual(len(res[0]), 15)
-        self.assertEqual(len(res[1]), 15)  # no nationality
+        self.assertEqual(len(res[0]), 14)
+        self.assertEqual(len(res[1]), 14)  # no nationality
         self.assertIn(u'999ü', [r[0] for r in res])
 
     def test_get_default_context(self):
