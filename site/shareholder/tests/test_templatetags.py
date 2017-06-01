@@ -102,14 +102,14 @@ class ShareholderTagsTestCase(TestCase):
             date=timezone.now().date(),
             security=self.company.security_set.first())
 
-    @mock.patch('shareholder.models.Shareholder')
-    def test_has_locked_shares(self, shareholder_mock):
+    @mock.patch('shareholder.models.Shareholder.has_locked_shares')
+    def test_has_locked_shares(self, locked_shares_mock):
         """ does the shareholder have locked shares """
         has_locked_shares(
             self.shareholder, date=timezone.now().date(),
             security=self.company.security_set.first())
-        shareholder_mock.has_locked_shares.assert_called_with(
-            self.shareholder, date=timezone.now().date(),
+        locked_shares_mock.assert_called_with(
+            date=timezone.now().date(),
             security=self.company.security_set.first())
 
     @mock.patch('shareholder.models.Shareholder')
