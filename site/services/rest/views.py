@@ -1,8 +1,8 @@
 import dateutil.parser
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.db.models import Q
 from django.db.models.expressions import RawSQL
-from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.translation import ugettext as _
@@ -149,11 +149,35 @@ class PositionViewSet(SubscriptionViewMixin, viewsets.ModelViewSet):
 
         position = self.get_object()
         if position.is_draft is True:
-            # update cached shareholder `field order_cache`
+            # update cached shareholder field `order_cache` and cached
+            # `share_count` per security and for all securities of the
+            # shareholder -> see `None`
             if position.buyer:
                 update_order_cache_task.apply_async([position.buyer.pk])
+                cache_key = u"shareholder_share_count_{}_{}_{}".format(
+                    position.buyer.pk,
+                    timezone.now().date().isoformat(),
+                    position.security.pk)
+                cache.set(cache_key, None)
+                cache_key = u"shareholder_share_count_{}_{}_{}".format(
+                    position.buyer.pk,
+                    timezone.now().date().isoformat(),
+                    'None')
+                cache.set(cache_key, None)
             if position.seller:
                 update_order_cache_task.apply_async([position.seller.pk])
+                cache_key = u"shareholder_share_count_{}_{}_{}".format(
+                    position.seller.pk,
+                    timezone.now().date().isoformat(),
+                    position.security.pk)
+                cache.set(cache_key, None)
+                cache_key = u"shareholder_share_count_{}_{}_{}".format(
+                    position.seller.pk,
+                    timezone.now().date().isoformat(),
+                    'None')
+                cache.set(cache_key, None)
+
+            # delete
             position.delete()
             return Response(
                 {"success": True}, status=status.HTTP_204_NO_CONTENT)

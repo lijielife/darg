@@ -1323,6 +1323,17 @@ class Shareholder(TagMixin, models.Model):
         but where the vesting period is over. `without_vesting` gets
         share count for all pkgds which don't have a vesting at all
         """
+        cache_key = u"shareholder_share_count_{}_{}_{}".format(
+            self.pk,
+            (date and date.isoformat() or timezone.now().date().isoformat()),
+            security and security.pk or 'None')
+
+        # exclude special cases
+        if not only_sellable or not expired_vesting or without_vesting:
+            cached = cache.get(cache_key)
+            if cached:
+                return cached
+
         qs_bought = self.buyer.all()
         qs_sold = self.seller.all()
 
@@ -1378,7 +1389,9 @@ class Shareholder(TagMixin, models.Model):
         else:
             options_created = 0
 
-        return count_bought - count_sold - options_created
+        result = count_bought - count_sold - options_created
+        cache.set(cache_key, result, 30*60)
+        return result
 
     def share_count_sellable(self, date=None, security=None):
         """

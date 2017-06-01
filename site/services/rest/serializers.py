@@ -3,6 +3,7 @@ from dateutil.parser import parse as timeparse
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.core.mail import mail_managers, send_mail
 from django.core.urlresolvers import reverse
 from django.db import transaction
@@ -783,6 +784,29 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
         # fire signal to update order_cache
         post_save.send(
             Position, instance=position, using='default', created=True)
+
+        if position.seller:
+            cache_key = u"shareholder_share_count_{}_{}_{}".format(
+                position.seller.pk,
+                timezone.now().date().isoformat(),
+                position.security.pk)
+            cache.set(cache_key, None)
+            cache_key = u"shareholder_share_count_{}_{}_{}".format(
+                position.seller.pk,
+                timezone.now().date().isoformat(),
+                'None')
+            cache.set(cache_key, None)
+        if position.buyer:
+            cache_key = u"shareholder_share_count_{}_{}_{}".format(
+                position.seller.pk,
+                timezone.now().date().isoformat(),
+                position.security.pk)
+            cache.set(cache_key, None)
+            cache_key = u"shareholder_share_count_{}_{}_{}".format(
+                position.seller.pk,
+                timezone.now().date().isoformat(),
+                'None')
+            cache.set(cache_key, None)
 
         return position
 
