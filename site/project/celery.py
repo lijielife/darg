@@ -38,8 +38,8 @@ app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 @app.task
 def backup():
-    call_command('dbbackup')
-    call_command('mediabackup')
+    call_command('dbbackup', '-z')
+    call_command('mediabackup', '-z')
 
 
 @app.on_after_finalize.connect

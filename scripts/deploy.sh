@@ -28,8 +28,8 @@ if [ "$skip_backup" = true ] ; then
   echo "BACKUP SKIPPED"
 else
   cd site
-  ./manage.py dbbackup
-  ./manage.py mediabackup
+  ./manage.py dbbackup -z
+  ./manage.py mediabackup -z
   cd ..
 fi
 
