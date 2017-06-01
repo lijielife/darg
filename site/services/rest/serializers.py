@@ -798,12 +798,12 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer,
             cache.set(cache_key, None)
         if position.buyer:
             cache_key = u"shareholder_share_count_{}_{}_{}".format(
-                position.seller.pk,
+                position.buyer.pk,
                 timezone.now().date().isoformat(),
                 position.security.pk)
             cache.set(cache_key, None)
             cache_key = u"shareholder_share_count_{}_{}_{}".format(
-                position.seller.pk,
+                position.buyer.pk,
                 timezone.now().date().isoformat(),
                 'None')
             cache.set(cache_key, None)
