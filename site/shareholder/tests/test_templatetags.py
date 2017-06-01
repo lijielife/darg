@@ -92,24 +92,24 @@ class ShareholderTagsTestCase(TestCase):
                                            date=self.future_date),
             1064.096)
 
-    @mock.patch('shareholder.models.Shareholder')
-    def test_get_positions_with_certificate(self, shareholder_mock):
+    @mock.patch('shareholder.models.Shareholder.get_positions_with_certificate')
+    def test_get_positions_with_certificate(self, certificate_mock):
         """ get unsold positions with certificates """
         get_positions_with_certificate(
-            self.shareholder, timezone.now().date(),
+            self.shareholder, date=timezone.now().date(),
             security=self.company.security_set.first())
-        shareholder_mock.get_positions_with_certificate.assert_called_with(
-            self.shareholder, timezone.now().date(),
+        certificate_mock.assert_called_with(
+            date=timezone.now().date(),
             security=self.company.security_set.first())
 
     @mock.patch('shareholder.models.Shareholder')
     def test_has_locked_shares(self, shareholder_mock):
         """ does the shareholder have locked shares """
         has_locked_shares(
-            self.shareholder, timezone.now().date(),
+            self.shareholder, date=timezone.now().date(),
             security=self.company.security_set.first())
         shareholder_mock.has_locked_shares.assert_called_with(
-            self.shareholder, timezone.now().date(),
+            self.shareholder, date=timezone.now().date(),
             security=self.company.security_set.first())
 
     @mock.patch('shareholder.models.Shareholder')
