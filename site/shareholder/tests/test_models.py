@@ -1032,12 +1032,56 @@ class ShareholderTestCase(TestCase):
             self.shareholder1.company.get_management_cumulated_face_value(),
             self.shareholder1.cumulated_face_value())
 
+    def test_get_vested_positions(self):
+        """ return qs of unsold positions with vesting """
+        p1 = mommy.make(Position, buyer=self.shareholder1, vesting_months=12)
+        mommy.make(Position, buyer=self.shareholder1)
+        self.assertEqual(self.shareholder1.get_vested_positions().first().pk,
+                         p1.pk)
+
+    def test_get_positions_with_certificate(self):
+        """ return qs of shares with certificate which are not yet returned """
+        # valid
+        p1 = mommy.make(Position, buyer=self.shareholder1, certificate_id='1',
+                        depot_type=0)
+        # no cert
+        mommy.make(Position, buyer=self.shareholder1)
+        # cert invalidated
+        mommy.make(Position, buyer=self.shareholder1, certificate_id='1',
+                   depot_type=0, _fill_optional=True)
+
+        self.assertEqual(
+            self.shareholder1.get_positions_with_certificate().first().pk,
+            p1.pk)
+
+    @mock.patch('shareholder.models.Shareholder.get_positions_with_certificate')
+    @mock.patch('shareholder.models.Shareholder.get_vested_positions')
+    def test_has_locked_shares(self, vesting_mock, certificate_mock):
+        shareholder = ShareholderGenerator().generate()
+        mommy.make(Position, buyer=shareholder, vesting_months=12)
+        self.assertTrue(shareholder.has_locked_shares())
+
+        certificate_mock.assert_called()
+        vesting_mock.assert_called()
+
     def test_has_management(self):
         """ flag if company has shareholders marked as management """
         self.assertFalse(self.shareholder1.company.has_management())
         self.shareholder1.is_management = True
         self.shareholder1.save()
         self.assertTrue(self.shareholder1.company.has_management())
+
+    def test_has_vested_shares(self):
+        shareholder3 = ShareholderGenerator().generate(
+            company=self.company)
+        PositionGenerator().generate(seller=self.shareholder1,
+                                     buyer=self.shareholder2,
+                                     security=self.security, count=10,
+                                     bought_at=timezone.now(),
+                                     vesting_months=5)
+        self.assertTrue(self.shareholder2.has_vested_shares())   # regular sh
+        self.assertFalse(self.shareholder1.has_vested_shares())  # corp shareh
+        self.assertFalse(shareholder3.has_vested_shares())       # fresh sh
 
     def test_index(self):
 
@@ -1054,19 +1098,6 @@ class ShareholderTestCase(TestCase):
         s2 = ShareholderGenerator().generate(company=s.company)
         self.assertTrue(s.is_company_shareholder())
         self.assertFalse(s2.is_company_shareholder())
-
-    def test_has_vested_shares(self):
-        shareholder3 = ShareholderGenerator().generate(
-            company=self.company)
-        PositionGenerator().generate(seller=self.shareholder1,
-                                     buyer=self.shareholder2,
-                                     security=self.security, count=10,
-                                     bought_at=timezone.make_aware(
-                                        datetime.datetime(2013, 1, 1)),
-                                     vesting_months=5)
-        self.assertTrue(self.shareholder2.has_vested_shares())   # regular sh
-        self.assertFalse(self.shareholder1.has_vested_shares())  # corp shareh
-        self.assertFalse(shareholder3.has_vested_shares())       # fresh sh
 
     def test_owns_segments(self):
         """

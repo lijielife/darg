@@ -5,7 +5,7 @@ from django.conf import settings
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
-from shareholder.models import Position, OptionTransaction
+from shareholder.models import OptionTransaction
 
 
 register = template.Library()
@@ -200,18 +200,14 @@ def invoice_get_total_css_class(item_count, vat_included):
 
 # tags/filters for vesting/tax discounts
 @register.assignment_tag
-def get_vested_positions(shareholder, date=None):
-    positions = shareholder.buyer.filter(vesting_months__isnull=False)
-    position_pks = []
-    date = date or now().date()
-    for position in positions:
-        expiration_date = position.bought_at + relativedelta(
-            months=position.vesting_months)
-        if expiration_date > date:
-            position_pks.append(position.pk)
+def get_positions_with_certificate(shareholder, date=None, security=None):
+    return shareholder.get_positions_with_certificate(
+        date=date, security=security)
 
-    positions = Position.objects.filter(pk__in=position_pks)
-    return positions
+
+@register.assignment_tag
+def get_vested_positions(shareholder, date=None, security=None):
+    return shareholder.get_vested_positions(date=date, security=security)
 
 
 @register.assignment_tag
@@ -241,6 +237,11 @@ def get_total_discounted_tax_value(shareholder, date=None):
         tax_value += option.get_discounted_tax_value(date=date)
 
     return tax_value
+
+
+@register.assignment_tag
+def has_locked_shares(shareholder, security=None, date=None):
+    return shareholder.has_locked_shares(security=security, date=date)
 
 
 @register.assignment_tag

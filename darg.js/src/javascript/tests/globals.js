@@ -8,3 +8,4 @@ var django = {'catalog': {}}
 
 // custom defined vars
 position_id = 1
+shareholder_id = 1

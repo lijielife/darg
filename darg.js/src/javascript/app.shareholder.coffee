@@ -116,6 +116,15 @@ app.controller 'ShareholderController', ['$scope', '$http', 'Shareholder', ($sco
                 extra: { rejection: rejection },
             })
 
+    # --- DISPLAY
+    $scope.toggle_locked_positions = (id) ->
+
+        if $scope.locked_positions_security ==  id
+            $scope.locked_positions_security = null
+        else
+            $scope.locked_positions_security = id
+
+
     # --- DATEPICKER
     $scope.datepicker = { opened: false }
     $scope.datepicker.format = 'd.MM.yy'

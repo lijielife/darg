@@ -45438,6 +45438,13 @@ return deCh;
           });
         });
       };
+      $scope.toggle_locked_positions = function(id) {
+        if ($scope.locked_positions_security === id) {
+          return $scope.locked_positions_security = null;
+        } else {
+          return $scope.locked_positions_security = id;
+        }
+      };
       $scope.datepicker = {
         opened: false
       };

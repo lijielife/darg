@@ -9,12 +9,15 @@ from django.utils import timezone
 from project.generators import (OptionTransactionGenerator, PositionGenerator,
                                 ShareholderGenerator)
 from shareholder.templatetags.shareholder_tags import \
+    get_positions_with_certificate  # noqa
+from shareholder.templatetags.shareholder_tags import \
     get_total_discounted_tax_value  # noqa
 from shareholder.templatetags.shareholder_tags import \
     get_vested_option_positions  # noqa:
 from shareholder.templatetags.shareholder_tags import \
     shareholder_security_count  # noqa
-from shareholder.templatetags.shareholder_tags import get_vested_positions
+from shareholder.templatetags.shareholder_tags import (get_vested_positions,
+                                                       has_locked_shares)
 
 
 class ShareholderTagsTestCase(TestCase):
@@ -88,6 +91,26 @@ class ShareholderTagsTestCase(TestCase):
             get_total_discounted_tax_value(self.shareholder,
                                            date=self.future_date),
             1064.096)
+
+    @mock.patch('shareholder.models.Shareholder')
+    def test_get_positions_with_certificate(self, shareholder_mock):
+        """ get unsold positions with certificates """
+        get_positions_with_certificate(
+            self.shareholder, timezone.now().date(),
+            security=self.company.security_set.first())
+        shareholder_mock.get_positions_with_certificate.assert_called_with(
+            self.shareholder, timezone.now().date(),
+            security=self.company.security_set.first())
+
+    @mock.patch('shareholder.models.Shareholder')
+    def test_has_locked_shares(self, shareholder_mock):
+        """ does the shareholder have locked shares """
+        has_locked_shares(
+            self.shareholder, timezone.now().date(),
+            security=self.company.security_set.first())
+        shareholder_mock.has_locked_shares.assert_called_with(
+            self.shareholder, timezone.now().date(),
+            security=self.company.security_set.first())
 
     @mock.patch('shareholder.models.Shareholder')
     def test_shareholder_security_count(self, shareholder_mock):
