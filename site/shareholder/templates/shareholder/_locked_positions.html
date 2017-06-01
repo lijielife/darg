@@ -1,0 +1,14 @@
+{% load i18n %}
+
+{% for position in positions %}
+<div class="tr" id="locked-positions-{{security.pk}}">
+  <div class="td">&nbsp;</div>
+  <div class="td bought-at date" data-header="{% trans 'bought at' %}">
+    {{ position.bought_at }}
+  </div>
+  <div class="td seller" data-header="{% trans 'seller' %}">{% trans "from" %} {{ position.seller.get_full_name }}</div>
+  <div class="td count" data-header="{% trans 'count' %}">
+    {{ position.count }} {% trans "shares" %} ({{ position.get_depot_type_display }}{% if position.depot_type == '2' %} {% trans "until" %} {{position.vesting_expires_at }}{% endif %}{% if position.depot_type == '0' %} {% trans "with ID" %} {{ position.certificate_id }} {% endif %})</div>
+  <div class="td" data-header="{% trans 'link' %}"><a href="{% url "position" pk=position.pk %}" title="{% trans "transaction details" %}">{% trans "Details" %}</a></div>
+</div>
+{% endfor %}

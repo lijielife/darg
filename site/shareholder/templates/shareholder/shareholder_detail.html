@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load l10n %}
 {% load context_help %}
+{% load shareholder_tags %}
 
 {% block title %}
   <TITLE>{% trans "Shareholder" %}: {{ shareholder.get_full_name }} (#{{ shareholder.number }}) - Das Aktienregister</TITLE>
@@ -291,19 +292,45 @@
       <div class="td">{% trans "options owned" %}</div>
       <div class="td">{% trans "share segments" %}</div>
     </div>
+
+    <!-- PER SECURITY TABLE -->
     {% for security in securities %}
     <div class="tr security">
-      <div class="td name" data-header="{% trans 'security' %}">{{ security }}</div>
+      <div class="td name" data-header="{% trans 'security' %}">
+          {{ security }} 
+      </div>
       <div class="td cusip" data-header="{% trans 'cusip' %}">{% if security.cusip %}{{ security.cusip }}{% endif %}</div>
       {% if shareholder.is_company_shareholder %}
       <div class="td" data-header="{% trans 'issued' %}">{{ security.calculate_count }}</div>
       {% endif %}
-      <div class="td count" data-header="{% trans 'shares owned' %}">{{ security.count }}</div>
+      <div class="td count" data-header="{% trans 'shares owned' %}">
+          {{ security.count }}
+          {% has_locked_shares shareholder security as locked_shares %}
+          {% if locked_shares %}
+            <span class="el-icon-lock" title="{% trans "this user has shares inside certificate depot or with vesting" %}"></span>
+            {% verbatim %}
+            <a ng-click="toggle_locked_positions({% endverbatim %}{{ security.pk }}{% verbatim %})">
+                {% endverbatim %}{% trans "Details" %}{% verbatim %}
+            </a>
+            {% endverbatim %}
+          {% endif %}
+      </div>
       <div class="td count" data-header="{% trans 'options owned' %}">{{ security.options_count }}</div>
       {% if security.track_numbers %}
       <div class="td number-segments" data-header="{% trans 'share segments' %}" >{{ security.segments }}</div>
+      {% else %}
+      <div class="td"></div>
       {% endif %}
     </div>
+
+    <!-- NESTED LOCKED POSITIONS -->
+    <div id="locked-positions-{{security.pk}}" class="locked-positions" ng-show="locked_positions_security=={{ security.pk }}">
+      {% get_positions_with_certificate shareholder security=security as certificates %}
+      {% include "shareholder/_locked_positions.html" with positions=certificates security=security %}
+      {% get_vested_positions shareholder security=security as vested_positions %}
+      {% include "shareholder/_locked_positions.html" with positions=vested_positions security=security %}
+    </div>
+
     {% endfor %}
   </div><!-- /table-->
 

@@ -1078,10 +1078,47 @@ class Shareholder(TagMixin, models.Model):
         return list(set([p.stock_book_id for p in positions
                          if p.stock_book_id]))
 
-    def has_vested_shares(self):
+    def get_vested_positions(self, security=None, date=None):
+        """ get number of shares still under vesting as of date for security """
+        position_ids = []
+        qs = self.buyer.filter(vesting_months__isnull=False)
+        if security:
+            qs = qs.filter(security=security)
+
+        # vested shares cannot be sold. hence get all which have not yet
+        # expired. that's it
+        for pos in qs:
+            if pos.vesting_expires_at > (date or timezone.now().date()):
+                position_ids.append(pos.pk)
+
+        if position_ids:
+            return Position.objects.filter(pk__in=position_ids)
+        else:
+            return Position.objects.none()
+
+    def get_positions_with_certificate(self, security=None, date=None):
+        qs = self.buyer.filter(depot_type=0, certificate_id__isnull=False,
+                               certificate_invalidation_position__isnull=True)
+        if security:
+            qs = qs.filter(security=security)
+
+        # vested shares cannot be sold. hence get all which have not yet
+        # expired. that's it
+        return qs
+
+    def has_locked_shares(self, security=None, date=None):
+        """ has unsellable shares (cert depot or vesting) """
+        vested = self.get_vested_positions(
+            security=security, date=date).exists()
+        certificates = self.get_positions_with_certificate(
+            security=security, date=date).exists()
+        return vested or certificates
+
+    def has_vested_shares(self, security=None, date=None):
         """ does the shareholder hold or did hold in the past any vested
-        shares """
-        return self.buyer.filter(vesting_months__isnull=False).exists()
+        shares
+        """
+        return self.get_vested_positions(security=security, date=date).exists()
 
     def is_company_shareholder(self):
         """
@@ -1286,6 +1323,17 @@ class Shareholder(TagMixin, models.Model):
         but where the vesting period is over. `without_vesting` gets
         share count for all pkgds which don't have a vesting at all
         """
+        cache_key = u"shareholder_share_count_{}_{}_{}".format(
+            self.pk,
+            (date and date.isoformat() or timezone.now().date().isoformat()),
+            security and security.pk or 'None')
+
+        # exclude special cases
+        if not only_sellable or not expired_vesting or without_vesting:
+            cached = cache.get(cache_key)
+            if cached:
+                return cached
+
         qs_bought = self.buyer.all()
         qs_sold = self.seller.all()
 
@@ -1341,7 +1389,9 @@ class Shareholder(TagMixin, models.Model):
         else:
             options_created = 0
 
-        return count_bought - count_sold - options_created
+        result = count_bought - count_sold - options_created
+        cache.set(cache_key, result, 30*60)
+        return result
 
     def share_count_sellable(self, date=None, security=None):
         """

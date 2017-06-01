@@ -77,7 +77,9 @@
   </div>
 
   <!-- TABLE ACTIONS -->
-  {% endverbatim %}{% include "_table_actions.html" %}{% verbatim %}
+  <div ng-show="optiontransactions.length">
+    {% endverbatim %}{% include "_table_actions.html" %}{% verbatim %}
+  </div>
 
   <!-- TABLE -->
   <div id="options" ng-hide="!optiontransactions.length" ng-repeat="optiontransaction in optiontransactions">
@@ -153,5 +155,6 @@
       </div>
     </div>
   </div>
+  <div ng-show="!optiontransactions.length">{% trans "no options here. please create an options plan first and add options second" %}</div>
 </div>
 {% endblock %}
